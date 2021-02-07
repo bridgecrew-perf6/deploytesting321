@@ -1,11 +1,12 @@
 @font-face {
-    font-family: "malgun";
-    src: url("../public/fonts/malgun.ttf");
-    font-style: normal;
-    font-weight: 300;
-  }
+  font-family: "malgun";
+  src: url("/fonts/malgun.ttf");
+  font-style: normal;
+  font-weight: 300;
+  font-display: "swap";
+}
 
-  .vertical-center {
-    min-height: 100%;
-    min-height: 100vh;
-  }
+.vertical-center {
+  min-height: 100%;
+  min-height: 100vh;
+}

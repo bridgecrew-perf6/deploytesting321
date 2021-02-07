@@ -2,7 +2,7 @@ const { gql } = require("apollo-server-micro");
 
 module.exports = gql`
   type User {
-    id: ID!
+    _id: ID!
     firstname: String
     lastname: String
     email: String!
@@ -12,14 +12,21 @@ module.exports = gql`
     city: String
     state: String
     zipCode: String
+    profilePic: String
+    registerDate: String
+    pollHistory: [PollQuestion!]
+  }
+
+  type AuthData {
+    appToken: String!
+    user: User!
   }
 
   extend type Query {
     users: [User]!
-    getUserData: String!
+    getUserData: AuthData!
     logout: String
   }
-  
 
   extend type Mutation {
     login(credentials: String!): String!

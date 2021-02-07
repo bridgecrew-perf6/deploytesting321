@@ -14,6 +14,8 @@ const AuthProvider = ({ children }) => {
 
   const [appErrors, setErrors] = useState([]);
 
+  const [appMssgs, setAppMssgs] = useState([]);
+
   // useEffect(() => {
   //   if (localStorage.getItem("userId") !== authState.userId) {
   //     setAuthState({ ...authState, userId: localStorage.getItem("userId") });
@@ -34,6 +36,10 @@ const AuthProvider = ({ children }) => {
     setErrors(errorList);
   };
 
+  const updateAppMessages = (msgList) => {
+    setAppMssgs(msgList);
+  };
+
   const signOut = () => {
     setAuthState(initialAuthState);
 
@@ -44,7 +50,15 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ authState, appErrors, setAuthToken, signOut, updateErrors }}
+      value={{
+        authState,
+        appErrors,
+        appMssgs,
+        setAuthToken,
+        signOut,
+        updateErrors,
+        updateAppMessages,
+      }}
     >
       {children}
     </AuthContext.Provider>

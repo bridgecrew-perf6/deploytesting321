@@ -1,52 +1,132 @@
 .appTxt {
-    font-family: "malgun";
-    font-weight: 800;
-    color: black;
-  }
+  font-family: "malgun";
+  font-weight: 800;
+  color: white;
+}
 
-  .textCtr {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 100%;
-    height: auto;
-    width: 35%;
-  }
+.formTxt {
+  font-family: "malgun";
+  font-weight: 600;
+  color: black;
+}
 
-  .appColor {
-    background-color: #ff4d00;
-  }
+.textCtr {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+  width: 35%;
+}
 
-  .appImg {
-    height: 10vh;
-    width: auto;
-  }
+.appColor {
+  background-color: #ff4d00;
+}
 
-  .appbg_secondary {
-    background-color: #f2f3f4;
-  }
+.appImg {
+  height: 10vh;
+  width: auto;
+}
 
-  .cursor {
-    cursor: pointer;
-  }
+.imgCtr {
+  display: flex;
+  height: 30px;
+  width: 100px;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 
-  .floatingCtr {
-    position: absolute;
-    width: 10vh;
-    height: 10vh;
-    top: 5.5em;
-    border: 2px solid white;
-    border-radius: 75px;
-    overflow: hidden;
-  }
+.imgCtr img {
+  width: auto;
+  height: 8.5vh;
+}
 
-  .floatingCtr:hover + .popup {
-    display: block;
-    color: whitesmoke;
-    margin-left: 22vh;
-    margin-top: 4vh;
-  }
+.appbg_primary {
+  background-color: #f4f4f4;
+}
 
-  .popup {
-    display: none;
-  }
+.appbg_secondary {
+  background-color: #f2f3f4;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.floatingCtr {
+  position: absolute;
+  width: 10vh;
+  height: 10vh;
+  top: 5.5em;
+  border: 2px solid white;
+  border-radius: 75px;
+  overflow: hidden;
+}
+
+.floatingCtr:hover + .popup {
+  display: block;
+  color: whitesmoke;
+  margin-left: 22vh;
+  margin-top: 4vh;
+}
+
+.popup {
+  display: none;
+}
+
+.searchBar:hover {
+  border-color: black;
+  box-shadow: 0 0 5px black !important;
+}
+
+.searchBar input:focus {
+  border-color: white !important;
+  box-shadow: 0 0 0 white !important;
+}
+
+.profileIconCtr a {
+  border: 2px solid transparent;
+  cursor: pointer;
+  position: relative;
+  transition-duration: 0.1s;
+}
+
+.profileIconCtr a:hover {
+  border-color: white !important;
+  box-shadow: 0 0 0 white !important;
+}
+
+.profileIconCtr a ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  top: 4.5vh;
+  min-width: 10rem;
+  right: 0.2rem;
+  border: 1px solid lightgray;
+  visibility: hidden;
+  position: absolute;
+  transition: all 0.1s ease;
+  display: block;
+}
+
+.profileIconCtr:hover > a ul,
+.profileIconCtr:focus-within > a ul,
+.profileIconCtr a ul:hover {
+  visibility: visible;
+  display: block;
+  opacity: 1;
+}
+
+.profileIconCtr a ul li {
+  clear: both;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.profileIconCtr a ul li:hover {
+  background-color: #ff4d00;
+  color: white;
+}
+

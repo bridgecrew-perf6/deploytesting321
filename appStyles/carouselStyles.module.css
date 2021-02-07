@@ -1,0 +1,83 @@
+/* Arrows */
+
+.carouselCtr {
+  width: 96%;
+  align-self: center;
+}
+
+.customNextArrow,
+.customPrevArrow {
+  font-size: 0;
+  line-height: 0;
+  position: absolute;
+  top: 50%;
+
+  display: block;
+
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  -webkit-transform: translate(0, -50%);
+  -ms-transform: translate(0, -50%);
+  transform: translate(0, -50%);
+
+  cursor: pointer;
+
+  color: transparent;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.customPrevArrow:hover,
+.customPrevArrow:focus,
+.customNextArrow:hover,
+.customNextArrow:focus {
+  color: transparent;
+  outline: none;
+  background: transparent;
+}
+
+.customPrevArrow:hover:before,
+.customPrevArrow:focus:before,
+.customNextArrow:hover:before,
+.customNextArrow:focus:before {
+  opacity: 1;
+}
+
+.customPrevArrow.slick-disabled:before,
+.customNextArrow.slick-disabled:before {
+  opacity: 0.25;
+}
+
+.customPrevArrow:before,
+.customNextArrow:before {
+  font-family: "slick";
+  font-size: 20px;
+  line-height: 1;
+
+  opacity: 0.75;
+  color: white;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.customPrevArrow {
+  left: -25px;
+}
+
+[dir="rtl"] .customPrevArrow {
+  right: -25px;
+  left: auto;
+}
+
+.customNextArrow {
+  right: -25px;
+}
+
+/* Dots */
+.customDots {
+  position: relative;
+  bottom: 0;
+}

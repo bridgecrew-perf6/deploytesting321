@@ -45,3 +45,15 @@ export const getFormBorderStyle = (formObj) => {
 
   return formBorderObj;
 };
+
+export const AppMssgList = ({ mssgs }) => {
+  return (
+    <ul className="list-group">
+      {mssgs.map((msg, idx) => (
+        <li key={idx} className="list-group-item list-group-item-success m-1">
+          {msg.message}
+        </li>
+      ))}
+    </ul>
+  );
+};

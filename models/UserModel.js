@@ -39,11 +39,21 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  profilePic: {
+    type: String,
+    required: false,
+  },
   registerDate: {
     type: Date,
     required: true,
     default: Date.now,
   },
+  pollHistory: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Poll",
+    },
+  ],
 });
 
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);

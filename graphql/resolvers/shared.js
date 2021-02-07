@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
-import { parse } from "cookie";
-// import { v4 as uuidv4 } from "uuid";
-// import bcrypt from "bcryptjs";
+import DataLoader from "dataloader";
+// import { parse } from "cookie";
+import { dateToString } from "../../components/globalFuncs";
+import User from "../../models/UserModel";
+import Poll from "../../models/PollModel";
 
 const {
   JWT_KEY,
@@ -22,6 +24,31 @@ const REFRESH_TOKEN_COOKIE_OPTIONS = {
   // secure: !!process.env.BASE_URL.includes("https"),
 };
 
+const userLoader = new DataLoader((userIds) => {
+  return User.find({ _id: { $in: userIds } });
+});
+
+const pollLoader = new DataLoader((pollIds) => {
+  return prepPollHistory(pollIds);
+});
+
+const prepPollHistory = async (pollIds) => {
+  try {
+    const polls = await Poll.find({ _id: { $in: pollIds } });
+    polls.sort((a, b) => {
+      return (
+        pollIds.indexOf(a._id.toString()) - pollIds.indexOf(b._id.toString())
+      );
+    });
+
+    return polls.map((poll) => {
+      return transformPoll(poll);
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, JWT_KEY, { expiresIn: `${JWT_TOKEN_EXPIRES}min` });
 };
@@ -37,6 +64,37 @@ const generateRefreshToken = (id) => {
     refreshToken,
     expiry: tokenExpiry,
     options: REFRESH_TOKEN_COOKIE_OPTIONS,
+  };
+};
+
+const user = async (userId) => {
+  try {
+    const user = await userLoader.load(userId.toString());
+    return {
+      ...user._doc,
+      pollHistory: () => pollLoader.loadMany(user._doc.pollHistory),
+    };
+  } catch (err) {
+    throw err;
+  }
+};
+
+const transformUser = (user) => {
+  const { password, ...rest } = user;
+
+  return {
+    ...rest._doc,
+    registerDate: dateToString(rest._doc.registerDate),
+    pollHistory: () => pollLoader.loadMany(rest._doc.pollHistory),
+  };
+};
+
+const transformPoll = (poll) => {
+  return {
+    ...poll._doc,
+    _id: poll.id,
+    creationDate: dateToString(poll._doc.creationDate),
+    creator: user.bind(this, poll.creator),
   };
 };
 
@@ -57,4 +115,6 @@ module.exports = {
       maxAge: -1,
     });
   },
+  transformPoll,
+  transformUser,
 };

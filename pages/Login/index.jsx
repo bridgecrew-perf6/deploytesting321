@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "../../appStyles/appStyles.module.css";
 import { LogoText } from "../../components/layout/branding";
-import { CardForm } from "../../components/layout/BootStrap";
+import { CardForm } from "../../components/layout/CompStyles";
 import {
   errorHandling,
   ErrorList,
@@ -26,7 +26,7 @@ export default function LogIn() {
   const { setAuthToken, appErrors, updateErrors } = useAuth();
   const router = useRouter();
   const { queries, mutations } = GraphResolvers;
-  const [login, { loading, error }] = useMutation(mutations.LOGIN_MUTATION);
+  const [login, { loading, error }] = useMutation(mutations.LOGIN);
 
   // const handleOtherFormMssgs = () => {
   //   const { registered, userExists, authError } = props.query;
@@ -52,7 +52,7 @@ export default function LogIn() {
         });
         setAuthToken(data.login);
         updateErrors([]);
-        router.push("/Profile");
+        router.push("/");
       } catch (err) {
         setFormErrors([err]);
       }

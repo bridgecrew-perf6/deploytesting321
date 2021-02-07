@@ -1,7 +1,7 @@
 import User from "../../models/UserModel";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
-import { getAppTokens, clearAppCookie } from "./shared";
+import { getAppTokens, clearAppCookie, transformUser } from "./shared";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,8 +16,9 @@ module.exports = {
   Query: {
     users: async (_, __, ctx) => {
       try {
-        const users = await User.find({});
-        return users;
+        const users = await User.find();
+        const userData = users.map((user) => transformUser(user));
+        return userData;
       } catch (error) {
         throw new Error(error);
       }
@@ -39,21 +40,12 @@ module.exports = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
 
-      const { _doc } = await User.findById(id);
-      const { password, __v, _id, ...data } = _doc;
+      const user = await User.findById("5fdc039057df07dfde3d8f57");
+      const userData = transformUser(user);
 
-      const appToken = getAppTokens(id, res);
-      
-      // console.log(req.headers.cookie)
-      // const appToken = getAppTokens(id, res);
+      const appToken = getAppTokens(userData._id, res);
 
-      // if (req.headers.cookie) {
-      //   // clearAppCookie(req.headers.cookie, res);
-      //   const appToken = getAppTokens(id, res);
-      //   // console.log(appToken)
-      // }
-
-      return JSON.stringify({ ...data });
+      return { appToken, user: userData };
     },
   },
   Mutation: {

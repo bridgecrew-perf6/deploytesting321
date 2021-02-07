@@ -1,6 +1,6 @@
-import WithBootStrap from "../components/layout/BootStrap";
+import WithCustomStyles from "../components/layout/CompStyles";
 import "./global.css";
-import React from "react";
+import React, { useEffect } from "react";
 import App from "next/app";
 import AuthProvider from "../components/authProvider";
 import { ApolloProvider } from "@apollo/client";
@@ -13,11 +13,11 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <AuthProvider>
-      <WithBootStrap>
+      <WithCustomStyles>
         <ApolloProvider client={client}>
           <Component {...pageProps} />
         </ApolloProvider>
-      </WithBootStrap>
+      </WithCustomStyles>
     </AuthProvider>
   );
 }
