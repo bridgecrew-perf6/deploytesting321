@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AiOutlineLike,
   AiFillLike,
@@ -43,3 +43,12 @@ export default function IconBtns({ btnDetails }) {
     </div>
   );
 }
+
+// export const ToggleIconFillEmpty = (iconType, iconValue) => {
+//   const initialState = {};
+//   initialState[iconType] = !iconValue;
+
+//   const [iconObj, updateIconObj] = useState(initialState);
+
+
+// };

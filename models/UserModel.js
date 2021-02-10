@@ -7,6 +7,11 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  userId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   firstname: {
     type: String,
     required: false,

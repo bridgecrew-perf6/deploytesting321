@@ -85,7 +85,49 @@
   box-shadow: 0 0 0 white !important;
 }
 
-.profileIconCtr a {
+.profileIconCtr {
+  border: 3px solid transparent;
+  cursor: pointer;
+  position: relative;
+  transition-duration: 0.5s;
+}
+
+.profileIconCtr:hover {
+  border-color: white !important;
+  box-shadow: 0 0 0 white !important;
+}
+
+.dropDownCtr {
+  top: 4.2vh;
+  left: -11vh;
+  height: 22vh;
+  width: 16vh;
+}
+
+.dropDownCtr ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  cursor: pointer;
+  background-color: #f7f7f7;
+}
+
+.dropDownCtr li {
+  font-family: "malgun";
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dropDownCtr li:hover {
+  background-color: #ff4d00;
+  color: white;
+}
+
+/* .dropDownCtr ul li {
+  padding: 2px;
+} */
+
+/* .profileIconCtr a {
   border: 2px solid transparent;
   cursor: pointer;
   position: relative;
@@ -109,6 +151,7 @@
   position: absolute;
   transition: all 0.1s ease;
   display: block;
+  background-color: #f4f4f4;
 }
 
 .profileIconCtr:hover > a ul,
@@ -128,5 +171,4 @@
 .profileIconCtr a ul li:hover {
   background-color: #ff4d00;
   color: white;
-}
-
+} */

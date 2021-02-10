@@ -1,11 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { IoPersonCircle } from "react-icons/io5";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-import { profileIconCtr } from "../../../../appStyles/appStyles.module.css";
+import {
+  profileIconCtr,
+  cursor,
+  dropDownCtr,
+} from "../../../../appStyles/appStyles.module.css";
 import { runGraphQuery } from "../../../../lib/apollo/miscFunctions";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
+import NewPoll from "../../Home/NewPoll";
+import AppDropdown from "../Dropdown";
+import Backdrop from "../Backdrop";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
 
@@ -14,12 +23,19 @@ export default function ProfileHeader({ updateUser }) {
 
   const { data, error } = useQuery(GET_USER);
   const [logout, {}] = useLazyQuery(LOG_OUT);
+  const [notification, toggleNotification] = useState(false);
 
   useEffect(() => {
     if (data) {
       updateUser(data.getUserData.user.pollHistory);
     }
   }, [data]);
+
+  const NotificationIcon = notification ? (
+    <AiFillNotification size={24} color="white" />
+  ) : (
+    <AiOutlineNotification size={24} color="white" />
+  );
 
   if (error) {
     return (
@@ -42,7 +58,7 @@ export default function ProfileHeader({ updateUser }) {
   }
 
   if (data) {
-    const { email, profilePic } = data.getUserData.user;
+    const { userId, profilePic } = data.getUserData.user;
     const picStyle = { height: 50, width: 50 };
 
     const profileIcon =
@@ -60,18 +76,64 @@ export default function ProfileHeader({ updateUser }) {
     return (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
-        style={{ width: "22%" }}
+        style={{ width: "30%" }}
       >
-        <label className="text-white">{email}</label>
-        <div className={`d-flex ${profileIconCtr}`}>
-          <a className="rounded-circle">
-            {profileIcon}
-            <ul>
-              <Link href="/Profile">
-                <li>Profile</li>
+        <div
+          className="btn btn-outline-light my-2 my-sm-0"
+          type="button"
+          data-toggle="modal"
+          data-target="#newPollModal"
+        >
+          Create New Poll
+        </div>
+        <div
+          className={cursor}
+          onMouseEnter={() => toggleNotification(true)}
+          onMouseLeave={() => toggleNotification(false)}
+        >
+          {NotificationIcon}
+        </div>
+        <Link href={"/Profile"}>
+        {/* <Link
+          href={{
+            pathname: "/Profile",
+            query: { data: JSON.stringify(data.getUserData) },
+          }}
+          as="/Profile"
+        > */}
+          <a className={`rounded-circle ${profileIconCtr}`}>{profileIcon}</a>
+        </Link>
+        <div className="dropdown">
+          <a
+            className="btn btn-outline-light my-2 my-sm-0"
+            type="button"
+            id="siteDropDown"
+            data-toggle="dropdown"
+          >
+            <GiHamburgerMenu
+              size={22}
+              aria-haspopup="true"
+              aria-expanded="false"
+            />
+          </a>
+
+          <div
+            className={`dropdown-menu ${dropDownCtr}`}
+            aria-labelledby="siteDropDown"
+          >
+            <ul className="d-flex flex-column h-100 justify-content-center">
+              <Link href={"/Profile"}>
+                <li className="dropdown-item">{`${userId} Profile`}</li>
               </Link>
+              <li className="dropdown-item">All Topics</li>
+              <li className="dropdown-item">About</li>
+              <li className="dropdown-item">How it Works</li>
+              <li className="dropdown-item">Suggestions</li>
+              <li className="dropdown-item">Support</li>
+              <li className="dropdown-item">Settings</li>
               <Link href="/">
                 <li
+                  className="dropdown-item"
                   onClick={() => {
                     logout();
                     router.reload();
@@ -81,8 +143,9 @@ export default function ProfileHeader({ updateUser }) {
                 </li>
               </Link>
             </ul>
-          </a>
+          </div>
         </div>
+        <NewPoll />
       </div>
     );
   }

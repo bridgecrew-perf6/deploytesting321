@@ -33,7 +33,7 @@ export default function NavBar(props) {
       </Link>
       <div
         className="form-row justify-content-between"
-        style={{ width: "55%" }}
+        style={{ width: "48%" }}
       >
         <div className={`input-group ${searchBar}`}>
           <div className="input-group-prepend overflow-hidden">

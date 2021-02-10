@@ -33,7 +33,7 @@ export default function Home(props) {
             Polls Home Page
           </button>
         </Link>
-        <button
+        {/* <button
           type="button"
           className="btn btn-secondary"
           data-toggle="modal"
@@ -41,7 +41,7 @@ export default function Home(props) {
         >
           Create New Poll
         </button>
-        <NewPoll />
+        <NewPoll /> */}
         {appMssgs.length > 0 && <AppMssgList mssgs={appMssgs} />}
       </div>
     </PageForm>

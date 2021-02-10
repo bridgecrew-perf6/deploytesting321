@@ -8,9 +8,12 @@ const AuthProvider = ({ children }) => {
   const initialAuthState = {
     token: undefined,
     userId: undefined,
+    userData: undefined,
   };
 
   const [authState, setAuthState] = useState(initialAuthState);
+
+  // const [userData, setUserData] = useState("");
 
   const [appErrors, setErrors] = useState([]);
 
@@ -40,6 +43,10 @@ const AuthProvider = ({ children }) => {
     setAppMssgs(msgList);
   };
 
+  const updateUserData = (userData) => {
+    setAuthState({ ...authState, userData });
+  };
+
   const signOut = () => {
     setAuthState(initialAuthState);
 
@@ -58,6 +65,7 @@ const AuthProvider = ({ children }) => {
         signOut,
         updateErrors,
         updateAppMessages,
+        updateUserData,
       }}
     >
       {children}
