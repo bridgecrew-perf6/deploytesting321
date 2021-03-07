@@ -12,14 +12,14 @@ const AuthProvider: React.FC = ({ children }) => {
 
   const [authState, setAuthState] = useState(initialAuthState);
 
-  const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]);
+  const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]);   //This may not be needed since you can pass mssgs between pages.  Think of removing
 
   const setAuthToken = ({ userId, token }: AuthState) => {
     storeTokens(token);
     setAuthState({ ...authState, userId, token });
   };
 
-  const updateAppMssgs = (msgList: AppMssg[]) => {
+  const updateAppMssgs = (msgList: AppMssg[]) => {  //This may not be needed since you can pass mssgs between pages.  Think of removing
     setAppMssgs(msgList);
   };
 

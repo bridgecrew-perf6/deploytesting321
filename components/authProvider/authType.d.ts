@@ -1,12 +1,3 @@
-enum MsgTyp {
-  Error,
-  AppMsg,
-}
-
-interface AppMssg  {
-  msgType: MsgTyp;
-  message: string;
-};
 
 interface AuthState {
   token?: string;

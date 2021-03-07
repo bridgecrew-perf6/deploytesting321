@@ -20,7 +20,7 @@ interface User {
   city?: string;
   state?: string;
   zipCode?: string;
-  userId: string;
+  appid: string;
   email?: string;
   profilePic?: string;
   registerDate?: Date;
@@ -100,3 +100,19 @@ type Resolver = (
   context: ApolloSeverContext,
   info: any
 ) => any;
+
+interface StatesUS {
+  id: string;
+  name: string;
+}
+
+
+enum MsgTyp {
+  Error,
+  AppMsg,
+}
+
+interface AppMssg  {
+  msgType?: MsgTyp;
+  message?: string;
+};

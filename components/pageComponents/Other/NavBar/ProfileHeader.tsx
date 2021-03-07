@@ -54,7 +54,7 @@ export default function ProfileHeader({ updateUser }: NavBarProps) {
   }
 
   if (data) {
-    const { userId, profilePic } = data.getUserData.user;
+    const { appid, profilePic } = data.getUserData.user;
     const picStyle = { height: 50, width: 50 };
 
     const profileIcon =
@@ -121,7 +121,7 @@ export default function ProfileHeader({ updateUser }: NavBarProps) {
           >
             <ul className="d-flex flex-column h-100 justify-content-center">
               <Link href={"/Profile"}>
-                <li className="dropdown-item">{`${userId} Profile`}</li>
+                <li className="dropdown-item">{`${appid} Profile`}</li>
               </Link>
               <li className="dropdown-item">All Topics</li>
               <li className="dropdown-item">About</li>

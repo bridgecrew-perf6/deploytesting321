@@ -34,7 +34,6 @@ export default function NewPoll() {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-
     const question = (document.getElementById("question") as HTMLInputElement)
       .value;
     const topic = (document.getElementById("topic") as HTMLInputElement).value;
@@ -80,6 +79,7 @@ export default function NewPoll() {
 
   const clearForm = () => {
     setFormErrors([]);
+    updateCharCount(0);
     (document.getElementById("newPoll") as HTMLFormElement).reset();
   };
 
@@ -157,7 +157,7 @@ export default function NewPoll() {
                 </button>
                 <button
                   type="button"
-                  onClick={(e) => handleSubmit}
+                  onClick={handleSubmit}
                   id="submitButton"
                   className={`btn ${appColor} text-white`}
                 >

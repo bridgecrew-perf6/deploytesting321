@@ -6,7 +6,7 @@ import styles from "../../appStyles/appStyles.module.css";
 import { LogoText } from "../../components/layout/branding";
 import { CardForm } from "../../components/layout/CompStyles";
 import { errorHandling } from "../../components/formFuncs/errorFuncs";
-import {ErrorList} from '../../components/formFuncs/formFuncs'
+import { AppMssgList, ErrorList } from "../../components/formFuncs/formFuncs";
 // import {
 //   errorHandling,
 //   ErrorList,
@@ -19,10 +19,11 @@ import { ErrorMssg } from "../../components/appTypes/appType";
 const LogIn: NextPage = () => {
   const [loggedIn, toggleLoggedIn] = useState(false);
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
+  const [appMssgs, setAppMssgs] = useState<object[]>([]);
   // const [formMssgs, setFormMssgs] = useState([]);
 
   useEffect(() => {
-    // handleOtherFormMssgs();
+    handleOtherFormMssgs();
     setFormErrors([]);
     toggleLoggedIn(false);
   }, []);
@@ -34,16 +35,20 @@ const LogIn: NextPage = () => {
   const { queries, mutations } = GraphResolvers;
   const [login, { loading, error }] = useMutation(mutations.LOGIN);
 
-  // const handleOtherFormMssgs = () => {
-  //   const { registered, userExists, authError } = props.query;
-  //   const otherFormMssg = [];
+  const handleOtherFormMssgs = () => {
+    const { appMssgs } = router.query;
+    let msgList: any = appMssgs;
+    msgList && setAppMssgs(JSON.parse(msgList));
 
-  //   userExists && otherFormMssg.push("User already Exists. Please Log In.");
-  //   registered && otherFormMssg.push("You are now Registered. Please Log In.");
-  //   authError && otherFormMssg.push("Access Token Expired.  Please Log In.");
+    // const { registered, userExists, authError } = router.query;
+    // const otherFormMssg = [];
 
-  //   setFormMssgs([...formMssgs, otherFormMssg]);
-  // };
+    // userExists && otherFormMssg.push("User already Exists. Please Log In.");
+    // registered && otherFormMssg.push("You are now Registered. Please Log In.");
+    // authError && otherFormMssg.push("Access Token Expired.  Please Log In.");
+
+    // setFormMssgs([...formMssgs, otherFormMssg]);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,7 +62,7 @@ const LogIn: NextPage = () => {
           variables: { credentials: JSON.stringify(formObj) },
         });
         appContext?.setAuthToken(data.login);
-        appContext?.updateAppMssgs([]);
+        setAppMssgs([]);
         router.push("/");
       } catch (err) {
         setFormErrors([err]);
@@ -72,9 +77,10 @@ const LogIn: NextPage = () => {
       </div>
       <div className="card-body">
         <form onSubmit={handleSubmit} id="login">
-          {appContext && appContext.appMssgs.length > 0 && (
+          {appMssgs.length > 0 && <AppMssgList mssgs={appMssgs} />}
+          {/* {appContext && appContext.appMssgs.length > 0 && (
             <ErrorList errors={appContext.appMssgs} />
-          )}
+          )} */}
           {/* {formMssgs.length > 0 &&
             formMssgs.map((msg, idx) => (
               <div className={classStyle} key={idx}>

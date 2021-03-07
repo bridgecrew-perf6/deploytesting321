@@ -1,4 +1,5 @@
 import styles from "../../../appStyles/appStyles.module.css";
+import { User } from "../../appTypes/appType";
 import { MssgReadMoreLess } from "../../layout/customComps";
 
 const {
@@ -11,13 +12,13 @@ const {
 } = styles;
 
 interface ProfileData {
-  data: { profilePic?: string };
+  data: User | undefined;
   handleImg?: () => void;
   edit?: () => void;
 }
 
 export const ProfileHeader = ({ data, handleImg }: ProfileData) => {
-  const profileImg = data.profilePic
+  const profileImg = data?.profilePic
     ? data.profilePic
     : "https://res.cloudinary.com/rahmad12/image/upload/v1590505676/FoodEase/Profile/vendor/5e78e50191e6cb1f9133038a/profileImages/profilePic.jpg";
 

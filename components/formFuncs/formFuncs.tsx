@@ -1,16 +1,16 @@
-import { ErrorMssg } from "../appTypes/appType";
+import { AppMssg, ErrorMssg, StatesUS } from "../appTypes/appType";
 
-export const AppMssgList = ({ mssgs }: { mssgs: AppMssg[] }) => {
-  return (
-    <ul className="list-group">
-      {mssgs.map((msg, idx) => (
-        <li key={idx} className="list-group-item list-group-item-success m-1">
-          {msg.message}
-        </li>
-      ))}
-    </ul>
-  );
-};
+// export const AppMssgList = ({ mssgs }: { mssgs: AppMssg[] }) => {
+//   return (
+//     <ul className="list-group">
+//       {mssgs.map((msg, idx) => (
+//         <li key={idx} className="list-group-item list-group-item-success m-1">
+//           {msg.message}
+//         </li>
+//       ))}
+//     </ul>
+//   );
+// };
 
 export const ErrorList = ({ errors }: { errors: ErrorMssg[] }) => {
   return (
@@ -24,12 +24,31 @@ export const ErrorList = ({ errors }: { errors: ErrorMssg[] }) => {
   );
 };
 
-interface StateVal {
-  id: string;
-  name: string;
-}
+export const AppMssgList = ({ mssgs }: { mssgs: AppMssg[] }) => {
+  return (
+    <ul className="list-group">
+      {mssgs.map((msg, idx) => {
+        const msgTypeColor =
+          msg.msgType === 0
+            ? "list-group-item-danger"
+            : "list-group-item-success";
 
-export const StateVals = ({ stateList }: { stateList: StateVal[] }) =>
-  stateList.map((stateVal) => (
-    <option key={stateVal.id}>{stateVal.name}</option>
-  ));
+        return (
+          <li key={idx} className={`list-group-item ${msgTypeColor} m-1`}>
+            {msg.message}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
+export const StateVals = ({ stateList }: { stateList: StatesUS[] }) => {
+  return (
+    <>
+      {stateList.map((stateVal) => (
+        <option key={stateVal.id}>{stateVal.name}</option>
+      ))}
+    </>
+  );
+};

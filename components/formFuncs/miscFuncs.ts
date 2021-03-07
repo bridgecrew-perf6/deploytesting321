@@ -46,3 +46,7 @@ export const getFormBorderStyle = (formObj: HTMLFormElement) => {
 
   return formBorderObj;
 };
+
+export const createAppMssgList = (msgList: object[]) => {
+  return JSON.stringify(msgList);
+};

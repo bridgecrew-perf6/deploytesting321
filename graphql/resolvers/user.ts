@@ -2,10 +2,12 @@ import User from "../../models/UserModel";
 import { getAppTokens, clearAppCookie, transformUser } from "./shared";
 import bcrypt from "bcryptjs";
 import { ResolverMap } from "../../components/appTypes/appType";
+import IUser from "../../models/interfaces/user";
+import { dateToString } from "../../components/globalFuncs";
 
 export const userResolvers: ResolverMap = {
   Query: {
-    users: async (parent, args, {pollLoader}) => {
+    users: async (parent, args, { pollLoader }) => {
       try {
         const users = await User.find();
         const userData = users.map((user) => transformUser(user, pollLoader));
@@ -31,7 +33,7 @@ export const userResolvers: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
 
-      const user = await User.findById("5fdc039057df07dfde3d8f57"); //Fix this, this is hardcoded
+      const user = await User.findById(id);
 
       if (user) {
         const userData = transformUser(user, pollLoader);
@@ -60,6 +62,37 @@ export const userResolvers: ResolverMap = {
         const appToken = getAppTokens(user.id, context.res);
 
         return appToken;
+      }
+    },
+    createNewUser: async (parent, { formInputs }, context) => {
+      const formObj = JSON.parse(formInputs);
+      let existingUser: IUser;
+
+      try {
+        existingUser = await User.findOne({ email: formObj.email });
+
+        if (existingUser) {
+          throw new Error("Email already exists! Please log in.");
+        }
+
+        const hashedPW = await bcrypt.hash(formObj.password, 12);
+
+        const user: IUser = new User({
+          ...formObj,
+          password: hashedPW,
+        });
+
+        const userSaveResult = await user.save();
+        console.log(userSaveResult);
+
+        return {
+          ...userSaveResult._doc,
+          id: userSaveResult.id,
+          password: null,
+          registerDate: dateToString(userSaveResult._doc.registerDate),
+        };
+      } catch (err) {
+        throw err;
       }
     },
   },

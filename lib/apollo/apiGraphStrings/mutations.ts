@@ -7,9 +7,16 @@ const mutations = {
     }
   `,
   CREATE_POLL: gql`
-    mutation createPoll($details: String!) {
+    mutation CreatePoll($details: String!) {
       createPoll(details: $details) {
-        id
+        _id
+      }
+    }
+  `,
+  CREATE_USER: gql`
+    mutation CreateNewUser($formInputs: String!) {
+      createNewUser(formInputs: $formInputs) {
+        _id
       }
     }
   `,

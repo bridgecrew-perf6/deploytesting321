@@ -7,7 +7,7 @@ const queries = {
         appToken
         user {
           _id
-          userId
+          appid
           email
           profilePic
           pollHistory {
@@ -24,7 +24,7 @@ const queries = {
     query Users {
       users {
         _id
-        userId
+        appid
         firstname
         email
         pollHistory {
@@ -48,7 +48,7 @@ const queries = {
         creationDate
         creator {
           _id
-          userId
+          appid
         }
       }
     }

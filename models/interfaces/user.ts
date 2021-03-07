@@ -7,7 +7,7 @@ interface MongoDoc extends Document {
 
 export default interface IUser extends MongoDoc {
   email: string;
-  userId: string;
+  appid: string;
   firstname?: string;
   lastname?: string;
   password?: string;

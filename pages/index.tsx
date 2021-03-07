@@ -24,7 +24,7 @@ const Home: NextPage = (props) => {
   const initialUserState: UserDataProps = {
     getUserData: {
       appToken: "",
-      user: { _id: "", userId: "", email: "" },
+      user: { _id: "", appid: "", email: "" },
     },
   };
   const [userData, setUserData] = useState<UserDataProps>(initialUserState);
@@ -34,15 +34,15 @@ const Home: NextPage = (props) => {
       <NavBar updateUser={setUserData} />
       <div className="p-3" style={{ backgroundColor: "#f4f4f4" }}>
         <h1>HOME PAGE</h1>
+        {appContext && appContext.appMssgs.length > 0 && (
+          <AppMssgList mssgs={appContext.appMssgs} />
+        )}
         <PollWindow />
         <Link href={"/Polls"}>
           <button type="submit" className="btn btn-primary">
             Polls Home Page
           </button>
         </Link>
-        {appContext && appContext.appMssgs.length > 0 && (
-          <AppMssgList mssgs={appContext.appMssgs} />
-        )}
       </div>
     </PageForm>
   );

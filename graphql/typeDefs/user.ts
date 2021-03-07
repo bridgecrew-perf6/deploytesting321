@@ -7,7 +7,7 @@ export const userTypeDefs = gql`
     _id: ID!
     firstname: String
     lastname: String
-    userId: String!
+    appid: String!
     email: String!
     password: String
     address1: String
@@ -34,5 +34,6 @@ export const userTypeDefs = gql`
   extend type Mutation {
     login(credentials: String!): String!
     refreshUserToken(userId: ID!): String!
+    createNewUser(formInputs: String!): User!
   }
 `;
