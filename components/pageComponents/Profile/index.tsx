@@ -1,14 +1,22 @@
-import {
+import styles from "../../../appStyles/appStyles.module.css";
+import { MssgReadMoreLess } from "../../layout/customComps";
+
+const {
   appColor,
   appTxt,
   appImg,
   appbg_secondary,
   floatingCtr,
   popup,
-} from "../../../appStyles/appStyles.module.css";
-import { MssgReadMoreLess } from "../../layout/customComps";
+} = styles;
 
-export const ProfileHeader = ({ data, handleImg }) => {
+interface ProfileData {
+  data: { profilePic?: string };
+  handleImg?: () => void;
+  edit?: () => void;
+}
+
+export const ProfileHeader = ({ data, handleImg }: ProfileData) => {
   const profileImg = data.profilePic
     ? data.profilePic
     : "https://res.cloudinary.com/rahmad12/image/upload/v1590505676/FoodEase/Profile/vendor/5e78e50191e6cb1f9133038a/profileImages/profilePic.jpg";
@@ -32,7 +40,7 @@ export const ProfileHeader = ({ data, handleImg }) => {
   );
 };
 
-export const ProfileBody_Card = ({ data, edit }) => {
+export const ProfileBody_Card = ({ data, edit }: ProfileData) => {
   const mssg =
     "This is a wider card with supporting text below as a natural lead-into additional content. This content is a little bit longer. This is a wider card with supporting text below as a natural lead-into additional content. This content is a little bit longer";
 
@@ -50,7 +58,7 @@ export const ProfileBody_Card = ({ data, edit }) => {
   );
 };
 
-const ProfileMetrics = ({ data }) => {
+const ProfileMetrics = ({ data }: ProfileData) => {
   //Once data is fed from DB, that data will be parsed here to make the list. This is a placeholder
   const testDataArray = [
     { title: "Polls", count: 34 },

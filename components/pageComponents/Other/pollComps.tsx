@@ -8,6 +8,7 @@ import styles from "../../../appStyles/carouselStyles.module.css";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import PollMetrics from "./PollMetrics";
 import { IconType } from "react-icons/lib";
+import { PollHistory, PollsAll } from "../../appTypes/appType";
 
 const { GET_POLLS_ALL } = GraphResolvers.queries;
 
