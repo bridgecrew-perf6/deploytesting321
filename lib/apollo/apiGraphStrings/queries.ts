@@ -53,6 +53,20 @@ const queries = {
       }
     }
   `,
+  GET_POLL: gql`
+    query Poll($pollId: String!) {
+      poll(pollId: $pollId) {
+        _id
+        question
+        topic
+        creationDate
+        creator {
+          _id
+          appid
+        }
+      }
+    }
+  `,
 };
 
 export default queries;

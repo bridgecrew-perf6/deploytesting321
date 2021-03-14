@@ -14,10 +14,11 @@ export default function NewPoll() {
   const { appColor, appTxt, formTxt } = styles;
 
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
-  const [formVal, updateFormVal] = useState({});
   const [charCount, updateCharCount] = useState(0);
   const { CREATE_POLL } = GraphResolvers.mutations;
+  const { GET_POLLS_ALL } = GraphResolvers.queries;
   const [createPoll, { loading, error }] = useMutation(CREATE_POLL);
+
   const appContext = useAuth();
   // const { updateAppMessages } = useAuth();
 
@@ -65,6 +66,7 @@ export default function NewPoll() {
       try {
         await createPoll({
           variables: { details: JSON.stringify(formVal) },
+          refetchQueries: [{ query: GET_POLLS_ALL }],
         });
         appContext?.updateAppMssgs([
           { msgType: 1, message: "Poll Created successfully" },

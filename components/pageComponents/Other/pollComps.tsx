@@ -1,22 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
+import Link from "next/link";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useQuery } from "@apollo/client";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import styles from "../../../appStyles/carouselStyles.module.css";
-import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import carouselStyles from "../../../appStyles/carouselStyles.module.css";
+import appStyles from "../../../appStyles/appStyles.module.css";
 import PollMetrics from "./PollMetrics";
 import { IconType } from "react-icons/lib";
 import { PollHistory, PollsAll } from "../../appTypes/appType";
 
-const { GET_POLLS_ALL } = GraphResolvers.queries;
+const { carouselCtr, customNextArrow, customPrevArrow, customDots } = carouselStyles;
 
-const { carouselCtr, customNextArrow, customPrevArrow, customDots } = styles;
-
-export const PollWindow = () => {
-  const { data, error } = useQuery<PollsAll>(GET_POLLS_ALL);
-
+export const PollWindow = ({ polls }: PollsAll) => {
   const settings = {
     dots: true,
     infinite: false,
@@ -28,30 +24,16 @@ export const PollWindow = () => {
     dotsClass: `slick-dots ${customDots}`,
   };
 
-  if (data) {
-    return (
-      <div className="container-fluid d-flex flex-column border border-primary">
-        <h2>Trending Polls</h2>
-        <div className={`${carouselCtr}`}>
-          <Slider {...settings}>
-            {data.polls.map((item) => (
-              <PollItem poll={item} key={item._id} />
-            ))}
-          </Slider>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    <div className="container-fluid d-flex flex-column border border-primary">
-      {error.message}
-    </div>;
-  }
-
   return (
-    <div className="spinner-border" role="status">
-      <span className="sr-only">Loading...</span>
+    <div className="container-fluid d-flex flex-column border border-primary">
+      <h2>Trending Polls</h2>
+      <div className={`${carouselCtr}`}>
+        <Slider {...settings}>
+          {polls?.map((item) => (
+            <PollItem poll={item} key={item._id} />
+          ))}
+        </Slider>
+      </div>
     </div>
   );
 };
@@ -62,17 +44,20 @@ interface PollItem {
 
 const PollItem = ({ poll }: PollItem) => {
   return (
-    <div className="card m-2">
-      <h5 className="card-header bg-secondary text-white text-center">
-        {poll.topic}
-      </h5>
-      <div className="card-body">
-        <p className="card-text text-secondary" style={{ height: "10vh" }}>
-          {poll.question}
-        </p>
-        <PollMetrics created={poll.creationDate} />
+    <Link href={`/Polls/${poll._id}`}>
+      <div className={`card m-2 ${appStyles.cursor}`}>
+        <h5 className="card-header bg-secondary text-white text-center">
+          {poll.topic}
+        </h5>
+        <div className="card-body">
+          <p className="card-text text-secondary" style={{ height: "10vh" }}>
+            {poll.question}
+          </p>
+          <p className="card-text text-secondary">{poll?.creator?.appid}</p>
+          <PollMetrics created={poll.creationDate} />
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

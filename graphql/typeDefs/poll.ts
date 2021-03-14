@@ -12,6 +12,7 @@ export const pollTypeDefs = gql`
 
   extend type Query {
     polls: [PollQuestion!]
+    poll(pollId: String!):PollQuestion
   }
   
   extend type Mutation {

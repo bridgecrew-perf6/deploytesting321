@@ -83,7 +83,6 @@ export const userResolvers: ResolverMap = {
         });
 
         const userSaveResult = await user.save();
-        console.log(userSaveResult);
 
         return {
           ...userSaveResult._doc,

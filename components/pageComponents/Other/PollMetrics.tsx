@@ -6,6 +6,8 @@ interface PollMetrics {
   created: string;
 }
 
+//Metrics are hardcoded.  Need to get from DB once comment feature live.
+
 export default function PollMetrics({ created }: PollMetrics) {
   return (
     <div className="d-flex justify-content-between border border-secondary align-items-center">
@@ -20,7 +22,7 @@ export default function PollMetrics({ created }: PollMetrics) {
             size: 20,
           }}
         />
-        <label style={{ fontSize: 14, paddingTop: "1px" }}>300</label>
+        <label style={{ fontSize: 14, paddingTop: "1px" }}>300</label> 
       </div>
       <label style={{ fontSize: 14 }}>
         <TimeAgo date={created} live={false} />

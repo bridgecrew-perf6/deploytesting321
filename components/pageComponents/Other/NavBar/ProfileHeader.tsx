@@ -10,10 +10,10 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
 import NewPoll from "../../Home/NewPoll";
 import { NavBarProps, UserDataProps } from "../../../appTypes/appType";
+import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
 
-// const ProfileHeader: React.FC<NavBarProps> = ({ updateUser }) => {
 export default function ProfileHeader({ updateUser }: NavBarProps) {
   const router = useRouter();
 
@@ -133,8 +133,20 @@ export default function ProfileHeader({ updateUser }: NavBarProps) {
                 <li
                   className="dropdown-item"
                   onClick={() => {
+                    const appMssgs = createAppMssgList([
+                      {
+                        message: "Logged Out.  Please Log In to see all your content.",
+                        msgType: 1,
+                      },
+                    ]);
                     logout();
-                    router.reload();
+                    router.push(
+                      {
+                        pathname: "/Login",
+                        query: { appMssgs },
+                      },
+                      "/Login"
+                    );
                   }}
                 >
                   Log Out

@@ -29,6 +29,7 @@ interface User {
 
 interface PollHistory {
   _id: string;
+  __typename?: string;
   question: string;
   topic: string;
   creationDate: string;
@@ -43,7 +44,7 @@ interface UserDataProps {
 }
 
 interface PollsAll {
-  polls: PollHistory[];
+  polls: PollHistory[] | undefined;
 }
 
 interface NavBarProps {
@@ -106,13 +107,12 @@ interface StatesUS {
   name: string;
 }
 
-
 enum MsgTyp {
   Error,
   AppMsg,
 }
 
-interface AppMssg  {
+interface AppMssg {
   msgType?: MsgTyp;
   message?: string;
-};
+}

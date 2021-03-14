@@ -14,6 +14,24 @@ export const pollResolvers: ResolverMap = {
         throw new Error(err);
       }
     },
+    poll: async (_, { pollId }, ctx) => {
+      const { isAuth, req, res, userLoader } = ctx;
+
+      // console.log(isAuth);
+      // const { auth, id } = isAuth;
+
+      // if (!auth) {
+      //   throw new Error("Not Authenticated.  Please Log In!");
+      // }
+
+      try {
+        const pollFound = await Poll.findById(pollId);
+        const fullPoll = transformPoll(pollFound, userLoader);
+        return fullPoll;
+      } catch (err) {
+        throw err;
+      }
+    },
   },
   Mutation: {
     createPoll: async (_, { details }, ctx) => {
