@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { BiSearchAlt } from "react-icons/bi";
 import styles from "../../../../appStyles/appStyles.module.css";
-import { NavBarProps } from "../../../appTypes/appType";
+// import { NavBarProps } from "../../../appTypes/appType";
 import { Logo } from "../../../layout/branding";
 import ProfileHeader from "./ProfileHeader";
 
-const NavBar: React.FC<NavBarProps> = (props) => {
+const NavBar: React.FC = (props) => {
   const router = useRouter();
 
   const goToSearch = (
@@ -62,7 +62,7 @@ const NavBar: React.FC<NavBarProps> = (props) => {
           />
         </div>
       </div>
-      <ProfileHeader {...props} />
+      <ProfileHeader />
     </nav>
   );
 };

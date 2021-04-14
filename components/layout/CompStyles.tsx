@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../../appStyles/appStyles.module.css";
+import { IProps } from "../appTypes/appType";
 
 // export default function WithCustomStyles({ children }) {
 const WithCustomStyles: React.FC = ({ children }) => {
@@ -57,12 +58,7 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
   );
 };
 
-interface Props {
-  title: string;
-  children?: React.ReactNode;
-}
-
-export const PageForm: React.FC<Props> = (props) => {
+export const PageForm: React.FC<IProps> = (props) => {
   const pageTitle = `PoldIt ${props.title.replace("/", "")}`;
   return (
     <div>
@@ -75,3 +71,4 @@ export const PageForm: React.FC<Props> = (props) => {
     </div>
   );
 };
+

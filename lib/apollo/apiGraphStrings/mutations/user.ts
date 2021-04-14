@@ -1,16 +1,9 @@
 import { gql } from "@apollo/client";
 
-const mutations = {
+const userMutations = {
   LOGIN: gql`
     mutation LogIn($credentials: String!) {
       login(credentials: $credentials)
-    }
-  `,
-  CREATE_POLL: gql`
-    mutation CreatePoll($details: String!) {
-      createPoll(details: $details) {
-        _id
-      }
     }
   `,
   CREATE_USER: gql`
@@ -22,4 +15,4 @@ const mutations = {
   `,
 };
 
-export default mutations;
+export default userMutations;

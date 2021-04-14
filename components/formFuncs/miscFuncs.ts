@@ -1,4 +1,4 @@
-import { IHTMLElementForm } from "../appTypes/appType";
+import { IHTMLElementForm, ISubTopic, ITopic } from "../appTypes/appType";
 
 export const containsSpecialCharacters = (str: string) => {
   const regex = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
@@ -49,4 +49,26 @@ export const getFormBorderStyle = (formObj: HTMLFormElement) => {
 
 export const createAppMssgList = (msgList: object[]) => {
   return JSON.stringify(msgList);
+};
+
+export const filterSubtopicsforTopic = (
+  data: ITopic[] | undefined,
+  selectedTopic: string | null
+) => {
+
+  return data?.filter((item) => item.topic === selectedTopic)[0]?.subTopics;
+
+  // let subTopicList: ISubTopic[] | [] | undefined;
+
+  // for (let i = 0; i < data.length; i++) {
+  //   const element = data[i];
+  //   console.log(element)
+  //   if (element.topic === selectedTopic) {
+  //     console.log(element.subtopics)
+  //     subTopicList = element.subtopics;
+  //   }
+  // }
+
+  // return subTopicList;
+  // return data.map((item) => item.topic === selectedTopic);
 };

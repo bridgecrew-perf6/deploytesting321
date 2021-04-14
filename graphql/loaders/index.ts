@@ -1,34 +1,44 @@
 import DataLoader from "dataloader";
 import IPoll from "../../models/interfaces/poll";
 import IUser from "../../models/interfaces/user";
-import User from "../../models/UserModel";
-import Poll from "../../models/PollModel";
+import ITopic from "../../models/interfaces/topic";
+import batchLoaders from "./dataLoaders";
+import ISubTopic from "../../models/interfaces/subTopic";
 
-type BatchUser = (ids: readonly string[]) => Promise<IUser[]>;
-type BatchPolls = (ids: readonly string[]) => Promise<IPoll[]>;
+const getLoaderByDataType = (dataType: string) => {
+  let loader: any;
 
-const batchUsers: BatchUser = async (ids) => {
-  const users: IUser[] = await User.find({ _id: { $in: ids } });
-  const userMap: { [key: string]: IUser } = {};
+  const { batchUsers, batchPolls, batchTopics, batchsubTopics } = batchLoaders;
 
-  users.forEach((user) => {
-    userMap[user.id] = user;
-  });
+  switch (true) {
+    case dataType == "user":
+      loader = new DataLoader<string, IUser>(batchUsers);
+      break;
+    case dataType == "poll":
+      loader = new DataLoader<string, IPoll>(batchPolls);
+      break;
+    case dataType == "topic":
+      loader = new DataLoader<string, ITopic>(batchTopics);
+      break;
+    case dataType == "subTopic":
+      loader = new DataLoader<string, ISubTopic>(batchsubTopics);
+      break;
+    default:
+      break;
+  }
 
-  return ids.map((id) => userMap[id]);
+  return loader;
 };
 
-const batchPolls: BatchPolls = async (ids) => {
-  const polls = await Poll.find({ _id: { $in: ids } });
-  const pollMap: { [key: string]: IPoll } = {};
-
-  polls.forEach((poll) => {
-    pollMap[poll.id] = poll;
+const dataLoaders = (loaderTypes: string[]) => {
+  return loaderTypes.map((item) => {
+    return {
+      loaderType: item == "user" ? "creator" : item,
+      loader: getLoaderByDataType(item),
+    };
   });
-
-  return ids.map((id) => pollMap[id]);
 };
 
-export const userLoader = () => new DataLoader<string, IUser>(batchUsers);
+export default dataLoaders;
 
-export const pollLoader = () => new DataLoader<string, IPoll>(batchPolls);
+

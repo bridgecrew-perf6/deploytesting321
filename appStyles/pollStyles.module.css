@@ -1,0 +1,15 @@
+.questionTxt {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .questionWindow {
+    display: flex;
+    margin: 1.5vh;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .subTopicWindow {
+      height: 8vh;
+  }

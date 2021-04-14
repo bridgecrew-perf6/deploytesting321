@@ -1,5 +1,10 @@
 import { Request } from "express";
-import { pollLoader, userLoader } from "../../graphql/loaders";
+import {
+  pollLoader,
+  userLoader,
+  topicLoader,
+  subTopicLoader,
+} from "../../graphql/loaders";
 
 interface ErrorMssg {
   message: string;
@@ -31,7 +36,8 @@ interface PollHistory {
   _id: string;
   __typename?: string;
   question: string;
-  topic: string;
+  topic: Topic;
+  subTopics: SubTopic[];
   creationDate: string;
   creator?: User;
 }
@@ -45,10 +51,6 @@ interface UserDataProps {
 
 interface PollsAll {
   polls: PollHistory[] | undefined;
-}
-
-interface NavBarProps {
-  updateUser: (userData: UserDataProps) => void;
 }
 
 interface CookieOptions {
@@ -81,8 +83,11 @@ interface ApolloSeverContext {
     auth: boolean;
     id: string | null | undefined;
   };
-  userLoader: ReturnType<typeof userLoader>;
-  pollLoader: ReturnType<typeof pollLoader>;
+  dataLoaders:
+    | ReturnType<typeof userLoader>
+    | ReturnType<typeof pollLoader>
+    | ReturnType<typeof topicLoader>
+    | ReturnType<typeof subTopicLoader>[];
 }
 
 interface IHTMLElementForm extends HTMLElement {
@@ -115,4 +120,36 @@ enum MsgTyp {
 interface AppMssg {
   msgType?: MsgTyp;
   message?: string;
+}
+
+interface IProps {
+  title: string;
+  children?: React.ReactNode;
+}
+
+interface ITopic {
+  _id: string;
+  topic: string;
+  description: string;
+  creator: User;
+  subTopics?: ISubTopic[];
+}
+
+interface ISubTopic {
+  _id: string;
+  subTopic: string;
+  description: string;
+  topic: ITopic;
+  creator: User;
+}
+
+interface SelectedTopic {
+  id: string;
+  topic: string;
+}
+
+interface SelectedSubTopic {
+  id: string;
+  subTopic: string;
+  new?: boolean;
 }

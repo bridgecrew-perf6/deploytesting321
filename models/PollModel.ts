@@ -8,13 +8,15 @@ const pollSchema: Schema = new Schema({
     unique: true,
   },
   topic: {
-    type: String,
-    required: true,
+    type: Schema.Types.ObjectId,
+    ref: "Topic",
   },
-  subtopic: {
-    type: String,
-    required: false,
-  },
+  subTopics: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "SubTopic",
+    },
+  ],
   creator: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -26,5 +28,5 @@ const pollSchema: Schema = new Schema({
   },
 });
 
-export default  models.Poll || model<IPoll>("Poll", pollSchema);
+export default models.Poll || model<IPoll>("Poll", pollSchema);
 // module.exports = models.Poll || model("Poll", pollSchema);

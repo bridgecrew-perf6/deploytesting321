@@ -7,10 +7,12 @@ import { dateToString } from "../../components/globalFuncs";
 
 export const userResolvers: ResolverMap = {
   Query: {
-    users: async (parent, args, { pollLoader }) => {
+    users: async (parent, args, { dataLoaders }) => {
       try {
         const users = await User.find();
-        const userData = users.map((user) => transformUser(user, pollLoader));
+        const userData = users.map((user) =>
+          transformUser(user, dataLoaders(["poll"]))
+        );
         return userData;
       } catch (error) {
         throw new Error(error);
@@ -26,7 +28,7 @@ export const userResolvers: ResolverMap = {
       return "Not logged in";
     },
     getUserData: async (parent, args, context) => {
-      const { isAuth, req, res, pollLoader } = context;
+      const { isAuth, req, res, dataLoaders } = context;
       const { auth, id } = isAuth;
 
       if (!auth) {
@@ -36,7 +38,7 @@ export const userResolvers: ResolverMap = {
       const user = await User.findById(id);
 
       if (user) {
-        const userData = transformUser(user, pollLoader);
+        const userData = transformUser(user, dataLoaders(["poll"]));
         const appToken = getAppTokens(userData._id, res);
         return { appToken, user: userData };
       }

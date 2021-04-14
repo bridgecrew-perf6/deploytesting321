@@ -1,35 +1,80 @@
 import { useEffect, useState } from "react";
 import "jquery";
+import { FiPlusSquare } from "react-icons/fi";
+import { RiCamera2Line } from "react-icons/ri";
 import styles from "../../../appStyles/appStyles.module.css";
-// import { errorHandling, ErrorList } from "../../formFuncs/errorFuncs";
 import { ErrorList } from "../../formFuncs/formFuncs";
-import { CardForm } from "../../layout/CompStyles";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useAuth } from "../../authProvider/authProvider";
-import { ErrorMssg, NewPollForm } from "../../appTypes/appType";
-// import { CustomHeaderTxt } from "../../layout/branding";
+import {
+  ErrorMssg,
+  ISubTopic,
+  NewPollForm,
+  SelectedSubTopic,
+  SelectedTopic,
+} from "../../appTypes/appType";
+import TopicWindow from "../Other/TopicWindow";
+import { SubTopicWindow } from "../Other/TopicWindow/subTopic";
+import { SelectedTopicBtn, SearchBar, AddSubTopic } from "./newPollComps";
 
 export default function NewPoll() {
+  //Styles
   const { appColor, appTxt, formTxt } = styles;
 
-  const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
-  const [charCount, updateCharCount] = useState(0);
+  //API
   const { CREATE_POLL } = GraphResolvers.mutations;
-  const { GET_POLLS_ALL } = GraphResolvers.queries;
-  const [createPoll, { loading, error }] = useMutation(CREATE_POLL);
+  const {
+    GET_POLLS_ALL,
+    GET_TOPICS,
+    GET_SUBTOPICS_PER_TOPIC,
+  } = GraphResolvers.queries;
+  const [createPoll] = useMutation(CREATE_POLL);
+  const { data } = useQuery(GET_TOPICS);
+  const [getSubTopics, { data: subTopicsData }] = useLazyQuery(
+    GET_SUBTOPICS_PER_TOPIC
+  );
 
+  //State Management
+  const topicInitialState: SelectedTopic = { id: "", topic: "" };
+  const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
+  const [subTopics, setSubTopics] = useState<ISubTopic[]>([]);
+  const [charCount, updateCharCount] = useState(0);
+  const [selectedTopic, setSelectedTopic] = useState(topicInitialState);
+  const [addBtn, toggleAddBtn] = useState(false);
+  const [selectedSubTopics, setSelectedSubTopics] = useState<
+    SelectedSubTopic[]
+  >([]);
+
+  //Context and app Render hooks
   const appContext = useAuth();
-  // const { updateAppMessages } = useAuth();
+  useEffect(() => {
+    manageSubTopicData();
+  }, [subTopicsData]);
 
-  // Placeholder categories until list retrieved from MongoDb
-  const pollCategories = [
-    { id: 1, value: "Sports" },
-    { id: 2, value: "Entertainment" },
-    { id: 3, value: "Mommas and Poppas" },
-    { id: 4, value: "Technology" },
-    { id: 5, value: "Pop Culture" },
-  ];
+  //Functions
+
+  const manageSubTopicData = () => {
+    subTopicsData && setSubTopics(subTopicsData.subTopicsPerTopic);
+  };
+
+  const updateSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    const searchVal = e.target.value.toLowerCase();
+
+    const results = subTopicsData.subTopicsPerTopic.filter(
+      (subTopic: ISubTopic) => {
+        const subTopicVal = subTopic.subTopic.toLowerCase();
+
+        if (subTopicVal.search(searchVal) > -1) {
+          return subTopic;
+        }
+      }
+    );
+
+    setSubTopics(results);
+  };
 
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -82,13 +127,27 @@ export default function NewPoll() {
   const clearForm = () => {
     setFormErrors([]);
     updateCharCount(0);
+    setSelectedTopic(topicInitialState);
     (document.getElementById("newPoll") as HTMLFormElement).reset();
+    manageSubTopicData();
   };
 
   const countCharacters = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     updateCharCount(e.target.value.length);
   };
+
+  const chooseTopic = async (topic: { id: string; topic: string }) => {
+    getSubTopics({ variables: { topic: topic.topic } });
+    setSelectedTopic(topic);
+    toggleAddBtn(false);
+    setSelectedSubTopics([]);
+  };
+
+  const charDivStyle =
+    charCount > 250
+      ? { fontSize: 14, color: "red", fontWeight: 600 }
+      : { fontSize: 14 };
 
   return (
     <div
@@ -121,30 +180,118 @@ export default function NewPoll() {
                   onChange={countCharacters}
                 ></textarea>
               </div>
-              <label
-                className="d-flex flex-row-reverse"
-                style={{ fontSize: 12 }}
-              >{`${charCount}/250`}</label>
-              <div className="form-group">
-                <label htmlFor="topic" className={`col-form-label ${formTxt}`}>
-                  Poll Topic
-                </label>
-                <select multiple className="form-control" id="topic">
-                  {pollCategories.map((item) => (
-                    <option key={item.id}>{item.value}</option>
-                  ))}
-                </select>
+              <div className="d-flex justify-content-between align-items-center">
+                <div
+                  className={styles.cursor}
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Insert Image"
+                  onClick={() => console.log("Add New subtopic triggerred")}
+                >
+                  <RiCamera2Line size="28px" color="#ff4d00" />
+                </div>
+                <div style={charDivStyle}>{`${charCount}/250`}</div>
               </div>
+              <div className="form-group mb-5 mt-3 d-flex flex-column justify-content-between">
+                <div className="d-flex mb-1 justify-content-between">
+                  <label
+                    htmlFor="topic"
+                    className={`col-form-label ${formTxt} d-flex align-items-center`}
+                    style={{ height: 50 }}
+                  >
+                    Select Poll Topic
+                  </label>
+                  {selectedTopic.topic && (
+                    <div className="d-flex w-75 align-items-center">
+                      <SelectedTopicBtn
+                        btnType="topic"
+                        selectedTopic={selectedTopic}
+                        selectedSubTopics={selectedSubTopics}
+                        setSelectedTopic={setSelectedTopic}
+                        setSelectedSubTopics={setSelectedSubTopics}
+                      />
+                    </div>
+                  )}
+                </div>
+                <TopicWindow
+                  data={data?.topics}
+                  selectedTopic={selectedTopic}
+                  setTopic={chooseTopic}
+                />
+              </div>
+              {selectedTopic.topic && (
+                <>
+                  <div className="form-group">
+                    <div
+                      className="d-flex flex-column mb-1"
+                      style={{ height: "7vh" }}
+                    >
+                      <div className="d-flex justify-content-between">
+                        <label
+                          htmlFor="subTopic"
+                          className={`col-form-label ${formTxt} d-flex align-items-center`}
+                          style={{ height: 50 }}
+                        >
+                          Select Poll SubTopic(s)
+                        </label>
+                        {selectedSubTopics && (
+                          <div className="d-flex w-75">
+                            <SelectedTopicBtn
+                              btnType="subTopic"
+                              selectedTopic={selectedTopic}
+                              selectedSubTopics={selectedSubTopics}
+                              setSelectedTopic={setSelectedTopic}
+                              setSelectedSubTopics={setSelectedSubTopics}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <SearchBar search={updateSearch} />
+                    </div>
+                    <SubTopicWindow
+                      data={subTopics}
+                      selectedSubTopics={selectedSubTopics}
+                      setSubTopics={setSelectedSubTopics}
+                    />
+                  </div>
+                  <div
+                    className="d-flex align-items-center justify-content-between"
+                    style={{ fontSize: 14 }}
+                  >
+                    <div
+                      className={styles.cursor}
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Add new Sub Topic"
+                      onClick={() => toggleAddBtn(!addBtn)}
+                    >
+                      <FiPlusSquare size="28px" color="#ff4d00" />
+                    </div>
+
+                    <div
+                      className="d-flex align-items-center justify-content-between"
+                      style={{ width: "20%" }}
+                    >
+                      <div>Select up to 3</div>
+                      <div className="">{`${selectedSubTopics.length}/3`}</div>
+                    </div>
+                  </div>
+                  {addBtn && (
+                    <AddSubTopic
+                      show={toggleAddBtn}
+                      topic={selectedTopic}
+                      setErrors={setFormErrors}
+                      subTopics={selectedSubTopics}
+                      setSubTopic={setSelectedSubTopics}
+                    />
+                  )}
+                </>
+              )}
             </form>
             {formErrors.length > 0 && <ErrorList errors={formErrors} />}
           </div>
           <div className="modal-footer">
-            <div className="d-flex justify-content-between flex-fill p-2">
-              <div>
-                <button type="button" className={`btn ${appColor} text-white`}>
-                  Insert Image
-                </button>
-              </div>
+            <div className="d-flex justify-content-between flex-fill p-2 flex-row-reverse">
               <div
                 className="d-flex justify-content-between"
                 style={{ width: "40%" }}
@@ -169,6 +316,7 @@ export default function NewPoll() {
                   type="button"
                   className="btn btn-secondary"
                   data-dismiss="modal"
+                  onClick={() => clearForm()}
                 >
                   Close
                 </button>

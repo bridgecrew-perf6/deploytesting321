@@ -7,10 +7,6 @@ import { LogoText } from "../../components/layout/branding";
 import { CardForm } from "../../components/layout/CompStyles";
 import { errorHandling } from "../../components/formFuncs/errorFuncs";
 import { AppMssgList, ErrorList } from "../../components/formFuncs/formFuncs";
-// import {
-//   errorHandling,
-//   ErrorList,
-// } from "../../components/formFuncs/errorFuncs";
 import { useMutation } from "@apollo/client";
 import { useAuth } from "../../components/authProvider/authProvider";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
@@ -20,7 +16,6 @@ const LogIn: NextPage = () => {
   const [loggedIn, toggleLoggedIn] = useState(false);
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
   const [appMssgs, setAppMssgs] = useState<object[]>([]);
-  // const [formMssgs, setFormMssgs] = useState([]);
 
   useEffect(() => {
     handleOtherFormMssgs();
@@ -29,25 +24,16 @@ const LogIn: NextPage = () => {
   }, []);
 
   const appContext = useAuth();
-  // const { setAuthToken, appMssgs, updateAppMssgs } = useAuth();
-  // const { setAuthToken, appErrors, updateErrors } = useAuth();
   const router = useRouter();
   const { queries, mutations } = GraphResolvers;
-  const [login, { loading, error }] = useMutation(mutations.LOGIN);
+  const [login, { loading, error }] = useMutation(mutations.LOGIN, {
+    refetchQueries: [{ query: queries.GET_USER }],
+  });
 
   const handleOtherFormMssgs = () => {
     const { appMssgs } = router.query;
     let msgList: any = appMssgs;
     msgList && setAppMssgs(JSON.parse(msgList));
-
-    // const { registered, userExists, authError } = router.query;
-    // const otherFormMssg = [];
-
-    // userExists && otherFormMssg.push("User already Exists. Please Log In.");
-    // registered && otherFormMssg.push("You are now Registered. Please Log In.");
-    // authError && otherFormMssg.push("Access Token Expired.  Please Log In.");
-
-    // setFormMssgs([...formMssgs, otherFormMssg]);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -78,15 +64,6 @@ const LogIn: NextPage = () => {
       <div className="card-body">
         <form onSubmit={handleSubmit} id="login">
           {appMssgs.length > 0 && <AppMssgList mssgs={appMssgs} />}
-          {/* {appContext && appContext.appMssgs.length > 0 && (
-            <ErrorList errors={appContext.appMssgs} />
-          )} */}
-          {/* {formMssgs.length > 0 &&
-            formMssgs.map((msg, idx) => (
-              <div className={classStyle} key={idx}>
-                {msg}
-              </div>
-            ))} */}
           <div className="form-group text-left">
             <label htmlFor="email">Email address</label>
             <input

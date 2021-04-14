@@ -9,6 +9,8 @@ import { CookieOptions } from "../../components/appTypes/appType";
 import { Response } from "express";
 import IPoll from "../../models/interfaces/poll";
 import IUser from "../../models/interfaces/user";
+import ITopic from "../../models/interfaces/topic";
+import ISubTopic from "../../models/interfaces/subTopic";
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 
@@ -42,28 +44,66 @@ const generateRefreshToken = (id: string) => {
   };
 };
 
+const getLoader = (dataLoaderList: any[]) => {
+  const loaderObj: { [key: string]: any } = {};
+
+  dataLoaderList.forEach((loader) => {
+    loaderObj[loader.loaderType] = loader.loader;
+  });
+
+  return loaderObj;
+};
+
 export const transformUser = (
   user: IUser,
-  loader: DataLoader<string, IPoll>
+  loader: DataLoader<string, IPoll>[]
 ) => {
   const { password, ...rest } = user._doc;
+
+  const { poll } = getLoader(loader);
 
   return {
     ...rest,
     registerDate: dateToString(rest.registerDate),
-    pollHistory: () => loader.loadMany(rest.pollHistory),
+    pollHistory: () => poll.loadMany(rest.pollHistory),
   };
 };
 
-export const transformPoll = (
-  poll: IPoll,
-  loader: DataLoader<string, IUser>
-) => {
+export const transformPoll = (poll: IPoll, loaders: any[]) => {
+  const { creator, topic, subTopic } = getLoader(loaders);
+
   return {
     ...poll._doc,
     _id: poll.id,
     creationDate: dateToString(poll.creationDate),
-    creator: () => loader.load(poll.creator),
+    creator: () => creator.load(poll.creator),
+    topic: () => topic.load(poll.topic),
+    subTopics: () => subTopic.loadMany(poll.subTopics),
+  };
+};
+
+export const transformTopic = (topic: ITopic, loaders: any[]) => {
+  const { creator, subTopic } = getLoader(loaders);
+
+  return {
+    ...topic._doc,
+    _id: topic.id,
+    creationDate: dateToString(topic.creationDate),
+    creator: () => creator.load(topic.creator),
+    subTopics: () => subTopic.loadMany(topic.subTopics),
+  };
+};
+
+export const transformSubTopic = (subTopic: ISubTopic, loaders: any[]) => {
+  const { creator, topic, poll } = getLoader(loaders);
+
+  return {
+    ...subTopic._doc,
+    _id: subTopic.id,
+    creationDate: dateToString(subTopic.creationDate),
+    creator: () => creator.load(subTopic.creator),
+    topic: () => topic.load(subTopic.topic),
+    polls: () => poll.loadMany(subTopic.polls),
   };
 };
 

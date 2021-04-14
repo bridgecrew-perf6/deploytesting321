@@ -6,7 +6,13 @@ import resolvers from "../../graphql/resolvers";
 import { isAuthenticated } from "../../graphql/middleware";
 import withCookies from "../../graphql/middleware/cookie";
 import { Request, Response } from "express-serve-static-core";
-import { pollLoader, userLoader } from "../../graphql/loaders";
+import dataLoaders from "../../graphql/loaders";
+// import {
+//   pollLoader,
+//   subTopicLoader,
+//   topicLoader,
+//   userLoader,
+// } from "../../graphql/loaders";
 
 interface MyContext {
   req: Request;
@@ -21,8 +27,11 @@ const context = async ({ req, res }: MyContext) => {
     req,
     res,
     isAuth: isAuthenticated(req),
-    userLoader: userLoader(),
-    pollLoader: pollLoader(),
+    dataLoaders,
+    // userLoader: userLoader(),
+    // pollLoader: pollLoader(),
+    // topicLoader: topicLoader(),
+    // subTopicLoader: subTopicLoader(),
     // isAuth: await isAuthenticated(req),
     // hasCookie: await hasCookie(req),
   };

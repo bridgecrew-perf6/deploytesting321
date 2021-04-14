@@ -18,6 +18,7 @@ import {
   UserDataProps,
   PollHistory,
 } from "../components/appTypes/appType";
+import { SitePageContainer } from "../components/layout";
 
 const { GET_POLLS_ALL } = GraphResolvers.queries;
 
@@ -29,17 +30,9 @@ const Home: NextPage<Props> = () => {
   const appContext = useAuth();
   const router = useRouter();
   const { loading, error, data } = useQuery(GET_POLLS_ALL);
-  const initialUserState: UserDataProps = {
-    getUserData: {
-      appToken: "",
-      user: { _id: "", appid: "", email: "" },
-    },
-  };
-  const [userData, setUserData] = useState<UserDataProps>(initialUserState);
 
   return (
-    <PageForm title={`${router.pathname} Home`}>
-      <NavBar updateUser={setUserData}/>
+    <SitePageContainer title={`${router.pathname} Home`}>
       <div className="p-3" style={{ backgroundColor: "#f4f4f4" }}>
         <h1>HOME PAGE</h1>
         {appContext && appContext.appMssgs.length > 0 && (
@@ -52,9 +45,8 @@ const Home: NextPage<Props> = () => {
           </button>
         </Link>
       </div>
-    </PageForm>
+    </SitePageContainer>
   );
 };
-
 
 export default Home;

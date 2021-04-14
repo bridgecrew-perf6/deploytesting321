@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-const queries = {
+const userQueries = {
   GET_USER: gql`
     query GetUserData {
       getUserData {
@@ -13,7 +13,14 @@ const queries = {
           pollHistory {
             _id
             question
-            topic
+            topic {
+              _id
+              topic
+            }
+            subTopics {
+              _id
+              subTopic
+            }
             creationDate
           }
         }
@@ -39,34 +46,6 @@ const queries = {
       logout
     }
   `,
-  GET_POLLS_ALL: gql`
-    query Polls {
-      polls {
-        _id
-        question
-        topic
-        creationDate
-        creator {
-          _id
-          appid
-        }
-      }
-    }
-  `,
-  GET_POLL: gql`
-    query Poll($pollId: String!) {
-      poll(pollId: $pollId) {
-        _id
-        question
-        topic
-        creationDate
-        creator {
-          _id
-          appid
-        }
-      }
-    }
-  `,
 };
 
-export default queries;
+export default userQueries;

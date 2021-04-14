@@ -1,15 +1,15 @@
 
-interface AuthState {
-  token?: string;
-  userId?: string;
-  userData?: String;
-}
+// interface AuthState {
+//   token?: string;
+//   userId?: string;
+//   userData?: String;
+// }
 
 interface AppContextInterface {
-  authState: AuthState;
+  authState: UserDataProps;
   appMssgs: AppMssg[];
-  setAuthToken: (authState: AuthState) => void;
+  setAuthToken: (token: string) => void;
   updateAppMssgs: (msgList: AppMssg[]) => void;
-  updateUserData: (data: String) => void;
-  signOut?: () => void;
+  updateUserData: (data: UserDataProps) => void;
+  signOut: () => void;
 };

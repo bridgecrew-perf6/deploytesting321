@@ -9,21 +9,24 @@ import { runGraphQuery } from "../../../../lib/apollo/miscFunctions";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
 import NewPoll from "../../Home/NewPoll";
-import { NavBarProps, UserDataProps } from "../../../appTypes/appType";
+import { UserDataProps } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
+import { useAuth } from "../../../authProvider/authProvider";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
 
-export default function ProfileHeader({ updateUser }: NavBarProps) {
+export default function ProfileHeader() {
   const router = useRouter();
 
+  const appContext = useAuth();
+
   const { data, error } = useQuery<UserDataProps>(GET_USER);
-  const [logout, {}] = useLazyQuery(LOG_OUT);
+  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
 
   useEffect(() => {
     if (data) {
-      updateUser({ getUserData: data.getUserData });
+      appContext && appContext.updateUserData(data.getUserData);
     }
   }, [data]);
 
@@ -32,6 +35,25 @@ export default function ProfileHeader({ updateUser }: NavBarProps) {
   ) : (
     <AiOutlineNotification size={24} color="white" />
   );
+
+  const handleLogOut = () => {
+    const appMssgs = createAppMssgList([
+      {
+        message: "Logged Out.  Please Log In to see all your content.",
+        msgType: 1,
+      },
+    ]);
+    appContext && appContext.signOut();
+    logout();
+
+    router.push(
+      {
+        pathname: "/Login",
+        query: { appMssgs },
+      },
+      "/Login"
+    );
+  };
 
   if (error) {
     return (
@@ -129,29 +151,9 @@ export default function ProfileHeader({ updateUser }: NavBarProps) {
               <li className="dropdown-item">Suggestions</li>
               <li className="dropdown-item">Support</li>
               <li className="dropdown-item">Settings</li>
-              <Link href="/">
-                <li
-                  className="dropdown-item"
-                  onClick={() => {
-                    const appMssgs = createAppMssgList([
-                      {
-                        message: "Logged Out.  Please Log In to see all your content.",
-                        msgType: 1,
-                      },
-                    ]);
-                    logout();
-                    router.push(
-                      {
-                        pathname: "/Login",
-                        query: { appMssgs },
-                      },
-                      "/Login"
-                    );
-                  }}
-                >
-                  Log Out
-                </li>
-              </Link>
+              <li className="dropdown-item" onClick={() => handleLogOut()}>
+                Log Out
+              </li>
             </ul>
           </div>
         </div>

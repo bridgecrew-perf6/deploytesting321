@@ -1,33 +1,33 @@
-import { useRouter } from "next/router";
 import Link from "next/link";
+import React from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { initializeApollo } from "../../../lib/apollo";
 import { PollHistory } from "../../../components/appTypes/appType";
+import { SitePageContainer } from "../../../components/layout";
+import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
+import { PollFilters } from "../../../components/pageComponents/Poll/pollComps";
+
+import TopicWindow from "../../../components/pageComponents/Other/TopicWindow";
 
 const { GET_POLL, GET_POLLS_ALL } = GraphResolvers.queries;
 const apolloClient = initializeApollo();
 
 interface Props {
-  data: PollHistory;
+  data: { poll: PollHistory };
 }
 
 const poll = ({ data }: Props) => {
-  const router = useRouter();
   return (
-    <div>
-      {JSON.stringify(data)}
-      <Link href={"/"}>
-        <button>Go Back</button>
-      </Link>
-    </div>
+    <SitePageContainer title={`Poll`}>
+      {/* <TopicWindow /> */}
+    </SitePageContainer>
   );
 };
 
 export default poll;
 
 export const getStaticProps: GetStaticProps = async (context) => {
-
   const res = await apolloClient.query({
     query: GET_POLL,
     variables: { pollId: context?.params?.id },
