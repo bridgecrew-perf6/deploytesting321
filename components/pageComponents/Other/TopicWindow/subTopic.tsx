@@ -20,7 +20,6 @@ export const SubTopicWindow = ({
       const subTopicItem = selectedSubTopics[i];
       if (subTopicItem.new) {
         const listItem = document.getElementById(subTopicItem.id);
-        console.log(listItem);
         listItem?.scrollIntoView({ behavior: "smooth" });
       }
     }

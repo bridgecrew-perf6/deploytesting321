@@ -4,6 +4,7 @@ import {
   userLoader,
   topicLoader,
   subTopicLoader,
+  imageLoader,
 } from "../../graphql/loaders";
 
 interface ErrorMssg {
@@ -85,8 +86,9 @@ interface ApolloSeverContext {
   };
   dataLoaders:
     | ReturnType<typeof userLoader>
-    | ReturnType<typeof pollLoader>
+    | ReturnType<typeof pollLoader>[]
     | ReturnType<typeof topicLoader>
+    | ReturnType<typeof imageLoader>[]
     | ReturnType<typeof subTopicLoader>[];
 }
 
@@ -152,4 +154,18 @@ interface SelectedSubTopic {
   id: string;
   subTopic: string;
   new?: boolean;
+}
+
+// interface SelectedImage {
+//   imgName: string;
+//   image: string | ArrayBuffer | null;
+// }
+
+interface SelectedImage {
+  userId?: string;
+  _id?: string;
+  image: string | Blob;
+  imageUri?: string;
+  imageName: string;
+  imgType?: string;
 }

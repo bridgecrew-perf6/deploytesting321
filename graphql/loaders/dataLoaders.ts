@@ -1,11 +1,13 @@
 import ISubTopic from "../../models/interfaces/subTopic";
 import User from "../../models/UserModel";
 import Poll from "../../models/PollModel";
+import Image from "../../models/ImageModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
 import IPoll from "../../models/interfaces/poll";
 import IUser from "../../models/interfaces/user";
 import ITopic from "../../models/interfaces/topic";
+import Iimage from "../../models/interfaces/image";
 
 const batchUsers: BatchUser = async (ids) => {
   const users: IUser[] = await User.find({ _id: { $in: ids } });
@@ -19,7 +21,6 @@ const batchUsers: BatchUser = async (ids) => {
 };
 
 const batchPolls: BatchPolls = async (ids) => {
-  console.log(ids)
   const polls = await Poll.find({ _id: { $in: ids } });
   const pollMap: { [key: string]: IPoll } = {};
 
@@ -28,6 +29,17 @@ const batchPolls: BatchPolls = async (ids) => {
   });
 
   return ids.map((id) => pollMap[id]);
+};
+
+const batchImgs: BatchImages = async (ids) => {
+  const images = await Image.find({ _id: { $in: ids } });
+  const imageMap: { [key: string]: Iimage } = {};
+
+  images.forEach((img) => {
+    imageMap[img.id] = img;
+  });
+
+  return ids.map((id) => imageMap[id]);
 };
 
 const batchTopics: BatchTopics = async (ids) => {
@@ -52,4 +64,10 @@ const batchsubTopics: BatchSubTopics = async (ids) => {
   return ids.map((id) => subTopicMap[id]);
 };
 
-export default { batchUsers, batchPolls, batchTopics, batchsubTopics };
+export default {
+  batchUsers,
+  batchPolls,
+  batchTopics,
+  batchsubTopics,
+  batchImgs,
+};

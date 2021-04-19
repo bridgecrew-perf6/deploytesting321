@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import configs from "../endpoints.config";
 
 const connectDb = (handler: any) => async (req: Request, res: Response) => {
+
   if (mongoose.connections[0].readyState !== 1) {
     try {
       await mongoose.connect(configs.DbUri, configs.MONGO_OPTIONS);

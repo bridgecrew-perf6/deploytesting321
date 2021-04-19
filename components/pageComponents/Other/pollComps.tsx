@@ -9,8 +9,14 @@ import appStyles from "../../../appStyles/appStyles.module.css";
 import PollMetrics from "./PollMetrics";
 import { IconType } from "react-icons/lib";
 import { PollHistory, PollsAll } from "../../appTypes/appType";
+import { SubTopicTags } from "./TopicWindow/other";
 
-const { carouselCtr, customNextArrow, customPrevArrow, customDots } = carouselStyles;
+const {
+  carouselCtr,
+  customNextArrow,
+  customPrevArrow,
+  customDots,
+} = carouselStyles;
 
 export const PollWindow = ({ polls }: PollsAll) => {
   const settings = {
@@ -45,15 +51,24 @@ interface PollItem {
 const PollItem = ({ poll }: PollItem) => {
   return (
     <Link href={`/Polls/${poll._id}`}>
-      <div className={`card m-2 ${appStyles.cursor}`}>
+      <div
+        className={`card m-2 ${appStyles.cursor}`}
+        style={{ height: "30vh" }}
+      >
         <h5 className="card-header bg-secondary text-white text-center">
-          {poll.topic}
+          {poll.topic.topic}
         </h5>
+        <SubTopicTags data={poll.subTopics} />
         <div className="card-body">
-          <p className="card-text text-secondary" style={{ height: "10vh" }}>
+          <p className="card-text text-secondary" style={{ height: "10vh", fontSize:13 }}>
             {poll.question}
           </p>
-          <p className="card-text text-secondary">{poll?.creator?.appid}</p>
+        </div>
+        <div className="card-footer text-muted bg-white">
+          <p
+            className="card-text text-secondary"
+            style={{ fontSize: 13 }}
+          >{`posted by ${poll?.creator?.appid}`}</p>
           <PollMetrics created={poll.creationDate} />
         </div>
       </div>

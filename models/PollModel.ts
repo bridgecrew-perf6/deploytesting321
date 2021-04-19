@@ -21,6 +21,12 @@ const pollSchema: Schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  pollImages: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Image",
+    },
+  ],
   creationDate: {
     type: Date,
     required: true,

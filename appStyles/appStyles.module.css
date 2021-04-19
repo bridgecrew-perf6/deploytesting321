@@ -123,6 +123,18 @@
   color: white;
 }
 
+.imgCtr {
+  border: 1px solid lightgray;
+}
+
+.imgCancel {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+
+
 /* .dropDownCtr ul li {
   padding: 2px;
 } */

@@ -20,6 +20,7 @@ interface Props {
 const poll = ({ data }: Props) => {
   return (
     <SitePageContainer title={`Poll`}>
+      {JSON.stringify(data)}
       {/* <TopicWindow /> */}
     </SitePageContainer>
   );

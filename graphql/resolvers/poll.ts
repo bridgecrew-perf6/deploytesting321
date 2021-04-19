@@ -62,7 +62,7 @@ export const pollResolvers: ResolverMap = {
         const savedPoll = await poll.save();
         const createdPoll = transformPoll(
           savedPoll,
-          dataLoaders(["user", "topic", "subTopic"])
+          dataLoaders(["user", "topic", "subTopic", "image"])
         );
 
         const creator = await User.findById(id);

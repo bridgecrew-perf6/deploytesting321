@@ -1,4 +1,4 @@
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
@@ -20,7 +20,8 @@ import {
 } from "../components/appTypes/appType";
 import { SitePageContainer } from "../components/layout";
 
-const { GET_POLLS_ALL } = GraphResolvers.queries;
+const { GET_POLLS_ALL, GET_TOPICS } = GraphResolvers.queries;
+const { CREATE_TOPIC } = GraphResolvers.mutations;
 
 interface Props {
   data?: PollsAll;
@@ -30,6 +31,24 @@ const Home: NextPage<Props> = () => {
   const appContext = useAuth();
   const router = useRouter();
   const { loading, error, data } = useQuery(GET_POLLS_ALL);
+  const [createTopic, { data: topicData }] = useMutation(CREATE_TOPIC); //Remove in future.  This is for testing
+
+  const handleTopicSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const topic = (document.getElementById("topicInput") as HTMLInputElement)
+      .value;
+    const description = (document.getElementById(
+      "topicDescription"
+    ) as HTMLInputElement).value;
+
+    createTopic({
+      variables: { topicInfo: JSON.stringify({ topic, description }) },
+      refetchQueries: [{ query: GET_TOPICS }],
+    });
+
+    (document.getElementById("topicForm") as HTMLFormElement).reset();
+  };
 
   return (
     <SitePageContainer title={`${router.pathname} Home`}>
@@ -45,6 +64,33 @@ const Home: NextPage<Props> = () => {
           </button>
         </Link>
       </div>
+
+      <form
+        className="p-3 container"
+        id="topicForm"
+        onSubmit={handleTopicSubmit}
+      >
+        <div className="mb-3">
+          <label htmlFor="exampleInputEmail1" className="form-label">
+            Topic
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="topicInput"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="exampleInputPassword1" className="form-label">
+            Description
+          </label>
+          <input type="text" className="form-control" id="topicDescription" />
+        </div>
+        <button type="submit" className="btn btn-success">
+          Create New Topic
+        </button>
+      </form>
     </SitePageContainer>
   );
 };

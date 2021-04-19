@@ -59,6 +59,12 @@ const userSchema: Schema = new Schema({
       ref: "Poll",
     },
   ],
+  imgHistory: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Image",
+    },
+  ],
 });
 
 export default models.User || model<IUser>("User", userSchema);

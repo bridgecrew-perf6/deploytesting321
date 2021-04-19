@@ -20,4 +20,7 @@ export default {
   JwtExpires: process.env.JWT_TOKEN_EXPIRES ?? "",
   RefreshTokenExpires: process.env.REFRESH_TOKEN_EXPIRES ?? "",
   MONGO_OPTIONS,
+  CloudinaryName: process.env.NEXT_PUBLIC_CLOUDINARYNAME?? "",
+  CloudinaryAPIKey: process.env.NEXT_PUBLIC_CLOUDINARYAPIKEY ?? "",
+  CloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET ?? "",
 };

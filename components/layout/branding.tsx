@@ -2,7 +2,7 @@ import styles from "../../appStyles/appStyles.module.css";
 
 export const Logo = () => {
   return (
-    <div className={`${styles.imgCtr} pt-2`}>
+    <div className={`${styles.imgCtr} pt-2 border-0`}>
       <img
         src={
           "https://res.cloudinary.com/rahmad12/image/upload/v1609084232/PoldIt/App_Imgs/appLogo_rprp2a.png"

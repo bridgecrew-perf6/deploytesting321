@@ -11,8 +11,12 @@ export const userResolvers: ResolverMap = {
       try {
         const users = await User.find();
         const userData = users.map((user) =>
-          transformUser(user, dataLoaders(["poll"]))
+          transformUser(
+            user,
+            dataLoaders(["poll", "topic", "subTopic", "image"])
+          )
         );
+
         return userData;
       } catch (error) {
         throw new Error(error);
@@ -36,9 +40,10 @@ export const userResolvers: ResolverMap = {
       }
 
       const user = await User.findById(id);
+      // const user = await User.findById("607a2f12f38ac9147c660d03");
 
       if (user) {
-        const userData = transformUser(user, dataLoaders(["poll"]));
+        const userData = transformUser(user, dataLoaders(["poll", "image"]));
         const appToken = getAppTokens(userData._id, res);
         return { appToken, user: userData };
       }

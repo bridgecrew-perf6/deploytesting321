@@ -1,10 +1,8 @@
 import { userResolvers } from "./user";
 import { pollResolvers } from "./poll";
 import { topicResolvers } from "./pollCategories";
+import { imageResolvers } from "./image";
 
-// const userResolver = require("./user");
-// const pollResolver = require("./poll");
-
-const resolvers = [userResolvers, pollResolvers, topicResolvers];
+const resolvers = [userResolvers, pollResolvers, topicResolvers, imageResolvers];
 
 export default resolvers;

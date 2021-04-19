@@ -19,4 +19,5 @@ export default interface IUser extends MongoDoc {
   profilePic?: string;
   registerDate: Date;
   pollHistory: string[];
+  imgHistory: string[];
 }

@@ -10,7 +10,7 @@ interface PollMetrics {
 
 export default function PollMetrics({ created }: PollMetrics) {
   return (
-    <div className="d-flex justify-content-between border border-secondary align-items-center">
+    <div className="d-flex justify-content-between align-items-center">
       <div
         className="d-flex justify-content-between align-items-center"
         style={{ width: "19%" }}

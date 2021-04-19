@@ -12,15 +12,6 @@ const userQueries = {
           profilePic
           pollHistory {
             _id
-            question
-            topic {
-              _id
-              topic
-            }
-            subTopics {
-              _id
-              subTopic
-            }
             creationDate
           }
         }

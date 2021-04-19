@@ -8,6 +8,7 @@ export const pollTypeDefs = gql`
     subTopics: [SubTopic]!
     creator: User!
     creationDate: String!
+    pollImages: [Image]
   }
 
   extend type Query {

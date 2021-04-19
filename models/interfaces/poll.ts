@@ -10,6 +10,7 @@ export default interface IPoll extends MongoDoc {
   question: string;
   topic: string;
   subTopics: string[];
+  pollImages: string[];
   creator: string;
   creationDate: Date;
 }
