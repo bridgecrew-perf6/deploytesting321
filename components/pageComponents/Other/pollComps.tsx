@@ -49,6 +49,8 @@ interface PollItem {
 }
 
 const PollItem = ({ poll }: PollItem) => {
+  const answerCount = poll.answers.length;
+
   return (
     <Link href={`/Polls/${poll._id}`}>
       <div
@@ -60,7 +62,10 @@ const PollItem = ({ poll }: PollItem) => {
         </h5>
         <SubTopicTags data={poll.subTopics} />
         <div className="card-body">
-          <p className="card-text text-secondary" style={{ height: "10vh", fontSize:13 }}>
+          <p
+            className="card-text text-secondary"
+            style={{ height: "10vh", fontSize: 13 }}
+          >
             {poll.question}
           </p>
         </div>
@@ -69,7 +74,7 @@ const PollItem = ({ poll }: PollItem) => {
             className="card-text text-secondary"
             style={{ fontSize: 13 }}
           >{`posted by ${poll?.creator?.appid}`}</p>
-          <PollMetrics created={poll.creationDate} />
+          <PollMetrics created={poll.creationDate} numAnswers={answerCount} />
         </div>
       </div>
     </Link>

@@ -9,7 +9,10 @@ import IPoll from "../../../models/interfaces/poll";
 import IUser from "../../../models/interfaces/user";
 import ITopic from "../../../models/interfaces/topic";
 import ISubTopic from "../../../models/interfaces/subTopic";
-import Iimage from "../../../models/interfaces/image";
+import IAnswer from "../../../models/interfaces/answer";
+import IComment from "../../../models/interfaces/comment";
+import IReply from "../../../models/interfaces/reply";
+import { IChat } from "./other";
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 
@@ -56,29 +59,27 @@ const getLoader = (dataLoaderList: any[]) => {
 export const transformUser = (user: IUser, loaders: any[]) => {
   const { password, ...rest } = user._doc;
 
-  const { poll, image } = getLoader(loaders);
+  const { poll } = getLoader(loaders);
 
   return {
     ...rest,
     registerDate: dateToString(rest.registerDate),
     pollHistory: () => poll.loadMany(rest.pollHistory),
-    imgHistory: () => image.loadMany(rest.imgHistory),
   };
 };
 
-export const transformImg = (image: Iimage, loaders: any[]) => {
-  const { creator } = getLoader(loaders);
+export const transformChat = (chat: IChat, loaders: any[]) => {
+  const { creator, poll } = getLoader(loaders);
 
   return {
-    ...image._doc,
-    _id: image._id,
-    creationDate: dateToString(image.creationDate),
-    creator: () => creator.load(image.creator),
+    ...chat,
+    creator: () => creator.load(chat.creator),
+    poll: () => poll.load(chat.poll),
   };
 };
 
 export const transformPoll = (poll: IPoll, loaders: any[]) => {
-  const { creator, topic, subTopic, image } = getLoader(loaders);
+  const { creator, topic, subTopic, answer } = getLoader(loaders);
 
   return {
     ...poll._doc,
@@ -87,7 +88,7 @@ export const transformPoll = (poll: IPoll, loaders: any[]) => {
     creator: () => creator.load(poll.creator),
     topic: () => topic.load(poll.topic),
     subTopics: () => subTopic.loadMany(poll.subTopics),
-    pollImages: () => image.loadMany(poll.pollImages),
+    answers: () => answer.loadMany(poll.answers),
   };
 };
 
@@ -113,6 +114,44 @@ export const transformSubTopic = (subTopic: ISubTopic, loaders: any[]) => {
     creator: () => creator.load(subTopic.creator),
     topic: () => topic.load(subTopic.topic),
     polls: () => poll.loadMany(subTopic.polls),
+  };
+};
+
+export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
+  const { creator, poll, comment } = getLoader(loaders);
+
+  return {
+    ...answer._doc,
+    _id: answer.id,
+    creationDate: dateToString(answer.creationDate),
+    creator: () => creator.load(answer.creator),
+    poll: () => poll.load(answer.poll),
+    comments: () => comment.loadMany(answer.comments),
+  };
+};
+
+export const transformComment = (comment: IComment, loaders: any[]) => {
+  const { creator, answer, reply } = getLoader(loaders);
+
+  return {
+    ...comment._doc,
+    _id: comment.id,
+    creationDate: dateToString(comment.creationDate),
+    creator: () => creator.load(comment.creator),
+    answer: () => answer.load(comment.answer),
+    replies: () => reply.loadMany(comment.replies),
+  };
+};
+
+export const transformReply = (reply: IReply, loaders: any[]) => {
+  const { creator, comment } = getLoader(loaders);
+
+  return {
+    ...reply._doc,
+    _id: reply.id,
+    creationDate: dateToString(reply.creationDate),
+    creator: () => creator.load(reply.creator),
+    comment: () => comment.load(reply.comment),
   };
 };
 

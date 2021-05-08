@@ -18,7 +18,6 @@ export const userTypeDefs = gql`
     profilePic: String
     registerDate: String
     pollHistory: [PollQuestion!]
-    imgHistory: [Image!]
   }
 
   type AuthData {

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import "jquery";
 import { FiPlusSquare } from "react-icons/fi";
 import styles from "../../../appStyles/appStyles.module.css";
 import { ErrorList } from "../../formFuncs/formFuncs";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { useAuth } from "../../authProvider/authProvider";
 import {
   ErrorMssg,
   ISubTopic,
-  NewPollForm,
   SelectedImage,
   SelectedSubTopic,
   SelectedTopic,
@@ -20,18 +19,23 @@ import {
   SelectedTopicBtn,
   SearchBar,
   AddSubTopic,
-  ImagePicker,
-  SelectedImgCtr,
   ErrorMssgCtr,
 } from "./newPollComps";
-import uploadImg from "../../apis/imgUpload";
+import { saveImgtoCloud } from "../../apis/imgUpload";
+import ImgPicker from "../Other/Image/ImgPicker";
+
+const RichTextEditor = dynamic(() => import("../Other/RichText"), {
+  ssr: false,
+});
+
+// import RichTextEditor from "../Other/RichText";
 
 export default function NewPoll() {
   //Styles
   const { appColor, appTxt, formTxt } = styles;
 
   //API
-  const { CREATE_POLL, UPLOAD_IMAGE } = GraphResolvers.mutations;
+  const { CREATE_POLL } = GraphResolvers.mutations;
   const {
     GET_POLLS_ALL,
     GET_TOPICS,
@@ -42,12 +46,10 @@ export default function NewPoll() {
   const [getSubTopics, { data: subTopicsData }] = useLazyQuery(
     GET_SUBTOPICS_PER_TOPIC
   );
-  const [uploadImage, { data: dbImgData }] = useMutation(UPLOAD_IMAGE);
 
   //State Management
   const topicInitialState: SelectedTopic = { id: "", topic: "" };
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
-  const [imgError, setImgError] = useState("");
   const [subTopics, setSubTopics] = useState<ISubTopic[]>([]);
   const [selectedImgs, selectImgs] = useState<SelectedImage[]>([]);
   const [charCount, updateCharCount] = useState(0);
@@ -58,7 +60,7 @@ export default function NewPoll() {
   >([]);
 
   //Context and app Render hooks
-  const appContext = useAuth();
+  // const appContext = useAuth();
   useEffect(() => {
     manageSubTopicData();
   }, [subTopicsData]);
@@ -92,8 +94,6 @@ export default function NewPoll() {
   ) => {
     e.preventDefault();
 
-    let finalImgIds: string[] = [];
-
     const question = (document.getElementById("question") as HTMLInputElement)
       .value;
 
@@ -122,33 +122,23 @@ export default function NewPoll() {
 
     if (errors.length === 0) {
       setFormErrors([]);
-      saveImgtoCloud().then((data) => {
-        if (data) {
-          for (let i = 0; i < data.length; i++) {
-            uploadImage({ variables: { details: JSON.stringify(data[i]) } });
-            if (dbImgData) {
-              finalImgIds.push(dbImgData.uploadImage._id);
-            }
-          }
+      const subTopics = selectedSubTopics.map((item) => item.id);
+      const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
 
-          const subTopics = selectedSubTopics.map((item) => item.id);
+      const pollItem = {
+        question,
+        topic: selectedTopic.id,
+        subTopics,
+        pollImages: imgIds && imgIds,
+      };
 
-          const pollItem = {
-            question,
-            topic: selectedTopic.id,
-            subTopics,
-            pollImages: finalImgIds,
-          };
-
-          createPoll({
-            variables: { details: JSON.stringify(pollItem) },
-            refetchQueries: [{ query: GET_POLLS_ALL }],
-          });
-
-          ($("#newPollModal") as any).modal("hide"); //closes modal programitically
-          clearForm();
-        }
+      createPoll({
+        variables: { details: JSON.stringify(pollItem) },
+        refetchQueries: [{ query: GET_POLLS_ALL }],
       });
+
+      ($("#newPollModal") as any).modal("hide"); //closes modal programitically
+      clearForm();
     }
   };
 
@@ -161,6 +151,10 @@ export default function NewPoll() {
     manageSubTopicData();
   };
 
+  // const countCharacters = (questionLength: number) => { //For RichTextEditor component only
+  //   updateCharCount(questionLength);
+  // };
+
   const countCharacters = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     updateCharCount(e.target.value.length);
@@ -171,47 +165,6 @@ export default function NewPoll() {
     setSelectedTopic(topic);
     toggleAddBtn(false);
     setSelectedSubTopics([]);
-  };
-
-  const imgSelectHandler = (e: any) => {
-    setImgError("");
-    const fileObjList: File[] = Array.from(e.target?.files);
-    const imgDiff = fileObjList.length + selectedImgs.length;
-
-    if (imgDiff > 3) {
-      setImgError(
-        "You can only select up to 3 images.  Please either remove an image or choose again."
-      );
-      return;
-    }
-
-    const selectedImgList: SelectedImage[] = fileObjList.map((fileObj) => {
-      const fileURL = URL.createObjectURL(fileObj);
-      return {
-        imageName: fileObj.name.split(".")[0],
-        image: fileObj,
-        imageUri: fileURL,
-        userId: appContext?.authState.user._id,
-        imgType: "poll",
-      };
-    });
-
-    selectImgs([...selectedImgs, ...selectedImgList]);
-  };
-
-  const updateSelectedImgList = (img: SelectedImage) => {
-    const updatedImgList = selectedImgs.filter(
-      (item) => item.imageUri !== img.imageUri
-    );
-
-    setImgError("");
-    selectImgs(updatedImgList);
-  };
-
-  const saveImgtoCloud = async () => {
-    if (selectedImgs) {
-      return Promise.all(selectedImgs.map((item) => uploadImg(item)));
-    }
   };
 
   const charDivStyle =
@@ -237,12 +190,16 @@ export default function NewPoll() {
           <div className="modal-body">
             <form id="newPoll">
               <div className="form-group">
-                <label
-                  htmlFor="question"
-                  className={`col-form-label ${formTxt}`}
-                >
-                  Poll Question
-                </label>
+                <div className="d-flex justify-content-between align-items-center">
+                  <label
+                    htmlFor="question"
+                    className={`col-form-label ${formTxt}`}
+                  >
+                    Poll Question
+                  </label>
+                  <div style={charDivStyle}>{`${charCount}/250`}</div>
+                </div>
+                {/* <RichTextEditor countChar={countCharacters} /> */}
                 <textarea
                   className="form-control"
                   id="question"
@@ -250,44 +207,7 @@ export default function NewPoll() {
                   onChange={countCharacters}
                 ></textarea>
               </div>
-              <div className="d-flex justify-content-between align-items-center">
-                <ImagePicker handleImg={imgSelectHandler} />
-                {selectedImgs.length > 0 && (
-                  <div
-                    className={`text-white ${styles.appColor} pl-2 pr-2 rounded ${styles.cursor}`}
-                    onClick={() => selectImgs([])}
-                  >
-                    Clear Image Selection
-                  </div>
-                )}
-                <div style={charDivStyle}>{`${charCount}/250`}</div>
-              </div>
-              {selectedImgs.length > 0 && (
-                <div className="form-group">
-                  <label
-                    htmlFor="question"
-                    className={`col-form-label ${formTxt}`}
-                  >
-                    Selected Images
-                  </label>
-                  <div className="d-flex" id="selectedImgs">
-                    {selectedImgs.map((item, idx) => (
-                      <SelectedImgCtr
-                        img={item}
-                        updateImgs={updateSelectedImgList}
-                        key={idx}
-                      />
-                    ))}
-                  </div>
-                  <div
-                    className="d-flex flex-row-reverse"
-                    style={{ fontSize: 14 }}
-                  >{`${selectedImgs.length}/3`}</div>
-                </div>
-              )}
-              {imgError && (
-                <ErrorMssgCtr errMssg={imgError} clearErr={setImgError} />
-              )}
+              <ImgPicker selectedImgs={selectedImgs} selectImgs={selectImgs} />
               <div className="form-group mb-5 mt-3 d-flex flex-column justify-content-between">
                 <div className="d-flex mb-1 justify-content-between">
                   <label
@@ -392,24 +312,6 @@ export default function NewPoll() {
                 className="d-flex justify-content-between"
                 style={{ width: "40%" }}
               >
-                {/* <button
-                  type="button"
-                  onClick={() => {
-                    saveImgtoCloud().then((data) => {
-                      if (data) {
-                        for (let i = 0; i < data.length; i++) {
-                          uploadImage({
-                            variables: { details: JSON.stringify(data[i]) },
-                          });
-                        }
-                      }
-                    });
-                  }}
-                  id="submitButton"
-                  className={`btn ${appColor} text-white`}
-                >
-                  Save Image
-                </button> */}
                 <button
                   type="button"
                   onClick={() => clearForm()}

@@ -1,17 +1,14 @@
-import { useRef } from "react";
 import { IoIosClose } from "react-icons/io";
 import styles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import {
   ErrorMssg,
-  SelectedImage,
   SelectedSubTopic,
   SelectedTopic,
 } from "../../../appTypes/appType";
-import { errorHandling } from "../../../formFuncs/errorFuncs";
+
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation } from "@apollo/client";
-import { RiCamera2Line } from "react-icons/ri";
 
 const { CREATE_SUBTOPIC } = GraphResolvers.mutations;
 const { GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
@@ -201,59 +198,6 @@ export const AddSubTopic = ({
   );
 };
 
-export const ImagePicker = ({ handleImg }: any) => {
-  const inputRef = useRef(null);
-
-  const imgPickerHandler = (imgRef: any) => {
-    imgRef.current.click();
-    imgRef.current.value = null;
-  };
-
-  return (
-    <div
-      className={styles.cursor}
-      data-toggle="tooltip"
-      data-placement="top"
-      title="Insert Image"
-      onClick={() => imgPickerHandler(inputRef)}
-    >
-      <RiCamera2Line size="28px" color="#ff4d00" />
-      <input
-        type="file"
-        id="imgPicker"
-        style={{ display: "none" }}
-        ref={inputRef}
-        accept="image/*"
-        onChange={handleImg}
-        multiple
-      />
-    </div>
-  );
-};
-
-interface SelectedImgCtr {
-  img: SelectedImage;
-  updateImgs: (img: SelectedImage) => void;
-}
-
-export const SelectedImgCtr = ({ img, updateImgs }: SelectedImgCtr) => {
-  return (
-    <div className="position-relative mr-4">
-      <img
-        className={`img-thumbnail ${styles.imgCtr}`}
-        src={img.imageUri}
-        style={{ height: 90, width: 120 }}
-      />
-      <div
-        className={`${styles.imgCancel} bg-secondary rounded ${styles.cursor}`}
-        onClick={() => updateImgs(img)}
-      >
-        <IoIosClose size="22px" color="white" />
-      </div>
-    </div>
-  );
-};
-
 interface ErrMssg {
   errMssg: string;
   clearErr: (mssg: string) => void;
@@ -261,9 +205,7 @@ interface ErrMssg {
 
 export const ErrorMssgCtr = ({ errMssg, clearErr }: ErrMssg) => {
   return (
-    <div
-      className="position-relative d-inline-flex align-items-center bg-danger text-white rounded p-1 pl-2 pr-5"
-    >
+    <div className="position-relative d-inline-flex align-items-center bg-danger text-white rounded p-1 pl-2 pr-5">
       {errMssg}
       <div
         className={`${styles.imgCancel} ${styles.cursor}`}

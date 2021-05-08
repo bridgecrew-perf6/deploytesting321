@@ -24,7 +24,8 @@ export const storeTokens = (
 };
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:3000/api/graphql",
+  uri: "http://192.168.1.151:3000/api/graphql",
+  // uri: "http://localhost:3000/api/graphql",
   credentials: "include",
 });
 
@@ -64,7 +65,7 @@ function createApolloClient() {
   });
 }
 
-export function initializeApollo(initialState:any = null) {
+export function initializeApollo(initialState: any = null) {
   const _apolloClient = apolloClient ?? createApolloClient();
 
   if (initialState) {

@@ -23,8 +23,13 @@ const pollSchema: Schema = new Schema({
   },
   pollImages: [
     {
+      type: String,
+    },
+  ],
+  answers: [
+    {
       type: Schema.Types.ObjectId,
-      ref: "Image",
+      ref: "Answer",
     },
   ],
   creationDate: {

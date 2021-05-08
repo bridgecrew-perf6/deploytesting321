@@ -1,15 +1,48 @@
 .questionTxt {
-    font-size: 20px;
-    font-weight: 600;
-  }
+  font-size: 18px;
+  font-weight: 600;
+}
 
-  .questionWindow {
-    display: flex;
-    margin: 1.5vh;
-    align-items: flex-start;
-    flex-direction: column;
-  }
+.questionWindow {
+  display: flex;
+  margin: 1.5vh;
+  align-items: flex-start;
+  flex-direction: column;
+}
 
-  .subTopicWindow {
-      height: 8vh;
-  }
+.answerWindow {
+  height: 40vh;
+  margin: 1.5vh;
+  align-items: flex-start;
+  overflow: auto;
+}
+
+.subTopicWindow {
+  height: 8vh;
+}
+
+.ddItem a:hover {
+  background-color: #ff4d00;
+  color: white;
+}
+
+.listItem {
+  display: flex;
+  height: 10vh;
+  flex-direction: column;
+  justify-content: space-between;
+  border-color: white;
+}
+
+.attachIcon {
+  color: gray;
+}
+
+.attachIcon:active {
+  color: #0275d8;
+}
+
+.attachIcon:hover #caption {
+  opacity: 1;
+  display: block;
+}

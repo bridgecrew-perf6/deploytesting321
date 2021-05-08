@@ -21,8 +21,8 @@ const AppLoading = ({ style, message }: AppLoadProps) => {
         height={style.height}
       />
       <p
-        className={`${appStyles.formTxt}`}
-        style={{ fontSize: 14, color: "gray" }}
+        className={`${appStyles.formTxt} mt-3`}
+        style={{ fontSize: 16, color: "gray" }}
       >{`Loading ${message}`}</p>
     </div>
   );

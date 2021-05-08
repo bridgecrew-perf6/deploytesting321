@@ -4,7 +4,9 @@ import {
   userLoader,
   topicLoader,
   subTopicLoader,
-  imageLoader,
+  answerLoader,
+  commentLoader,
+  replyLoader,
 } from "../../graphql/loaders";
 
 interface ErrorMssg {
@@ -33,6 +35,38 @@ interface User {
   pollHistory?: PollHistory[];
 }
 
+interface Reply {
+  _id: string;
+  __typename?: string;
+  reply: string;
+  comment: Comment;
+  creator?: User;
+  replyImages: string[];
+  creationDate: string;
+}
+
+interface Comment {
+  _id: string;
+  __typename?: string;
+  comment: string;
+  answer: Answer;
+  creator?: User;
+  commentImages: string[];
+  replies?: Reply[];
+  creationDate: string;
+}
+
+interface Answer {
+  _id: string;
+  __typename?: string;
+  answer: string;
+  poll: PollHistory;
+  comments?: Comment[];
+  creator?: User;
+  answerImages?: string[];
+  creationDate: string;
+}
+
 interface PollHistory {
   _id: string;
   __typename?: string;
@@ -41,6 +75,8 @@ interface PollHistory {
   subTopics: SubTopic[];
   creationDate: string;
   creator?: User;
+  answers: Answer[];
+  pollImages: string[];
 }
 
 interface UserDataProps {
@@ -88,8 +124,10 @@ interface ApolloSeverContext {
     | ReturnType<typeof userLoader>
     | ReturnType<typeof pollLoader>[]
     | ReturnType<typeof topicLoader>
-    | ReturnType<typeof imageLoader>[]
-    | ReturnType<typeof subTopicLoader>[];
+    | ReturnType<typeof subTopicLoader>[]
+    | ReturnType<typeof commentLoader>[]
+    | ReturnType<typeof replyLoader>[]
+    | ReturnType<typeof answerLoader>[];
 }
 
 interface IHTMLElementForm extends HTMLElement {
@@ -156,16 +194,25 @@ interface SelectedSubTopic {
   new?: boolean;
 }
 
-// interface SelectedImage {
-//   imgName: string;
-//   image: string | ArrayBuffer | null;
-// }
-
 interface SelectedImage {
   userId?: string;
-  _id?: string;
+  id?: string;
   image: string | Blob;
   imageUri?: string;
   imageName: string;
   imgType?: string;
+}
+
+interface IPollChatBox {
+  pollId: string;
+  userId?: string | undefined;
+}
+
+interface ChatMessage {
+  _id: string;
+  message: string;
+  creator: User;
+  poll: PollHistory;
+  creationDate: string;
+  chatImages?: string[];
 }

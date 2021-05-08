@@ -1,25 +1,48 @@
-import React, { useState } from "react";
-import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
-import styles from "../../../appStyles/appStyles.module.css";
-import pollStyles from '../../../appStyles/pollStyles.module.css'
+import React from "react";
+import pollStyles from "../../../appStyles/pollStyles.module.css";
+import { PollHistory } from "../../appTypes/appType";
+import { numCountDisplay } from "../../formFuncs/miscFuncs";
+import ImageDisplay from "../Other/Image";
+import { PollIconCtr } from "../Other/siteIconCtrs/pollIconCtr";
+import { TagWindow, UserTagWindow } from "../Other/Tags/Tags";
 
-const PollQuestion = ({ question }: { question: string }) => {
-  const [btnState, toggleBtn] = useState(false);
+interface PollQuestion {
+  pollData: PollHistory;
+  showAdd: () => void;
+}
 
-  const likeIcon = btnState ? (
-    <AiTwotoneHeart
-      size={25}
-      color="red"
-      onClick={() => toggleBtn(!btnState)}
-    />
-  ) : (
-    <AiOutlineHeart size={25} onClick={() => toggleBtn(!btnState)} />
-  );
+const PollQuestion = ({ pollData, showAdd }: PollQuestion) => {
+  const answerCount = numCountDisplay(pollData.answers.length);
 
   return (
-    <div className={`alert alert-danger ${pollStyles.questionWindow}`} role="alert">
-      <h3 className={`${styles.cursor}`}>{likeIcon}</h3>
-      <p className={`${pollStyles.questionTxt}`}>{question}</p>
+    <div
+      className={`alert alert-light ${pollStyles.questionWindow} justify-content-between`}
+      style={{ height: "26vh" }}
+      role="alert"
+    >
+      <div className="d-flex flex-row justify-content-between w-100">
+        <TagWindow
+          topic={pollData.topic.topic}
+          subTopics={pollData.subTopics}
+        />
+        <UserTagWindow
+          user={pollData.creator?.appid}
+          profilePic={pollData.creator?.profilePic}
+          createdDate={pollData.creationDate}
+        />
+      </div>
+      <div
+        className="d-flex flex-column w-100 justify-content-between"
+        style={{ height: "15vh" }}
+      >
+        <p className={`${pollStyles.questionTxt}`}>{pollData.question}</p>
+        {pollData.pollImages.length > 0 && (
+          <ImageDisplay imgList={pollData.pollImages} />
+        )}
+      </div>
+      <div className="d-flex w-100">
+        <PollIconCtr showAdd={showAdd} numAnswers={answerCount} />
+      </div>
     </div>
   );
 };

@@ -4,7 +4,7 @@ const imgMutations = {
   UPLOAD_IMAGE: gql`
     mutation UploadImage($details: String!) {
       uploadImage(details: $details) {
-        _id
+        id
       }
     }
   `,

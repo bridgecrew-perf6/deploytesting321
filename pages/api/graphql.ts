@@ -20,6 +20,7 @@ interface MyContext {
 }
 
 const context = async ({ req, res }: MyContext) => {
+  // const pubsub = new PubSub();
   // refreshAppToken(req, res);
   // req && generateAuthFromCookie(req);
   //Put middleware in here
@@ -28,6 +29,7 @@ const context = async ({ req, res }: MyContext) => {
     res,
     isAuth: isAuthenticated(req),
     dataLoaders,
+    // pubsub,
     // userLoader: userLoader(),
     // pollLoader: pollLoader(),
     // topicLoader: topicLoader(),

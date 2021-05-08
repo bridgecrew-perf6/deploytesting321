@@ -5,13 +5,13 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { IoPersonCircle } from "react-icons/io5";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import styles from "../../../../appStyles/appStyles.module.css";
-import { runGraphQuery } from "../../../../lib/apollo/miscFunctions";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
 import NewPoll from "../../Home/NewPoll";
 import { UserDataProps } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
+import ProfileImg from "../../Profile/profileImg";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
 
@@ -77,19 +77,6 @@ export default function ProfileHeader() {
 
   if (data) {
     const { appid, profilePic } = data.getUserData.user;
-    const picStyle = { height: 50, width: 50 };
-
-    const profileIcon =
-      profilePic && profilePic.length > 0 ? (
-        <img
-          src={profilePic}
-          alt="..."
-          className="rounded-circle"
-          style={picStyle}
-        />
-      ) : (
-        <IoPersonCircle style={{ ...picStyle, color: "white" }} />
-      );
 
     return (
       <div
@@ -111,18 +98,11 @@ export default function ProfileHeader() {
         >
           {NotificationIcon}
         </div>
-        <Link href={"/Profile"}>
-          {/* <Link
-          href={{
-            pathname: "/Profile",
-            query: { data: JSON.stringify(data.getUserData) },
-          }}
-          as="/Profile"
-        > */}
-          <a className={`rounded-circle ${styles.profileIconCtr}`}>
-            {profileIcon}
-          </a>
-        </Link>
+        <ProfileImg
+          profilePic={profilePic}
+          picStyle={{ height: 50, width: 50 }}
+          color={"white"}
+        />
         <div className="dropdown">
           <a
             className="btn btn-outline-light my-2 my-sm-0"
@@ -168,5 +148,3 @@ export default function ProfileHeader() {
     </div>
   );
 }
-
-// export default ProfileHeader;

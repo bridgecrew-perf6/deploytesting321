@@ -4,10 +4,12 @@ interface MongoDoc extends Document {
   _doc: any;
 }
 
-export default interface Iimage extends MongoDoc {
+export default interface IAnswer extends MongoDoc {
   _id: string;
-  imgType: string;
-  image: string;
+  answer: string;
+  poll: string;
+  comments: string[];
+  answerImages: string[];
   creator: string;
   creationDate: Date;
 }

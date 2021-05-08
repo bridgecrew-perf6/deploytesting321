@@ -38,7 +38,7 @@ const NavBar: React.FC = (props) => {
         className="form-row justify-content-between"
         style={{ width: "48%" }}
       >
-        <div className={`input-group ${styles.searchBar}`}>
+        <div className={`input-group ${styles.searchBar} bg-white align-items-center rounded`}>
           <div className="input-group-prepend overflow-hidden">
             <span
               className="input-group-text bg-white border border-white p-1"

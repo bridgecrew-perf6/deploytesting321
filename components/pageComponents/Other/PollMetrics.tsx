@@ -4,11 +4,12 @@ import TimeAgo from "react-timeago";
 
 interface PollMetrics {
   created: string;
+  numAnswers: number | null;
 }
 
 //Metrics are hardcoded.  Need to get from DB once comment feature live.
 
-export default function PollMetrics({ created }: PollMetrics) {
+export default function PollMetrics({ created, numAnswers }: PollMetrics) {
   return (
     <div className="d-flex justify-content-between align-items-center">
       <div
@@ -22,7 +23,7 @@ export default function PollMetrics({ created }: PollMetrics) {
             size: 20,
           }}
         />
-        <label style={{ fontSize: 14, paddingTop: "1px" }}>300</label> 
+        <label style={{ fontSize: 14, paddingTop: "1px" }}>{numAnswers}</label>
       </div>
       <label style={{ fontSize: 14 }}>
         <TimeAgo date={created} live={false} />

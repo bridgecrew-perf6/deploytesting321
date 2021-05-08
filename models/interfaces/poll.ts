@@ -1,5 +1,4 @@
 import { Document } from "mongoose";
-import IUser from "./user";
 
 interface MongoDoc extends Document {
   _doc: any;
@@ -11,6 +10,7 @@ export default interface IPoll extends MongoDoc {
   topic: string;
   subTopics: string[];
   pollImages: string[];
+  answers: string[];
   creator: string;
   creationDate: Date;
 }

@@ -65,10 +65,9 @@ export const PageForm: React.FC<IProps> = (props) => {
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <div className={`d-flex-row ${styles.appbg_primary} vh-100`}>
+      <div className={`d-flex-row ${styles.appbg_other} vh-100`}>
         {props.children}
       </div>
     </div>
   );
 };
-

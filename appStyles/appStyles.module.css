@@ -50,6 +50,10 @@
   background-color: #f2f3f4;
 }
 
+.appbg_other {
+  background-color: #ededed;
+}
+
 .cursor {
   cursor: pointer;
 }
@@ -132,7 +136,6 @@
   top: 0;
   right: 0;
 }
-
 
 
 /* .dropDownCtr ul li {

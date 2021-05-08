@@ -55,20 +55,24 @@ export const filterSubtopicsforTopic = (
   data: ITopic[] | undefined,
   selectedTopic: string | null
 ) => {
-
   return data?.filter((item) => item.topic === selectedTopic)[0]?.subTopics;
+};
 
-  // let subTopicList: ISubTopic[] | [] | undefined;
+export const imgPickerHandler = (imgRef: any) => {
+  imgRef.current.click();
+  imgRef.current.value = null;
+};
 
-  // for (let i = 0; i < data.length; i++) {
-  //   const element = data[i];
-  //   console.log(element)
-  //   if (element.topic === selectedTopic) {
-  //     console.log(element.subtopics)
-  //     subTopicList = element.subtopics;
-  //   }
-  // }
+export const numCountDisplay = (contentCount: number) => {
+  let numValString: string;
 
-  // return subTopicList;
-  // return data.map((item) => item.topic === selectedTopic);
+  if (contentCount > 1000000) {
+    numValString = `${(contentCount / 1000000).toFixed(1)}M`;
+  } else if (contentCount > 1000 && contentCount < 1000000) {
+    numValString = `${(contentCount / 1000).toFixed(1)}K`;
+  } else {
+    numValString = String(contentCount);
+  }
+
+  return numValString;
 };

@@ -10,3 +10,16 @@
   min-height: 100%;
   min-height: 100vh;
 }
+
+.wrapper-class {
+  /* padding: 1rem; */
+  border: 1px solid #ccc;
+}
+.editor-class {
+  padding: 1rem;
+  /* background-color:lightgray; */
+  border: 1px solid #ccc;
+}
+.toolbar-class {
+  border: 1px solid #ccc;
+}

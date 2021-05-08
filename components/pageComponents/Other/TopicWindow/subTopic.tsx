@@ -52,7 +52,7 @@ export const SubTopicWindow = ({
 
             return (
               <li
-                className={`d-flex flex-column m-2 border`}
+                className={`d-flex flex-column m-2`}
                 style={{ maxWidth: "14rem", width: "14rem" }}
                 key={item._id}
                 id={item._id}
@@ -64,7 +64,7 @@ export const SubTopicWindow = ({
                 }
               >
                 <div
-                  className={`card border-secondary text-sm-left overflow-hidden ${appStyles.cursor} ${selectedItemColor}`}
+                  className={`card text-sm-left overflow-hidden ${appStyles.cursor} ${selectedItemColor}`}
                   style={{
                     maxWidth: "18rem",
                     maxHeight: "10rem",

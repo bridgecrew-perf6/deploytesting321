@@ -4,7 +4,8 @@ import IUser from "../../models/interfaces/user";
 import ITopic from "../../models/interfaces/topic";
 import batchLoaders from "./dataLoaders";
 import ISubTopic from "../../models/interfaces/subTopic";
-import Iimage from "../../models/interfaces/image";
+import IAnswer from "../../models/interfaces/answer";
+import IReply from "../../models/interfaces/reply";
 
 const getLoaderByDataType = (dataType: string) => {
   let loader: any;
@@ -14,7 +15,9 @@ const getLoaderByDataType = (dataType: string) => {
     batchPolls,
     batchTopics,
     batchsubTopics,
-    batchImgs,
+    batchAnswers,
+    batchComments,
+    batchReplies,
   } = batchLoaders;
 
   switch (true) {
@@ -24,16 +27,20 @@ const getLoaderByDataType = (dataType: string) => {
     case dataType == "poll":
       loader = new DataLoader<string, IPoll>(batchPolls);
       break;
-    case dataType == "image":
-      loader = new DataLoader<string, Iimage>(batchImgs);
-      break;
     case dataType == "topic":
       loader = new DataLoader<string, ITopic>(batchTopics);
       break;
     case dataType == "subTopic":
       loader = new DataLoader<string, ISubTopic>(batchsubTopics);
       break;
-    default:
+    case dataType == "answer":
+      loader = new DataLoader<string, IAnswer>(batchAnswers);
+      break;
+    case dataType == "comment":
+      loader = new DataLoader<string, IAnswer>(batchComments);
+      break;
+    case dataType == "reply":
+      loader = new DataLoader<string, IReply>(batchReplies);
       break;
   }
 

@@ -9,7 +9,10 @@ export const pollResolvers: ResolverMap = {
       try {
         const polls = await Poll.find();
         const pollsData = polls.map((poll) =>
-          transformPoll(poll, dataLoaders(["user", "topic", "subTopic"]))
+          transformPoll(
+            poll,
+            dataLoaders(["user", "topic", "subTopic", "answer"])
+          )
         );
 
         return pollsData;
@@ -24,7 +27,7 @@ export const pollResolvers: ResolverMap = {
         const pollFound = await Poll.findById(pollId);
         const fullPoll = transformPoll(
           pollFound,
-          dataLoaders(["user", "topic", "subTopic"])
+          dataLoaders(["user", "topic", "subTopic", "answer"])
         );
 
         return fullPoll;
@@ -62,7 +65,7 @@ export const pollResolvers: ResolverMap = {
         const savedPoll = await poll.save();
         const createdPoll = transformPoll(
           savedPoll,
-          dataLoaders(["user", "topic", "subTopic", "image"])
+          dataLoaders(["user", "topic", "subTopic"])
         );
 
         const creator = await User.findById(id);

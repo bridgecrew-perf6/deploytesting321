@@ -14,7 +14,11 @@ const pollQueries = {
           _id
           subTopic
         }
+        answers {
+          _id
+        }
         creationDate
+        pollImages
         creator {
           _id
           appid
@@ -35,14 +39,19 @@ const pollQueries = {
           _id
           subTopic
         }
+        pollImages
+        answers {
+          _id
+        }
         creationDate
         creator {
           _id
           appid
+          profilePic
         }
       }
     }
   `,
 };
 
-export default pollQueries
+export default pollQueries;

@@ -1,5 +1,10 @@
-import { response } from "express";
 import { SelectedImage } from "../appTypes/appType";
+
+export const saveImgtoCloud = async (selectedImgs: SelectedImage[]) => {
+  if (selectedImgs) {
+    return Promise.all(selectedImgs.map((item) => uploadImage(item)));
+  }
+};
 
 const uploadImage = async (imgDetails: SelectedImage) => {
   const { userId, image, imgType, imageName } = imgDetails;
@@ -36,11 +41,7 @@ const uploadImage = async (imgDetails: SelectedImage) => {
 
     const data = await apiResponse.json();
 
-    return {
-      imgType,
-      image: data.url,
-      creator: userId,
-    };
+    return data.url;
   }
 };
 

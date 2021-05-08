@@ -1,14 +1,13 @@
-import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { initializeApollo } from "../../../lib/apollo";
-import { PollHistory } from "../../../components/appTypes/appType";
+import { PollHistory, User } from "../../../components/appTypes/appType";
 import { SitePageContainer } from "../../../components/layout";
 import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
-import { PollFilters } from "../../../components/pageComponents/Poll/pollComps";
-
-import TopicWindow from "../../../components/pageComponents/Other/TopicWindow";
+import { useAuth } from "../../../components/authProvider/authProvider";
+import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
+import PollChat from "../../../components/pageComponents/Poll/Chat";
 
 const { GET_POLL, GET_POLLS_ALL } = GraphResolvers.queries;
 const apolloClient = initializeApollo();
@@ -18,10 +17,22 @@ interface Props {
 }
 
 const poll = ({ data }: Props) => {
+  const [answerWindow, showAnswerWindow] = useState(false);
+
+  const toggleAddAnswer = () => {
+    showAnswerWindow(!answerWindow);
+  };
+
   return (
     <SitePageContainer title={`Poll`}>
-      {JSON.stringify(data)}
-      {/* <TopicWindow /> */}
+      <PollQuestion pollData={data.poll} showAdd={toggleAddAnswer} />
+      <PollChat pollId={data.poll._id} />
+      {/* <PollAnswers
+        creator={data.poll.creator}
+        poll={data.poll._id}
+        newAnswer={answerWindow}
+        showAdd={toggleAddAnswer}
+      /> */}
     </SitePageContainer>
   );
 };
