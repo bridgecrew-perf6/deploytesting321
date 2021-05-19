@@ -6,6 +6,7 @@ import styles from "../../../../appStyles/appStyles.module.css";
 // import { NavBarProps } from "../../../appTypes/appType";
 import { Logo } from "../../../layout/branding";
 import ProfileHeader from "./ProfileHeader";
+import { SearchBar } from "./searchBar";
 
 const NavBar: React.FC = (props) => {
   const router = useRouter();
@@ -34,34 +35,7 @@ const NavBar: React.FC = (props) => {
           <Logo />
         </a>
       </Link>
-      <div
-        className="form-row justify-content-between"
-        style={{ width: "48%" }}
-      >
-        <div className={`input-group ${styles.searchBar} bg-white align-items-center rounded`}>
-          <div className="input-group-prepend overflow-hidden">
-            <span
-              className="input-group-text bg-white border border-white p-1"
-              id="basic-addon1"
-            >
-              <BiSearchAlt
-                style={{
-                  color: "gray",
-                  height: 23,
-                  width: 23,
-                }}
-              />
-            </span>
-          </div>
-          <input
-            type="search"
-            className="form-control border border-white"
-            placeholder="Search"
-            aria-label="Search"
-            onKeyDown={goToSearch}
-          />
-        </div>
-      </div>
+      <SearchBar search={goToSearch} style={{ width: "48%" }} />
       <ProfileHeader />
     </nav>
   );

@@ -7,35 +7,27 @@ import { isAuthenticated } from "../../graphql/middleware";
 import withCookies from "../../graphql/middleware/cookie";
 import { Request, Response } from "express-serve-static-core";
 import dataLoaders from "../../graphql/loaders";
-// import {
-//   pollLoader,
-//   subTopicLoader,
-//   topicLoader,
-//   userLoader,
-// } from "../../graphql/loaders";
+import { PubSub } from "apollo-server";
 
 interface MyContext {
   req: Request;
   res: Response;
+  connection: any;
 }
 
-const context = async ({ req, res }: MyContext) => {
-  // const pubsub = new PubSub();
-  // refreshAppToken(req, res);
-  // req && generateAuthFromCookie(req);
+const pubsub = new PubSub();
+
+const context = async ({ req, res, connection }: MyContext) => {
+  const msgHeader = connection ? connection.context : req;
+
   //Put middleware in here
   return {
     req,
     res,
-    isAuth: isAuthenticated(req),
+    isAuth: isAuthenticated(msgHeader),
+    // isAuth: isAuthenticated(req),
     dataLoaders,
-    // pubsub,
-    // userLoader: userLoader(),
-    // pollLoader: pollLoader(),
-    // topicLoader: topicLoader(),
-    // subTopicLoader: subTopicLoader(),
-    // isAuth: await isAuthenticated(req),
-    // hasCookie: await hasCookie(req),
+    pubsub,
   };
 };
 
@@ -43,6 +35,19 @@ const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context,
+  subscriptions: {
+    path: "/api/graphql",
+    keepAlive: 9000,
+    onConnect: (connectionParams, webSocket, context) => {
+      return { headers: context.request.headers };
+    },
+  },
+  playground: {
+    subscriptionEndpoint: "/api/graphql",
+    settings: {
+      "request.credentials": "same-origin",
+    },
+  },
 });
 
 export const config = {
@@ -50,5 +55,17 @@ export const config = {
     bodyParser: false,
   },
 };
-const handler = apolloServer.createHandler({ path: "/api/graphql" });
-export default connectDb(withCookies(handler));
+
+const graphqlWithSubscriptionHandler = (req: any, res: any, next: any) => {
+  if (!res.socket.server.apolloServer) {
+    console.log(`PoldIt Server Started`);
+
+    apolloServer.installSubscriptionHandlers(res.socket.server);
+    const handler = apolloServer.createHandler({ path: "/api/graphql" });
+    res.socket.server.apolloServer = handler;
+  }
+
+  return res.socket.server.apolloServer(req, res, next);
+};
+
+export default connectDb(withCookies(graphqlWithSubscriptionHandler));

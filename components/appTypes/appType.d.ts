@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { PubSub } from "graphql-subscriptions";
 import {
   pollLoader,
   userLoader,
@@ -8,6 +9,7 @@ import {
   commentLoader,
   replyLoader,
 } from "../../graphql/loaders";
+// import { pubsub } from "../../graphql/middleware/index";
 
 interface ErrorMssg {
   message: string;
@@ -128,6 +130,7 @@ interface ApolloSeverContext {
     | ReturnType<typeof commentLoader>[]
     | ReturnType<typeof replyLoader>[]
     | ReturnType<typeof answerLoader>[];
+  pubsub: PubSub;
 }
 
 interface IHTMLElementForm extends HTMLElement {
@@ -136,8 +139,12 @@ interface IHTMLElementForm extends HTMLElement {
 
 interface ResolverMap {
   [key: string]: {
-    [key: string]: Resolver;
+    [key: string]: Resolver | SubscriptionResolver;
   };
+}
+
+interface SubscriptionResolver {
+  [key: string]: Resolver;
 }
 
 type Resolver = (
@@ -205,7 +212,11 @@ interface SelectedImage {
 
 interface IPollChatBox {
   pollId: string;
-  userId?: string | undefined;
+  appUser?: User | null;
+  data?: ChatMessage[];
+  userList?: User[];
+  currentUsers?: User[];
+  updateUsers?: (userList: User[]) => void;
 }
 
 interface ChatMessage {

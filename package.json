@@ -34,6 +34,7 @@
     "express": "^4.17.1",
     "graphql": "^15.4.0",
     "graphql-tools": "^7.0.2",
+    "immer": "^9.0.2",
     "isomorphic-unfetch": "^3.1.0",
     "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",
@@ -50,7 +51,9 @@
     "react-slick": "^0.28.0",
     "react-timeago": "^5.2.0",
     "slick-carousel": "^1.8.1",
-    "uuid": "^8.3.2"
+    "subscriptions-transport-ws": "^0.9.18",
+    "uuid": "^8.3.2",
+    "ws": "^7.4.5"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.21.1",

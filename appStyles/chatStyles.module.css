@@ -17,3 +17,15 @@
   max-width: 55vh;
   background-color: green;
 }
+
+.userMessage {
+  display: block;
+  height: "auto";
+  width: auto;
+  max-width: 55vh;
+  background-color: lightgray;
+}
+
+.chatSearch {
+  border: 1px solid lightgray;
+}

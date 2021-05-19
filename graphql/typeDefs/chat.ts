@@ -21,8 +21,6 @@ export const chatTypeDefs = gql`
   }
 
   extend type Subscription {
-    messages: [ChatMessage!]
-    messageByUser(userId: String!): [ChatMessage]
-    messagesByPoll(pollId: String!): [ChatMessage]
+    newMessage(pollId: String!): ChatMessage!
   }
 `;

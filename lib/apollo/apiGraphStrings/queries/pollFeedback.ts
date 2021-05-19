@@ -27,6 +27,8 @@ const pollFeedBackQueries = {
         creator {
           _id
           appid
+          profilePic
+
         }
         creationDate
         poll {

@@ -20,11 +20,12 @@ export default function ProfileHeader() {
 
   const appContext = useAuth();
 
-  const { data, error } = useQuery<UserDataProps>(GET_USER);
+  const [getUser, { data, error }] = useLazyQuery(GET_USER);
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
 
   useEffect(() => {
+    getUser();
     if (data) {
       appContext && appContext.updateUserData(data.getUserData);
     }

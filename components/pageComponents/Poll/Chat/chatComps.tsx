@@ -1,64 +1,99 @@
-import { useMutation, useQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useMutation } from "@apollo/client";
+import React, { useEffect, useState } from "react";
 import TimeAgo from "react-timeago";
 import chatStyles from "../../../../appStyles/chatStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
-import { IChat } from "../../../../graphql/resolvers/shared/other";
-import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-import { ChatMessage, IPollChatBox } from "../../../appTypes/appType";
-import AppLoading from "../../Other/Loading";
+import { OnChangeSearchBar } from "../../Other/NavBar/searchBar";
 
-const { chatSideBar, chatMessage } = chatStyles;
+import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
+import { ChatMessage, IPollChatBox, User } from "../../../appTypes/appType";
+import ProfileImg from "../../Profile/profileImg";
+import { filterSearchVals } from "../../../formFuncs/miscFuncs";
+
+const { chatSideBar, chatMessage, userMessage, chatSearch } = chatStyles;
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
 
-export const ChatSideBar = ({ pollId, userId }: IPollChatBox) => {
-  return <div className={`border border-primary ${chatSideBar}`}>Test</div>;
+export const ChatSideBar = ({
+  pollId,
+  appUser,
+  userList,
+  currentUsers,
+  updateUsers,
+}: IPollChatBox) => {
+  const searchHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (userList && currentUsers && updateUsers) {
+      const results = filterSearchVals(userList, e.target.value, "appid");
+      results && updateUsers(results);
+    }
+  };
+
+  return (
+    <div className={`d-flex flex-column ${chatSideBar}`}>
+      <div
+        className="d-flex align-items-center justify-content-center border-bottom"
+        style={{ height: "9%" }}
+      >
+        Poll Participants
+      </div>
+      <div className="d-flex flex-column justify-content-between h-100">
+        <div
+          className={`d-flex justify-content-center p-1 rounded ${chatSearch}`}
+        >
+          <OnChangeSearchBar search={searchHandler} style={{ width: "98%" }} />
+        </div>
+        <div className="flex-fill list-group overflow-auto p-2">
+          {currentUsers?.map((item) => (
+            <div key={item._id}>
+              <ChatUser user={item} />
+            </div>
+          ))}
+        </div>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "11%" }}
+        >
+          Footer
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export const ChatBody = ({ pollId, userId }: IPollChatBox) => {
+interface ChatSideBarUser {
+  user: User;
+}
+
+export const ChatUser = ({ user }: ChatSideBarUser) => {
+  return (
+    <div className="list-group-item m-1 p-1 d-flex align-items-center rounded">
+      <ProfileImg
+        profilePic={user.profilePic}
+        picStyle={{ height: 40, width: 40 }}
+        color="gray"
+      />
+      <div className="ml-2">{user.appid}</div>
+    </div>
+  );
+};
+
+export const ChatBody = ({ pollId, appUser, data }: IPollChatBox) => {
   return (
     <div className="d-flex flex-column border h-100" style={{ width: "90%" }}>
       <div className="border border-secondary p-2" style={{ height: "10%" }}>
         Header
       </div>
       <div className="border border-secondary flex-grow-1 p-2">
-        <ChatArea pollId={pollId} userId={userId} />
+        <ChatArea pollId={pollId} appUser={appUser} data={data} />
       </div>
       <div className="border border-secondary p-2" style={{ height: "12%" }}>
-        <ChatInput pollId={pollId} userId={userId} />
+        <ChatInput pollId={pollId} appUser={appUser} />
       </div>
     </div>
   );
 };
 
-const ChatArea = ({ pollId, userId }: IPollChatBox) => {
-  const { loading, error, data } = useQuery(
-    GraphResolvers.queries.GET_POLL_CHATS,
-    { variables: { pollId } }
-  );
-
-  useEffect(() => {
-    const chatItem: ChatMessage =
-      data && data!.messagesByPoll[data!.messagesByPoll.length - 1];
-
-    const listItem = chatItem && document.getElementById(chatItem._id);
-    listItem?.scrollIntoView({ behavior: "smooth" });
-  }, [data]);
-
-  if (loading) {
-    return (
-      <div className="d-flex h-100 justify-content-center align-items-center">
-        <div>
-          <AppLoading
-            style={{ height: "40vh", width: "40vh" }}
-            message="Chat Area"
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if (data && data.messagesByPoll.length === 0) {
+const ChatArea = ({ pollId, appUser, data }: IPollChatBox) => {
+  if (data && data.length === 0) {
     return <div>No one is chatting. Start the conversation</div>;
   }
 
@@ -67,8 +102,10 @@ const ChatArea = ({ pollId, userId }: IPollChatBox) => {
       className="d-flex flex-column"
       style={{ height: "39vh", overflow: "auto" }}
     >
-      {data.messagesByPoll.map((item: ChatMessage) => (
-        <ChatItem data={item} userId={userId} />
+      {data!.map((item: ChatMessage) => (
+        <div key={item._id}>
+          <ChatItem data={item} userId={appUser?._id} />
+        </div>
       ))}
     </div>
   );
@@ -80,22 +117,41 @@ interface ChatItem {
 }
 
 const ChatItem = ({ data, userId }: ChatItem) => {
-  const userIdMatch = userId === data.creator._id;
+  useEffect(() => {}, []);
+
+  let userMsgCtrPosition: string;
+  let userMsgBox: string;
+  let userMsgTxt: string;
+
+  if (userId === data.creator._id) {
+    userMsgCtrPosition = "align-items-end";
+    userMsgBox = chatMessage;
+    userMsgTxt = "text-white text-right";
+  } else {
+    userMsgCtrPosition = "align-items-start";
+    userMsgBox = userMessage;
+    userMsgTxt = "text-dark text-left";
+  }
 
   return (
-    <div
-      key={data._id}
-      id={data._id}
-      className="d-flex flex-column align-self-end align-items-end m-2 mr-3"
-    >
-      <div className={`text-white text-right rounded p-2 ${chatMessage}`}>
-        {data.message}
+    <div id={data._id} className="m-2 mr-3">
+      <div className={`d-flex flex-column ${userMsgCtrPosition}`}>
+        <div className={`${userMsgTxt} rounded p-2 ${userMsgBox}`}>
+          {data.message}
+        </div>
+        {userId !== data.creator._id ? (
+          <div className="" style={{ fontSize: 14, marginTop: 10 }}>
+            {`${data.creator.appid}:`}{" "}
+            <TimeAgo date={data.creationDate} live={false} />
+          </div>
+        ) : (
+          <TimeAgo
+            date={data.creationDate}
+            live={false}
+            style={{ fontSize: 14, marginTop: 10 }}
+          />
+        )}
       </div>
-      <TimeAgo
-        date={data.creationDate}
-        live={false}
-        style={{ fontSize: 14, marginTop: 10 }}
-      />
     </div>
   );
 };
@@ -104,7 +160,8 @@ const ChatInput = ({ pollId }: IPollChatBox) => {
   const [input, updateInput] = useState("");
 
   const [addChatMssg] = useMutation(
-    GraphResolvers.mutations.CREATE_CHAT_MESSAGE
+    GraphResolvers.mutations.CREATE_CHAT_MESSAGE,
+    {}
   );
 
   const addChatItem = () => {

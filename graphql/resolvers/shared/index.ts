@@ -12,7 +12,7 @@ import ISubTopic from "../../../models/interfaces/subTopic";
 import IAnswer from "../../../models/interfaces/answer";
 import IComment from "../../../models/interfaces/comment";
 import IReply from "../../../models/interfaces/reply";
-import { IChat } from "./other";
+import IChat from "../../../models/interfaces/chat";
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 
@@ -73,6 +73,7 @@ export const transformChat = (chat: IChat, loaders: any[]) => {
 
   return {
     ...chat,
+    // ...chat._doc,
     creator: () => creator.load(chat.creator),
     poll: () => poll.load(chat.poll),
   };

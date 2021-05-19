@@ -15,9 +15,8 @@ export const getCredentialProps = (formType: string) => {
   }
 
   if (formType === "registration") {
-    const selectorVal: IHTMLElementForm | null = document.getElementById(
-      "State"
-    );
+    const selectorVal: IHTMLElementForm | null =
+      document.getElementById("State");
 
     if (selectorVal) {
       selectorVal.value === "Select State"
@@ -36,7 +35,7 @@ export const camelCaseString = (str: string) => {
 };
 
 export const getFormBorderStyle = (formObj: HTMLFormElement) => {
-  const formBorderObj: HTMLFormElement = ({} as any) as HTMLFormElement;
+  const formBorderObj: HTMLFormElement = {} as any as HTMLFormElement;
 
   for (const key in formObj) {
     if (formObj[key] === "") {
@@ -75,4 +74,20 @@ export const numCountDisplay = (contentCount: number) => {
   }
 
   return numValString;
+};
+
+export const filterSearchVals = (
+  dataList: any[],
+  val: string,
+  filterKey: string
+) => {
+  const searchVal = val.toLowerCase();
+
+  return dataList.filter((item) => {
+    const itemVal: string = item[filterKey].toLowerCase();
+
+    if (itemVal.search(searchVal) > -1) {
+      return item;
+    }
+  });
 };

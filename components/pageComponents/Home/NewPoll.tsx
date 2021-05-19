@@ -23,6 +23,7 @@ import {
 } from "./newPollComps";
 import { saveImgtoCloud } from "../../apis/imgUpload";
 import ImgPicker from "../Other/Image/ImgPicker";
+import { filterSearchVals } from "../../formFuncs/miscFuncs";
 
 const RichTextEditor = dynamic(() => import("../Other/RichText"), {
   ssr: false,
@@ -36,11 +37,8 @@ export default function NewPoll() {
 
   //API
   const { CREATE_POLL } = GraphResolvers.mutations;
-  const {
-    GET_POLLS_ALL,
-    GET_TOPICS,
-    GET_SUBTOPICS_PER_TOPIC,
-  } = GraphResolvers.queries;
+  const { GET_POLLS_ALL, GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } =
+    GraphResolvers.queries;
   const [createPoll] = useMutation(CREATE_POLL);
   const { data } = useQuery(GET_TOPICS);
   const [getSubTopics, { data: subTopicsData }] = useLazyQuery(
@@ -74,16 +72,10 @@ export default function NewPoll() {
   const updateSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
-    const searchVal = e.target.value.toLowerCase();
-
-    const results = subTopicsData.subTopicsPerTopic.filter(
-      (subTopic: ISubTopic) => {
-        const subTopicVal = subTopic.subTopic.toLowerCase();
-
-        if (subTopicVal.search(searchVal) > -1) {
-          return subTopic;
-        }
-      }
+    const results = filterSearchVals(
+      subTopicsData.subTopicsPerTopic,
+      e.target.value,
+      "subTopic"
     );
 
     setSubTopics(results);
