@@ -10,6 +10,11 @@
   color: black;
 }
 
+.appSecondaryTxt {
+  font-family: "malgun";
+  font-weight: 600;
+}
+
 .textCtr {
   display: block;
   margin-left: auto;
@@ -136,7 +141,6 @@
   top: 0;
   right: 0;
 }
-
 
 /* .dropDownCtr ul li {
   padding: 2px;

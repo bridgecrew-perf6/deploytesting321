@@ -9,7 +9,7 @@ import AppLoading from "../../Other/Loading";
 
 const { chatWindow } = chatStyles;
 
-const PollChatBox = ({ pollId }: IPollChatBox) => {
+const PollChatBox = ({ pollId, addAnswer, addError }: IPollChatBox) => {
   const appContext = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [chatUsers, setChatUsers] = useState<User[]>([]);
@@ -23,7 +23,6 @@ const PollChatBox = ({ pollId }: IPollChatBox) => {
     GraphResolvers.queries.GET_USER
   );
 
-  // const getUniqueChatUsers = () => {
   const creators = data?.messagesByPoll.map((item: { creator: User }) => {
     return JSON.stringify({
       _id: item.creator._id,
@@ -36,16 +35,12 @@ const PollChatBox = ({ pollId }: IPollChatBox) => {
     ?.filter((val: string, idx: number) => creators.indexOf(val) === idx)
     .map((item: string) => JSON.parse(item));
 
-  // uniqueCreators && setChatUsers(uniqueCreators);
-  // };
-
   useEffect(() => {
     getUser();
     userData && setUser(userData!.getUserData!.user);
 
     if (data) {
       uniqueCreators && setChatUsers(uniqueCreators);
-      // getUniqueChatUsers();
       subscribeToMore({
         document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
         variables: { pollId },
@@ -89,7 +84,13 @@ const PollChatBox = ({ pollId }: IPollChatBox) => {
         currentUsers={chatUsers}
         updateUsers={setChatUsers}
       />
-      <ChatBody pollId={pollId} appUser={user} data={data!.messagesByPoll} />
+      <ChatBody
+        pollId={pollId}
+        appUser={user}
+        data={data!.messagesByPoll}
+        addAnswer={addAnswer}
+        addError={addError}
+      />
     </div>
   );
 };

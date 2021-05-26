@@ -11,4 +11,5 @@ export default interface IChat extends MongoDoc {
   poll: string;
   creator: string;
   creationDate: Date;
+  isAnswer: Boolean;
 }

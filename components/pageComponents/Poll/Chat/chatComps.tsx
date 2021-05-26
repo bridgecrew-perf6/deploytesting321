@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import TimeAgo from "react-timeago";
 import chatStyles from "../../../../appStyles/chatStyles.module.css";
+import appStyles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { OnChangeSearchBar } from "../../Other/NavBar/searchBar";
 
@@ -10,8 +11,10 @@ import { ChatMessage, IPollChatBox, User } from "../../../appTypes/appType";
 import ProfileImg from "../../Profile/profileImg";
 import { filterSearchVals } from "../../../formFuncs/miscFuncs";
 
-const { chatSideBar, chatMessage, userMessage, chatSearch } = chatStyles;
-const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
+const { chatSideBar, chatMessage, userMessage, chatSearch, chatInput } =
+  chatStyles;
+const { customBtn, customBtnOutline, customBtnOutlinePrimary, answerBtn } =
+  btnStyles;
 
 export const ChatSideBar = ({
   pollId,
@@ -76,7 +79,13 @@ export const ChatUser = ({ user }: ChatSideBarUser) => {
   );
 };
 
-export const ChatBody = ({ pollId, appUser, data }: IPollChatBox) => {
+export const ChatBody = ({
+  pollId,
+  appUser,
+  data,
+  addAnswer,
+  addError,
+}: IPollChatBox) => {
   return (
     <div className="d-flex flex-column border h-100" style={{ width: "90%" }}>
       <div className="border border-secondary p-2" style={{ height: "10%" }}>
@@ -85,8 +94,16 @@ export const ChatBody = ({ pollId, appUser, data }: IPollChatBox) => {
       <div className="border border-secondary flex-grow-1 p-2">
         <ChatArea pollId={pollId} appUser={appUser} data={data} />
       </div>
-      <div className="border border-secondary p-2" style={{ height: "12%" }}>
-        <ChatInput pollId={pollId} appUser={appUser} />
+      <div
+        className="border border-secondary pl-2 pr-2"
+        style={{ height: "12%" }}
+      >
+        <ChatInput
+          pollId={pollId}
+          appUser={appUser}
+          addAnswer={addAnswer}
+          addError={addError}
+        />
       </div>
     </div>
   );
@@ -156,7 +173,7 @@ const ChatItem = ({ data, userId }: ChatItem) => {
   );
 };
 
-const ChatInput = ({ pollId }: IPollChatBox) => {
+const ChatInput = ({ pollId, addAnswer, addError }: IPollChatBox) => {
   const [input, updateInput] = useState("");
 
   const [addChatMssg] = useMutation(
@@ -164,16 +181,24 @@ const ChatInput = ({ pollId }: IPollChatBox) => {
     {}
   );
 
-  const addChatItem = () => {
+  const addChatItem = (isAnswer: boolean = false) => {
+    //If isAnswer is true, use Add New Answer mutation along with chat message mutation so it updates the Answer Window above.  Client way is easier than backend way which is repetitive code
+
     const details = JSON.stringify({
       message: input,
       poll: pollId,
+      isAnswer,
     });
 
     addChatMssg({
       variables: { details },
     });
     updateInput("");
+
+    if (isAnswer && addAnswer && addError) {
+      addAnswer(input, []); //Enable the ability to add images in Chat reply TBD
+      addError();
+    }
   };
 
   const handleMssgInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -186,20 +211,36 @@ const ChatInput = ({ pollId }: IPollChatBox) => {
   };
 
   return (
-    <div className="w-100 form-row d-flex justify-content-between">
-      <div className="col-10">
+    <div className="d-flex h-100 flex-fill align-items-center">
+      <div
+        className={`input-group ${chatInput} align-items-center rounded-pill`}
+      >
         <input
           type="text"
+          className="form-control border border-white ml-3"
+          placeholder="Chat Here"
           value={input}
           onChange={(e) => updateInput(e.target.value)}
-          className="form-control"
-          placeholder="Chat Here"
           onKeyDown={handleMssgInput}
         />
+        <div className="input-group-prepend overflow-hidden rounded-circle">
+          <span
+            className={`input-group-text bg-white border border-white p-1 mr-3 ${answerBtn} ${appStyles.appSecondaryTxt}`}
+            id="basic-addon1"
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="Click to add as an answer to the poll"
+            onClick={() => addChatItem(true)}
+          >
+            A
+          </span>
+        </div>
       </div>
       <div className="col-auto">
         <button
-          onClick={() => addChatItem()}
+          onClick={() => {
+            input.length > 0 && addChatItem();
+          }}
           className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary}`}
         >
           Submit

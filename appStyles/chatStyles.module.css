@@ -29,3 +29,17 @@
 .chatSearch {
   border: 1px solid lightgray;
 }
+
+.chatInput {
+  border: 2px solid lightgray;
+}
+
+.chatInput:hover {
+  box-shadow: 0 0 5px lightskyblue !important;
+}
+
+.chatInput input:focus {
+  border-color: white !important;
+  box-shadow: 0 0 0 white !important;
+}
+

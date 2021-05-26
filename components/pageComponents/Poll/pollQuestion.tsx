@@ -8,11 +8,12 @@ import { TagWindow, UserTagWindow } from "../Other/Tags/Tags";
 
 interface PollQuestion {
   pollData: PollHistory;
+  numAnswers: number;
   showAdd: () => void;
 }
 
-const PollQuestion = ({ pollData, showAdd }: PollQuestion) => {
-  const answerCount = numCountDisplay(pollData.answers.length);
+const PollQuestion = ({ pollData, numAnswers, showAdd }: PollQuestion) => {
+  const answerCount = numCountDisplay(numAnswers);
 
   return (
     <div

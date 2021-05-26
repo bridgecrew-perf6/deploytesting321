@@ -12,4 +12,6 @@ export default interface IAnswer extends MongoDoc {
   answerImages: string[];
   creator: string;
   creationDate: Date;
+  likes: { userId: string; like: boolean }[];
+  dislikes: { userId: string; dislike: boolean}[];
 }

@@ -8,6 +8,7 @@ export const chatTypeDefs = gql`
     poll: PollQuestion!
     creationDate: String!
     chatImages: [String]
+    isAnswer: Boolean!
   }
 
   extend type Query {

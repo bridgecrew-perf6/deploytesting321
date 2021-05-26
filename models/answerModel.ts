@@ -30,6 +30,26 @@ const answerSchema: Schema = new Schema({
     required: true,
     default: Date.now,
   },
+  likes: [
+    {
+      userId: {
+        type: String,
+      },
+      like: {
+        type: Boolean,
+      },
+    },
+  ],
+  dislikes: [
+    {
+      userId: {
+        type: String,
+      },
+      dislike: {
+        type: Boolean,
+      },
+    },
+  ],
 });
 
 export default models.Answer || model<IAnswer>("Answer", answerSchema);

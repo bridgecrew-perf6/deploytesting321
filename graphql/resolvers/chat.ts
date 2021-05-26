@@ -60,23 +60,6 @@ export const chatResolvers: ResolverMap = {
       const creationDate = dateToString(new Date());
       const detailObj = JSON.parse(details);
 
-      // const newMessage = new Chat({
-      //   ...detailObj,
-      //   creator: id,
-      // });
-
-      // try {
-      //   const savedMessage = await newMessage.save();
-      //   const savedMessageFull = transformChat(
-      //     savedMessage,
-      //     dataLoaders(["user", "poll"])
-      //   );
-      //   pubsub.publish("newMessage", { newMessage: savedMessageFull });
-      //   return savedMessage._id;
-      // } catch (err) {
-      //   throw err;
-      // }
-
       const newMessage: IChat = {
         ...detailObj,
         _id: msgid,
@@ -85,7 +68,7 @@ export const chatResolvers: ResolverMap = {
         chatImages: [],
       };
 
-      messages.push(newMessage);
+      messages.push(newMessage); //Not saved anywhere.  Need to think of way to save this to DB
 
       const newMessageFinal = transformChat(
         newMessage,
@@ -93,7 +76,6 @@ export const chatResolvers: ResolverMap = {
       );
       pubsub.publish("newMessage", { newMessage: newMessageFinal });
 
-      // subscribers.forEach((fn) => fn());
       return msgid;
     },
   },

@@ -16,6 +16,14 @@ const pollFeedBackQueries = {
           _id
           comment
         }
+        likes {
+          userId
+          like
+        }
+        dislikes {
+          userId
+          dislike
+        }
       }
     }
   `,
@@ -28,7 +36,6 @@ const pollFeedBackQueries = {
           _id
           appid
           profilePic
-
         }
         creationDate
         poll {

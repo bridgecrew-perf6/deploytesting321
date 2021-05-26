@@ -9,6 +9,19 @@ const pollFeedBackMutations = {
       }
     }
   `,
+  LIKE_DISLIKE_HANDLER: gql`
+    mutation HandleLikeDislike(
+      $feedback: String!
+      $feedbackVal: Boolean!
+      $answerId: String!
+    ) {
+      handleLikeDislike(
+        feedback: $feedback
+        feedbackVal: $feedbackVal
+        answerId: $answerId
+      )
+    }
+  `,
   CREATE_CHAT_MESSAGE: gql`
     mutation CreateMessage($details: String!) {
       createMessage(details: $details)

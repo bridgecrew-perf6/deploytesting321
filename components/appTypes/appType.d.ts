@@ -67,6 +67,8 @@ interface Answer {
   creator?: User;
   answerImages?: string[];
   creationDate: string;
+  likes: { userId: string; like: boolean }[];
+  dislikes: { userId: string; dislike: boolean }[];
 }
 
 interface PollHistory {
@@ -217,6 +219,8 @@ interface IPollChatBox {
   userList?: User[];
   currentUsers?: User[];
   updateUsers?: (userList: User[]) => void;
+  addAnswer?: (answer: string, aswerImgs: SelectedImage[]) => void;
+  addError?: (errMssg?: string) => void;
 }
 
 interface ChatMessage {
@@ -226,4 +230,23 @@ interface ChatMessage {
   poll: PollHistory;
   creationDate: string;
   chatImages?: string[];
+}
+
+interface SliderSettings {
+  className?: string;
+  centerMode?: boolean;
+  infinite: boolean;
+  centerPadding?: string;
+  slidesToShow: number;
+  slidesPerRow?: number;
+  speed: number;
+  rows?: number;
+  slidesToShow: number;
+  slidesToScroll?: number;
+  dots?: boolean;
+  nextArrow?: JSX.Element;
+  prevArrow?: JSX.Element;
+  dotsClass?: string;
+  customPaging?: (i: number) => JSX.Element;
+  appendDots?: (vals: object[]) => JSX.Element;
 }

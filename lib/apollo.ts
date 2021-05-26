@@ -94,6 +94,9 @@ const cacheOptions: InMemoryCacheConfig = {
         messagesByPoll: {
           merge: false,
         },
+        answersByPoll: {
+          merge: false,
+        },
       },
     },
   },

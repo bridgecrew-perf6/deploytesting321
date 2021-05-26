@@ -29,19 +29,17 @@ export const PollFilters = () => {
 interface AddAnswer {
   addAnswer: (answer: string, answerImages: SelectedImage[]) => void;
   addError: (errMssg?: string) => void;
+  toggleWindow: () => void;
 }
 
-export const AddAnswer = ({ addAnswer, addError }: AddAnswer) => {
+export const AddAnswer = ({ addAnswer, addError, toggleWindow }: AddAnswer) => {
   const inputRef = useRef(null);
   const [answer, updateAnswer] = useState("");
   const [imgBtnState, toggleImg] = useState(false);
   const [selectedImgs, selectImgs] = useState<SelectedImage[]>([]);
 
   return (
-    <li
-      className="list-group-item text-left rounded"
-      style={{ border: "2px solid #ff4d00" }}
-    >
+    <li className="list-group-item text-left rounded">
       <div className="d-flex h-75">
         <textarea
           className="form-control bd-highlight p-2 flex-grow-1 bd-highlight text-lg-left"
@@ -67,6 +65,7 @@ export const AddAnswer = ({ addAnswer, addError }: AddAnswer) => {
               }
               addError();
               addAnswer(answer, selectedImgs);
+              toggleWindow();
             }}
           >
             Submit Answer

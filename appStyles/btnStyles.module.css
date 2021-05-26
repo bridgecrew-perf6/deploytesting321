@@ -16,6 +16,7 @@
   line-height: 1.5;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  outline: none;
 }
 
 .customBtnOutline {
@@ -36,6 +37,7 @@
 
 .customBtnOutlinePrimary:focus,
 .customBtnOutlinePrimary.focus {
+  outline: none;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
 }
 
@@ -60,4 +62,15 @@
 .customBtnOutlinePrimary:not(:disabled):not(.disabled).active:focus,
 .show > .customBtnOutlinePrimary.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.answerBtn {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 19px;
+  color: gray;
+}
+
+.answerBtn:hover {
+  color: #ff4d00;
 }

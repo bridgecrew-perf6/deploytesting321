@@ -10,11 +10,9 @@
   flex-direction: column;
 }
 
-.answerWindow {
-  height: 40vh;
-  margin: 1.5vh;
-  align-items: flex-start;
-  overflow: auto;
+.pollHeaderTxt {
+  font-family: "malgun";
+  font-weight: 800;
 }
 
 .subTopicWindow {
@@ -45,4 +43,37 @@
 .attachIcon:hover #caption {
   opacity: 1;
   display: block;
+}
+
+.answerItem {
+  border: 2px solid #e0e0e0;
+  height: 16vh;
+  position: relative;
+}
+
+.answerItem h5 {
+  position: absolute;
+  display: block;
+  border: 1px solid;
+  padding: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 50%;
+  color: #e0e0e0;
+  background-color: #ff4d00;
+  top: -5.8%;
+  left: -2%;
+  font-size: 14px;
+}
+
+.itemIcon {
+  position: relative;
+  align-items: center;
+}
+
+.itemIcon span {
+  position: absolute;
+  top: 2.0em;
+  left: 40%;
+  font-size: 12px;
 }

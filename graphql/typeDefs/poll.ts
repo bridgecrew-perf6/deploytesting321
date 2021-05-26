@@ -12,6 +12,16 @@ export const pollTypeDefs = gql`
     answers: [Answer]
   }
 
+  type Like {
+    userId: String!
+    like: Boolean!
+  }
+
+  type DisLike {
+    userId: String!
+    dislike: Boolean!
+  }
+
   type Answer {
     _id: ID!
     answer: String!
@@ -20,6 +30,8 @@ export const pollTypeDefs = gql`
     creator: User!
     answerImages: [String]
     creationDate: String!
+    likes: [Like]
+    dislikes: [DisLike]
   }
 
   type Comment {
@@ -50,5 +62,14 @@ export const pollTypeDefs = gql`
   extend type Mutation {
     createPoll(details: String!): PollQuestion
     createAnswer(details: String!): Answer
+    handleLikeDislike(
+      feedback: String!
+      feedbackVal: Boolean!
+      answerId: String!
+    ): String!
+  }
+
+  extend type Subscription {
+    newAnswer(pollId: String!): Answer!
   }
 `;
