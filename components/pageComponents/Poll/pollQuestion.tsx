@@ -1,4 +1,5 @@
-import React from "react";
+import { useQuery } from "@apollo/client";
+import React, { useState } from "react";
 import pollStyles from "../../../appStyles/pollStyles.module.css";
 import { PollHistory } from "../../appTypes/appType";
 import { numCountDisplay } from "../../formFuncs/miscFuncs";
@@ -23,12 +24,12 @@ const PollQuestion = ({ pollData, numAnswers, showAdd }: PollQuestion) => {
     >
       <div className="d-flex flex-row justify-content-between w-100">
         <TagWindow
+          pollId={pollData._id}
           topic={pollData.topic.topic}
           subTopics={pollData.subTopics}
         />
         <UserTagWindow
-          user={pollData.creator?.appid}
-          profilePic={pollData.creator?.profilePic}
+          user={pollData.creator}
           createdDate={pollData.creationDate}
         />
       </div>

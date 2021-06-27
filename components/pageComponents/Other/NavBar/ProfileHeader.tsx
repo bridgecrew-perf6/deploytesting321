@@ -20,7 +20,9 @@ export default function ProfileHeader() {
 
   const appContext = useAuth();
 
-  const [getUser, { data, error }] = useLazyQuery(GET_USER);
+  const [getUser, { data, error }] = useLazyQuery(GET_USER, {
+    variables: { userId: "" },
+  });
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
 
@@ -77,7 +79,7 @@ export default function ProfileHeader() {
   }
 
   if (data) {
-    const { appid, profilePic } = data.getUserData.user;
+    const { _id, appid, profilePic } = data.getUserData.user;
 
     return (
       <div
@@ -99,11 +101,17 @@ export default function ProfileHeader() {
         >
           {NotificationIcon}
         </div>
-        <ProfileImg
-          profilePic={profilePic}
-          picStyle={{ height: 50, width: 50 }}
-          color={"white"}
-        />
+
+        <div>
+          <ProfileImg
+            profilePic={profilePic}
+            id={_id}
+            appId={appid}
+            picStyle={{ height: 50, width: 50 }}
+            color={"white"}
+          />
+        </div>
+
         <div className="dropdown">
           <a
             className="btn btn-outline-light my-2 my-sm-0"
@@ -123,7 +131,8 @@ export default function ProfileHeader() {
             aria-labelledby="siteDropDown"
           >
             <ul className="d-flex flex-column h-100 justify-content-center">
-              <Link href={"/Profile"}>
+            <Link href={`/Profile/${appid}`}>
+              {/* <Link href={{ pathname: "/Profile", query: { userId: _id } }}> */}
                 <li className="dropdown-item">{`${appid} Profile`}</li>
               </Link>
               <li className="dropdown-item">All Topics</li>

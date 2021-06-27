@@ -52,6 +52,25 @@ const pollQueries = {
       }
     }
   `,
+  GET_USERPOLLS: gql`
+    query PollsByUser($userId: String!) {
+      pollsByUser(userId: $userId) {
+        _id
+        question
+        topic {
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        creationDate
+        answers {
+          _id
+        }
+      }
+    }
+  `,
 };
 
 export default pollQueries;

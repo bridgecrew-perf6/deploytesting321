@@ -27,7 +27,7 @@ const LogIn: NextPage = () => {
   const router = useRouter();
   const { queries, mutations } = GraphResolvers;
   const [login, { loading, error }] = useMutation(mutations.LOGIN, {
-    refetchQueries: [{ query: queries.GET_USER }],
+    refetchQueries: [{ query: queries.GET_USER, variables: { userId: "" } }],
   });
 
   const handleOtherFormMssgs = () => {

@@ -1,8 +1,6 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
 import React, { useEffect, useState } from "react";
-import { getStatesUS } from "../../components/apis/stateslist";
 import styles from "../../appStyles/appStyles.module.css";
 import { ErrorMssg, StatesUS } from "../../components/appTypes/appType";
 import { errorHandling } from "../../components/formFuncs/errorFuncs";
@@ -16,9 +14,7 @@ import { StateVals } from "../../components/formFuncs/formFuncs";
 
 const { appColor, appTxt } = styles;
 
-export default function Registration({
-  data,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Registration() {
   const [stateList, setStateList] = useState<StatesUS[]>([]);
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
   const [formValidation, setFormValidation] = useState<HTMLFormElement>();
@@ -27,12 +23,13 @@ export default function Registration({
   const [createUser, { loading, error }] = useMutation(
     GraphResolvers.mutations.CREATE_USER
   );
+  const { data } = useQuery(GraphResolvers.queries.GET_STATES_US);
 
   useEffect(() => {
     if (data) {
-      setStateList(data);
+      setStateList(data.statesUS);
     }
-  }, [stateList]);
+  }, [data]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -215,12 +212,12 @@ export default function Registration({
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const stateList = await getStatesUS();
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const stateList = await getStatesUS();
 
-  return {
-    props: {
-      data: stateList,
-    },
-  };
-};
+//   return {
+//     props: {
+//       data: stateList,
+//     },
+//   };
+// };

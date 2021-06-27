@@ -116,6 +116,30 @@ export const ImagePicker = ({ handleImg }: any) => {
   );
 };
 
+export const SingleImagePicker = ({ handleImg }: any) => {
+  const inputRef = useRef(null);
+
+  return (
+    <div
+      className={styles.cursor}
+      data-toggle="tooltip"
+      data-placement="top"
+      title="Insert Image"
+      onClick={() => imgPickerHandler(inputRef)}
+    >
+      <RiCamera2Line size="28px" color="#ff4d00" />
+      <input
+        type="file"
+        id="imgPicker"
+        style={{ display: "none" }}
+        ref={inputRef}
+        accept="image/*"
+        onChange={handleImg}
+      />
+    </div>
+  );
+};
+
 interface SelectedImgCtr {
   img: SelectedImage;
   updateImgs: (img: SelectedImage) => void;

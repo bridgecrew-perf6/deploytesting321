@@ -50,6 +50,10 @@ const answerSchema: Schema = new Schema({
       },
     },
   ],
+  rank: {
+    type: String,
+    default: "Not Ranked",
+  },
 });
 
 export default models.Answer || model<IAnswer>("Answer", answerSchema);

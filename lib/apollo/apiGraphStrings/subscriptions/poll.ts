@@ -34,6 +34,7 @@ const pollSubscriptions = {
           userId
           dislike
         }
+        rank
       }
     }
   `,

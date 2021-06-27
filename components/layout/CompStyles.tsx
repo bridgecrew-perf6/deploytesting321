@@ -61,11 +61,14 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
 export const PageForm: React.FC<IProps> = (props) => {
   const pageTitle = `PoldIt ${props.title.replace("/", "")}`;
   return (
-    <div>
+    <div
+      className={`${styles.appbg_other}`}
+      style={{ height: "100vh", overflow: "auto" }}
+    >
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <div className={`d-flex-row ${styles.appbg_other} vh-100`}>
+      <div className={`d-flex-row flex-fill ${styles.appbg_other}`}>
         {props.children}
       </div>
     </div>

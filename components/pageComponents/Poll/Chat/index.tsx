@@ -1,26 +1,25 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import chatStyles from "../../../../appStyles/chatStyles.module.css";
+import pollStyles from "../../../../appStyles/pollStyles.module.css";
 import { IPollChatBox, ChatMessage, User } from "../../../appTypes/appType";
 import { useAuth } from "../../../authProvider/authProvider";
 import { ChatBody, ChatSideBar } from "./chatComps";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import AppLoading from "../../Other/Loading";
 
-const { chatWindow } = chatStyles;
-
-const PollChatBox = ({ pollId, addAnswer, addError }: IPollChatBox) => {
-  const appContext = useAuth();
-  const [user, setUser] = useState<User | null>(null);
+const PollChatBox = ({
+  pollId,
+  addAnswer,
+  addError,
+  showSection,
+  user,
+}: IPollChatBox) => {
   const [chatUsers, setChatUsers] = useState<User[]>([]);
 
   const { loading, error, data, subscribeToMore } = useQuery(
     GraphResolvers.queries.GET_POLL_CHATS,
     { variables: { pollId } }
-  );
-
-  const [getUser, { data: userData }] = useLazyQuery(
-    GraphResolvers.queries.GET_USER
   );
 
   const creators = data?.messagesByPoll.map((item: { creator: User }) => {
@@ -36,9 +35,6 @@ const PollChatBox = ({ pollId, addAnswer, addError }: IPollChatBox) => {
     .map((item: string) => JSON.parse(item));
 
   useEffect(() => {
-    getUser();
-    userData && setUser(userData!.getUserData!.user);
-
     if (data) {
       uniqueCreators && setChatUsers(uniqueCreators);
       subscribeToMore({
@@ -59,7 +55,7 @@ const PollChatBox = ({ pollId, addAnswer, addError }: IPollChatBox) => {
       const listItem = chatItem && document.getElementById(chatItem._id);
       listItem?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [data, userData]);
+  }, [data]);
 
   if (loading) {
     return (
@@ -76,21 +72,32 @@ const PollChatBox = ({ pollId, addAnswer, addError }: IPollChatBox) => {
   }
 
   return (
-    <div className={`alert alert-light ${chatWindow} d-flex flex-row`}>
-      <ChatSideBar
-        pollId={pollId}
-        appUser={user}
-        userList={uniqueCreators}
-        currentUsers={chatUsers}
-        updateUsers={setChatUsers}
-      />
-      <ChatBody
-        pollId={pollId}
-        appUser={user}
-        data={data!.messagesByPoll}
-        addAnswer={addAnswer}
-        addError={addError}
-      />
+    <div
+      className="alert alert-light d-flex flex-column align-items-center mb-3"
+      style={{ margin: "1.5vh" }}
+    >
+      <h5 className={`${pollStyles.pollHeaderTxt}`}>POLL CHAT</h5>
+      {!showSection && (
+        <div
+          className={`d-flex flex-row w-100 mt-2`}
+          style={{ height: "50vh" }}
+        >
+          <ChatSideBar
+            pollId={pollId}
+            appUser={user}
+            userList={uniqueCreators}
+            currentUsers={chatUsers}
+            updateUsers={setChatUsers}
+          />
+          <ChatBody
+            pollId={pollId}
+            appUser={user}
+            data={data!.messagesByPoll}
+            addAnswer={addAnswer}
+            addError={addError}
+          />
+        </div>
+      )}
     </div>
   );
 };

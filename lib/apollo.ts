@@ -61,13 +61,13 @@ const splitLink = wsLink
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, response, operation }) => {
+    // response && response.errors == null
     if (graphQLErrors) {
       graphQLErrors.map(({ message, locations, path }) => {
         // if (message === "Not Authenticated.  Please Log In!") {
         //   response.errors = null;
         //   //   // console.log(response.errors[0].message);
         // }
-
         console.log(
           `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
         );
@@ -95,6 +95,23 @@ const cacheOptions: InMemoryCacheConfig = {
           merge: false,
         },
         answersByPoll: {
+          merge: false,
+        },
+      },
+    },
+    Answer: {
+      fields: {
+        likes: {
+          merge: false,
+        },
+        dislikes: {
+          merge: false,
+        },
+      },
+    },
+    User: {
+      fields: {
+        following: {
           merge: false,
         },
       },

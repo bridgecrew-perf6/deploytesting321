@@ -35,9 +35,10 @@ const AuthProvider: React.FC = ({ children }) => {
 
   const signOut = () => {
     setAuthState(initialAuthState);
-    // if (typeof window !== "undefined") {
-    //   localStorage.removeItem("useId");
-    // }
+
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("poldItUser");
+    }
   };
 
   return (

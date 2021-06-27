@@ -14,6 +14,79 @@ const userQueries = {
             _id
             creationDate
           }
+          following {
+            _id
+            appId
+          }
+          favorites {
+            _id
+            favoriteId
+            favoriteType
+          }
+        }
+      }
+    }
+  `,
+  GET_APPUSER: gql`
+    query GetAppUserData($userId: String!) {
+      getAppUserData(userId: $userId) {
+        _id
+        appid
+        firstname
+        lastname
+        email
+        address1
+        address2
+        city
+        state
+        zipcode
+        bio
+        isAppUser
+        profilePic
+        following {
+          _id
+          appId
+          profilePic
+        }
+        registerDate
+        pollHistory {
+          _id
+          creationDate
+        }
+        favorites {
+          _id
+          favoriteId
+          favoriteType
+        }
+      }
+    }
+  `,
+  GET_FAVORITES: gql`
+    query ShowFavorites($userId: String!) {
+      showFavorites(userId: $userId) {
+        favoritePolls {
+          _id
+          question
+          topic {
+            topic
+          }
+          subTopics {
+            _id
+            subTopic
+          }
+          creationDate
+          creator {
+            _id
+            appid
+            profilePic
+          }
+          answers {
+            _id
+          }
+        }
+        favoriteAnswers {
+          _id
+          answer
         }
       }
     }

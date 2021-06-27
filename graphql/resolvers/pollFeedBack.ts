@@ -2,10 +2,12 @@ import { ResolverMap } from "../../components/appTypes/appType";
 import Answer from "../../models/answerModel";
 import IPoll from "../../models/interfaces/poll";
 import Poll from "../../models/PollModel";
-// import User from "../../models/UserModel";
+import User from "../../models/UserModel";
 import { transformAnswer, transformPoll } from "./shared";
 import batchLoaders from "../loaders/dataLoaders";
 import IAnswer from "../../models/interfaces/answer";
+import { getNumRanking } from "./shared/metrics";
+import IUser from "../../models/interfaces/user";
 
 const { batchAnswers } = batchLoaders;
 
@@ -13,13 +15,14 @@ export const feedBackResolvers: ResolverMap = {
   Query: {
     answersByPoll: async (parent, { pollId }, { dataLoaders }) => {
       try {
-        const answers = await Answer.find({ poll: pollId });
+        const answers: IAnswer[] = await Answer.find({ poll: pollId });
 
         const answerData = answers.map((answer) =>
           transformAnswer(answer, dataLoaders(["user", "poll", "comment"]))
         );
 
         return answerData;
+        // return getNumRanking(answerData);
       } catch (err) {
         throw new Error(err);
       }
@@ -79,6 +82,7 @@ export const feedBackResolvers: ResolverMap = {
     },
 
     //Recode - Too verbose - Can be a lot shorter code wise
+    //Possibly use findOneAndUpdate for model instead of saving the object with new props
     handleLikeDislike: async (
       parent,
       { feedback, feedbackVal, answerId },
@@ -133,6 +137,29 @@ export const feedBackResolvers: ResolverMap = {
           );
         }
 
+        const answers: IAnswer[] = await Answer.find({ poll: answer.poll });
+
+        const updatedAnswers = answers.map((item) => {
+          if (item.id === answerId) {
+            return transformAnswer(
+              answer,
+              dataLoaders(["user", "poll", "comment"])
+            );
+          } else
+            return transformAnswer(
+              item,
+              dataLoaders(["user", "poll", "comment"])
+            );
+        });
+
+        const rankedAnswers = getNumRanking(updatedAnswers);
+
+        const rankedAnswerIdx = rankedAnswers.findIndex(
+          (item) => item._id === answerId
+        );
+
+        answer.rank = rankedAnswers[rankedAnswerIdx].rank;
+
         const savedAnswer = await answer.save();
         const createdAnswer = transformAnswer(
           savedAnswer,
@@ -141,7 +168,7 @@ export const feedBackResolvers: ResolverMap = {
 
         pubsub.publish("newAnswer", { newAnswer: createdAnswer });
 
-        return "done";
+        return createdAnswer;
       } catch (err) {
         throw err;
       }

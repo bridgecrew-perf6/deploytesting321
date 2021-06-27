@@ -8,6 +8,7 @@ import { Answer, SliderSettings, User } from "../../appTypes/appType";
 import { useMutation, useQuery } from "@apollo/client";
 import AppLoading from "../Other/Loading";
 import { useAuth } from "../../authProvider/authProvider";
+import { numCountDisplay } from "../../formFuncs/miscFuncs";
 
 const { answerItem, pollHeaderTxt, itemIcon, itemIconBadge } = pollStyles;
 
@@ -15,10 +16,19 @@ interface PollAnswer {
   creator: User | undefined;
   poll: string;
   loading: boolean;
-  answers: Answer[] | undefined | null;
+  answers: Answer[];
+  showSection: boolean;
+  addError: (error: string) => void;
 }
 
-const PollAnswers = ({ creator, poll, loading, answers }: PollAnswer) => {
+const PollAnswers = ({
+  creator,
+  poll,
+  loading,
+  answers,
+  showSection,
+  addError,
+}: PollAnswer) => {
   const sliderSettings: SliderSettings = {
     dots: true,
     infinite: false,
@@ -32,8 +42,15 @@ const PollAnswers = ({ creator, poll, loading, answers }: PollAnswer) => {
   const userId = authState?.authState?.user?._id;
 
   const [handleLikes_disLikes] = useMutation(
-    GraphResolvers.mutations.LIKE_DISLIKE_HANDLER
+    GraphResolvers.mutations.LIKE_DISLIKE_HANDLER,
+    {
+      onError: (e) => addError(e.message),
+    }
   );
+
+  const numAnswers = answers ? answers.length : 0;
+
+  const answerCount = answers && numCountDisplay(numAnswers);
 
   const likeHandler = (
     feedback: string,
@@ -46,12 +63,6 @@ const PollAnswers = ({ creator, poll, loading, answers }: PollAnswer) => {
         feedbackVal,
         answerId,
       },
-      refetchQueries: [
-        {
-          query: GraphResolvers.queries.GET_ANSWERS_BY_POLL,
-          variables: { pollId: poll },
-        },
-      ],
     });
   };
 
@@ -75,23 +86,26 @@ const PollAnswers = ({ creator, poll, loading, answers }: PollAnswer) => {
       style={{ margin: "1.5vh" }}
     >
       <h5 className={`${pollHeaderTxt}`}>POLL ANSWERS</h5>
-      <DataSlider settings={sliderSettings}>
-        {answers && answers.length > 0 ? (
-          answers.map((item: Answer) => (
-            <AnswerItem
-              data={item}
-              key={item._id}
-              likeHandler={likeHandler}
-              userId={userId && userId}
-            />
-          ))
-        ) : (
-          <div>
-            There are no answers for this poll. Be the first to provide an
-            answer!
-          </div>
-        )}
-      </DataSlider>
+      {!showSection && (
+        <DataSlider settings={sliderSettings}>
+          {answers && answers.length > 0 ? (
+            answers.map((item: Answer) => (
+              <AnswerItem
+                data={item}
+                key={item._id}
+                likeHandler={likeHandler}
+                userId={userId && userId}
+                numAnswers={answerCount}
+              />
+            ))
+          ) : (
+            <div>
+              There are no answers for this poll. Be the first to provide an
+              answer!
+            </div>
+          )}
+        </DataSlider>
+      )}
     </div>
   );
 };
@@ -100,9 +114,10 @@ interface AnswerItem {
   data: Answer;
   likeHandler: (handlerCat: string, val: boolean, id: string) => void;
   userId: string;
+  numAnswers: string;
 }
 
-const AnswerItem = ({ data, likeHandler, userId }: AnswerItem) => {
+const AnswerItem = ({ data, likeHandler, userId, numAnswers }: AnswerItem) => {
   const likeMatch = data.likes.some((item) => item.userId === userId);
   const dislikeMatch = data.dislikes.some((item) => item.userId === userId);
 
@@ -113,6 +128,11 @@ const AnswerItem = ({ data, likeHandler, userId }: AnswerItem) => {
   const dislikeBtnStyle = dislikeMatch
     ? "btn btn-danger text-white mt-2 mr-1"
     : "btn btn-none text-muted mt-2 mr-1";
+
+  const itemRanking =
+    data.rank !== "Not Ranked"
+      ? `${data.rank} out of ${numAnswers}`
+      : `${data.rank}`;
 
   return (
     <div className={`p-3 m-2 ${answerItem} rounded`}>
@@ -163,7 +183,7 @@ const AnswerItem = ({ data, likeHandler, userId }: AnswerItem) => {
           className="mt-2 rounded p-2 text-white"
           style={{ fontSize: 13, backgroundColor: "#1e90ff" }}
         >
-          100 out of 100
+          {itemRanking}
         </div>
 
         <div

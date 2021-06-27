@@ -13,5 +13,6 @@ export default interface IAnswer extends MongoDoc {
   creator: string;
   creationDate: Date;
   likes: { userId: string; like: boolean }[];
-  dislikes: { userId: string; dislike: boolean}[];
+  dislikes: { userId: string; dislike: boolean }[];
+  rank: string;
 }

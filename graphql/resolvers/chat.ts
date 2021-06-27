@@ -84,42 +84,5 @@ export const chatResolvers: ResolverMap = {
       subscribe: (parent, args, { pubsub }) =>
         pubsub.asyncIterator("newMessage"),
     },
-    // messages: {
-    //   subscribe: (parent, args, { pubsub, dataLoaders }) => {
-    //     const messageData = messages.map((item) =>
-    //       transformChat(item, dataLoaders(["user", "poll"]))
-    //     );
-
-    //     const channel = Math.random().toString(36).slice(2, 15);
-    //     onMessagesUpdates(() =>
-    //       pubsub.publish(channel, { messages: messageData })
-    //     );
-    //     setTimeout(() => pubsub.publish(channel, { messages: messageData }), 0);
-    //     return pubsub.asyncIterator(channel);
-    //   },
-    // },
-    // messagesByPoll: {
-    //   subscribe: (parent, { pollId }, { pubsub, dataLoaders }) => {
-    //     const messagePollData = messages.filter((item) => item.poll === pollId);
-
-    //     const messageData = messagePollData.map((item) =>
-    //       transformChat(item, dataLoaders(["user", "poll"]))
-    //     );
-
-    //     onMessagesUpdates(() =>
-    //       pubsub.publish(pollId, { messagesByPoll: messageData })
-    //     );
-    //     setTimeout(
-    //       () => pubsub.publish(pollId, { messagesByPoll: messageData }),
-    //       0
-    //     );
-    //     return pubsub.asyncIterator(pollId);
-    //   },
-    // },
-    // messageAdded: {
-    //   subscribe: (parent, { pollId }, { pubsub, dataLoaders }) => {
-    //     return pubsub.asyncIterator(["ChatMessage"]);
-    //   },
-    // },
   },
 };

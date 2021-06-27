@@ -74,3 +74,28 @@
 .answerBtn:hover {
   color: #ff4d00;
 }
+
+.maxMinBtn {
+  position: absolute;
+  top: 1%;
+  z-index: 1;
+  left: 2%;
+}
+
+.imgIconBtn {
+  border: 1px solid #ff4d00;
+  position: absolute;
+  top: 17px;
+  right: 15px;
+  z-index: 2;
+
+  /* align-items: stretch;
+  border-radius: 60%;
+  height: 140px;
+  width: auto;
+  overflow: visible; */
+}
+
+.metricsBtn:focus {
+background-color: red;
+}

@@ -17,14 +17,22 @@ const pollFeedBackQueries = {
           comment
         }
         likes {
+          _id
           userId
           like
         }
         dislikes {
+          _id
           userId
           dislike
         }
+        rank
       }
+    }
+  `,
+  IS_FAVORITE: gql`
+    query IsFavorite($favType: String!, $favId: String!) {
+      isFavorite(favType: $favType, favId: $favId)
     }
   `,
   GET_POLL_CHATS: gql`

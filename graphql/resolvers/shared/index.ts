@@ -173,3 +173,14 @@ export const clearAppCookie = (res: Response) => {
     maxAge: -1,
   });
 };
+
+export const decodeJWToken = async (tokenVal: string) => {
+  try {
+    const payload = await jwt.verify(tokenVal, JwtKey);
+    return payload
+  } catch (err) {
+    throw err;
+  }
+
+  // return payload
+};

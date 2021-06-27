@@ -27,36 +27,56 @@ interface User {
   password?: string;
   address1?: string;
   address2?: string;
+  isAppUser?: boolean;
+  bio?: string;
   city?: string;
   state?: string;
-  zipCode?: string;
+  zipcode?: string;
   appid: string;
   email?: string;
+  following?: Follower[];
   profilePic?: string;
   registerDate?: Date;
   pollHistory?: PollHistory[];
 }
 
-interface Reply {
-  _id: string;
-  __typename?: string;
-  reply: string;
-  comment: Comment;
-  creator?: User;
-  replyImages: string[];
-  creationDate: string;
+interface Follower {
+  _id: String;
+  appId: string;
+  profilePic: string | undefined;
 }
 
-interface Comment {
-  _id: string;
-  __typename?: string;
-  comment: string;
-  answer: Answer;
-  creator?: User;
-  commentImages: string[];
-  replies?: Reply[];
-  creationDate: string;
+interface GetAppUser {
+  getAppUserData: User;
 }
+
+interface MainUser {
+  getUserData: {
+    appToken: string;
+    user: User;
+  };
+}
+
+// interface Reply {
+//   _id: string;
+//   __typename?: string;
+//   reply: string;
+//   comment: Comment;
+//   creator?: User;
+//   replyImages: string[];
+//   creationDate: string;
+// }
+
+// interface Comment {
+//   _id: string;
+//   __typename?: string;
+//   comment: string;
+//   answer: Answer;
+//   creator?: User;
+//   commentImages: string[];
+//   replies?: Reply[];
+//   creationDate: string;
+// }
 
 interface Answer {
   _id: string;
@@ -69,6 +89,7 @@ interface Answer {
   creationDate: string;
   likes: { userId: string; like: boolean }[];
   dislikes: { userId: string; dislike: boolean }[];
+  rank?: string | number;
 }
 
 interface PollHistory {
@@ -221,6 +242,8 @@ interface IPollChatBox {
   updateUsers?: (userList: User[]) => void;
   addAnswer?: (answer: string, aswerImgs: SelectedImage[]) => void;
   addError?: (errMssg?: string) => void;
+  showSection?: boolean;
+  user?: User | null;
 }
 
 interface ChatMessage {
@@ -249,4 +272,18 @@ interface SliderSettings {
   dotsClass?: string;
   customPaging?: (i: number) => JSX.Element;
   appendDots?: (vals: object[]) => JSX.Element;
+}
+
+interface ProfileType {
+  type: string;
+  active: boolean;
+  loading: boolean;
+  numCount?: number;
+  data: PollHistory[] | UserFavorites;
+  error?: string;
+}
+
+interface UserFavorites {
+  favoritePolls: PollHistory[];
+  favoriteAnswers: Answer[];
 }

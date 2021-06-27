@@ -53,10 +53,26 @@ const userSchema: Schema = new Schema({
     required: true,
     default: Date.now,
   },
+  bio: { type: String, required: false },
+  following: [
+    {
+      appId: { type: String },
+      profilePic: { type: String },
+    },
+  ],
   pollHistory: [
     {
       type: Schema.Types.ObjectId,
       ref: "Poll",
+    },
+  ],
+  favorites: [
+    {
+      favoriteType: { type: String, enum: ["Poll", "Answer"] },
+      favoriteId: {
+        type: Schema.Types.ObjectId,
+        refPath: "favoriteType",
+      },
     },
   ],
 });

@@ -10,15 +10,21 @@ import {
 } from "../../../components/appTypes/appType";
 import { SitePageContainer } from "../../../components/layout";
 import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
-import { useAuth } from "../../../components/authProvider/authProvider";
 import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
 import PollChat from "../../../components/pageComponents/Poll/Chat";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
 import { saveImgtoCloud } from "../../../components/apis/imgUpload";
 import { AddAnswer } from "../../../components/pageComponents/Poll/pollComps";
+import { MaxMinBtn } from "../../../components/layout/customComps";
 
-const { GET_POLL, GET_POLLS_ALL, GET_ANSWERS_BY_POLL } = GraphResolvers.queries;
+const {
+  GET_POLL,
+  GET_POLLS_ALL,
+  GET_ANSWERS_BY_POLL,
+  GET_USER,
+  GET_USERPOLLS,
+} = GraphResolvers.queries;
 const apolloClient = initializeApollo();
 
 interface Props {
@@ -29,6 +35,9 @@ const poll = ({ data }: Props) => {
   //States
   const [error, updateError] = useState<string[]>([]);
   const [answerWindow, showAnswerWindow] = useState(false);
+  const [answersSection, showAnswersSection] = useState(false);
+  const [chatSection, showChatSection] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   //Graph API Requests
   const [addAnswerToPolls] = useMutation(
@@ -37,6 +46,8 @@ const poll = ({ data }: Props) => {
       onError: (e) => addError(e.message),
     }
   );
+
+  const [getUser, { data: userData }] = useLazyQuery(GET_USER);
 
   const {
     data: answerData,
@@ -48,6 +59,9 @@ const poll = ({ data }: Props) => {
 
   //Component Mounted
   useEffect(() => {
+    getUser();
+    userData && setUser(userData!.getUserData!.user);
+
     if (answerData) {
       subscribeToMore({
         document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
@@ -55,7 +69,7 @@ const poll = ({ data }: Props) => {
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData) return prev;
           const newAnswerItem = subscriptionData.data.newAnswer;
-          const answerMatchIdx: number = prev.answersByPoll.findIndex(
+          const answerMatchIdx: number = prev?.answersByPoll.findIndex(
             (item: Answer) => item._id === newAnswerItem._id
           );
           if (answerMatchIdx > -1) {
@@ -78,11 +92,19 @@ const poll = ({ data }: Props) => {
         },
       });
     }
-  }, [answerData]);
+  }, [userData, answerData]);
 
   //Functions
   const toggleAddAnswer = () => {
     showAnswerWindow(!answerWindow);
+  };
+
+  const toggleSection = (section: string) => {
+    if (section === "answers") {
+      showAnswersSection(!answersSection);
+    } else {
+      showChatSection(!chatSection);
+    }
   };
 
   const addError = (errMssg?: string) => {
@@ -149,18 +171,36 @@ const poll = ({ data }: Props) => {
           />
         </div>
       )}
-      <PollAnswers
-        creator={data.poll.creator}
-        poll={data.poll._id}
-        loading={loading}
-        answers={answerData?.answersByPoll}
-      />
+      <div className="position-relative">
+        <MaxMinBtn
+          btnState={answersSection}
+          toggleBtn={toggleSection}
+          btnCat="answers"
+        />
+        <PollAnswers
+          creator={data.poll.creator}
+          poll={data.poll._id}
+          loading={loading}
+          answers={answerData?.answersByPoll}
+          showSection={answersSection}
+          addError={addError}
+        />
+      </div>
 
-      <PollChat
-        pollId={data.poll._id}
-        addAnswer={addAnswer}
-        addError={addError}
-      />
+      <div className="position-relative mb-2">
+        <MaxMinBtn
+          btnState={chatSection}
+          toggleBtn={toggleSection}
+          btnCat="chat"
+        />
+        <PollChat
+          pollId={data.poll._id}
+          addAnswer={addAnswer}
+          addError={addError}
+          showSection={chatSection}
+          user={user}
+        />
+      </div>
     </SitePageContainer>
   );
 };

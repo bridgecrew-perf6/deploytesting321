@@ -5,11 +5,22 @@ import chatStyles from "../../../../appStyles/chatStyles.module.css";
 import appStyles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { OnChangeSearchBar } from "../../Other/NavBar/searchBar";
-
+import { FiMinusSquare, FiPlusSquare } from "react-icons/fi";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-import { ChatMessage, IPollChatBox, User } from "../../../appTypes/appType";
+import {
+  ChatMessage,
+  Follower,
+  IPollChatBox,
+  User,
+} from "../../../appTypes/appType";
 import ProfileImg from "../../Profile/profileImg";
 import { filterSearchVals } from "../../../formFuncs/miscFuncs";
+import Link from "next/link";
+import { IconType } from "react-icons/lib";
+import {
+  addFollow,
+  removeFollow,
+} from "../../../../lib/apollo/apolloFunctions/mutations";
 
 const { chatSideBar, chatMessage, userMessage, chatSearch, chatInput } =
   chatStyles;
@@ -31,10 +42,12 @@ export const ChatSideBar = ({
   };
 
   return (
-    <div className={`d-flex flex-column ${chatSideBar}`}>
+    <div
+      className={`d-flex flex-column ${chatSideBar} border border-secondary`}
+    >
       <div
         className="d-flex align-items-center justify-content-center border-bottom"
-        style={{ height: "9%" }}
+        style={{ height: "10%" }}
       >
         Poll Participants
       </div>
@@ -47,7 +60,11 @@ export const ChatSideBar = ({
         <div className="flex-fill list-group overflow-auto p-2">
           {currentUsers?.map((item) => (
             <div key={item._id}>
-              <ChatUser user={item} />
+              <ChatUser
+                user={item}
+                following={appUser?.following}
+                selfId={appUser?._id}
+              />
             </div>
           ))}
         </div>
@@ -64,17 +81,54 @@ export const ChatSideBar = ({
 
 interface ChatSideBarUser {
   user: User;
+  following: Follower[] | undefined;
+  selfId: string | undefined;
 }
 
-export const ChatUser = ({ user }: ChatSideBarUser) => {
+export const ChatUser = ({ user, following, selfId }: ChatSideBarUser) => {
+  const [follow] = useMutation(GraphResolvers.mutations.ADD_FOLLOW);
+  const [unfollow] = useMutation(GraphResolvers.mutations.REMOVE_FOLLOW);
+
+  const selfMatch = user._id === selfId;
+  const followMatch = following?.some((item) => item.appId === user.appid);
+
+  const FollowHandleIcon = () => {
+    let followIcon: any;
+
+    if (!selfMatch && !followMatch) {
+      followIcon = (
+        <FiPlusSquare
+          style={{ height: 20, width: 20, color: "green" }}
+          onClick={() => addFollow(follow, user.appid)}
+        />
+      );
+    }
+
+    if (!selfMatch && followMatch) {
+      followIcon = (
+        <FiMinusSquare
+          style={{ height: 20, width: 20, color: "red" }}
+          onClick={() => removeFollow(unfollow, user.appid)}
+        />
+      );
+    }
+
+    return <div style={{ cursor: "pointer" }}>{followIcon && followIcon}</div>;
+  };
+
   return (
-    <div className="list-group-item m-1 p-1 d-flex align-items-center rounded">
-      <ProfileImg
-        profilePic={user.profilePic}
-        picStyle={{ height: 40, width: 40 }}
-        color="gray"
-      />
-      <div className="ml-2">{user.appid}</div>
+    <div className="list-group-item m-1 p-1 d-flex align-items-center justify-content-between rounded">
+      <div className="d-flex align-items-center">
+        <ProfileImg
+          profilePic={user.profilePic}
+          id={user._id}
+          appId={user.appid}
+          picStyle={{ height: 40, width: 40 }}
+          color="gray"
+        />
+        <div className="ml-2">{user.appid}</div>
+      </div>
+      <FollowHandleIcon />
     </div>
   );
 };
@@ -88,7 +142,7 @@ export const ChatBody = ({
 }: IPollChatBox) => {
   return (
     <div className="d-flex flex-column border h-100" style={{ width: "90%" }}>
-      <div className="border border-secondary p-2" style={{ height: "10%" }}>
+      <div className="border border-secondary p-2" style={{ height: "9%" }}>
         Header
       </div>
       <div className="border border-secondary flex-grow-1 p-2">
@@ -178,7 +232,7 @@ const ChatInput = ({ pollId, addAnswer, addError }: IPollChatBox) => {
 
   const [addChatMssg] = useMutation(
     GraphResolvers.mutations.CREATE_CHAT_MESSAGE,
-    {}
+    { onError: (e) => addError && addError(e.message) }
   );
 
   const addChatItem = (isAnswer: boolean = false) => {
@@ -230,7 +284,16 @@ const ChatInput = ({ pollId, addAnswer, addError }: IPollChatBox) => {
             data-toggle="tooltip"
             data-placement="bottom"
             title="Click to add as an answer to the poll"
-            onClick={() => addChatItem(true)}
+            onClick={() => {
+              if (input.length === 0) {
+                addError &&
+                  addError(
+                    "Please add an answer in the chat area to submit an answer."
+                  );
+                return;
+              }
+              addChatItem(true);
+            }}
           >
             A
           </span>

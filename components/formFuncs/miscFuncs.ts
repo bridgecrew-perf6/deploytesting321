@@ -1,4 +1,9 @@
-import { IHTMLElementForm, ISubTopic, ITopic } from "../appTypes/appType";
+import {
+  Answer,
+  IHTMLElementForm,
+  ISubTopic,
+  ITopic,
+} from "../appTypes/appType";
 
 export const containsSpecialCharacters = (str: string) => {
   const regex = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;

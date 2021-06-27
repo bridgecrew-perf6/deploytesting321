@@ -31,12 +31,26 @@ export const AppMssgList = ({ mssgs }: { mssgs: AppMssg[] }) => {
   );
 };
 
-export const StateVals = ({ stateList }: { stateList: StatesUS[] }) => {
+export const StateVals = ({
+  stateList,
+  activeState,
+}: {
+  stateList: StatesUS[];
+  activeState?: string | undefined;
+}) => {
   return (
     <>
-      {stateList.map((stateVal) => (
-        <option key={stateVal.id}>{stateVal.name}</option>
-      ))}
+      {stateList.map((stateVal) => {
+        if (stateVal.name === activeState) {
+          return (
+            <option key={stateVal.id} disabled>
+              {stateVal.name}
+            </option>
+          );
+        }
+
+        return <option key={stateVal.id}>{stateVal.name}</option>;
+      })}
     </>
   );
 };

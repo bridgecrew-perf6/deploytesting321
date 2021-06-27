@@ -29,7 +29,7 @@
 }
 
 .appImg {
-  height: 10vh;
+  height: 100%;
   width: auto;
 }
 
@@ -63,17 +63,40 @@
   cursor: pointer;
 }
 
-.floatingCtr {
+.profilePageIcon {
+  border: 2.5px solid white;
+}
+
+.profileEditBtn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+/* .floatingCtr {
+  padding: 0;
+  width: 100%;
+  height: 60%;
+  border: 3px solid white;
+  border-radius: 75px;
+} */
+
+/* .floatingCtr {
   position: absolute;
   width: 10vh;
   height: 10vh;
   top: 5.5em;
-  border: 2px solid white;
+  border: 4px solid white;
   border-radius: 75px;
-  overflow: hidden;
-}
+} */
 
-.floatingCtr:hover + .popup {
+/* .profileEditCtr {
+  height: 60%;
+  width: 12%;
+} */
+
+/* .floatingCtr:hover + .popup {
   display: block;
   color: whitesmoke;
   margin-left: 22vh;
@@ -82,7 +105,7 @@
 
 .popup {
   display: none;
-}
+} */
 
 .searchBar:hover {
   border-color: black;
@@ -142,6 +165,62 @@
   right: 0;
 }
 
+.profileTypeBtn {
+  background-color: white;
+  cursor: pointer;
+  color: gray;
+  font-weight: 600;
+}
+
+.profileTypeBtn_active {
+  cursor: pointer;
+  color: white;
+  background-color: #ff4d00;
+  font-weight: 600;
+}
+
+.profileTypeBtn_active span {
+  background-color: white;
+  color: gray;
+  padding: 8px;
+  font-weight: 700;
+  border-radius: 30%;
+}
+
+.profileTypeBtn span {
+  background-color: gray;
+  color: whitesmoke;
+  font-weight: 700;
+  padding: 8px;
+  border-radius: 30%;
+}
+
+/* .dataItem {
+  height: 9.5vh;
+} */
+
+.dataItem p,
+.dataItem a,
+.dataItem li {
+  font-size: 14px;
+  color: gray;
+  font-weight: 400;
+}
+
+.miniBtn {
+  background-color: #acacac;
+  cursor: pointer;
+}
+
+.answerBtnMuted {
+  background-color: #acacac;
+  padding: 2px 5px 2px 5px;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: "malgun";
+}
 /* .dropDownCtr ul li {
   padding: 2px;
 } */

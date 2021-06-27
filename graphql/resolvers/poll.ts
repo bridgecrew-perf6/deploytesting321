@@ -1,4 +1,5 @@
 import { ResolverMap } from "../../components/appTypes/appType";
+import IUser from "../../models/interfaces/user";
 import Poll from "../../models/PollModel";
 import User from "../../models/UserModel";
 import { transformPoll } from "./shared";
@@ -31,6 +32,34 @@ export const pollResolvers: ResolverMap = {
         );
 
         return fullPoll;
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    pollsByUser: async (_, { userId }, ctx) => {
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please Log In!");
+      }
+
+      try {
+        const userPolls = await Poll.find({ creator: userId });
+
+        if (userPolls.length === 0) {
+          throw new Error(
+            "No Polls Found.  Use the New Poll feature to add polls about topics and subtopics that interest you.  You can see all your created polls here."
+          );
+        }
+
+        return userPolls.map((poll) =>
+          transformPoll(
+            poll,
+            dataLoaders(["user", "topic", "subTopic", "answer"])
+          )
+        );
       } catch (err) {
         throw err;
       }

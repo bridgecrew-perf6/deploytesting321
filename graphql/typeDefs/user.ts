@@ -14,10 +14,31 @@ export const userTypeDefs = gql`
     address2: String
     city: String
     state: String
-    zipCode: String
+    zipcode: String
     profilePic: String
+    bio: String
     registerDate: String
+    isAppUser: Boolean
     pollHistory: [PollQuestion!]
+    favorites: [Favorite]
+    following: [Following]
+  }
+
+  type Favorites {
+    favoritePolls: [PollQuestion]
+    favoriteAnswers: [Answer]
+  }
+
+  type Favorite {
+    _id: ID!
+    favoriteId: String!
+    favoriteType: String!
+  }
+
+  type Following {
+    _id: ID!
+    appId: String
+    profilePic: String
   }
 
   type AuthData {
@@ -28,6 +49,10 @@ export const userTypeDefs = gql`
   extend type Query {
     users: [User]!
     getUserData: AuthData!
+    showFavorites(userId: String!): Favorites!
+    getAppUserData(userId: String): User!
+    isFavorite(favType: String!, favId: String!): Boolean
+    getFollows: [Following]
     logout: String
   }
 
@@ -35,5 +60,10 @@ export const userTypeDefs = gql`
     login(credentials: String!): String!
     refreshUserToken(userId: ID!): String!
     createNewUser(formInputs: String!): User!
+    updateUser(formInputs: String!): String!
+    addFollow(userId: String!): Following!
+    removeFollow(userId: String!): Following!
+    addFavorite(favoriteType: String!, favoriteId: String!): Favorite!
+    removeFavorite(favoriteType: String!, favoriteId: String!): Favorite!
   }
 `;
