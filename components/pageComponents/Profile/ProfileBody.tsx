@@ -10,10 +10,13 @@ import {
 import AppLoading from "../Other/Loading";
 import Link from "next/link";
 import { numCountDisplay } from "../../formFuncs/miscFuncs";
+import { AiTwotoneBoxPlot } from "react-icons/ai";
+import { ToolTipCtr } from "../../layout/customComps";
 
 const {
   cursor,
   appbg_secondary,
+  appbg_other,
   profileTypeBtn,
   profileTypeBtn_active,
   dataItem,
@@ -48,7 +51,7 @@ const ProfileBody = ({ polls, favorites, clickHandler, btns }: ProfileBody) => {
   const { active, data, type, error } = btns.filter((item) => item.active)[0];
 
   return (
-    <div className={`card ${appbg_secondary} w-100`}>
+    <div className={`card ${appbg_other} w-100`}>
       <div className="card-body">
         <ProfileBtns clickHandler={clickHandler} items={btns} />
       </div>
@@ -95,7 +98,7 @@ const DataWindow = ({ data, windowType, error }: DataWindow) => {
   const sectionData = Array.isArray(data) ? data : data.favoritePolls;
 
   return (
-    <div className="d-flex h-100">
+    <div className={`d-flex h-100 ${appbg_other}`}>
       {error ? (
         <div className="d-flex p-3 align-items-center justify-content-center">
           <p className="text-center">{error}</p>
@@ -118,34 +121,35 @@ const DataItem = ({ item, itemType }: DataItem) => {
     <Link href={`/Polls/${item._id}`}>
       <div className={`bg-white m-2 d-flex p-2 ${dataItem} ${cursor}`}>
         <div className="col-8 border-right">
-          <div className="d-flex align-items-center" style={{ height: "7vh" }}>
+          <div
+            className="d-flex align-items-center pt-2"
+            style={{ height: "120px" }}
+          >
             <p>{item.question}</p>
           </div>
 
           <div className="d-flex justify-content-around p-2">
             <div className="d-flex">
-              <a
-                style={{ cursor: "pointer" }}
-                data-toggle="tooltip"
-                data-placement="right"
-                title="PoldIt Chat Messages"
+              <ToolTipCtr
+                mssg="Poll Chat Messages"
+                position="bottom"
+                style={{ bottom: "-35px", left: "50%" }}
               >
                 <BsFillChatSquareDotsFill size={25} color="#acacac" />
-              </a>
+              </ToolTipCtr>
               <a className="ml-2" style={{ fontWeight: 600 }}>
-                15
+                {item.chatMssgs ? item.chatMssgs.length : 0}
               </a>
             </div>
 
             <div className="d-flex">
-              <a
-                className={`${answerBtnMuted} rounded text-white`}
-                data-toggle="tooltip"
-                data-placement="right"
-                title="PoldIt Answers"
+              <ToolTipCtr
+                mssg="Poll Answers"
+                position="bottom"
+                style={{ bottom: "-35px", left: "50%" }}
               >
-                A
-              </a>
+                <a className={`${answerBtnMuted} rounded text-white`}>A</a>
+              </ToolTipCtr>
               <a className="ml-2" style={{ fontWeight: 600, marginTop: "1px" }}>
                 {answerCount}
               </a>
@@ -163,27 +167,31 @@ const DataItem = ({ item, itemType }: DataItem) => {
 
           <div className="d-flex flex-column mt-2">
             <div className="d-flex flex-row">
-              <p
-                className={`p-1 text-white ${miniBtn} rounded cursor`}
-                style={{ backgroundColor: "#ff6961" }}
-                data-toggle="tooltip"
-                data-placement="right"
-                title="PoldIt Topic"
+              <ToolTipCtr
+                mssg="Poll Topic"
+                position="top"
+                style={{ bottom: "55px", left: "50%" }}
               >
-                {item.topic.topic}
-              </p>
+                <p
+                  className={`p-1 text-white ${miniBtn} rounded cursor`}
+                  style={{ backgroundColor: "#ff6961" }}
+                >
+                  {item.topic.topic}
+                </p>
+              </ToolTipCtr>
             </div>
             <div className="d-flex flex-wrap">
               {item.subTopics.map((item) => (
-                <p
+                <ToolTipCtr
+                  mssg="Poll SubTopic"
+                  position="bottom"
                   key={item._id}
-                  className={`mr-1 ${miniBtn} text-white p-1 rounded`}
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  title="PoldIt SubTopic"
+                  style={{ bottom: "-20px", left: "50%" }}
                 >
-                  {item.subTopic}
-                </p>
+                  <p className={`mr-1 ${miniBtn} text-white p-1 rounded`}>
+                    {item.subTopic}
+                  </p>
+                </ToolTipCtr>
               ))}
             </div>
           </div>

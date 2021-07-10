@@ -6,6 +6,7 @@ import batchLoaders from "./dataLoaders";
 import ISubTopic from "../../models/interfaces/subTopic";
 import IAnswer from "../../models/interfaces/answer";
 import IReply from "../../models/interfaces/reply";
+import IChat from "../../models/interfaces/chat";
 
 const getLoaderByDataType = (dataType: string) => {
   let loader: any;
@@ -16,8 +17,8 @@ const getLoaderByDataType = (dataType: string) => {
     batchTopics,
     batchsubTopics,
     batchAnswers,
-    batchComments,
-    batchReplies,
+    batchChats,
+    // batchReplies,
   } = batchLoaders;
 
   switch (true) {
@@ -36,12 +37,12 @@ const getLoaderByDataType = (dataType: string) => {
     case dataType == "answer":
       loader = new DataLoader<string, IAnswer>(batchAnswers);
       break;
-    case dataType == "comment":
-      loader = new DataLoader<string, IAnswer>(batchComments);
+    case dataType == "chat":
+      loader = new DataLoader<string, IChat>(batchChats);
       break;
-    case dataType == "reply":
-      loader = new DataLoader<string, IReply>(batchReplies);
-      break;
+    // case dataType == "reply":
+    //   loader = new DataLoader<string, IReply>(batchReplies);
+    //   break;
   }
 
   return loader;

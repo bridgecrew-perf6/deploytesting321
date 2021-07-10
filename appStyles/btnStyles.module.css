@@ -25,7 +25,6 @@
 
 .customBtnOutlinePrimary {
   color: #ff4d00;
-
   border-color: #ff4d00;
 }
 
@@ -37,7 +36,7 @@
 
 .customBtnOutlinePrimary:focus,
 .customBtnOutlinePrimary.focus {
-  outline: none;
+  outline: none !important;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
 }
 
@@ -97,5 +96,127 @@
 }
 
 .metricsBtn:focus {
-background-color: red;
+  background-color: red;
+}
+
+.itemToolTip_Top,
+.itemToolTip_Left,
+.itemToolTip_Right,
+.itemToolTip_Bottom {
+  position: relative;
+  display: inline-block;
+}
+
+.itemToolTip_Top .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 1;
+  /* bottom: 55px;
+  left: 50%; */
+  margin-left: -60px;
+  font-size: 13px;
+}
+
+.itemToolTip_Left .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 1;
+  bottom: -50%;
+  left: -280%;
+  margin-left: -60px;
+  font-size: 13px;
+
+}
+.itemToolTip_Right .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 1;
+  bottom: -50%;
+  left: 400%;
+  margin-left: -60px;
+  font-size: 13px;
+}
+.itemToolTip_Bottom .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 1;
+  /* bottom: -20px;
+  left: 50%; */
+  margin-left: -60px;
+  font-size: 13px;
+}
+
+.itemToolTip_Top .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.itemToolTip_Left .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+
+.itemToolTip_Right .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
+.itemToolTip_Bottom .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.itemToolTip_Top:hover .tooltiptext,
+.itemToolTip_Left:hover .tooltiptext,
+.itemToolTip_Right:hover .tooltiptext,
+.itemToolTip_Bottom:hover .tooltiptext {
+  visibility: visible;
 }

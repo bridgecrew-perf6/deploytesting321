@@ -37,6 +37,13 @@ const pollSchema: Schema = new Schema({
     required: true,
     default: Date.now,
   },
+  views: { type: Number, default: 0 },
+  chatMssgs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Chat",
+    },
+  ],
 });
 
 export default models.Poll || model<IPoll>("Poll", pollSchema);

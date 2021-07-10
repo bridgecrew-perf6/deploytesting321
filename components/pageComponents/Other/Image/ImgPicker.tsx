@@ -6,6 +6,7 @@ import { RiCamera2Line } from "react-icons/ri";
 import { IoIosClose } from "react-icons/io";
 import { useAuth } from "../../../authProvider/authProvider";
 import { ErrorMssgCtr } from "../../Home/newPollComps";
+import { ToolTipCtr } from "../../../layout/customComps";
 
 interface ImgPicker {
   selectedImgs: SelectedImage[];
@@ -95,14 +96,14 @@ export const ImagePicker = ({ handleImg }: any) => {
   const inputRef = useRef(null);
 
   return (
-    <div
-      className={styles.cursor}
-      data-toggle="tooltip"
-      data-placement="top"
-      title="Insert Image"
-      onClick={() => imgPickerHandler(inputRef)}
-    >
-      <RiCamera2Line size="28px" color="#ff4d00" />
+    <div className={styles.cursor} onClick={() => imgPickerHandler(inputRef)}>
+      <ToolTipCtr
+        mssg="Insert Image"
+        position="right"
+        style={{ bottom: "0", left: "92px" }}
+      >
+        <RiCamera2Line size="28px" color="#ff4d00" />
+      </ToolTipCtr>
       <input
         type="file"
         id="imgPicker"

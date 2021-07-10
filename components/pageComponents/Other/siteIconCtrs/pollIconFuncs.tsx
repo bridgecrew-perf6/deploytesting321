@@ -46,6 +46,7 @@ export const getButtonIcon = (
       break;
     case btnType === "share-empty":
       BtnIcon = IoShareSocialOutline;
+      btnColor = "gray";
       break;
     case btnType === "share-fill":
       BtnIcon = IoShareSocialSharp;
@@ -69,9 +70,9 @@ export const getButtonIcon = (
 
   return (
     <BtnIcon
-      data-bs-toggle="tooltip"
-      data-bs-placement="bottom"
-      title={iconToolTip}
+      // data-bs-toggle="tooltip"
+      // data-bs-placement="bottom"
+      // title={iconToolTip}
       size={25}
       style={{ cursor: "pointer" }}
       color={btnColor}

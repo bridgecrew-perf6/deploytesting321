@@ -19,6 +19,10 @@ const chatSchema: Schema = new Schema({
       type: String,
     },
   ],
+  isAnswer: {
+    type: Boolean,
+    required: true,
+  },
   creationDate: {
     type: Date,
     required: true,

@@ -29,7 +29,7 @@ const NavBar: React.FC = (props) => {
   };
 
   return (
-    <nav className={`navbar ${styles.appColor}`}>
+    <nav className={`navbar ${styles.appbg_secondary} ${styles.header_fixed}`}>
       <Link href={"/"}>
         <a className="navbar-brand" href="#">
           <Logo />

@@ -116,6 +116,13 @@ const cacheOptions: InMemoryCacheConfig = {
         },
       },
     },
+    PollQuestion: {
+      fields: {
+        creationDate: {
+          merge: false,
+        },
+      },
+    },
   },
 };
 

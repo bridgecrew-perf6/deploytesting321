@@ -35,8 +35,8 @@
 
 .imgCtr {
   display: flex;
-  height: 30px;
-  width: 100px;
+  height: 50px;
+  width: auto;
   justify-content: center;
   align-items: center;
   overflow: hidden;
@@ -44,7 +44,7 @@
 
 .imgCtr img {
   width: auto;
-  height: 8.5vh;
+  height: 110px;
 }
 
 .appbg_primary {
@@ -52,11 +52,11 @@
 }
 
 .appbg_secondary {
-  background-color: #f2f3f4;
+  background-color: #ffffff;
 }
 
 .appbg_other {
-  background-color: #ededed;
+  background-color: #f2f3f4;
 }
 
 .cursor {
@@ -74,6 +74,85 @@
   overflow: hidden;
 }
 
+.componentSpacer {
+  width: 100%;
+  position: fixed;
+  top: 76px;
+  z-index: 10;
+}
+
+.header_fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 100%;
+}
+
+.dataWindow {
+  margin: 10px 200px 10px 200px;
+  width: 60vw;
+
+}
+
+.dataItem {
+  border: 1px solid lightgray;
+}
+
+/* .itemToolTip_Top,
+.itemToolTip_Left {
+  position: relative;
+  display: inline-block;
+}
+
+.itemToolTip_Top .tooltiptext,
+.itemToolTip_Left .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+  font-size: 13px;
+}
+
+.itemToolTip_Top .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+
+.itemToolTip_Left .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+} */
+
+
+.itemToolTip_Top:hover .tooltiptext {
+  visibility: visible;
+}
+
+/* .bodyCtr {
+
+} */
 /* .floatingCtr {
   padding: 0;
   width: 100%;
@@ -107,6 +186,10 @@
   display: none;
 } */
 
+.searchBar {
+  border: 1px solid #ff4d00;
+}
+
 .searchBar:hover {
   border-color: black;
   box-shadow: 0 0 5px black !important;
@@ -125,7 +208,7 @@
 }
 
 .profileIconCtr:hover {
-  border-color: white !important;
+  border-color: #ff4d00 !important;
   box-shadow: 0 0 0 white !important;
 }
 
@@ -141,7 +224,7 @@
   padding-left: 0;
   margin: 0;
   cursor: pointer;
-  background-color: #f7f7f7;
+  background-color: #ffffff;
 }
 
 .dropDownCtr li {

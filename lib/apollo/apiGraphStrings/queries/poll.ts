@@ -22,6 +22,11 @@ const pollQueries = {
         creator {
           _id
           appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
         }
       }
     }
@@ -49,6 +54,10 @@ const pollQueries = {
           appid
           profilePic
         }
+        views
+        chatMssgs {
+          _id
+        }
       }
     }
   `,
@@ -68,7 +77,106 @@ const pollQueries = {
         answers {
           _id
         }
+        views
+        chatMssgs {
+          _id
+        }
       }
+    }
+  `,
+  GET_NEWEST_POLLS: gql`
+    query NewestPolls {
+      newestPolls {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
+  GET_ACTIVE_CHATS: gql`
+    query ActiveChats {
+      activeChats {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
+  GET_TRENDING_POLLS: gql`
+    query TrendingPolls {
+      trendingPolls {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
+  SHOW_VIEWS: gql`
+    query ShowViews($pollId: String!) {
+      showViews(pollId: $pollId)
     }
   `,
 };

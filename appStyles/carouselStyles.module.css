@@ -29,6 +29,12 @@
   background: transparent;
 }
 
+.slick-slide img
+{
+    display: block;
+    object-fit: contain;
+}
+
 .customPrevArrow:hover,
 .customPrevArrow:focus,
 .customNextArrow:hover,

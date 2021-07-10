@@ -13,4 +13,6 @@ export default interface IPoll extends MongoDoc {
   answers: string[];
   creator: string;
   creationDate: Date;
+  views: number;
+  chatMssgs: string[];
 }

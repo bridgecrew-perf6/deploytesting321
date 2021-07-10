@@ -10,6 +10,8 @@ export const pollTypeDefs = gql`
     creationDate: String!
     pollImages: [String]
     answers: [Answer]
+    views: Int
+    chatMssgs: [ChatMessage]
   }
 
   type Like {
@@ -61,6 +63,10 @@ export const pollTypeDefs = gql`
     poll(pollId: String!): PollQuestion
     answersByPoll(pollId: String!): [Answer]
     pollsByUser(userId: String!): [PollQuestion]
+    showViews(pollId: String!): Int
+    trendingPolls: [PollQuestion]
+    newestPolls: [PollQuestion]
+    activeChats: [PollQuestion]
   }
 
   extend type Mutation {
@@ -72,6 +78,7 @@ export const pollTypeDefs = gql`
       answerId: String!
     ): Answer
     addAnswerRank(answerId: String!): String
+    addView(pollId: String!): Int
   }
 
   extend type Subscription {

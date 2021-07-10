@@ -1,96 +1,66 @@
-import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
-import Link from "next/link";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { GetStaticProps, NextPage } from "next";
-import { initializeApollo } from "../lib/apollo";
-import { useAuth } from "../components/authProvider/authProvider";
+import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
-import NewPoll from "../components/pageComponents/Home/NewPoll";
-import { AppMssgList } from "../components/formFuncs/formFuncs";
-// import { AppNavBarHeader } from "../components/pageComponents/Other/miscPageComps";
-import { PollWindow } from "../components/pageComponents/Other/pollComps";
-import { runGraphQuery } from "../lib/apollo/miscFunctions";
-import { PageForm } from "../components/layout/CompStyles";
-import NavBar from "../components/pageComponents/Other/NavBar";
-import {
-  PollsAll,
-  UserDataProps,
-  PollHistory,
-} from "../components/appTypes/appType";
+import { PollHistory } from "../components/appTypes/appType";
 import { SitePageContainer } from "../components/layout";
+import AddTopic from "../components/pageComponents/Other/TopicWindow/addTopicForm";
+import { HomeBtnWindow } from "../components/pageComponents/Home";
+import DataWindow from "../components/pageComponents/Home/DataWindow";
 
-const { GET_POLLS_ALL, GET_TOPICS } = GraphResolvers.queries;
-const { CREATE_TOPIC } = GraphResolvers.mutations;
+import AppLoading from "../components/pageComponents/Other/Loading";
 
-interface Props {
-  data?: PollsAll;
-}
+const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS } =
+  GraphResolvers.queries;
 
-const Home: NextPage<Props> = () => {
-  const appContext = useAuth();
+const Home = () => {
   const router = useRouter();
-  const { loading, error, data } = useQuery(GET_POLLS_ALL);
-  const [createTopic, { data: topicData }] = useMutation(CREATE_TOPIC); //Remove in future.  This is for testing
 
-  const handleTopicSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const { data: newPollData } = useQuery(GET_NEWEST_POLLS);
+  const { data: activeChats } = useQuery(GET_ACTIVE_CHATS);
+  const { data: trendingPolls } = useQuery(GET_TRENDING_POLLS);
+  const [pollData, updatePollData] = useState<PollHistory[]>([]);
 
-    const topic = (document.getElementById("topicInput") as HTMLInputElement)
-      .value;
-    const description = (document.getElementById(
-      "topicDescription"
-    ) as HTMLInputElement).value;
+  useEffect(() => {
+    pollHandler("Active Chats");
+  }, [newPollData, activeChats]);
 
-    createTopic({
-      variables: { topicInfo: JSON.stringify({ topic, description }) },
-      refetchQueries: [{ query: GET_TOPICS }],
-    });
+  const pollHandler = async (sortType: string) => {
+    if (sortType === "Newest Polls" && newPollData) {
+      updatePollData(newPollData.newestPolls);
+      return;
+    }
 
-    (document.getElementById("topicForm") as HTMLFormElement).reset();
+    if (sortType === "Active Chats" && activeChats) {
+      updatePollData(activeChats.activeChats);
+      return;
+    }
+
+    if (sortType === "Trending Polls" && trendingPolls) {
+      updatePollData(trendingPolls.trendingPolls);
+    }
   };
 
   return (
     <SitePageContainer title={`${router.pathname} Home`}>
-      <div className="p-3" style={{ backgroundColor: "#f4f4f4" }}>
-        <h1>HOME PAGE</h1>
-        {appContext && appContext.appMssgs.length > 0 && (
-          <AppMssgList mssgs={appContext.appMssgs} />
+      <HomeBtnWindow sortPolls={pollHandler} />
+      <div
+        className="d-flex justify-content-center"
+        style={{ marginTop: "170px" }}
+      >
+        {/* <AddTopic /> */}
+        {pollData ? (
+          <DataWindow data={pollData} />
+        ) : (
+          <AppLoading
+            message="Content Loading"
+            style={{ height: "50px", width: "50px" }}
+          />
         )}
-        <PollWindow polls={data?.polls} />
-        <Link href={"/Polls"}>
-          <button type="submit" className="btn btn-primary">
-            Polls Home Page
-          </button>
-        </Link>
+        {/* <PollWindow polls={data?.polls} /> */}
       </div>
 
-      <form
-        className="p-3 container"
-        id="topicForm"
-        onSubmit={handleTopicSubmit}
-      >
-        <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">
-            Topic
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="topicInput"
-            aria-describedby="emailHelp"
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            Description
-          </label>
-          <input type="text" className="form-control" id="topicDescription" />
-        </div>
-        <button type="submit" className="btn btn-success">
-          Create New Topic
-        </button>
-      </form>
+      {/* <AddTopic handleTopic={handleTopicSubmit} /> */}
     </SitePageContainer>
   );
 };

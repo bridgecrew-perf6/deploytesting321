@@ -12,10 +12,6 @@ const pollFeedBackQueries = {
         }
         answerImages
         creationDate
-        comments {
-          _id
-          comment
-        }
         likes {
           _id
           userId

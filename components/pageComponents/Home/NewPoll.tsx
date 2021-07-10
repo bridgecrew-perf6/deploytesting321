@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "jquery";
 import { FiPlusSquare } from "react-icons/fi";
@@ -24,6 +24,7 @@ import {
 import { saveImgtoCloud } from "../../apis/imgUpload";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { filterSearchVals } from "../../formFuncs/miscFuncs";
+import { ToolTipCtr } from "../../layout/customComps";
 
 const RichTextEditor = dynamic(() => import("../Other/RichText"), {
   ssr: false,
@@ -268,12 +269,15 @@ export default function NewPoll() {
                   >
                     <div
                       className={styles.cursor}
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Add new Sub Topic"
                       onClick={() => toggleAddBtn(!addBtn)}
                     >
-                      <FiPlusSquare size="28px" color="#ff4d00" />
+                      <ToolTipCtr
+                        mssg="Add new Sub-Topic"
+                        position="right"
+                        style={{ bottom: "0", left: "92px" }}
+                      >
+                        <FiPlusSquare size="28px" color="#ff4d00" />
+                      </ToolTipCtr>
                     </div>
 
                     <div

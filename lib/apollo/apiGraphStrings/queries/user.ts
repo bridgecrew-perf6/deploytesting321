@@ -83,6 +83,9 @@ const userQueries = {
           answers {
             _id
           }
+          chatMssgs {
+            _id
+          }
         }
         favoriteAnswers {
           _id

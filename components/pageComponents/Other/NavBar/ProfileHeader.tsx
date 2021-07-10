@@ -5,6 +5,7 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { IoPersonCircle } from "react-icons/io5";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import styles from "../../../../appStyles/appStyles.module.css";
+import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
 import NewPoll from "../../Home/NewPoll";
@@ -14,6 +15,7 @@ import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
+const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
 
 export default function ProfileHeader() {
   const router = useRouter();
@@ -34,9 +36,9 @@ export default function ProfileHeader() {
   }, [data]);
 
   const NotificationIcon = notification ? (
-    <AiFillNotification size={24} color="white" />
+    <AiFillNotification size={24} color="#ff4d00" />
   ) : (
-    <AiOutlineNotification size={24} color="white" />
+    <AiOutlineNotification size={24} color="#ff4d00" />
   );
 
   const handleLogOut = () => {
@@ -65,12 +67,18 @@ export default function ProfileHeader() {
         style={{ width: "15%" }}
       >
         <Link href={"/Login"}>
-          <button className="btn btn-outline-light my-2 my-sm-0" type="button">
+          <button
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            type="button"
+          >
             Log In
           </button>
         </Link>
         <Link href={"/Registration"}>
-          <button className="btn btn-outline-light my-2 my-sm-0" type="button">
+          <button
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            type="button"
+          >
             Register
           </button>
         </Link>
@@ -87,7 +95,7 @@ export default function ProfileHeader() {
         style={{ width: "30%" }}
       >
         <div
-          className="btn btn-outline-light my-2 my-sm-0"
+          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
           typeof="button"
           data-toggle="modal"
           data-target="#newPollModal"
@@ -114,7 +122,7 @@ export default function ProfileHeader() {
 
         <div className="dropdown">
           <a
-            className="btn btn-outline-light my-2 my-sm-0"
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
             type="button"
             id="siteDropDown"
             data-toggle="dropdown"
@@ -131,8 +139,8 @@ export default function ProfileHeader() {
             aria-labelledby="siteDropDown"
           >
             <ul className="d-flex flex-column h-100 justify-content-center">
-            <Link href={`/Profile/${appid}`}>
-              {/* <Link href={{ pathname: "/Profile", query: { userId: _id } }}> */}
+              <Link href={`/Profile/${appid}`}>
+                {/* <Link href={{ pathname: "/Profile", query: { userId: _id } }}> */}
                 <li className="dropdown-item">{`${appid} Profile`}</li>
               </Link>
               <li className="dropdown-item">All Topics</li>
@@ -147,7 +155,6 @@ export default function ProfileHeader() {
             </ul>
           </div>
         </div>
-        <NewPoll />
       </div>
     );
   }

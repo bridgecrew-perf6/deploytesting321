@@ -8,6 +8,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/mutations";
 import { useAuth } from "../../../authProvider/authProvider";
+import { dateToString } from "../../../globalFuncs";
 
 const { ADD_FAVORITE, REMOVE_FAVORITE } = GraphResolvers.mutations;
 const { IS_FAVORITE } = GraphResolvers.queries;
@@ -53,7 +54,6 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
 
   return (
     <div className="d-flex align-items-center justify-content-between">
-      {JSON.stringify(data)}
       <div
         className={`pr-5 ${styles.cursor}`}
         onClick={() => handleFavoriteBtn()}

@@ -57,7 +57,7 @@ const PollItem = ({ poll }: PollItem) => {
             className="card-text text-secondary"
             style={{ fontSize: 13 }}
           >{`posted by ${poll?.creator?.appid}`}</p>
-          <PollMetrics created={poll.creationDate} numAnswers={answerCount} />
+          <PollMetrics data={poll} />
         </div>
       </div>
     </Link>

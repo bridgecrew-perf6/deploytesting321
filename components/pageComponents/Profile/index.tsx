@@ -1,6 +1,7 @@
 import styles from "../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../appStyles/btnStyles.module.css";
 import { Follower, GetAppUser, User } from "../../appTypes/appType";
+import { AiOutlineHome } from "react-icons/ai";
 import { MssgReadMoreLess } from "../../layout/customComps";
 import { IoPersonCircle } from "react-icons/io5";
 import { BsPencilSquare } from "react-icons/bs";
@@ -11,6 +12,7 @@ import Badge from "./Badge";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { Reference, StoreObject, useMutation } from "@apollo/client";
 import { removeFollow } from "../../../lib/apollo/apolloFunctions/mutations";
+import Link from "next/link";
 
 const {
   appColor,
@@ -44,6 +46,19 @@ export const ProfileHeader = ({ data, handleProfile }: ProfileData) => {
       <div className={`d-flex justify-content-center w-100`}>
         <ProfilePic profilePic={data?.profilePic} />
       </div>
+      <Link href="/">
+        <div
+          className="m-1 ml-3"
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            cursor: "pointer",
+          }}
+        >
+          <AiOutlineHome size={35} />
+        </div>
+      </Link>
       {data && data.isAppUser && (
         <>
           <div
@@ -108,12 +123,15 @@ export const ProfileSideBar = ({ data, refresh }: ProfileData) => {
     <div className={`card ${appbg_secondary} h-100`}>
       <div className="card-body d-flex flex-column justify-content-between">
         {/* <Badge /> */}
-        <div className="">
-          <h5 className="card-title">About Me</h5>
-
-          <MssgReadMoreLess mssg={mssg ? mssg : ""} />
+        <div>
+          <div className="d-flex flex-column">
+            <h5 className="card-title">About Me</h5>
+            <MssgReadMoreLess mssg={mssg ? mssg : ""} />
+          </div>
+          <div className="mt-4">
+            <ProfileMetrics data={data} refresh={refresh} />
+          </div>
         </div>
-        <ProfileMetrics data={data} refresh={refresh} />
       </div>
       {/* <div className="card-footer">
           <small className="text-muted">Last updated 3 mins ago</small>

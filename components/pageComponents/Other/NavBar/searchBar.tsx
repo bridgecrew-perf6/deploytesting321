@@ -1,16 +1,18 @@
+import { CSSProperties, HTMLAttributes } from "react";
 import { BiSearchAlt } from "react-icons/bi";
 import styles from "../../../../appStyles/appStyles.module.css";
 
 interface SearchBar {
   search: (e: any) => void;
-  style: {
-    width: string | number;
-  };
+  style: CSSProperties | undefined;
 }
 
 export const SearchBar = ({ search, style }: SearchBar) => {
   return (
-    <div className="form-row justify-content-between" style={style}>
+    <div
+      className="form-row justify-content-between"
+      style={style}
+    >
       <div
         className={`input-group ${styles.searchBar} bg-white align-items-center rounded`}
       >

@@ -6,7 +6,7 @@ import {
   topicLoader,
   subTopicLoader,
   answerLoader,
-  commentLoader,
+  chatLoader,
   replyLoader,
 } from "../../graphql/loaders";
 // import { pubsub } from "../../graphql/middleware/index";
@@ -102,6 +102,8 @@ interface PollHistory {
   creator?: User;
   answers: Answer[];
   pollImages: string[];
+  views?: number;
+  chatMssgs?: ChatMessage[];
 }
 
 interface UserDataProps {
@@ -150,7 +152,7 @@ interface ApolloSeverContext {
     | ReturnType<typeof pollLoader>[]
     | ReturnType<typeof topicLoader>
     | ReturnType<typeof subTopicLoader>[]
-    | ReturnType<typeof commentLoader>[]
+    | ReturnType<typeof chatLoader>[]
     | ReturnType<typeof replyLoader>[]
     | ReturnType<typeof answerLoader>[];
   pubsub: PubSub;
@@ -267,6 +269,7 @@ interface SliderSettings {
   slidesToShow: number;
   slidesToScroll?: number;
   dots?: boolean;
+  arrows?: boolean;
   nextArrow?: JSX.Element;
   prevArrow?: JSX.Element;
   dotsClass?: string;

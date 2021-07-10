@@ -27,7 +27,9 @@ const pollFeedBackMutations = {
   `,
   CREATE_CHAT_MESSAGE: gql`
     mutation CreateMessage($details: String!) {
-      createMessage(details: $details)
+      createMessage(details: $details){
+        _id
+      }
     }
   `,
   ADD_FAVORITE: gql`

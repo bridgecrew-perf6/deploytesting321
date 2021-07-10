@@ -19,8 +19,10 @@ import Link from "next/link";
 import { IconType } from "react-icons/lib";
 import {
   addFollow,
+  addNewChatMssg,
   removeFollow,
 } from "../../../../lib/apollo/apolloFunctions/mutations";
+import { ToolTipCtr } from "../../../layout/customComps";
 
 const { chatSideBar, chatMessage, userMessage, chatSearch, chatInput } =
   chatStyles;
@@ -216,11 +218,14 @@ const ChatItem = ({ data, userId }: ChatItem) => {
             <TimeAgo date={data.creationDate} live={false} />
           </div>
         ) : (
-          <TimeAgo
-            date={data.creationDate}
-            live={false}
-            style={{ fontSize: 14, marginTop: 10 }}
-          />
+          <>
+            <TimeAgo
+              date={data.creationDate}
+              live={false}
+              style={{ fontSize: 14, marginTop: 10 }}
+            />
+            
+          </>
         )}
       </div>
     </div>
@@ -244,9 +249,7 @@ const ChatInput = ({ pollId, addAnswer, addError }: IPollChatBox) => {
       isAnswer,
     });
 
-    addChatMssg({
-      variables: { details },
-    });
+    addNewChatMssg(addChatMssg, details, pollId);
     updateInput("");
 
     if (isAnswer && addAnswer && addError) {
@@ -277,27 +280,33 @@ const ChatInput = ({ pollId, addAnswer, addError }: IPollChatBox) => {
           onChange={(e) => updateInput(e.target.value)}
           onKeyDown={handleMssgInput}
         />
-        <div className="input-group-prepend overflow-hidden rounded-circle">
-          <span
-            className={`input-group-text bg-white border border-white p-1 mr-3 ${answerBtn} ${appStyles.appSecondaryTxt}`}
-            id="basic-addon1"
-            data-toggle="tooltip"
-            data-placement="bottom"
-            title="Click to add as an answer to the poll"
-            onClick={() => {
-              if (input.length === 0) {
-                addError &&
-                  addError(
-                    "Please add an answer in the chat area to submit an answer."
-                  );
-                return;
-              }
-              addChatItem(true);
-            }}
-          >
-            A
-          </span>
-        </div>
+        <ToolTipCtr
+          mssg="Add As Answer To Poll"
+          position="top"
+          style={{ bottom: "40px", left: "35%" }}
+        >
+          <div className="input-group-prepend overflow-hidden rounded-circle">
+            <span
+              className={`input-group-text bg-white border border-white p-1 mr-3 ${answerBtn} ${appStyles.appSecondaryTxt}`}
+              id="basic-addon1"
+              // data-toggle="tooltip"
+              // data-placement="bottom"
+              // title="Click to add as an answer to the poll"
+              onClick={() => {
+                if (input.length === 0) {
+                  addError &&
+                    addError(
+                      "Please add an answer in the chat area to submit an answer."
+                    );
+                  return;
+                }
+                addChatItem(true);
+              }}
+            >
+              A
+            </span>
+          </div>
+        </ToolTipCtr>
       </div>
       <div className="col-auto">
         <button

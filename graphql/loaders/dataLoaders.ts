@@ -2,7 +2,7 @@ import ISubTopic from "../../models/interfaces/subTopic";
 import User from "../../models/UserModel";
 import Answer from "../../models/answerModel";
 import Poll from "../../models/PollModel";
-import Comment from "../../models/commentModel";
+import Chat from "../../models/chatModel";
 import Reply from "../../models/replyModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
@@ -12,6 +12,7 @@ import ITopic from "../../models/interfaces/topic";
 import IAnswer from "../../models/interfaces/answer";
 import IComment from "../../models/interfaces/comment";
 import IReply from "../../models/interfaces/reply";
+import IChat from "../../models/interfaces/chat";
 
 const batchUsers: BatchUser = async (ids) => {
   const users: IUser[] = await User.find({ _id: { $in: ids } });
@@ -46,27 +47,27 @@ const batchAnswers: BatchAnswers = async (ids) => {
   return ids.map((id) => answerMap[id]);
 };
 
-const batchComments: BatchComments = async (ids) => {
-  const comments = await Comment.find({ _id: { $in: ids } });
-  const commentMap: { [key: string]: IComment } = {};
+const batchChats: BatchChats = async (ids) => {
+  const chats = await Chat.find({ _id: { $in: ids } });
+  const chatsMap: { [key: string]: IChat } = {};
 
-  comments.forEach((comment) => {
-    commentMap[comment.id] = comment;
+  chats.forEach((chat) => {
+    chatsMap[chat.id] = chat;
   });
 
-  return ids.map((id) => commentMap[id]);
+  return ids.map((id) => chatsMap[id]);
 };
 
-const batchReplies: BatchReplies = async (ids) => {
-  const replies = await Reply.find({ _id: { $in: ids } });
-  const replyMap: { [key: string]: IReply } = {};
+// const batchReplies: BatchReplies = async (ids) => {
+//   const replies = await Reply.find({ _id: { $in: ids } });
+//   const replyMap: { [key: string]: IReply } = {};
 
-  replies.forEach((reply) => {
-    replyMap[reply.id] = reply;
-  });
+//   replies.forEach((reply) => {
+//     replyMap[reply.id] = reply;
+//   });
 
-  return ids.map((id) => replyMap[id]);
-};
+//   return ids.map((id) => replyMap[id]);
+// };
 
 const batchTopics: BatchTopics = async (ids) => {
   const topics = await Topic.find({ _id: { $in: ids } });
@@ -96,6 +97,6 @@ export default {
   batchTopics,
   batchsubTopics,
   batchAnswers,
-  batchComments,
-  batchReplies
+  batchChats,
+  // batchReplies,
 };

@@ -72,15 +72,15 @@ export const transformChat = (chat: IChat, loaders: any[]) => {
   const { creator, poll } = getLoader(loaders);
 
   return {
-    ...chat,
-    // ...chat._doc,
+    ...chat._doc,
+    creationDate: dateToString(chat.creationDate),
     creator: () => creator.load(chat.creator),
     poll: () => poll.load(chat.poll),
   };
 };
 
 export const transformPoll = (poll: IPoll, loaders: any[]) => {
-  const { creator, topic, subTopic, answer } = getLoader(loaders);
+  const { creator, topic, subTopic, answer, chat } = getLoader(loaders);
 
   return {
     ...poll._doc,
@@ -90,6 +90,7 @@ export const transformPoll = (poll: IPoll, loaders: any[]) => {
     topic: () => topic.load(poll.topic),
     subTopics: () => subTopic.loadMany(poll.subTopics),
     answers: () => answer.loadMany(poll.answers),
+    chatMssgs: () => chat.loadMany(poll.chatMssgs),
   };
 };
 
@@ -177,7 +178,7 @@ export const clearAppCookie = (res: Response) => {
 export const decodeJWToken = async (tokenVal: string) => {
   try {
     const payload = await jwt.verify(tokenVal, JwtKey);
-    return payload
+    return payload;
   } catch (err) {
     throw err;
   }

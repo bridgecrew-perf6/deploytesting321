@@ -91,7 +91,7 @@ export const userResolvers: ResolverMap = {
           const pollFinalDetails: PollHistory[] = pollDetails.map((item) =>
             transformPoll(
               item,
-              dataLoaders(["user", "topic", "subTopic", "answer"])
+              dataLoaders(["user", "topic", "subTopic", "answer", "chat"])
             )
           );
           const answerDetails: IAnswer[] = await batchAnswers(answersList);

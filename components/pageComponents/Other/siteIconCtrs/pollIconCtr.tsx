@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
+import { ToolTipCtr } from "../../../layout/customComps";
 import { getButtonIcon, PollFilters } from "./pollIconFuncs";
 
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
@@ -35,7 +36,13 @@ export const PollIconCtr = ({ showAdd, numAnswers }: PollIconCtr) => {
             Add Answer
           </button>
           <div className="d-flex align-items-center ml-5">
-            {answerBtn}
+            <ToolTipCtr
+              mssg="Total Answers"
+              position="bottom"
+              style={{ bottom: "-40px", left: "50%" }}
+            >
+              {answerBtn}
+            </ToolTipCtr>
             <div className="ml-3" style={{ color: "gray", fontWeight: 600 }}>
               {`${numAnswers} Answers`}
             </div>

@@ -18,7 +18,7 @@ export const chatTypeDefs = gql`
   }
 
   extend type Mutation {
-    createMessage(details: String!): ID!
+    createMessage(details: String!): ChatMessage
   }
 
   extend type Subscription {
