@@ -5,7 +5,7 @@ interface AppLoadProps {
     height: string;
     width: string;
   };
-  message: string;
+  message?: string;
 }
 
 const AppLoading = ({ style, message }: AppLoadProps) => {
@@ -29,3 +29,13 @@ const AppLoading = ({ style, message }: AppLoadProps) => {
 };
 
 export default AppLoading;
+
+export const AppLoadingLite = () => {
+  return (
+    <div className="d-flex justify-content-center">
+      <div className="spinner-border" style={{color:'#ff4d00'}} role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+    </div>
+  );
+};

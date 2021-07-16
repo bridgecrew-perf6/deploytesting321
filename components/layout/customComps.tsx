@@ -94,7 +94,7 @@ export const ToolTipCtr = ({ mssg, position, style, children }: ToolTipCtr) => {
   return (
     <div className={`${ctrPosStyle}`}>
       <span className={`${tooltiptext}`} style={style}>
-        {mssg}
+        <p className="text-white text-center">{mssg}</p>
       </span>
       {children}
     </div>

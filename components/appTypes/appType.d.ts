@@ -205,6 +205,7 @@ interface ITopic {
   description: string;
   creator: User;
   subTopics?: ISubTopic[];
+  active?: Boolean;
 }
 
 interface ISubTopic {
@@ -213,6 +214,7 @@ interface ISubTopic {
   description: string;
   topic: ITopic;
   creator: User;
+  active?: Boolean;
 }
 
 interface SelectedTopic {
@@ -289,4 +291,21 @@ interface ProfileType {
 interface UserFavorites {
   favoritePolls: PollHistory[];
   favoriteAnswers: Answer[];
+}
+
+interface CategoryItems {
+  _id: string;
+  category: string;
+  creator: string;
+  description: string;
+  active: boolean;
+  linkedCats?: any;
+}
+
+interface PollsWindow {
+  data: CategoryItems[];
+  loading?: boolean;
+  search?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  // loadPolls: (catType: string, catId: string) => void;
+  select: (activeId: string, catType: string, topic?: string) => void;
 }

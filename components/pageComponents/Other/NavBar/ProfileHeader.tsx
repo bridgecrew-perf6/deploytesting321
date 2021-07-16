@@ -143,7 +143,9 @@ export default function ProfileHeader() {
                 {/* <Link href={{ pathname: "/Profile", query: { userId: _id } }}> */}
                 <li className="dropdown-item">{`${appid} Profile`}</li>
               </Link>
-              <li className="dropdown-item">All Topics</li>
+              <Link href={`/Polls`}>
+                <li className="dropdown-item">All Topics</li>
+              </Link>
               <li className="dropdown-item">About</li>
               <li className="dropdown-item">How it Works</li>
               <li className="dropdown-item">Suggestions</li>

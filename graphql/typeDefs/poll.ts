@@ -67,6 +67,8 @@ export const pollTypeDefs = gql`
     trendingPolls: [PollQuestion]
     newestPolls: [PollQuestion]
     activeChats: [PollQuestion]
+    pollsByTopic(topic: String!): [PollQuestion]
+    pollsBySubTopic(subTopic: String!): [PollQuestion]
   }
 
   extend type Mutation {

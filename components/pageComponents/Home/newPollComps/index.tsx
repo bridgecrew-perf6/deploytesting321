@@ -81,14 +81,15 @@ export const SelectedTopicBtn = ({
 
 interface SearchProps {
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  width?: string;
 }
 
-export const SearchBar = ({ search }: SearchProps) => {
+export const SearchBar = ({ search, width }: SearchProps) => {
   return (
     <input
       type="text"
       className="form-control mb-2 mr-sm-2 d-flex"
-      style={{ width: "37vh" }}
+      style={{ width: width ? width : "37vh" }}
       id="inlineFormInputName2"
       placeholder="Search SubTopics"
       onChange={search}

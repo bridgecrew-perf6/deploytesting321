@@ -1,5 +1,3 @@
-import { PollHistory } from "../appTypes/appType";
-
 export const dateToString = (date: Date) => new Date(date).toISOString();
 
 export const getSectionList = (flatList: any[], sectionDivider: number) => {
@@ -47,4 +45,21 @@ export const getSortedListByChat = (dataList: any[]) => {
   );
 
   return listWithChatSorted;
+};
+
+export const getAlphabeticalList = (dataList: any[], prop: string) => {
+  return dataList.sort((a, b) => {
+    const nameA = a[prop].toUpperCase();
+    const nameB = b[prop].toUpperCase();
+
+    if (nameA < nameB) {
+      return -1;
+    }
+
+    if (nameA > nameB) {
+      return 1;
+    }
+
+    return 0;
+  });
 };

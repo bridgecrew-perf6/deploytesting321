@@ -114,6 +114,66 @@ const pollQueries = {
       }
     }
   `,
+  GET_POLLS_BY_TOPIC: gql`
+    query PollsByTopic($topic: String!) {
+      pollsByTopic(topic: $topic) {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
+  GET_POLLS_BY_SUBTOPIC: gql`
+    query PollsBySubTopic($subTopic: String!) {
+      pollsBySubTopic(subTopic: $subTopic) {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
   GET_ACTIVE_CHATS: gql`
     query ActiveChats {
       activeChats {

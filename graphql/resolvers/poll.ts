@@ -9,6 +9,7 @@ import User from "../../models/UserModel";
 import { transformPoll } from "./shared";
 import loaders from "../loaders/dataLoaders";
 import IAnswer from "../../models/interfaces/answer";
+import { Types } from "mongoose";
 
 const { batchPolls } = loaders;
 
@@ -85,6 +86,50 @@ export const pollResolvers: ResolverMap = {
         throw err;
       }
     },
+    pollsByTopic: async (_, { topic }, { dataLoaders }) => {
+      try {
+        let polls: IPoll[];
+
+        if (topic !== "All_1") {
+          polls = await Poll.find({ topic });
+        } else {
+          polls = await Poll.find();
+        }
+
+        return polls.map((poll) =>
+          transformPoll(
+            poll,
+            dataLoaders(["user", "topic", "subTopic", "answer", "chat"])
+          )
+        );
+      } catch (err) {
+        throw err;
+      }
+    },
+
+    pollsBySubTopic: async (_, { subTopic }, { dataLoaders }) => {
+      try {
+        let polls: IPoll[];
+
+        if (subTopic !== "All_1") {
+          polls = await Poll.find({
+            subTopics: Types.ObjectId(subTopic),
+          });
+        } else {
+          polls = await Poll.find();
+        }
+
+        return polls.map((poll) =>
+          transformPoll(
+            poll,
+            dataLoaders(["user", "topic", "subTopic", "answer", "chat"])
+          )
+        );
+      } catch (err) {
+        throw err;
+      }
+    },
+
     trendingPolls: async (_, args, { dataLoaders }) => {
       try {
         const answers: IAnswer[] = await Answer.find();

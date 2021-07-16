@@ -5,27 +5,32 @@ import { transformSubTopic, transformTopic } from "./shared";
 import ITopic from "../../models/interfaces/topic";
 import ISubTopic from "../../models/interfaces/subTopic";
 import batchLoaders from "../loaders/dataLoaders";
+import { getAlphabeticalList } from "../../components/globalFuncs";
 
 export const topicResolvers: ResolverMap = {
   Query: {
     topics: async (parent, args, { dataLoaders }) => {
       try {
         const topics = await Topic.find();
-        return topics.map((topic) =>
+        const topicsWithData = topics.map((topic) =>
           transformTopic(topic, dataLoaders(["user", "subTopic"]))
         );
+
+        return getAlphabeticalList(topicsWithData, "topic");
       } catch (err) {
-        throw new Error(err);
+        throw err;
       }
     },
     subTopics: async (parent, args, { dataLoaders }) => {
       try {
         const subTopics = await SubTopic.find();
-        return subTopics.map((subTopic) =>
+        const subTopicsWithData = subTopics.map((subTopic) =>
           transformSubTopic(subTopic, dataLoaders(["user", "topic", "poll"]))
         );
+
+        return getAlphabeticalList(subTopicsWithData, "subTopic");
       } catch (err) {
-        throw new Error(err);
+        throw new err();
       }
     },
     subTopicsPerTopic: async (parent, { topic }, { dataLoaders }) => {
@@ -33,13 +38,25 @@ export const topicResolvers: ResolverMap = {
 
       try {
         const selectedTopic = await Topic.findOne({ topic });
+
+        if (!selectedTopic) {
+          const subTopics = await SubTopic.find();
+          const subTopicData = subTopics.map((subTopic) =>
+            transformSubTopic(subTopic, dataLoaders(["user", "topic", "poll"]))
+          );
+
+          return getAlphabeticalList(subTopicData, "subTopic");
+        }
+
         const subTopicList = await batchsubTopics(selectedTopic.subTopics);
 
-        return subTopicList.map((subTopic) =>
+        const subTopicListData = subTopicList.map((subTopic) =>
           transformSubTopic(subTopic, dataLoaders(["user", "topic", "poll"]))
         );
+
+        return getAlphabeticalList(subTopicListData, "subTopic");
       } catch (err) {
-        throw new Error(err);
+        throw err;
       }
     },
   },
@@ -94,7 +111,7 @@ export const topicResolvers: ResolverMap = {
       const newSubTopic: ISubTopic = new SubTopic({
         ...subTopicObj,
         creator: id,
-        polls: []
+        polls: [],
       });
 
       let existingSubTopic;
