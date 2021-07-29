@@ -128,7 +128,7 @@ export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
     creationDate: dateToString(answer.creationDate),
     creator: () => creator.load(answer.creator),
     poll: () => poll.load(answer.poll),
-    comments: () => comment.loadMany(answer.comments),
+    // comments: () => comment.loadMany(answer.comments),
   };
 };
 

@@ -1,6 +1,8 @@
-import { CSSProperties, HTMLAttributes } from "react";
+import { CSSProperties, useState, useEffect } from "react";
 import { BiSearchAlt } from "react-icons/bi";
 import styles from "../../../../appStyles/appStyles.module.css";
+import { useAuth } from "../../../authProvider/authProvider";
+import { getStoredSearch } from "../../../globalFuncs";
 
 interface SearchBar {
   search: (e: any) => void;
@@ -8,11 +10,29 @@ interface SearchBar {
 }
 
 export const SearchBar = ({ search, style }: SearchBar) => {
+  const auth = useAuth();
+  const searchVal = auth ? auth.searchVal : "";
+
+  useEffect(() => {
+    const storedVal = localStorage.getItem("PoldIt-data") || "";
+
+    if (!storedVal) {
+      return;
+    }
+
+    const { searchVal } = JSON.parse(storedVal);
+    auth?.handleSearch(searchVal);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "PoldIt-data",
+      JSON.stringify({ searchVal: searchVal })
+    );
+  }, [searchVal]);
+
   return (
-    <div
-      className="form-row justify-content-between"
-      style={style}
-    >
+    <div className="form-row justify-content-between" style={style}>
       <div
         className={`input-group ${styles.searchBar} bg-white align-items-center rounded`}
       >
@@ -34,6 +54,8 @@ export const SearchBar = ({ search, style }: SearchBar) => {
           type="search"
           className="form-control border border-white"
           placeholder="Search"
+          value={searchVal}
+          onChange={(e) => auth?.handleSearch(e.target.value)}
           aria-label="Search"
           onKeyDown={search}
         />

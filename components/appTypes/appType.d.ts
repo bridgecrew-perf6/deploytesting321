@@ -206,6 +206,7 @@ interface ITopic {
   creator: User;
   subTopics?: ISubTopic[];
   active?: Boolean;
+  pollCount?: number;
 }
 
 interface ISubTopic {
@@ -215,6 +216,7 @@ interface ISubTopic {
   topic: ITopic;
   creator: User;
   active?: Boolean;
+  pollCount?: number;
 }
 
 interface SelectedTopic {
@@ -288,6 +290,13 @@ interface ProfileType {
   error?: string;
 }
 
+interface SearchResults {
+  question: { count: number; question: PollHistory[] };
+  answer: { count: number; answer: Answer[] };
+  topic: { count: number; topic: ITopic[] };
+  subTopic: { count: number; topic: ISubTopic[] };
+}
+
 interface UserFavorites {
   favoritePolls: PollHistory[];
   favoriteAnswers: Answer[];
@@ -308,4 +317,14 @@ interface PollsWindow {
   search?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   // loadPolls: (catType: string, catId: string) => void;
   select: (activeId: string, catType: string, topic?: string) => void;
+}
+
+interface CustomBtn {
+  active: boolean;
+  btnName: string;
+}
+
+interface SrchCustomBtn extends CustomBtn {
+  count: number;
+  data: PollHistory[] | Answer[] | ITopic[] | ISubTopic[] | null;
 }

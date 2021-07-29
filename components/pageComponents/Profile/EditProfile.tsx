@@ -82,7 +82,7 @@ const EditProfile = ({ user }: ProfileModal) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const resp = document.querySelectorAll("#editProfile input, textarea");
+    const resp:any = document.querySelectorAll("#editProfile input, textarea");
     const updatedUser: UpdatedObj = {};
 
     //Add error handling

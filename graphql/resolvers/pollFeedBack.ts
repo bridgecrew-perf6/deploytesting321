@@ -18,7 +18,7 @@ export const feedBackResolvers: ResolverMap = {
         const answers: IAnswer[] = await Answer.find({ poll: pollId });
 
         const answerData = answers.map((answer) =>
-          transformAnswer(answer, dataLoaders(["user", "poll", "comment"]))
+          transformAnswer(answer, dataLoaders(["user", "poll"]))
         );
 
         return answerData;

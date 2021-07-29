@@ -16,6 +16,12 @@ const AuthProvider: React.FC = ({ children }) => {
 
   const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]); //This may not be needed since you can pass mssgs between pages.  Think of removing
 
+  const [searchVal, updateSearchVal] = useState("");
+
+  const handleSearch = (val: string) => {
+    updateSearchVal(val);
+  };
+
   const setAuthToken = (token: string) => {
     storeTokens(token);
     const updatedAuthState: UserDataProps = {
@@ -46,8 +52,10 @@ const AuthProvider: React.FC = ({ children }) => {
       value={{
         authState,
         appMssgs,
+        searchVal,
         setAuthToken,
         updateAppMssgs,
+        handleSearch,
         updateUserData,
         signOut,
       }}

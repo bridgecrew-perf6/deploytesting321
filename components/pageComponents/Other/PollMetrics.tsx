@@ -99,7 +99,7 @@ const PollViews = ({ views }: { views: number }) => {
   );
 };
 
-const PollBtn = ({ pollId }: { pollId: string }) => {
+export const PollBtn = ({ pollId }: { pollId: string }) => {
   return (
     <Link href={`/Polls/${pollId}`}>
       <div>

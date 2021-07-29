@@ -21,6 +21,7 @@ const NavBar: React.FC = (props) => {
 
     if (key === "Enter" && target.value.length > 0) {
       e.preventDefault();
+
       router.push(
         { pathname: "/Search", query: { searchVal: target.value } },
         "/Search"

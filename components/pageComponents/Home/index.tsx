@@ -1,24 +1,19 @@
 import { useState } from "react";
 import styles from "../../../appStyles/appStyles.module.css";
-import { PollHistory } from "../../appTypes/appType";
+import { CustomBtn, PollHistory } from "../../appTypes/appType";
 import { getSectionList } from "../../globalFuncs";
 
 const { appColor, appbg_other, appbg_secondary, componentSpacer } = styles;
 
 interface BtnItem {
   data: CustomBtn;
-  idx: number;
+
   update: (btnName: string, prop: string, val: any) => void;
 }
 
 interface CustomBtnList {
   btnList: CustomBtn[];
   update: (btnName: string, prop: string, val: any) => void;
-}
-
-interface CustomBtn {
-  active: boolean;
-  btnName: string;
 }
 
 interface HomeBtnWindow {
@@ -69,7 +64,7 @@ const CustomList = ({ btnList, update }: CustomBtnList) => {
           key={idx}
         >
           {item.map((subItem, subIdx) => (
-            <BtnItem key={subIdx} idx={subIdx} data={subItem} update={update} />
+            <BtnItem key={subIdx} data={subItem} update={update} />
           ))}
         </ul>
       ))}
@@ -77,7 +72,7 @@ const CustomList = ({ btnList, update }: CustomBtnList) => {
   );
 };
 
-const BtnItem = ({ idx, data, update }: BtnItem) => {
+export const BtnItem = ({ data, update }: BtnItem) => {
   const btnStyle = data.active
     ? `btn ${appColor} border-0 text-white`
     : `btn ${appbg_other} border-0`;

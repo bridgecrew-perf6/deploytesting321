@@ -63,3 +63,17 @@ export const getAlphabeticalList = (dataList: any[], prop: string) => {
     return 0;
   });
 };
+
+export const getStoredSearch = () => {
+  if (typeof window !== "undefined") {
+    const storageVal = localStorage.getItem("PoldIt-data") || "";
+    const { searchVal } = JSON.parse(storageVal);
+    return searchVal;
+  }
+};
+
+// export const storeSearchVal = (objToStore: object) => {
+//   console.log(objToStore)
+//   localStorage.setItem("PoldIt-data", JSON.stringify({ objToStore }));
+//   return;
+// };

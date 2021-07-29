@@ -96,3 +96,10 @@ export const filterSearchVals = (
     }
   });
 };
+
+export const convertFirstCharacterToUppercase = (val: string) => {
+  var firstCharacter = val.substring(0, 1);
+  var restString = val.substring(1);
+
+  return firstCharacter.toUpperCase() + restString;
+};

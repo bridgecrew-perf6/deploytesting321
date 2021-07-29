@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import NewPoll from "../../components/pageComponents/Home/NewPoll";
-import { AppMssgList } from "../../components/formFuncs/formFuncs";
-import styles from "../../appStyles/appStyles.module.css";
-import pollStyles from "../../appStyles/pollStyles.module.css";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
 import { SitePageContainer } from "../../components/layout";
 import {
@@ -17,9 +12,11 @@ import {
   CategoryItems,
   PollHistory,
   ISubTopic,
+  ITopic,
 } from "../../components/appTypes/appType";
-import AppLoading from "../../components/pageComponents/Other/Loading";
 import { filterSearchVals } from "../../components/formFuncs/miscFuncs";
+import { useRouter } from "next/router";
+import { useAuth } from "../../components/authProvider/authProvider";
 
 const {
   GET_TOPICS,
@@ -30,6 +27,9 @@ const {
 } = GraphResolvers.queries;
 
 const PollsHome = () => {
+  const router = useRouter();
+  const auth = useAuth();
+
   //API
   const { data: topicData } = useQuery(GET_TOPICS);
   // const { data: subTopicData } = useQuery(GET_SUBTOPICS);
@@ -49,6 +49,7 @@ const PollsHome = () => {
   const [getSubTopicsForTopic, { loading, data }] = useLazyQuery(
     GET_SUBTOPICS_PER_TOPIC,
     {
+      fetchPolicy: "cache-and-network",
       onCompleted: (res) => {
         res.subTopicsPerTopic.length > 0
           ? prepDataList(res.subTopicsPerTopic, "Sub-Topic")
@@ -60,12 +61,13 @@ const PollsHome = () => {
 
   //State Management
   const [pollData, updatePollData] = useState<PollHistory[] | null>(null);
+  // const [srchQueryVals, updateQueryVals] = useState({});
   const [errorMssg, setErrorMssg] = useState("");
   const [topics, updateTopics] = useState<CategoryItems[]>([]);
   const [subTopics, updateSubTopics] = useState<CategoryItems[]>([]);
 
   //Functions
-  const loadPollData = (catType: string, catId: string) => {
+  const loadPollData = (catType: string, catId: string | string[]) => {
     if (catType === "topic") {
       getPollsByTopic({ variables: { topic: catId } });
 
@@ -79,7 +81,7 @@ const PollsHome = () => {
       return {
         _id: item._id,
         category: dataType === "Topic" ? item.topic : item.subTopic,
-        creator: item.creator.appid,
+        // creator: item.creator.appid,
         description: item.description,
         active: false,
         linkedCats: item.subTopics ? item.subTopics : item.topic,
@@ -89,7 +91,7 @@ const PollsHome = () => {
     const allBtn: CategoryItems = {
       _id: "All_1",
       category: "All",
-      creator: "NA",
+      // creator: "NA",
       description: `All ${dataType}s`,
       active: true,
     };
@@ -117,6 +119,8 @@ const PollsHome = () => {
       }
       return { ...item, active: false };
     });
+
+    console.log("handle Topic: ", activeTopics);
 
     updateTopics(activeTopics);
   };
@@ -183,10 +187,36 @@ const PollsHome = () => {
 
   //Component Mounted
   useEffect(() => {
-    loadPollData("topic", "All_1");
-    getSubTopicsForTopic({ variables: { topic: "All" } });
+    auth?.handleSearch("");
+    localStorage.removeItem("PoldIt-data");
+
+    const { data } = router.query;
+    const queryData: ISubTopic = data ? JSON.parse(data as string) : "";
+
+    let catId: string | string[];
+    let category: string;
+    if (queryData && typeof queryData.topic === "string" && topicData) {
+      catId = queryData._id;
+      category = queryData.topic;
+      handleTopic(queryData._id);
+    } else {
+      catId = "All_1";
+      category = "All";
+    }
+    loadPollData("topic", catId);
+    getSubTopicsForTopic({ variables: { topic: category } });
     topicData && prepDataList(topicData.topics, "Topic");
-  }, [topicData]);
+  }, [topicData, topics.length > 0]);
+
+  useEffect(() => {
+    const { data } = router.query;
+    const queryData: ISubTopic = data ? JSON.parse(data as string) : "";
+
+    if (queryData && typeof queryData.topic !== "string") {
+      console.log("subTopic query triggered");
+      handleSubTopic(queryData._id);
+    }
+  }, [subTopics.length > 0]);
 
   return (
     <SitePageContainer title={`Polls Home`}>
