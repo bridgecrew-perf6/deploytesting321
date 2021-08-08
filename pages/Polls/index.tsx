@@ -31,7 +31,16 @@ const PollsHome = () => {
   const auth = useAuth();
 
   //API
-  const { data: topicData } = useQuery(GET_TOPICS);
+  const { data: topicData } = useQuery(
+    GET_TOPICS
+    //   {
+    //   onCompleted: (res) => {
+    //     loadPollData("topic", "All_1");
+    //     getSubTopicsForTopic({ variables: { topic: "All" } });
+    //     prepDataList(res.topics, "Topic");
+    //   },
+    // }
+  );
   // const { data: subTopicData } = useQuery(GET_SUBTOPICS);
 
   const [getPollsByTopic] = useLazyQuery(GET_POLLS_BY_TOPIC, {
@@ -104,6 +113,30 @@ const PollsHome = () => {
     updateSubTopics([allBtn, ...dataWithStatus]);
   };
 
+  const setCategoryActive = (id: string, catType: string) => {
+    if (catType === "topic") {
+      const activeTopicList = topics.map((item) => {
+        if (item._id === id) {
+          return { ...item, active: true };
+        }
+        return { ...item, active: false };
+      });
+      updateTopics(activeTopicList);
+      return;
+    }
+
+    // catType === "topic" ? (itemList = topics) : (itemList = subTopics);
+
+    const activeSubTopicList = subTopics.map((item) => {
+      if (item._id === id) {
+        return { ...item, active: true };
+      }
+      return { ...item, active: false };
+    });
+
+    updateSubTopics(activeSubTopicList);
+  };
+
   const handleTopic = (topicId: string) => {
     const activeTopics = topics.map((item) => {
       if (item._id === topicId) {
@@ -119,8 +152,6 @@ const PollsHome = () => {
       }
       return { ...item, active: false };
     });
-
-    console.log("handle Topic: ", activeTopics);
 
     updateTopics(activeTopics);
   };
@@ -186,37 +217,34 @@ const PollsHome = () => {
   };
 
   //Component Mounted
+
   useEffect(() => {
     auth?.handleSearch("");
     localStorage.removeItem("PoldIt-data");
-
     const { data } = router.query;
     const queryData: ISubTopic = data ? JSON.parse(data as string) : "";
 
-    let catId: string | string[];
-    let category: string;
-    if (queryData && typeof queryData.topic === "string" && topicData) {
-      catId = queryData._id;
-      category = queryData.topic;
-      handleTopic(queryData._id);
-    } else {
-      catId = "All_1";
-      category = "All";
+    prepDataList(topicData.topics, "Topic");
+
+    if (queryData && typeof queryData.topic === "string") {
+      topics.length > 0 && setCategoryActive(queryData._id, "topic");
+      getSubTopicsForTopic({ variables: { topic: queryData.topic } });
+      loadPollData("topic", queryData._id);
+      return;
     }
-    loadPollData("topic", catId);
-    getSubTopicsForTopic({ variables: { topic: category } });
-    topicData && prepDataList(topicData.topics, "Topic");
-  }, [topicData, topics.length > 0]);
-
-  useEffect(() => {
-    const { data } = router.query;
-    const queryData: ISubTopic = data ? JSON.parse(data as string) : "";
 
     if (queryData && typeof queryData.topic !== "string") {
-      console.log("subTopic query triggered");
-      handleSubTopic(queryData._id);
+      topics.length > 0 && setCategoryActive(queryData.topic._id, "topic");
+      prepDataList([queryData], "subTopics");
+      subTopics.length > 0 && setCategoryActive(queryData._id, "subTopic");
+      loadPollData("subTopic", queryData._id);
     }
-  }, [subTopics.length > 0]);
+
+    if (!queryData) {
+      getSubTopicsForTopic({ variables: { topic: "All" } });
+      loadPollData("topic", "All_1");
+    }
+  }, [topicData, topics.length > 0]);
 
   return (
     <SitePageContainer title={`Polls Home`}>

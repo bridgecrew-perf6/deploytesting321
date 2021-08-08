@@ -305,7 +305,7 @@ interface UserFavorites {
 interface CategoryItems {
   _id: string;
   category: string;
-  creator: string;
+  // creator: string;
   description: string;
   active: boolean;
   linkedCats?: any;

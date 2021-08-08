@@ -116,7 +116,7 @@ export default function ProfileHeader() {
             id={_id}
             appId={appid}
             picStyle={{ height: 50, width: 50 }}
-            color={"white"}
+            color={"gray"}
           />
         </div>
 
