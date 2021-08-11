@@ -11,6 +11,7 @@ const MONGO_OPTIONS = {
 
 export default {
   LocalHost: process.env.NEXT_PUBLIC_LOCAL_HOST ?? "",
+  gaTag: process.env.NEXT_PUBLIC_GA_ID ?? "",
   ApiHost: process.env.APOLLO_URI ?? "",
   BaseURL: process.env.BASE_URL ?? "",
   MongoDBPort: process.env.REACT_APP_MONGODBPORT ?? "",
