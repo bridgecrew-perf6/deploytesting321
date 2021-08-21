@@ -13,6 +13,7 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { useMemo } from "react";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import configs from "../endpoints.config";
 
 import { getMainDefinition } from "@apollo/client/utilities";
 // import { ApolloLink } from "apollo-link";
@@ -32,8 +33,7 @@ export const storeTokens = (
 
 const wsLink = process.browser
   ? new WebSocketLink({
-      // uri: "ws://localhost:3000/api/graphql",
-      uri: "ws://192.168.1.151:3000/api/graphql",
+      uri: `ws://${process.env.NEXT_PUBLIC_LOCAL_HOST}/api/graphql`,
       options: {
         reconnect: true,
         // lazy: true,
@@ -41,9 +41,7 @@ const wsLink = process.browser
     })
   : null;
 const httpLink = new HttpLink({
-  // uri: "http://localhost:3000/api/graphql",
-  uri: "http://192.168.1.151:3000/api/graphql",
-  // uri: "http://localhost:3000/api/graphql",
+  uri: `http://${process.env.NEXT_PUBLIC_LOCAL_HOST}/api/graphql`,
   credentials: "include",
 });
 
