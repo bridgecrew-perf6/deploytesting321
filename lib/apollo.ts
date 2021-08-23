@@ -21,6 +21,17 @@ import { getMainDefinition } from "@apollo/client/utilities";
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 let appToken: String | null = null;
 let appCookie: String | null = null;
+let isDev =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+    ? true
+    : false;
+
+const {
+  NEXT_PUBLIC_WS_API_DEV,
+  NEXT_PUBLIC_WS_API_PROD,
+  NEXT_PUBLIC_HTTP_API_DEV,
+  NEXT_PUBLIC_HTTP_API_PROD,
+} = process.env;
 
 export const storeTokens = (
   sessionToken: String = "",
@@ -33,7 +44,9 @@ export const storeTokens = (
 
 const wsLink = process.browser
   ? new WebSocketLink({
-      uri: `ws://${process.env.NEXT_PUBLIC_LOCAL_HOST}/api/graphql`,
+      uri: isDev
+        ? (NEXT_PUBLIC_WS_API_DEV as string)
+        : (NEXT_PUBLIC_WS_API_PROD as string),
       options: {
         reconnect: true,
         // lazy: true,
@@ -41,7 +54,7 @@ const wsLink = process.browser
     })
   : null;
 const httpLink = new HttpLink({
-  uri: `http://${process.env.NEXT_PUBLIC_LOCAL_HOST}/api/graphql`,
+  uri: isDev ? NEXT_PUBLIC_HTTP_API_DEV : NEXT_PUBLIC_HTTP_API_PROD,
   credentials: "include",
 });
 

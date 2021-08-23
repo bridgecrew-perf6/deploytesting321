@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
 import { PollHistory } from "../components/appTypes/appType";
 import { SitePageContainer } from "../components/layout";
-import AddTopic from "../components/pageComponents/Other/TopicWindow/addTopicForm";
 import { HomeBtnWindow } from "../components/pageComponents/Home";
 import DataWindow from "../components/pageComponents/Home/DataWindow";
 
@@ -53,7 +52,6 @@ const Home = () => {
         className="d-flex justify-content-center"
         style={{ marginTop: "170px" }}
       >
-        {/* <AddTopic /> */}
         {pollData ? (
           <DataWindow data={pollData} />
         ) : (
@@ -62,10 +60,7 @@ const Home = () => {
             style={{ height: "50px", width: "50px" }}
           />
         )}
-        {/* <PollWindow polls={data?.polls} /> */}
       </div>
-
-      {/* <AddTopic handleTopic={handleTopicSubmit} /> */}
     </SitePageContainer>
   );
 };

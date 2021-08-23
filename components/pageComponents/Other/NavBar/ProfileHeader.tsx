@@ -13,6 +13,7 @@ import { UserDataProps } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
+import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
@@ -89,6 +90,8 @@ export default function ProfileHeader() {
   if (data) {
     const { _id, appid, profilePic } = data.getUserData.user;
 
+    const superUserList = process.env.NEXT_PUBLIC_SUPERUSERS?.split("_");
+
     return (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
@@ -102,6 +105,11 @@ export default function ProfileHeader() {
         >
           Create New Poll
         </div>
+        {superUserList?.includes(appid) && (
+          <>
+            <NewTopicBtn />
+          </>
+        )}
         <div
           className={styles.cursor}
           onMouseEnter={() => toggleNotification(true)}
