@@ -41,7 +41,7 @@ const uploadImage = async (imgDetails: SelectedImage) => {
 
     const data = await apiResponse.json();
 
-    return data.url;
+    return data.secure_url;
   }
 };
 

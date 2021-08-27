@@ -55,7 +55,7 @@ const wsLink = process.browser
   : null;
 const httpLink = new HttpLink({
   uri: isDev ? NEXT_PUBLIC_HTTP_API_DEV : NEXT_PUBLIC_HTTP_API_PROD,
-  credentials: "include",
+  credentials: "same-origin",
 });
 
 const splitLink = wsLink

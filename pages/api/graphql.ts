@@ -9,6 +9,7 @@ import { Request, Response } from "express-serve-static-core";
 import dataLoaders from "../../graphql/loaders";
 import { PubSub } from "apollo-server";
 import Cors from "micro-cors";
+import { send } from "micro";
 
 interface MyContext {
   req: Request;
@@ -17,6 +18,7 @@ interface MyContext {
 }
 
 const cors = Cors({
+  origin: "https://www.poldit.com",
   allowMethods: ["GET", "POST", "OPTIONS"],
 });
 
@@ -67,7 +69,9 @@ const graphqlWithSubscriptionHandler = (req: any, res: any, next: any) => {
 
     apolloServer.installSubscriptionHandlers(res.socket.server);
     const handler = apolloServer.createHandler({ path: "/api/graphql" });
-    res.socket.server.apolloServer = cors(handler);
+    req.method === "OPTIONS"
+    ? res.end()
+    : (res.socket.server.apolloServer = cors(handler));
   }
 
   return res.socket.server.apolloServer(req, res, next);

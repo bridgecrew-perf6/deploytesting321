@@ -12,6 +12,7 @@ const WithCustomStyles: React.FC = ({ children }) => {
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
+        <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/rahmad12/image/upload/v1630082235/PoldIt/App_Imgs/iconified/favicon_qxxxlw.ico" />
         <link
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           rel="stylesheet"
