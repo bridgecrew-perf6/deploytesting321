@@ -8,12 +8,17 @@ import withCookies from "../../graphql/middleware/cookie";
 import { Request, Response } from "express-serve-static-core";
 import dataLoaders from "../../graphql/loaders";
 import { PubSub } from "apollo-server";
+import Cors from "micro-cors";
 
 interface MyContext {
   req: Request;
   res: Response;
   connection: any;
 }
+
+const cors = Cors({
+  allowMethods: ["GET", "POST", "OPTIONS"],
+});
 
 const pubsub = new PubSub();
 
@@ -62,7 +67,7 @@ const graphqlWithSubscriptionHandler = (req: any, res: any, next: any) => {
 
     apolloServer.installSubscriptionHandlers(res.socket.server);
     const handler = apolloServer.createHandler({ path: "/api/graphql" });
-    res.socket.server.apolloServer = handler;
+    res.socket.server.apolloServer = cors(handler);
   }
 
   return res.socket.server.apolloServer(req, res, next);
