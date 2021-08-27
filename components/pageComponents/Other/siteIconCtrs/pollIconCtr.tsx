@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
+import { numCountDisplay } from "../../../formFuncs/miscFuncs";
 import { ToolTipCtr } from "../../../layout/customComps";
 import { getButtonIcon, PollFilters } from "./pollIconFuncs";
 
@@ -7,12 +8,17 @@ const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
 
 interface PollIconCtr {
   showAdd: () => void;
-  numAnswers: string;
+  numAnswers: number;
 }
 
 export const PollIconCtr = ({ showAdd, numAnswers }: PollIconCtr) => {
   const [shareBtnState, toggleShare] = useState(false);
   const [answerBtnState, toggleAnswer] = useState(false);
+
+  const answerTxt =
+    numAnswers > 1
+      ? `${numCountDisplay(numAnswers)} Answers`
+      : `${numCountDisplay(numAnswers)} Answer`;
 
   const shareBtn = shareBtnState
     ? getButtonIcon("share-fill", shareBtnState, toggleShare)
@@ -44,7 +50,7 @@ export const PollIconCtr = ({ showAdd, numAnswers }: PollIconCtr) => {
               {answerBtn}
             </ToolTipCtr>
             <div className="ml-3" style={{ color: "gray", fontWeight: 600 }}>
-              {`${numAnswers} Answers`}
+              {answerTxt}
             </div>
           </div>
           {/* <img

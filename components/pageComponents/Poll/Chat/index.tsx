@@ -78,20 +78,20 @@ const PollChatBox = ({
     >
       <h5 className={`${pollStyles.pollHeaderTxt}`}>POLL CHAT</h5>
       {!showSection && (
-        <div
-          className={`d-flex flex-row w-100 mt-2`}
-          style={{ height: "50vh" }}
-        >
-          <ChatSideBar
-            pollId={pollId}
-            appUser={user}
-            userList={uniqueCreators}
-            currentUsers={chatUsers}
-            updateUsers={setChatUsers}
-          />
+        <div className={`d-flex flex-row w-100 mt-2`}>
+          <div style={{maxHeight: '800px'}}>
+            <ChatSideBar
+              pollId={pollId}
+              appUser={user}
+              userList={uniqueCreators}
+              currentUsers={chatUsers}
+              updateUsers={setChatUsers}
+            />
+          </div>
           <ChatBody
             pollId={pollId}
             appUser={user}
+            pollUsers={chatUsers}
             data={data!.messagesByPoll}
             addAnswer={addAnswer}
             addError={addError}

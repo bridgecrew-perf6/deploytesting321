@@ -18,7 +18,7 @@ export const LogoText = () => {
     <img
       className={styles.textCtr}
       src={
-        "https://res.cloudinary.com/rahmad12/image/upload/v1609084232/PoldIt/App_Imgs/appLogo_only_lqymh2.png"
+        "https://res.cloudinary.com/rahmad12/image/upload/v1630088216/PoldIt/App_Imgs/appLogo_only_new_feghxj.png"
       }
       alt=""
     />

@@ -66,7 +66,7 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
       <ul className="list-group list-group-horizontal">
         {subTopics.map((item) => (
           <li
-            className={`p-2 m-2 list-group-item rounded`}
+            className={`p-2 m-2 list-group-item rounded border`}
             key={item._id}
             style={{ fontSize: 13 }}
           >

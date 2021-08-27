@@ -58,7 +58,7 @@ const LogIn: NextPage = () => {
 
   return (
     <CardForm ctrStyle={"55%"} title={router.pathname}>
-      <div className={`${styles.appColor} text-white`}>
+      <div className={`${styles.appColor}`}>
         <LogoText />
       </div>
       <div className="card-body">

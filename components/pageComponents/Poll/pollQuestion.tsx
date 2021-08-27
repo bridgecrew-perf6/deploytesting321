@@ -14,8 +14,7 @@ interface PollQuestion {
 }
 
 const PollQuestion = ({ pollData, numAnswers, showAdd }: PollQuestion) => {
-  const answerCount = numCountDisplay(numAnswers);
-
+  
   return (
     <div
       className={`alert alert-light ${pollStyles.questionWindow} justify-content-between`}
@@ -43,7 +42,7 @@ const PollQuestion = ({ pollData, numAnswers, showAdd }: PollQuestion) => {
         )}
       </div>
       <div className="d-flex w-100">
-        <PollIconCtr showAdd={showAdd} numAnswers={answerCount} />
+        <PollIconCtr showAdd={showAdd} numAnswers={numAnswers} />
       </div>
     </div>
   );

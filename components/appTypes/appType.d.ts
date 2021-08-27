@@ -242,6 +242,7 @@ interface SelectedImage {
 interface IPollChatBox {
   pollId: string;
   appUser?: User | null;
+  pollUsers?: User[];
   data?: ChatMessage[];
   userList?: User[];
   currentUsers?: User[];

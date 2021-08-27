@@ -6,7 +6,8 @@
 } */
 
 .chatSideBar {
-  width: 22vh;
+  width: 350px;
+  max-width: 350px;
   height: 100%;
 }
 
@@ -26,9 +27,9 @@
   background-color: lightgray;
 }
 
-.chatSearch {
+/* .chatSearch {
   border: 1px solid lightgray;
-}
+} */
 
 .chatInput {
   border: 2px solid lightgray;

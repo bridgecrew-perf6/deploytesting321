@@ -45,21 +45,21 @@ export const ChatSideBar = ({
 
   return (
     <div
-      className={`d-flex flex-column ${chatSideBar} border border-secondary`}
+      className={`d-flex flex-column ${chatSideBar} border mr-2`}
     >
       <div
-        className="d-flex align-items-center justify-content-center border-bottom"
-        style={{ height: "10%" }}
+        className="d-flex align-items-center justify-content-center border-bottom p-2"
+        style={{ height: '50px',  minHeight:'50px' }}
       >
         Poll Participants
       </div>
       <div className="d-flex flex-column justify-content-between h-100">
         <div
-          className={`d-flex justify-content-center p-1 rounded ${chatSearch}`}
+          className={`d-flex justify-content-center p-1 pt-3 pb-3 pr-4 rounded`}
         >
           <OnChangeSearchBar search={searchHandler} style={{ width: "98%" }} />
         </div>
-        <div className="flex-fill list-group overflow-auto p-2">
+        <div className="flex-fill list-group overflow-auto pl-1 pr-4">
           {currentUsers?.map((item) => (
             <div key={item._id}>
               <ChatUser
@@ -70,12 +70,12 @@ export const ChatSideBar = ({
             </div>
           ))}
         </div>
-        <div
+        {/* <div
           className="d-flex justify-content-center align-items-center"
           style={{ height: "11%" }}
         >
           Footer
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -119,7 +119,7 @@ export const ChatUser = ({ user, following, selfId }: ChatSideBarUser) => {
   };
 
   return (
-    <div className="list-group-item m-1 p-1 d-flex align-items-center justify-content-between rounded">
+    <div className="list-group-item m-1 p-1 d-flex align-items-center justify-content-between rounded ">
       <div className="d-flex align-items-center">
         <ProfileImg
           profilePic={user.profilePic}
@@ -138,21 +138,22 @@ export const ChatUser = ({ user, following, selfId }: ChatSideBarUser) => {
 export const ChatBody = ({
   pollId,
   appUser,
+  pollUsers,
   data,
   addAnswer,
   addError,
 }: IPollChatBox) => {
   return (
-    <div className="d-flex flex-column border h-100" style={{ width: "90%" }}>
-      <div className="border border-secondary p-2" style={{ height: "9%" }}>
-        Header
+    <div className="d-flex flex-column border" style={{ width: "90%" }}>
+      <div className="p-2" style={{  height: '50px', minHeight:'50px' }}>
+
       </div>
-      <div className="border border-secondary flex-grow-1 p-2">
+      <div className="border flex-grow-1 p-2">
         <ChatArea pollId={pollId} appUser={appUser} data={data} />
       </div>
       <div
-        className="border border-secondary pl-2 pr-2"
-        style={{ height: "12%" }}
+        className="pl-2 pr-2 pt-1 pb-1"
+        style={{ height: "70px" }}
       >
         <ChatInput
           pollId={pollId}
@@ -224,7 +225,6 @@ const ChatItem = ({ data, userId }: ChatItem) => {
               live={false}
               style={{ fontSize: 14, marginTop: 10 }}
             />
-            
           </>
         )}
       </div>
