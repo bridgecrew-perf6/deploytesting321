@@ -233,7 +233,7 @@ export default function NewPoll() {
                   <div className="form-group">
                     <div
                       className="d-flex flex-column mb-1"
-                      style={{ height: "7vh" }}
+                      // style={{ height: "7vh" }}
                     >
                       <div className="d-flex justify-content-between">
                         <label

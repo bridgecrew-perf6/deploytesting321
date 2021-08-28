@@ -33,11 +33,12 @@ const {
 const apolloClient = initializeApollo();
 
 interface Props {
+  poll: any;
   pollId: string;
   // data: { poll: PollHistory };
 }
 
-const poll = ({ pollId }: Props) => {
+const Poll = ({ poll, pollId }: Props) => {
   //States
   const [error, updateError] = useState<string[]>([]);
   const [answerWindow, showAnswerWindow] = useState(false);
@@ -216,17 +217,13 @@ const poll = ({ pollId }: Props) => {
   );
 };
 
-export default poll;
+export default Poll;
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  // const res = await apolloClient.query({
-  //   query: GET_POLL,
-  //   variables: { pollId: context?.params?.id },
-  // });
+export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   return {
     props: {
-      pollId: context?.params?.id,
+      pollId: params?.id,
     },
   };
 };
@@ -241,6 +238,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };

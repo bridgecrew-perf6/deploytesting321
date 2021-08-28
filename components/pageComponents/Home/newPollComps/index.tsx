@@ -35,8 +35,8 @@ export const SelectedTopicBtn = ({
       <ul className="list-group list-group-horizontal d-flex justify-content-between align-items-center">
         {selectedSubTopics.map((item) => (
           <li
-            className={`d-flex justify-content-between align-items-center m-1 ${customBtn} ${customBtnOutline}`}
-            style={{ height: "2.5vh" }}
+            className={`d-flex justify-content-between align-items-center m-1 ${customBtn} ${customBtnOutline} p-3`}
+            style={{ height: "30px" }}
             key={item.id}
           >
             <div className="font-weight-normal">{item.subTopic}</div>
@@ -59,8 +59,8 @@ export const SelectedTopicBtn = ({
 
   return (
     <div
-      className={`d-flex align-items-center m-1 ${customBtn} ${customBtnOutline} `}
-      style={{ height: "2.5vh" }}
+      className={`d-flex align-items-center m-1 ${customBtn} ${customBtnOutline} p-3`}
+      style={{ height: "30px" }}
     >
       <div className="font-weight-normal">
         {btnType == "topic" ? selectedTopic.topic : selectedSubTopics}
@@ -163,7 +163,7 @@ export const AddSubTopic = ({
       >
         Add New Poll SubTopic
       </label>
-      <div className="border border-secondary rounded p-2" id="addNewSubTopic">
+      <div className="rounded pt-2" id="addNewSubTopic">
         <div className="form-group">
           <label>New SubTopic Name</label>
           <input type="text" className="form-control" id="subTopic" />

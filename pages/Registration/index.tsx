@@ -11,11 +11,13 @@ import {
 import GraphResolvers from "../../lib/apollo/apiGraphStrings/index";
 import { CardForm } from "../../components/layout/CompStyles";
 import { StateVals } from "../../components/formFuncs/formFuncs";
+import LegalModal from "../../components/pageComponents/Other/Legal/legalModal";
 
 const { appColor, appTxt } = styles;
 
 export default function Registration() {
   const [stateList, setStateList] = useState<StatesUS[]>([]);
+  const [notLegal, toggleLegal] = useState(true)
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
   const [formValidation, setFormValidation] = useState<HTMLFormElement>();
   const router = useRouter();
@@ -200,13 +202,23 @@ export default function Registration() {
               />
             </div>
           </div>
+          <div
+            className={`btn ${appColor} text-white w-25 mt-2 mr-3`}
+            typeof="button"
+            data-toggle="modal"
+            data-target="#legalModal"
+          >
+            Review User Agreement
+          </div>
           <button
+            disabled={notLegal}
             type="submit"
             className={`btn ${appColor} text-white w-25 mt-2`}
           >
             Register
           </button>
         </form>
+        <LegalModal agreementTitle="Beta User Agreement" update={toggleLegal} agreed={notLegal} />
       </div>
     </CardForm>
   );

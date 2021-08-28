@@ -38,7 +38,7 @@ export const SubTopicWindow = ({
     return (
       <div
         className={`${topicStyles.subTopicWindow} d-flex overflow-auto`}
-        style={{ maxHeight: "20vh", height: "15vh" }}
+        style={{ maxHeight: "170px", height: "170px" }}
       >
         <ul
           className="list-group list-group-horizontal"
@@ -52,7 +52,7 @@ export const SubTopicWindow = ({
 
             return (
               <li
-                className={`d-flex flex-column m-2`}
+                className={`d-flex flex-column mt-2 mr-3 mb-4`}
                 style={{ maxWidth: "14rem", width: "14rem" }}
                 key={item._id}
                 id={item._id}

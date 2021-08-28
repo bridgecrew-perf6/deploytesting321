@@ -21,7 +21,7 @@ const TopicWindow = ({ data, selectedTopic, setTopic }: TopicWindow) => {
   }
 
   return (
-    <div className="d-flex">
+    <div className="d-flex overflow-auto pt-4 pb-4">
       <ul className="list-group list-group-horizontal d-flex justify-content-between">
         {data.map((item) => {
           const iconColor =
@@ -31,7 +31,7 @@ const TopicWindow = ({ data, selectedTopic, setTopic }: TopicWindow) => {
 
           return (
             <li
-              className={`p-2 m-2 ${iconColor}`}
+              className={`p-3 m-2 ${iconColor}`}
               key={item._id}
               typeof="button"
               onClick={() => setTopic({ id: item._id, topic: item.topic })}
