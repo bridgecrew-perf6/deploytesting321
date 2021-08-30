@@ -16,6 +16,7 @@ export const userTypeDefs = gql`
     state: String
     zipcode: String
     profilePic: String
+    useragreementagreed: Boolean
     bio: String
     registerDate: String
     isAppUser: Boolean

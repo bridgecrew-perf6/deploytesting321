@@ -16,7 +16,12 @@ export const getCredentialProps = (formType: string) => {
 
   for (let i = 0; i < objList.length; i++) {
     const domItem = objList[i];
-    formObj[camelCaseString(domItem.id)] = domItem.value;
+
+    if (domItem.type === "checkbox") {
+      formObj[camelCaseString(domItem.id)] = domItem.checked;
+    } else {
+      formObj[camelCaseString(domItem.id)] = domItem.value;
+    }
   }
 
   if (formType === "registration") {

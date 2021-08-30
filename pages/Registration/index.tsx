@@ -17,7 +17,7 @@ const { appColor, appTxt } = styles;
 
 export default function Registration() {
   const [stateList, setStateList] = useState<StatesUS[]>([]);
-  const [notLegal, toggleLegal] = useState(true)
+  const [notLegal, toggleLegal] = useState(true);
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
   const [formValidation, setFormValidation] = useState<HTMLFormElement>();
   const router = useRouter();
@@ -75,6 +75,10 @@ export default function Registration() {
     }
   };
 
+  const userAgreementError = formErrors.some((item) =>
+    item.message.includes("User Agreement")
+  );
+
   return (
     <CardForm ctrStyle={"60%"} title={router.pathname}>
       <h1
@@ -87,7 +91,13 @@ export default function Registration() {
         <form onSubmit={handleSubmit} id="registration">
           {formErrors.length > 0 && (
             <div className="alert alert-danger">
-              Please fill out the required fields.
+              <label>Please fill out the required fields</label>
+              {userAgreementError && (
+                <label>
+                  Please review the User Agreement and click the check box to
+                  confirm
+                </label>
+              )}
             </div>
           )}
           <div className="form-row">
@@ -202,34 +212,31 @@ export default function Registration() {
               />
             </div>
           </div>
-          <div
-            className={`btn ${appColor} text-white w-25 mt-2 mr-3`}
-            typeof="button"
-            data-toggle="modal"
-            data-target="#legalModal"
-          >
-            Review User Agreement
+          <div className="form-group form-check">
+            <input
+              type="checkbox"
+              onClick={() => toggleLegal(!notLegal)}
+              className="form-check-input"
+              id="userAgreementAgreed"
+            />
+            <label className="form-check-label" htmlFor="exampleCheck1">
+              I agree to the terms and conditions of
+            </label>
+            <a href="" data-toggle="modal" data-target="#legalModal">
+              {" "}
+              the User Agreement
+            </a>
           </div>
+
           <button
-            disabled={notLegal}
             type="submit"
             className={`btn ${appColor} text-white w-25 mt-2`}
           >
             Register
           </button>
         </form>
-        <LegalModal agreementTitle="Beta User Agreement" update={toggleLegal} agreed={notLegal} />
+        <LegalModal agreementTitle="Beta User Agreement" />
       </div>
     </CardForm>
   );
 }
-
-// export const getStaticProps: GetStaticProps = async (context) => {
-//   const stateList = await getStatesUS();
-
-//   return {
-//     props: {
-//       data: stateList,
-//     },
-//   };
-// };

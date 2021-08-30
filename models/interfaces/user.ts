@@ -23,6 +23,7 @@ export default interface IUser extends MongoDoc {
   state?: string;
   zipCode?: string;
   profilePic?: string;
+  useragreementagreed: boolean;
   following?: { appId: string; profilePic: string | undefined }[];
   registerDate: Date;
   pollHistory: string[];

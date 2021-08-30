@@ -5,14 +5,12 @@ const { appColor, appTxt, formTxt } = styles;
 
 interface LegalModal {
   agreementTitle: string;
-  agreed: boolean;
-  update: (val: boolean) => void;
 }
 
-const LegalModal = ({ agreementTitle, agreed, update }: LegalModal) => {
+const LegalModal = ({ agreementTitle }: LegalModal) => {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    update(!agreed);
+    // update(!agreed);
     ($("#legalModal") as any).modal("hide");
   };
 
@@ -26,10 +24,19 @@ const LegalModal = ({ agreementTitle, agreed, update }: LegalModal) => {
     >
       <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content">
-          <div className={`${appColor} p-2`}>
+          <div className={`${appColor} p-2 position-relative`}>
             <h3 className={`text-center p-2 modal-title ${appTxt}`}>
               {agreementTitle}
             </h3>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="close position-absolute text-white"
+              style={{ top: 25, right: 20, border: "none", outline: "none" }}
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div className="modal-body">
             <p className="" style={{ fontSize: 15 }}>
@@ -403,26 +410,6 @@ const LegalModal = ({ agreementTitle, agreed, update }: LegalModal) => {
                 right, power or privilege.
               </li>
             </ol>
-          </div>
-          <div className="modal-footer">
-            <div className="d-flex justify-content-between flex-fill p-2 ml-5 mr-5">
-              <button
-                className={`btn ${appColor} text-white`}
-                id="submitButton"
-                onClick={handleSubmit}
-              >
-                I agree to these Terms
-              </button>
-              <button
-                className={`btn btn-secondary text-white`}
-                onClick={() => {
-                  update(true);
-                  ($("#legalModal") as any).modal("hide");
-                }}
-              >
-                I do not agree
-              </button>
-            </div>
           </div>
         </div>
       </div>

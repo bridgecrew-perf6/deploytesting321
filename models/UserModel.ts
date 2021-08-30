@@ -48,6 +48,10 @@ const userSchema: Schema = new Schema({
     type: String,
     required: false,
   },
+  useragreementagreed: {
+    type: Boolean,
+    require: false,
+  },
   registerDate: {
     type: Date,
     required: true,
