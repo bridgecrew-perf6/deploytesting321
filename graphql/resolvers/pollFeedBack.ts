@@ -96,7 +96,7 @@ export const feedBackResolvers: ResolverMap = {
       let answerWithFeedback;
 
       try {
-        if (feedback === "like") {
+        if (feedback === "like" && id) {
           const existingLike = await Answer.find({
             _id: answerId,
             "likes.userId": id,
@@ -108,7 +108,7 @@ export const feedBackResolvers: ResolverMap = {
                 _id: answerId,
               },
               {
-                $pull: { likes: { userId: id, like: true } },
+                $pull: { likes: { userId: id, like: true } } as any,
               }
             );
           }
@@ -119,8 +119,8 @@ export const feedBackResolvers: ResolverMap = {
                 _id: answerId,
               },
               {
-                $push: { likes: { userId: id, like: true } },
-                $pull: { dislikes: { userId: id, dislike: true } },
+                $push: { likes: { userId: id, like: true } } as any,
+                $pull: { dislikes: { userId: id, dislike: true } } as any,
               }
             );
           }
@@ -138,7 +138,7 @@ export const feedBackResolvers: ResolverMap = {
                 _id: answerId,
               },
               {
-                $pull: { dislikes: { userId: id, dislike: true } },
+                $pull: { dislikes: { userId: id, dislike: true } } as any,
               }
             );
           }
@@ -149,8 +149,8 @@ export const feedBackResolvers: ResolverMap = {
                 _id: answerId,
               },
               {
-                $push: { dislikes: { userId: id, dislike: true } },
-                $pull: { likes: { userId: id, like: true } },
+                $push: { dislikes: { userId: id, dislike: true } } as any,
+                $pull: { likes: { userId: id, like: true } } as any,
               }
             );
           }
@@ -181,7 +181,6 @@ export const feedBackResolvers: ResolverMap = {
         throw err;
       }
     },
-
   },
   Subscription: {
     newAnswer: {
