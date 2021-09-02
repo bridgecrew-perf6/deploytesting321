@@ -25,6 +25,7 @@ import { saveImgtoCloud } from "../../apis/imgUpload";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { filterSearchVals } from "../../formFuncs/miscFuncs";
 import { ToolTipCtr } from "../../layout/customComps";
+import { addNewPoll } from "../../../lib/apollo/apolloFunctions/mutations";
 
 const RichTextEditor = dynamic(() => import("../Other/RichText"), {
   ssr: false,
@@ -125,10 +126,12 @@ export default function NewPoll() {
         pollImages: imgIds && imgIds,
       };
 
-      createPoll({
-        variables: { details: JSON.stringify(pollItem) },
-        refetchQueries: [{ query: GET_POLLS_ALL }],
-      });
+      // createPoll({
+      //   variables: { details: JSON.stringify(pollItem) },
+      //   // refetchQueries: [{ query: GET_POLLS_ALL }],
+      // });
+
+      addNewPoll(createPoll, JSON.stringify(pollItem));
 
       ($("#newPollModal") as any).modal("hide"); //closes modal programitically
       clearForm();

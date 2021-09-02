@@ -27,6 +27,7 @@ const {
   GET_USERPOLLS,
   SHOW_VIEWS,
   GET_ACTIVE_CHATS,
+  GET_NEWEST_POLLS,
 } = GraphResolvers.queries;
 
 export const updateUserProfile = async (
@@ -326,6 +327,31 @@ export const addNewChatMssg = async (
             },
           });
         }
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const addNewPoll = async (
+  addNewPollFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: string
+) => {
+  try {
+    addNewPollFunc({
+      variables: { details },
+      update(cache, { data: { createPoll } }) {
+        const { newestPolls }: any = cache.readQuery({
+          query: GET_NEWEST_POLLS,
+        });
+
+        cache.writeQuery({
+          query: GET_NEWEST_POLLS,
+          data: { newestPolls: [...newestPolls, createPoll] },
+        });
       },
     });
   } catch (err) {

@@ -220,20 +220,25 @@ export default function Registration() {
               id="userAgreementAgreed"
             />
             <label className="form-check-label" htmlFor="exampleCheck1">
-              I agree to the terms and conditions of
+              I agree to the terms and conditions of the
             </label>
             <a href="" data-toggle="modal" data-target="#legalModal">
               {" "}
-              the User Agreement
+              User Agreement
             </a>
           </div>
-
-          <button
-            type="submit"
-            className={`btn ${appColor} text-white w-25 mt-2`}
-          >
-            Register
-          </button>
+          <div className="d-flex justify-content-between align-items-center">
+            <button
+              type="submit"
+              className={`btn ${appColor} text-white w-25 mt-2`}
+            >
+              Register
+            </button>
+            <label htmlFor="">
+              Already Registered? Click here to go back to the{" "}
+              <a href="/Login">Login Page</a>
+            </label>
+          </div>
         </form>
         <LegalModal agreementTitle="Beta User Agreement" />
       </div>

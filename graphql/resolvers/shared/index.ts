@@ -122,12 +122,13 @@ export const transformSubTopic = (subTopic: ISubTopic, loaders: any[]) => {
 export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
   const { creator, poll, comment } = getLoader(loaders);
 
+
   return {
     ...answer._doc,
-    _id: answer.id,
-    creationDate: dateToString(answer.creationDate),
-    creator: () => creator.load(answer.creator),
-    poll: () => poll.load(answer.poll),
+    _id: answer._doc._id,
+    creationDate: dateToString(answer._doc.creationDate),
+    creator: () => creator.load(answer._doc.creator),
+    poll: () => poll.load(answer._doc.poll),
     // comments: () => comment.loadMany(answer.comments),
   };
 };

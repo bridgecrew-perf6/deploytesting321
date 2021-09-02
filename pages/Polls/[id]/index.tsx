@@ -22,23 +22,15 @@ import {
   updateViewCount,
 } from "../../../lib/apollo/apolloFunctions/mutations";
 
-const {
-  GET_POLL,
-  GET_POLLS_ALL,
-  GET_ANSWERS_BY_POLL,
-  GET_USER,
-  GET_USERPOLLS,
-  SHOW_VIEWS,
-} = GraphResolvers.queries;
+const { GET_POLL, GET_POLLS_ALL, GET_USER } = GraphResolvers.queries;
 const apolloClient = initializeApollo();
 
 interface Props {
-  poll: any;
   pollId: string;
   // data: { poll: PollHistory };
 }
 
-const Poll = ({ poll, pollId }: Props) => {
+const Poll = ({ pollId }: Props) => {
   //States
   const [error, updateError] = useState<string[]>([]);
   const [answerWindow, showAnswerWindow] = useState(false);
@@ -47,7 +39,9 @@ const Poll = ({ poll, pollId }: Props) => {
   const [user, setUser] = useState<User | null>(null);
 
   //Graph API Requests
-  const { data } = useQuery(GET_POLL, { variables: { pollId } });
+  const { data } = useQuery(GET_POLL, {
+    variables: { pollId },
+  });
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
     {
@@ -55,7 +49,9 @@ const Poll = ({ poll, pollId }: Props) => {
     }
   );
 
-  const [getUser, { data: userData }] = useLazyQuery(GET_USER);
+  const [getUser, { data: userData }] = useLazyQuery(GET_USER, {
+    onCompleted: (res) => setUser(res.getUserData.user),
+  });
   const [addView] = useMutation(GraphResolvers.mutations.ADD_VIEW);
 
   const {
@@ -76,9 +72,9 @@ const Poll = ({ poll, pollId }: Props) => {
     // console.log(data.poll.views);
     getUser();
     // updateViewCount(addView, data.poll._id);
-    userData && setUser(userData!.getUserData!.user);
+    // userData && setUser(userData!.getUserData!.user);
 
-    if (answerData) {
+    if (answerData && subscribeToMore) {
       subscribeToMore({
         document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
         variables: { pollId },
@@ -108,7 +104,7 @@ const Poll = ({ poll, pollId }: Props) => {
         },
       });
     }
-  }, [userData, answerData]);
+  }, [data, userData, answerData]);
 
   //Functions
   const toggleAddAnswer = () => {
@@ -152,75 +148,74 @@ const Poll = ({ poll, pollId }: Props) => {
     addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <SitePageContainer title={`Poll`}>
-      <div style={{ marginTop: "100px" }}>
-        <PollQuestion
-          pollData={data.poll}
-          numAnswers={
-            answerData?.answersByPoll ? answerData?.answersByPoll.length : 0
-          }
-          showAdd={toggleAddAnswer}
-        />
-        {error && (
-          <ErrorToast
-            mssgs={error}
-            mssgType={"Poll Answer Error"}
-            removeError={removeError}
+  if (data) {
+    return (
+      <SitePageContainer title={`Poll`}>
+        <div style={{ marginTop: "100px" }}>
+          <PollQuestion
+            pollData={data.poll}
+            numAnswers={
+              answerData?.answersByPoll ? answerData?.answersByPoll.length : 0
+            }
+            showAdd={toggleAddAnswer}
           />
-        )}
-        {answerWindow && (
-          <div className="m-3">
-            <AddAnswer
-              addAnswer={addAnswer}
+          {error && (
+            <ErrorToast
+              mssgs={error}
+              mssgType={"Poll Answer Error"}
+              removeError={removeError}
+            />
+          )}
+          {answerWindow && (
+            <div className="m-3">
+              <AddAnswer
+                addAnswer={addAnswer}
+                addError={addError}
+                toggleWindow={toggleAddAnswer}
+              />
+            </div>
+          )}
+          <div className="position-relative">
+            <MaxMinBtn
+              btnState={answersSection}
+              toggleBtn={toggleSection}
+              btnCat="answers"
+            />
+            <PollAnswers
+              creator={data.poll.creator}
+              poll={data.poll._id}
+              loading={loading}
+              answers={answerData?.answersByPoll}
+              showSection={answersSection}
               addError={addError}
-              toggleWindow={toggleAddAnswer}
             />
           </div>
-        )}
-        <div className="position-relative">
-          <MaxMinBtn
-            btnState={answersSection}
-            toggleBtn={toggleSection}
-            btnCat="answers"
-          />
-          <PollAnswers
-            creator={data.poll.creator}
-            poll={data.poll._id}
-            loading={loading}
-            answers={answerData?.answersByPoll}
-            showSection={answersSection}
-            addError={addError}
-          />
-        </div>
 
-        <div className="position-relative mb-2">
-          <MaxMinBtn
-            btnState={chatSection}
-            toggleBtn={toggleSection}
-            btnCat="chat"
-          />
-          <PollChat
-            pollId={data.poll._id}
-            addAnswer={addAnswer}
-            addError={addError}
-            showSection={chatSection}
-            user={user}
-          />
+          <div className="position-relative mb-2">
+            <MaxMinBtn
+              btnState={chatSection}
+              toggleBtn={toggleSection}
+              btnCat="chat"
+            />
+            <PollChat
+              pollId={data.poll._id}
+              addAnswer={addAnswer}
+              addError={addError}
+              showSection={chatSection}
+              user={user}
+            />
+          </div>
         </div>
-      </div>
-    </SitePageContainer>
-  );
+      </SitePageContainer>
+    );
+  }
+
+  return <div>Loading...</div>;
 };
 
 export default Poll;
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-
   return {
     props: {
       pollId: params?.id,

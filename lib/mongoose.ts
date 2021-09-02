@@ -3,10 +3,18 @@ import mongoose from "mongoose";
 import configs from "../endpoints.config";
 
 const connectDb = (handler: any) => async (req: Request, res: Response) => {
+  let isDev =
+    !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+      ? true
+      : false;
+
+  const { DEV_DB_URL, PROD_DB_URL } = process.env;
+
+  const dbUri = isDev ? (DEV_DB_URL as string) : (PROD_DB_URL as string);
 
   if (mongoose.connections[0].readyState !== 1) {
     try {
-      await mongoose.connect(configs.DbUriProd, configs.MONGO_OPTIONS);
+      await mongoose.connect(dbUri, configs.MONGO_OPTIONS);
     } catch (err) {
       console.error(err.message);
       process.exit(1);

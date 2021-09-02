@@ -78,6 +78,7 @@ export const pollTypeDefs = gql`
       feedback: String!
       feedbackVal: Boolean!
       answerId: String!
+      pollId: String!
     ): Answer
     addAnswerRank(answerId: String!): String
     addView(pollId: String!): Int

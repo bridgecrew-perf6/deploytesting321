@@ -38,6 +38,29 @@ const pollSubscriptions = {
       }
     }
   `,
+  ANSWERS_SUBSCRIPTION: gql`
+  subscription OnAnswerUpdated($pollId: String!) {
+    updatedAnswers(pollId: $pollId) {
+      _id
+      answer
+      creator {
+        _id
+        appid
+      }
+      answerImages
+      creationDate
+      likes {
+        userId
+        like
+      }
+      dislikes {
+        userId
+        dislike
+      }
+      rank
+    }
+  }
+`,
 };
 
 export default pollSubscriptions;

@@ -14,11 +14,13 @@ const pollFeedBackMutations = {
       $feedback: String!
       $feedbackVal: Boolean!
       $answerId: String!
+      $pollId: String!
     ) {
       handleLikeDislike(
         feedback: $feedback
         feedbackVal: $feedbackVal
         answerId: $answerId
+        pollId: $pollId
       ) {
         _id
         answer
@@ -27,7 +29,7 @@ const pollFeedBackMutations = {
   `,
   CREATE_CHAT_MESSAGE: gql`
     mutation CreateMessage($details: String!) {
-      createMessage(details: $details){
+      createMessage(details: $details) {
         _id
       }
     }

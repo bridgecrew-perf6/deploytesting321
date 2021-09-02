@@ -62,6 +62,7 @@ const PollAnswers = ({
         feedback,
         feedbackVal,
         answerId,
+        pollId: poll,
       },
     });
   };

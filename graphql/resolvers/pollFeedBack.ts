@@ -8,6 +8,7 @@ import batchLoaders from "../loaders/dataLoaders";
 import IAnswer from "../../models/interfaces/answer";
 import { getNumRanking } from "./shared/metrics";
 import IUser from "../../models/interfaces/user";
+import mongoose from "mongoose";
 
 const { batchAnswers } = batchLoaders;
 
@@ -80,12 +81,9 @@ export const feedBackResolvers: ResolverMap = {
         throw err;
       }
     },
-
-    //Recode - Too verbose - Can be a lot shorter code wise
-    //Possibly use findOneAndUpdate for model instead of saving the object with new props
     handleLikeDislike: async (
       parent,
-      { feedback, feedbackVal, answerId },
+      { feedback, feedbackVal, answerId, pollId },
       ctx
     ) => {
       const { isAuth, req, res, pubsub, dataLoaders } = ctx;
@@ -95,84 +93,95 @@ export const feedBackResolvers: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
 
+      let answerWithFeedback;
+
       try {
-        const answer: IAnswer = await Answer.findById(answerId);
+        if (feedback === "like") {
+          const existingLike = await Answer.find({
+            _id: answerId,
+            "likes.userId": id,
+          });
 
-        if (!answer) {
-          throw new Error("Answer Not found");
-        }
-
-        const existingLike = answer.likes.some((item) => item.userId === id);
-        const existingDisLike = answer.dislikes.some(
-          (item) => item.userId === id
-        );
-
-        if (existingLike && feedback === "dislike" && id) {
-          answer.likes = answer.likes.filter((item) => item.userId !== id);
-          answer.dislikes.push({ userId: id, dislike: feedbackVal });
-        }
-
-        if (existingDisLike && feedback === "like" && id) {
-          answer.dislikes = answer.dislikes.filter(
-            (item) => item.userId !== id
-          );
-          answer.likes.push({ userId: id, like: feedbackVal });
-        }
-
-        if (!existingLike && !existingDisLike && feedback === "like" && id) {
-          answer.likes.push({ userId: id, like: feedbackVal });
-        }
-
-        if (!existingLike && !existingDisLike && feedback === "dislike" && id) {
-          answer.dislikes.push({ userId: id, dislike: feedbackVal });
-        }
-
-        if (
-          (existingLike && feedback === "like") ||
-          (existingDisLike && feedback === "dislike")
-        ) {
-          answer.likes = answer.likes.filter((item) => item.userId !== id);
-          answer.dislikes = answer.dislikes.filter(
-            (item) => item.userId !== id
-          );
-        }
-
-        const answers: IAnswer[] = await Answer.find({ poll: answer.poll });
-
-        const updatedAnswers = answers.map((item) => {
-          if (item.id === answerId) {
-            return transformAnswer(
-              answer,
-              dataLoaders(["user", "poll", "comment"])
+          if (existingLike.length > 0) {
+            answerWithFeedback = await Answer.updateOne(
+              {
+                _id: answerId,
+              },
+              {
+                $pull: { likes: { userId: id, like: true } },
+              }
             );
-          } else
-            return transformAnswer(
-              item,
-              dataLoaders(["user", "poll", "comment"])
+          }
+
+          if (existingLike.length === 0) {
+            answerWithFeedback = await Answer.updateOne(
+              {
+                _id: answerId,
+              },
+              {
+                $push: { likes: { userId: id, like: true } },
+                $pull: { dislikes: { userId: id, dislike: true } },
+              }
             );
+          }
+        }
+
+        if (feedback === "dislike") {
+          const existingDisLike = await Answer.find({
+            _id: answerId,
+            "dislikes.userId": id,
+          });
+
+          if (existingDisLike.length > 0) {
+            answerWithFeedback = await Answer.updateOne(
+              {
+                _id: answerId,
+              },
+              {
+                $pull: { dislikes: { userId: id, dislike: true } },
+              }
+            );
+          }
+
+          if (existingDisLike.length === 0) {
+            answerWithFeedback = await Answer.updateOne(
+              {
+                _id: answerId,
+              },
+              {
+                $push: { dislikes: { userId: id, dislike: true } },
+                $pull: { likes: { userId: id, like: true } },
+              }
+            );
+          }
+        }
+
+        const updatedAnswers = await Answer.find({
+          poll: pollId,
         });
 
         const rankedAnswers = getNumRanking(updatedAnswers);
 
-        const rankedAnswerIdx = rankedAnswers.findIndex(
-          (item) => item._id === answerId
-        );
+        rankedAnswers.forEach(async (item) => {
+          await Answer.updateOne(
+            { _id: item._doc._id },
+            {
+              $set: { rank: String(item._doc.rank) },
+            }
+          );
 
-        answer.rank = rankedAnswers[rankedAnswerIdx].rank;
-
-        const savedAnswer = await answer.save();
-        const createdAnswer = transformAnswer(
-          savedAnswer,
-          dataLoaders(["user", "poll"])
-        );
-
-        pubsub.publish("newAnswer", { newAnswer: createdAnswer });
-
-        return createdAnswer;
+          pubsub.publish("newAnswer", {
+            newAnswer: transformAnswer(
+              item as IAnswer,
+              dataLoaders(["user", "poll", "comment"])
+            ),
+          });
+        });
       } catch (err) {
         throw err;
       }
     },
+
   },
   Subscription: {
     newAnswer: {
