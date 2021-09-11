@@ -323,6 +323,7 @@ interface PollsWindow {
 interface CustomBtn {
   active: boolean;
   btnName: string;
+  data: any[];
 }
 
 interface SrchCustomBtn extends CustomBtn {

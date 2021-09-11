@@ -22,7 +22,8 @@ import {
   updateViewCount,
 } from "../../../lib/apollo/apolloFunctions/mutations";
 
-const { GET_POLL, GET_POLLS_ALL, GET_USER } = GraphResolvers.queries;
+const { GET_POLL, GET_POLLS_ALL, GET_USER, GET_USER_FOR_POLL } =
+  GraphResolvers.queries;
 const apolloClient = initializeApollo();
 
 interface Props {
@@ -36,12 +37,14 @@ const Poll = ({ pollId }: Props) => {
   const [answerWindow, showAnswerWindow] = useState(false);
   const [answersSection, showAnswersSection] = useState(false);
   const [chatSection, showChatSection] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
 
   //Graph API Requests
   const { data } = useQuery(GET_POLL, {
     variables: { pollId },
   });
+
+  const { data: user } = useQuery(GET_USER_FOR_POLL);
+
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
     {
@@ -49,9 +52,6 @@ const Poll = ({ pollId }: Props) => {
     }
   );
 
-  const [getUser, { data: userData }] = useLazyQuery(GET_USER, {
-    onCompleted: (res) => setUser(res.getUserData.user),
-  });
   const [addView] = useMutation(GraphResolvers.mutations.ADD_VIEW);
 
   const {
@@ -62,18 +62,13 @@ const Poll = ({ pollId }: Props) => {
     variables: { pollId },
   });
 
-  //Component Mounted
+  // //Component Mounted
 
   useEffect(() => {
     updateViewCount(addView, pollId);
   }, []);
 
   useEffect(() => {
-    // console.log(data.poll.views);
-    getUser();
-    // updateViewCount(addView, data.poll._id);
-    // userData && setUser(userData!.getUserData!.user);
-
     if (answerData && subscribeToMore) {
       subscribeToMore({
         document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
@@ -97,16 +92,15 @@ const Poll = ({ pollId }: Props) => {
               answersByPoll: updatedAnswersByPoll,
             });
           }
-
           return Object.assign({}, prev, {
             answersByPoll: [...prev.answersByPoll, newAnswerItem],
           });
         },
       });
     }
-  }, [data, userData, answerData]);
+  }, [data, answerData]);
 
-  //Functions
+  // //Functions
   const toggleAddAnswer = () => {
     showAnswerWindow(!answerWindow);
   };
@@ -202,7 +196,7 @@ const Poll = ({ pollId }: Props) => {
               addAnswer={addAnswer}
               addError={addError}
               showSection={chatSection}
-              user={user}
+              user={user.getUserDataForPoll}
             />
           </div>
         </div>

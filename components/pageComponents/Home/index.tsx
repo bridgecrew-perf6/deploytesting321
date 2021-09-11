@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../../../appStyles/appStyles.module.css";
 import { CustomBtn, PollHistory } from "../../appTypes/appType";
 import { getSectionList } from "../../globalFuncs";
@@ -11,49 +11,45 @@ interface BtnItem {
   update: (btnName: string, prop: string, val: any) => void;
 }
 
-interface CustomBtnList {
+interface HomeBtnWindow {
   btnList: CustomBtn[];
   update: (btnName: string, prop: string, val: any) => void;
 }
 
-interface HomeBtnWindow {
-  sortPolls: (sortType: string) => void;
-}
+export const HomeBtnWindow = ({ btnList, update }: HomeBtnWindow) => {
+  // const btnItems: CustomBtn[] = [
+  //   { active: true, btnName: "Active Chats" },
+  //   { active: false, btnName: "Trending Polls" },
+  //   { active: false, btnName: "Newest Polls" },
+  // ];
 
-export const HomeBtnWindow = ({ sortPolls }: HomeBtnWindow) => {
-  const btnItems: CustomBtn[] = [
-    { active: true, btnName: "Active Chats" },
-    { active: false, btnName: "Trending Polls" },
-    { active: false, btnName: "Newest Polls" },
-  ];
+  // const [homeBtns, updateHomeBtns] = useState<CustomBtn[]>(btnItems);
 
-  const [homeBtns, updateHomeBtns] = useState<CustomBtn[]>(btnItems);
+  // const updateBtnItem = (btnName: string, prop: string, val: any) => {
+  //   const updatedItems = homeBtns.map((item) => {
+  //     if (item.btnName === btnName && prop === "active") {
+  //       sortPolls(item.btnName);
+  //       return { ...item, active: true };
+  //     } else if (item.btnName !== btnName && prop === "active") {
+  //       return { ...item, active: false };
+  //     } else if (item.btnName === btnName && prop !== "active") {
+  //       return { ...item, [prop as keyof CustomBtn]: val };
+  //     } else {
+  //       return item;
+  //     }
+  //   });
 
-  const updateBtnItem = (btnName: string, prop: string, val: any) => {
-    const updatedItems = homeBtns.map((item) => {
-      if (item.btnName === btnName && prop === "active") {
-        sortPolls(item.btnName);
-        return { ...item, active: true };
-      } else if (item.btnName !== btnName && prop === "active") {
-        return { ...item, active: false };
-      } else if (item.btnName === btnName && prop !== "active") {
-        return { ...item, [prop as keyof CustomBtn]: val };
-      } else {
-        return item;
-      }
-    });
-
-    updateHomeBtns(updatedItems);
-  };
+  //   updateHomeBtns(updatedItems);
+  // };
 
   return (
     <div className={`pb-2 ${appbg_other} ${componentSpacer} `}>
-      <CustomList btnList={homeBtns} update={updateBtnItem} />
+      <CustomList btnList={btnList} update={update} />
     </div>
   );
 };
 
-const CustomList = ({ btnList, update }: CustomBtnList) => {
+const CustomList = ({ btnList, update }: HomeBtnWindow) => {
   const finalBtnList = getSectionList(btnList, 4);
 
   return (

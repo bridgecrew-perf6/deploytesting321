@@ -50,6 +50,7 @@ export const userTypeDefs = gql`
   extend type Query {
     users: [User]!
     getUserData: AuthData!
+    getUserDataForPoll: User!
     showFavorites(userId: String!): Favorites!
     getAppUserData(userId: String): User!
     isFavorite(favType: String!, favId: String!): Boolean

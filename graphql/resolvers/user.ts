@@ -51,12 +51,31 @@ export const userResolvers: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
 
-      const user = await User.findById(id);
+      try {
+        const user = await User.findById(id);
 
-      if (user) {
-        const userData = transformUser(user, dataLoaders(["poll"]));
-        const appToken = getAppTokens(userData._id, res);
-        return { appToken, user: userData };
+        if (user) {
+          const userData = transformUser(user, dataLoaders(["poll"]));
+          const appToken = getAppTokens(userData._id, res);
+          return { appToken, user: userData };
+        }
+      } catch (err) {
+        throw err;
+      }
+    },
+    getUserDataForPoll: async (parent, args, context) => {
+      const { isAuth, req, res, dataLoaders } = context;
+      const { auth, id } = isAuth;
+
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please Log In!");
+      }
+      try {
+        const user = await User.findById(id);
+
+        return user._doc;
+      } catch (err) {
+        throw err;
       }
     },
     showFavorites: async (parent, { userId }, ctx) => {

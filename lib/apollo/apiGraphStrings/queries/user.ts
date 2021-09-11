@@ -27,6 +27,18 @@ const userQueries = {
       }
     }
   `,
+  GET_USER_FOR_POLL: gql`
+    query GetUserDataForPoll {
+      getUserDataForPoll {
+        _id
+        following {
+          _id
+          appId
+          profilePic
+        }
+      }
+    }
+  `,
   GET_APPUSER: gql`
     query GetAppUserData($userId: String!) {
       getAppUserData(userId: $userId) {

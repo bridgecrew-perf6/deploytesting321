@@ -6,17 +6,6 @@ const pollMutations = {
       createPoll(details: $details) {
         _id
         question
-        topic {
-          topic
-        }
-        subTopics {
-          _id
-          subTopic
-        }
-        creationDate
-        answers {
-          _id
-        }
       }
     }
   `,
