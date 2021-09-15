@@ -312,6 +312,15 @@ interface CategoryItems {
   linkedCats?: any;
 }
 
+interface AdminLeftSideBarCategoryItems {
+  _id: string,
+  name: string,
+  categoryOf: string,
+  haveCats: boolean,
+  active: boolean,
+  selected: boolean,
+}
+
 interface PollsWindow {
   data: CategoryItems[];
   loading?: boolean;

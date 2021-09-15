@@ -26,7 +26,7 @@ export default function ProfileHeader() {
   const [getUser, { data, error }] = useLazyQuery(GET_USER, {
     variables: { userId: "" },
   });
-  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
+  const [logout, { }] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
 
   useEffect(() => {
@@ -153,6 +153,9 @@ export default function ProfileHeader() {
               </Link>
               <Link href={`/Polls`}>
                 <li className="dropdown-item">All Topics</li>
+              </Link>
+              <Link href={`/Admin`}>
+                <li className="dropdown-item">Admin</li>
               </Link>
               <li className="dropdown-item">About</li>
               <li className="dropdown-item">How it Works</li>
