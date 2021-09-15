@@ -66,7 +66,6 @@
   opacity: 1;
   max-height: 500px;
   transition: all 0.3s ease-in-out;
-  /* -webkit-filter: ; */
 }
 
 .buttonsWrapper__isNotShowSubCats {
