@@ -83,6 +83,9 @@
 }
 
 .header_fixed {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
   position: fixed;
   top: 0;
   left: 0;
@@ -93,7 +96,6 @@
 .dataWindow {
   margin: 10px 200px 10px 200px;
   width: 60vw;
-
 }
 
 .dataItem {
@@ -145,7 +147,6 @@
   border-style: solid;
   border-color: black transparent transparent transparent;
 } */
-
 
 .itemToolTip_Top:hover .tooltiptext {
   visibility: visible;

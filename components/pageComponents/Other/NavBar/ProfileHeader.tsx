@@ -114,7 +114,10 @@ export default function ProfileHeader(props: any) {
     return (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
-        style={{ width: title !== "Admin Panel" ? "30%" : "22rem" }}
+        style={{
+          width: title !== "Admin Panel" ? "30%" : "22rem",
+          marginLeft: 5,
+        }}
       >
         {props.title !== "Admin Panel" && (
           <div

@@ -31,7 +31,10 @@ const NavBar: React.FC<NavProps> = (props) => {
   };
 
   return (
-    <nav className={`navbar ${styles.appbg_secondary} ${styles.header_fixed}`}>
+    <nav
+      className={`navbar ${styles.appbg_secondary} ${styles.header_fixed}`}
+      // style={{ display: "flex", justifyContent: "space-between" }}
+    >
       <Link href={"/"}>
         <a className="navbar-brand" href="#">
           <Logo />

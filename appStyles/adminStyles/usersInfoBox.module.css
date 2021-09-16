@@ -1,5 +1,5 @@
 .usersInfoWrapper {
-  margin-left: calc(100% - 80.8%);
+  margin-left: 18rem;
   height: 150vh;
   min-height: 150vh;
   background-color: #fff;
@@ -24,6 +24,7 @@
   border: none;
   color: #9292a3;
   transition: all 0.3s ease-in-out;
+  margin: 10px;
 }
 
 .users_btnWrapper__btn:focus {
@@ -39,6 +40,9 @@
   border: none;
   color: #fff;
   transition: all 0.3s ease-in-out;
+  border-radius: 10px;
+  margin: 10px;
+  box-shadow: 0px 10px 10px rgba(254, 77, 1, 0.4);
 }
 
 .users_btnWrapper__btnActive:focus {
@@ -47,7 +51,7 @@
 }
 
 .userInfoBox__adminTableWrapper {
-  margin: 2rem 1rem;
+  margin: 1rem 1rem;
 }
 
 .userInfoBox__inputWrapper {
