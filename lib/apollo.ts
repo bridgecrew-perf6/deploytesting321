@@ -81,9 +81,10 @@ const errorLink = onError(
         //   response.errors = null;
         //   //   // console.log(response.errors[0].message);
         // }
-        console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-        );
+        isDev &&
+          console.log(
+            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+          );
       });
       if (networkError) console.log(`[Network error]: ${networkError}`);
     }

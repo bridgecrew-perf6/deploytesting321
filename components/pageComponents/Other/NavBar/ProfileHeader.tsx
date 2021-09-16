@@ -14,6 +14,7 @@ import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
+import { AppLoadingLite } from "../Loading";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
@@ -23,18 +24,16 @@ export default function ProfileHeader() {
 
   const appContext = useAuth();
 
-  const [getUser, { data, error }] = useLazyQuery(GET_USER, {
-    variables: { userId: "" },
-  });
+  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
 
   useEffect(() => {
-    getUser();
+    appContext?.authState?.getUserData?.appToken !== "" && getUser();
     if (data) {
       appContext && appContext.updateUserData(data.getUserData);
     }
-  }, [data]);
+  }, [appContext, data]);
 
   const NotificationIcon = notification ? (
     <AiFillNotification size={24} color="#ff4d00" />
@@ -60,32 +59,6 @@ export default function ProfileHeader() {
       "/Login"
     );
   };
-
-  if (error) {
-    return (
-      <div
-        className="form-row justify-content-between"
-        style={{ width: "15%" }}
-      >
-        <Link href={"/Login"}>
-          <button
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            type="button"
-          >
-            Log In
-          </button>
-        </Link>
-        <Link href={"/Registration"}>
-          <button
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            type="button"
-          >
-            Register
-          </button>
-        </Link>
-      </div>
-    );
-  }
 
   if (data) {
     const { _id, appid, profilePic } = data.getUserData.user;
@@ -169,9 +142,34 @@ export default function ProfileHeader() {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center" style={{ width: 300 }}>
+        <AppLoadingLite />
+      </div>
+    );
+  }
+
+  // if (error) {
   return (
-    <div className="spinner-border text-primary" role="status">
-      <span className="sr-only">Loading...</span>
+    <div className="form-row justify-content-between" style={{ width: "15%" }}>
+      <Link href={"/Login"}>
+        <button
+          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+          type="button"
+        >
+          Log In
+        </button>
+      </Link>
+      <Link href={"/Registration"}>
+        <button
+          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+          type="button"
+        >
+          Register
+        </button>
+      </Link>
     </div>
   );
+  // }
 }

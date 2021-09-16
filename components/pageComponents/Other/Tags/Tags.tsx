@@ -20,6 +20,8 @@ interface TagWindow {
 }
 
 export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
+  const appContext = useAuth();
+
   const [btnState, toggleBtn] = useState(false);
 
   const likeIcon = btnState ? (
@@ -36,7 +38,8 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
   });
 
   useEffect(() => {
-    isFavorite();
+    appContext?.authState?.getUserData?.appToken !== "" && isFavorite();
+
     if (data) {
       toggleBtn(data.isFavorite);
     }

@@ -47,7 +47,7 @@ export const userResolvers: ResolverMap = {
       const { isAuth, req, res, dataLoaders } = context;
       const { auth, id } = isAuth;
 
-      if (!auth) {
+      if (!auth || !id) {
         throw new Error("Not Authenticated.  Please Log In!");
       }
 

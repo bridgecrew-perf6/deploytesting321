@@ -21,6 +21,7 @@ import {
   addNewAnswer,
   updateViewCount,
 } from "../../../lib/apollo/apolloFunctions/mutations";
+import { useAuth } from "../../../components/authProvider/authProvider";
 
 const { GET_POLL, GET_POLLS_ALL, GET_USER, GET_USER_FOR_POLL } =
   GraphResolvers.queries;
@@ -32,6 +33,8 @@ interface Props {
 }
 
 const Poll = ({ pollId }: Props) => {
+  const appContext = useAuth();
+
   //States
   const [error, updateError] = useState<string[]>([]);
   const [answerWindow, showAnswerWindow] = useState(false);
@@ -69,7 +72,7 @@ const Poll = ({ pollId }: Props) => {
   }, []);
 
   useEffect(() => {
-    getUser();
+    appContext?.authState?.getUserData?.appToken !== "" && getUser();
 
     if (answerData && subscribeToMore) {
       subscribeToMore({
@@ -144,7 +147,7 @@ const Poll = ({ pollId }: Props) => {
     addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
 
-  if (data && user) {
+  if (data) {
     return (
       <SitePageContainer title={`Poll`}>
         <div style={{ marginTop: "100px" }}>
@@ -198,7 +201,7 @@ const Poll = ({ pollId }: Props) => {
               addAnswer={addAnswer}
               addError={addError}
               showSection={chatSection}
-              user={user.getUserDataForPoll}
+              user={user?.getUserDataForPoll}
             />
           </div>
         </div>
