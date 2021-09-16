@@ -43,7 +43,7 @@ const Poll = ({ pollId }: Props) => {
     variables: { pollId },
   });
 
-  const { data: user } = useQuery(GET_USER_FOR_POLL);
+  const [getUser, { data: user }] = useLazyQuery(GET_USER_FOR_POLL);
 
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
@@ -69,6 +69,8 @@ const Poll = ({ pollId }: Props) => {
   }, []);
 
   useEffect(() => {
+    getUser();
+
     if (answerData && subscribeToMore) {
       subscribeToMore({
         document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
@@ -98,7 +100,7 @@ const Poll = ({ pollId }: Props) => {
         },
       });
     }
-  }, [data, answerData]);
+  }, [pollId, user, data, answerData]);
 
   // //Functions
   const toggleAddAnswer = () => {
@@ -142,7 +144,7 @@ const Poll = ({ pollId }: Props) => {
     addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
 
-  if (data) {
+  if (data && user) {
     return (
       <SitePageContainer title={`Poll`}>
         <div style={{ marginTop: "100px" }}>

@@ -31,7 +31,7 @@ export const userResolvers: ResolverMap = {
 
         return userData;
       } catch (error) {
-        throw new Error(error);
+        throw error;
       }
     },
     logout: async (parent, args, context) => {

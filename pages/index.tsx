@@ -81,7 +81,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log("triggered");
 
     if (
       activeChats &&
