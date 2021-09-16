@@ -1,17 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 
-
 const Table = (props: any) => {
-    const { columndata, usersdata } = props;
-    return (
-        <BootstrapTable
-            rowStyle={{ height: '20px', padding: '5px 0' }}
-            keyField="id"
-            data={usersdata}
-            columns={columndata.columns}
-        />
-    )
-}
+  const { columndata, usersdata, changetablerowdata } = props;
 
-export default Table
+  const tableRowEvents = {
+    onClick: (e: any, row: any, rowIndex: number) => {
+      changetablerowdata(row, rowIndex);
+    },
+  };
+
+  console.log(usersdata);
+
+  return (
+    <BootstrapTable
+      rowStyle={{ height: "20px", padding: "5px 0" }}
+      keyField="id"
+      rowEvents={tableRowEvents}
+      data={usersdata}
+      columns={columndata.columns}
+    />
+  );
+};
+
+export default Table;

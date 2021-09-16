@@ -7,18 +7,29 @@ import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import styles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
+import {
+  AiOutlineNotification,
+  AiFillNotification,
+  AiFillMessage,
+  AiOutlineMessage,
+} from "react-icons/ai";
 import NewPoll from "../../Home/NewPoll";
 import { UserDataProps } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
+import { AiOutlineBell } from "react-icons/ai";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
-const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
+const {
+  customBtn,
+  customBtnOutline,
+  customBtnOutlinePrimary,
+  custombtnCreate,
+} = btnStyles;
 
-export default function ProfileHeader() {
+export default function ProfileHeader(props: any) {
   const router = useRouter();
 
   const appContext = useAuth();
@@ -26,8 +37,9 @@ export default function ProfileHeader() {
   const [getUser, { data, error }] = useLazyQuery(GET_USER, {
     variables: { userId: "" },
   });
-  const [logout, { }] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
+  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
+  const [message, setMessage] = useState(false);
 
   useEffect(() => {
     getUser();
@@ -40,6 +52,12 @@ export default function ProfileHeader() {
     <AiFillNotification size={24} color="#ff4d00" />
   ) : (
     <AiOutlineNotification size={24} color="#ff4d00" />
+  );
+
+  const messageIcon = message ? (
+    <AiFillMessage size={24} color="#ff4d00" />
+  ) : (
+    <AiOutlineMessage size={24} color="#ff4d00" />
   );
 
   const handleLogOut = () => {
@@ -86,6 +104,7 @@ export default function ProfileHeader() {
       </div>
     );
   }
+  const { title } = props;
 
   if (data) {
     const { _id, appid, profilePic } = data.getUserData.user;
@@ -95,16 +114,19 @@ export default function ProfileHeader() {
     return (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
-        style={{ width: "30%" }}
+        style={{ width: title !== "Admin Panel" ? "30%" : "22rem" }}
       >
-        <div
-          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-          typeof="button"
-          data-toggle="modal"
-          data-target="#newPollModal"
-        >
-          Create New Poll
-        </div>
+        {props.title !== "Admin Panel" && (
+          <div
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            typeof="button"
+            data-toggle="modal"
+            data-target="#newPollModal"
+          >
+            Create New Poll
+          </div>
+        )}
+
         {superUserList?.includes(appid) && (
           <>
             <NewTopicBtn />
@@ -118,6 +140,24 @@ export default function ProfileHeader() {
           {NotificationIcon}
         </div>
 
+        {props.title === "Admin Panel" && (
+          <React.Fragment>
+            <div
+              className={styles.cursor}
+              onMouseEnter={() => setMessage(true)}
+              onMouseLeave={() => setMessage(false)}
+            >
+              {messageIcon}
+            </div>
+            <button
+              className={`${custombtnCreate} ${customBtnOutline}`}
+              type="button"
+            >
+              Create
+            </button>
+          </React.Fragment>
+        )}
+
         <div>
           <ProfileImg
             profilePic={profilePic}
@@ -130,6 +170,7 @@ export default function ProfileHeader() {
 
         <div className="dropdown">
           <a
+            style={{ border: "2px solid" }}
             className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
             type="button"
             id="siteDropDown"

@@ -1,7 +1,7 @@
 .sideBarWrapper {
   background-color: #ffff;
   height: 100%;
-  width: 20%;
+  width: 17rem;
   position: absolute;
   margin-left: 10px;
 }
@@ -11,6 +11,26 @@
   flex-direction: column;
   height: 100%;
   margin-top: 3px;
+  padding: 0 1rem;
+}
+
+.dashBoard {
+  width: 100%;
+  height: 55px;
+  border: none;
+  font-weight: 600;
+  font-weight: 600;
+  background-color: transparent;
+  text-align: left;
+  font-size: medium;
+  color: #9292a3;
+  padding-left: 1.2rem;
+  border: none;
+}
+
+.dashBoard:focus {
+  border: none;
+  outline: none;
 }
 
 .buttonsWrapper__masterButtons {
@@ -22,7 +42,7 @@
   background-color: transparent;
   text-align: left;
   font-size: medium;
-  color: black;
+  color: #9292a3;
 }
 
 .buttonsWrapper__masterButtons:focus {
@@ -36,7 +56,7 @@
   height: 55px;
   width: 100%;
   border: none;
-  color: black;
+  color: #9292a3;
   font-weight: 600;
 }
 
@@ -78,14 +98,14 @@
 .buttonsWrapper__subButtons {
   width: 100%;
   height: 55px;
-  padding-left: 3rem;
   border: none;
   font-weight: 600;
   background-color: transparent;
   text-align: left;
   font-size: medium;
   transition: all 0.3s ease-in-out;
-  color: black;
+  color: #9292a3;
+  padding-left: 2rem;
 }
 
 .buttonsWrapper__subButtons:focus {
@@ -96,7 +116,7 @@
 .buttonsWrapper__subButtonActive {
   background-color: #fe4d01;
   text-align: left;
-  padding-left: 3rem;
+  padding-left: 2rem;
   font-weight: 600;
   height: 55px;
   color: white;

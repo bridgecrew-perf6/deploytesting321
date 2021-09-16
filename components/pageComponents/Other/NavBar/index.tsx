@@ -3,13 +3,14 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { BiSearchAlt } from "react-icons/bi";
 import styles from "../../../../appStyles/appStyles.module.css";
-// import { NavBarProps } from "../../../appTypes/appType";
+import { NavProps } from "../../../appTypes/appType";
 import { Logo } from "../../../layout/branding";
 import ProfileHeader from "./ProfileHeader";
 import { SearchBar } from "./searchBar";
 
-const NavBar: React.FC = (props) => {
+const NavBar: React.FC<NavProps> = (props) => {
   const router = useRouter();
+  const { title } = props;
 
   const goToSearch = (
     e:
@@ -37,7 +38,7 @@ const NavBar: React.FC = (props) => {
         </a>
       </Link>
       <SearchBar search={goToSearch} style={{ width: "48%" }} />
-      <ProfileHeader />
+      <ProfileHeader title={title} />
     </nav>
   );
 };

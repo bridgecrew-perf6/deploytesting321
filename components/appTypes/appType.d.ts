@@ -199,6 +199,10 @@ interface IProps {
   children?: React.ReactNode;
 }
 
+interface NavProps {
+  title: string;
+}
+
 interface ITopic {
   _id: string;
   topic: string;
@@ -303,7 +307,7 @@ interface UserFavorites {
   favoriteAnswers: Answer[];
 }
 
-interface CategoryItems {
+export interface CategoryItems {
   _id: string;
   category: string;
   // creator: string;
@@ -313,12 +317,12 @@ interface CategoryItems {
 }
 
 interface AdminLeftSideBarCategoryItems {
-  _id: string,
-  name: string,
-  categoryOf: string,
-  haveCats: boolean,
-  active: boolean,
-  selected: boolean,
+  _id: string;
+  name: string;
+  categoryOf: string;
+  haveCats: boolean;
+  active: boolean;
+  selected: boolean;
 }
 
 interface PollsWindow {
