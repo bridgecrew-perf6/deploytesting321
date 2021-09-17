@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // import usersInfoBox from "_appStyles/adminStyles/usersInfoBox.module.css";
 import usersInfoBox from "../../../appStyles/adminStyles/usersInfoBox.module.css";
 import btnStyles from "../../../appStyles/btnStyles.module.css";
+import BootstrapTable from "react-bootstrap-table-next";
 
 import {
   AdminButton,
@@ -61,14 +62,6 @@ const UsersInfo = () => {
         text: "Email Address",
       },
       {
-        dataField: "phoneNumber",
-        text: "Phone number",
-      },
-      {
-        dataField: "homeAddress",
-        text: "Home address",
-      },
-      {
         dataField: "accessRole",
         text: "Access Role",
       },
@@ -82,47 +75,31 @@ const UsersInfo = () => {
   const [usersData, setUsersData] = useState([
     {
       id: 1,
-      fullName: "",
+      fullName: "hasssaan",
       email: "",
-      phoneNumber: "",
-      homeAddress: "",
-      jobTitle: "",
       accessRole: "",
-      groups: "",
-      lastSignIn: "",
+      jobTitle: "",
     },
     {
       id: 2,
       fullName: "",
       email: "",
-      phoneNumber: "",
-      homeAddress: "",
-      jobTitle: "",
       accessRole: "",
-      groups: "",
-      lastSignIn: "",
+      jobTitle: "",
     },
     {
       id: 3,
       fullName: "",
       email: "",
-      phoneNumber: "",
-      homeAddress: "",
-      jobTitle: "",
       accessRole: "",
-      groups: "",
-      lastSignIn: "",
+      jobTitle: "",
     },
     {
       id: 4,
       fullName: "",
       email: "",
-      phoneNumber: "",
-      homeAddress: "",
-      jobTitle: "",
       accessRole: "",
-      groups: "",
-      lastSignIn: "",
+      jobTitle: "",
     },
   ]);
 
@@ -137,16 +114,6 @@ const UsersInfo = () => {
     lastSignIn: "",
   });
 
-  const showActiveUsersData = () => (
-    <div className={usersInfoBox.userInfoBox__adminTableWrapper}>
-      <Table
-        usersdata={usersData}
-        columndata={columnData}
-        changetablerowdata={changeTableRowData}
-      />
-    </div>
-  );
-
   const onChangeInput = (e: React.FormEvent<HTMLInputElement>) => {
     if (modifyingTableRowNo > 0) {
       setUserDataForm({
@@ -156,43 +123,47 @@ const UsersInfo = () => {
     }
   };
 
-  console.log(modifyingTableRowNo);
-
   const changeTableRowData = (row: any, rowIndex: number) => {
-    console.log(row);
     setShowForm(true);
 
-    console.log("I am here");
     setModifyingTableRowNo(row.id);
     setUserDataForm({
+      ...userDataForm,
       fullName: row.fullName,
       email: row.email,
-      phoneNumber: row.phoneNumber,
-      homeAddress: row.homeAddress,
       jobTitle: row.jobTitle,
       accessRole: row.accessRole,
-      groups: "",
-      lastSignIn: "",
     });
   };
 
-  console.log(userDataForm);
-
-  const handleSubmitUsersData = () => {
-    console.log("Submiting data");
-    console.log(modifyingTableRowNo);
-    console.log(userDataForm);
-    let newArray = [...usersData];
-    newArray[modifyingTableRowNo - 1].fullName = userDataForm.fullName;
-    newArray[modifyingTableRowNo - 1].email = userDataForm.email;
-    newArray[modifyingTableRowNo - 1].homeAddress = userDataForm.homeAddress;
-    newArray[modifyingTableRowNo - 1].phoneNumber = userDataForm.phoneNumber;
-    newArray[modifyingTableRowNo - 1].jobTitle = userDataForm.jobTitle;
-    newArray[modifyingTableRowNo - 1].accessRole = userDataForm.accessRole;
-    setUsersData(newArray);
+  const handleSubmitUsersData = (e: any) => {
+    e.preventDefault();
+    const updatedData = usersData.map((data) => {
+      if (modifyingTableRowNo === data.id) {
+        console.log(modifyingTableRowNo, data.id);
+        return {
+          ...data,
+          fullName: userDataForm.fullName,
+          email: userDataForm.email,
+          jobTitle: userDataForm.jobTitle,
+          accessRole: userDataForm.accessRole,
+        };
+      }
+      return data;
+    });
+    console.log(updatedData);
+    setUsersData(updatedData);
   };
 
-  // console.log(usersData);
+  const showActiveUsersData = () => (
+    <div className={usersInfoBox.userInfoBox__adminTableWrapper}>
+      <Table
+        usersdata={usersData}
+        columndata={columnData}
+        changetablerowdata={changeTableRowData}
+      />
+    </div>
+  );
 
   return (
     <div className={usersInfoBox.usersInfoWrapper}>
@@ -217,87 +188,97 @@ const UsersInfo = () => {
 
       {activeButton[0].isActive === "true"
         ? showForm && (
-            <div className={usersInfoBox.userInfoBox__inputWrapper}>
-              <h4 style={{ marginBottom: "1rem" }}>Enter User Infomation</h4>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="Full Name" />
-                <UsersDataFormInput
-                  type="text"
-                  required
-                  name="fullName"
-                  onChange={(e: any) => onChangeInput(e)}
-                />
+            <form onSubmit={handleSubmitUsersData}>
+              <div className={usersInfoBox.userInfoBox__inputWrapper}>
+                <h4 style={{ marginBottom: "1rem" }}>Enter User Infomation</h4>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="Full Name" />
+                  <UsersDataFormInput
+                    type="text"
+                    required
+                    name="fullName"
+                    value={userDataForm.fullName}
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="E-mail" />
+                  <UsersDataFormInput
+                    type="email"
+                    required
+                    name="email"
+                    value={userDataForm.email}
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="Phone Number" />
+                  <UsersDataFormInput
+                    type="text"
+                    required
+                    name="phoneNumber"
+                    value={userDataForm.phoneNumber}
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="Home Address" />
+                  <UsersDataFormInput
+                    type="text"
+                    required
+                    value={userDataForm.homeAddress}
+                    name="homeAddress"
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="Job Title" />
+                  <UsersDataFormInput
+                    type="text"
+                    required
+                    value={userDataForm.jobTitle}
+                    name="jobTitle"
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="Access-Role" />
+                  <UsersDataFormInput
+                    type="text"
+                    name="accessRole"
+                    value={userDataForm.accessRole}
+                    required
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="Groups" />
+                  <UsersDataFormInput
+                    type="text"
+                    name="groups"
+                    value={userDataForm.groups}
+                    required
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+                  <AdminPara text="Last Sign-in" />
+                  <UsersDataFormInput
+                    type="text"
+                    required
+                    value={userDataForm.lastSignIn}
+                    name="lastSignIn"
+                    onChange={(e: any) => onChangeInput(e)}
+                  />
+                </div>
+                <button
+                  className={usersInfoBox.userInfoBox__btnSubmitForm}
+                  type="submit"
+                >
+                  Save User info
+                </button>
               </div>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="E-mail" />
-                <UsersDataFormInput
-                  type="email"
-                  required
-                  name="email"
-                  onChange={(e: any) => onChangeInput(e)}
-                />
-              </div>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="Phone Number" />
-                <UsersDataFormInput
-                  type="text"
-                  required
-                  name="phoneNumber"
-                  onChange={(e: any) => onChangeInput(e)}
-                />
-              </div>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="Home Address" />
-                <UsersDataFormInput
-                  type="text"
-                  required
-                  name="homeAddress"
-                  onChange={(e: any) => onChangeInput(e)}
-                />
-              </div>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="Job Title" />
-                <UsersDataFormInput
-                  type="text"
-                  required
-                  name="jobTitle"
-                  onChange={(e: any) => onChangeInput(e)}
-                />
-              </div>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="Access-Role" />
-                <UsersDataFormInput
-                  type="text"
-                  name="accessRole"
-                  required
-                  onChange={(e: any) => onChangeInput(e)}
-                />
-              </div>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="Groups" />
-                <UsersDataFormInput
-                  type="text"
-                  name="groups"
-                  required
-                  onChange={(e: any) => onChangeInput(e)}
-                />
-              </div>
-              <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                <AdminPara text="Last Sign-in" />
-                <UsersDataFormInput
-                  type="text"
-                  required
-                  name="lastSignIn"
-                  onChange={(e: any) => onChangeInput(e)}
-                />
-              </div>
-              <button
-                className={usersInfoBox.userInfoBox__btnSubmitForm}
-                onClick={handleSubmitUsersData}
-              >
-                Save User info
-              </button>
-            </div>
+            </form>
           )
         : null}
     </div>

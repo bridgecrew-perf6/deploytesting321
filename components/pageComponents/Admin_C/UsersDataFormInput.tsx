@@ -6,6 +6,7 @@ const UsersDataFormInput = (props: any) => {
     <input
       className={usersInfoBox.userInfoBox__input}
       {...props}
+      value={props.value}
       type={props.type}
       id={props.id}
       required

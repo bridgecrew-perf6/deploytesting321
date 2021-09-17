@@ -10,8 +10,6 @@ const Table = (props: any) => {
     },
   };
 
-  console.log(usersdata);
-
   return (
     <BootstrapTable
       rowStyle={{ height: "20px", padding: "5px 0" }}

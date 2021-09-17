@@ -3,3 +3,4 @@ export { default as LeftSideBar } from "./Admin_C";
 export { default as Table } from "./Other/Table/Table";
 export { default as UsersDataFormInput } from "./Admin_C/UsersDataFormInput";
 export { AdminPara } from "./Admin_C/AdminPara";
+export { default as Metrics } from "./Admin_C/Metrics";

@@ -5,8 +5,16 @@ import {
   BsCaretDownFill,
   BsFolder,
   BsFileEarmark,
+  BsGraphUp,
 } from "react-icons/bs";
-import { FaTachometerAlt } from "react-icons/fa";
+import { RiAdminFill } from "react-icons/ri";
+import { AiFillSecurityScan, AiOutlineUser } from "react-icons/ai";
+import {
+  FaTachometerAlt,
+  FaStickyNote,
+  FaUser,
+  FaUserSlash,
+} from "react-icons/fa";
 
 const LeftSideBar = (props: any) => {
   const {
@@ -16,14 +24,20 @@ const LeftSideBar = (props: any) => {
     setLeftSideSubCategory,
   } = props;
 
+  console.log(leftSideCategory, subCategory);
+
   const handleOpenMaster = (mc: any) => {
     let subId = "";
     let cats = false;
-    const updatedMaster = leftSideCategory.map((lsc: any) => {
+    let othersHaveCats = false;
+    let updatedMaster = leftSideCategory.map((lsc: any) => {
       if (lsc._id === mc._id) {
+        //find and update to active
         if (!lsc.active) {
+          //if not active than make it active and selected
           lsc.active = true;
         } else {
+          //if already active than check if master have sub categories
           cats = true;
           if (!lsc.haveCats) {
             lsc.active = true;
@@ -32,16 +46,35 @@ const LeftSideBar = (props: any) => {
           }
         }
         if (!lsc.haveCats) {
+          lsc.selected = true;
           cats = false;
           subId = "";
+        } else {
+          cats = true;
+          lsc.selected = false;
+        }
+      } else {
+        if (lsc.active) {
+          console.log("I am active");
+          if (lsc.haveCats) {
+            lsc.active = true;
+          }
+        }
+        if (lsc.haveCats) {
+          lsc.selected = false;
+        } else {
+          lsc.selected = false;
         }
       }
+
       return lsc;
     });
+
     let updatedSub;
     if (subId === "") {
       if (!cats) {
         updatedSub = subCategory.map((sc: any) => {
+          sc.selected = false;
           sc.active = false;
           return sc;
         });
@@ -57,17 +90,22 @@ const LeftSideBar = (props: any) => {
         if (sc._id === sub._id) {
           if (!sc.active) {
             sc.active = true;
+            sc.selected = true;
           }
         } else {
+          sc.selected = false;
           sc.active = false;
         }
         return sc;
       });
-      leftSideCategory.map((lsc: any) => {
+      let updatedMaster = leftSideCategory.map((lsc: any) => {
         if (!lsc.haveCats) {
           lsc.active = false;
+          lsc.selected = false;
         }
+        return lsc;
       });
+      setLeftSideCategory(updatedMaster);
       setLeftSideSubCategory(updatedSub);
     }
   };
@@ -76,17 +114,14 @@ const LeftSideBar = (props: any) => {
     <div className={leftSideBarStyles.sideBarWrapper}>
       <div className={leftSideBarStyles.buttonsWrapper}>
         <button className={leftSideBarStyles.dashBoard}>
-          <span style={{ paddingBottom: "2px" }}>
-            <FaTachometerAlt />
-          </span>
-          &nbsp;Dashboard
+          <FaTachometerAlt style={{ marginTop: "-0.25rem" }} />
+          <span style={{ paddingLeft: ".5rem" }}> &nbsp;Dashboard</span>
         </button>
         {leftSideCategory.length &&
           leftSideCategory.map((mc: any, mindex: any) => (
             <React.Fragment key={mindex}>
               <button
                 onClick={() => handleOpenMaster(mc)}
-                style={{ paddingLeft: mc?.haveCats ? "0" : "1rem" }}
                 key={mindex}
                 className={
                   mc?.active && mc?.selected
@@ -96,16 +131,28 @@ const LeftSideBar = (props: any) => {
                     : leftSideBarStyles.buttonsWrapper__masterButtons
                 }
               >
+                &nbsp;
+                {mc.name === "Users" ? (
+                  <AiOutlineUser style={{ marginTop: "-0.25rem" }} />
+                ) : mc.name === "Security" ? (
+                  <AiFillSecurityScan style={{ marginTop: "-0.25rem" }} />
+                ) : mc.name === "Metrics" ? (
+                  <BsGraphUp style={{ marginTop: "-0.25rem" }} />
+                ) : (
+                  <BsFolder style={{ marginTop: "-0.25rem" }} />
+                )}
+                <span style={{ paddingLeft: ".5rem" }}>&nbsp;{mc?.name}</span>
                 {mc?.haveCats ? (
                   mc?.active ? (
-                    <BsCaretDownFill />
+                    <BsCaretDownFill
+                      className={leftSideBarStyles.openCategoryMenu}
+                    />
                   ) : (
-                    <BsCaretRightFill />
+                    <BsCaretRightFill
+                      className={leftSideBarStyles.openCategoryMenu}
+                    />
                   )
                 ) : null}
-                &nbsp;
-                <BsFolder />
-                &nbsp;{mc?.name}
               </button>
 
               {subCategory.map((sub: any, sindex: any) =>
@@ -127,8 +174,21 @@ const LeftSideBar = (props: any) => {
                           : leftSideBarStyles.buttonsWrapper__subButtons
                       }
                     >
-                      <BsFileEarmark />
-                      &nbsp;{sub?.name}
+                      {sub.name === "Users" ? (
+                        <FaUser style={{ marginTop: "-0.25rem" }} />
+                      ) : sub.name === "Content" ? (
+                        <FaStickyNote style={{ marginTop: "-0.35rem" }} />
+                      ) : sub.name === "Admin" ? (
+                        <RiAdminFill style={{ marginTop: "-0.35rem" }} />
+                      ) : sub.name === "Blocked Users" ? (
+                        <FaUserSlash style={{ marginTop: "-0.35rem" }} />
+                      ) : (
+                        <BsFileEarmark style={{ marginTop: "-0.35rem" }} />
+                      )}
+
+                      <span style={{ paddingLeft: ".5rem" }}>
+                        &nbsp;{sub?.name}
+                      </span>
                     </button>
                   </div>
                 ) : null
