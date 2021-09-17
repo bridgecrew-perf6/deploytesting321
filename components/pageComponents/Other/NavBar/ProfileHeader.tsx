@@ -15,6 +15,7 @@ import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
 import { AppLoadingLite } from "../Loading";
+import { ErrorToast } from "../Error/Toast";
 
 const { GET_USER, LOG_OUT } = GraphResolvers.queries;
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
@@ -29,7 +30,8 @@ export default function ProfileHeader() {
   const [notification, toggleNotification] = useState(false);
 
   useEffect(() => {
-    appContext?.authState?.getUserData?.appToken !== "" && getUser();
+    getUser();
+    // appContext?.authState?.getUserData?.appToken !== "" && getUser();
     if (data) {
       appContext && appContext.updateUserData(data.getUserData);
     }
@@ -142,34 +144,35 @@ export default function ProfileHeader() {
     );
   }
 
-  if (loading) {
+  if (error) {
     return (
-      <div className="d-flex justify-content-center" style={{ width: 300 }}>
-        <AppLoadingLite />
+      <div
+        className="form-row justify-content-between"
+        style={{ width: "15%" }}
+      >
+        <Link href={"/Login"}>
+          <button
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            type="button"
+          >
+            Log In
+          </button>
+        </Link>
+        <Link href={"/Registration"}>
+          <button
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            type="button"
+          >
+            Register
+          </button>
+        </Link>
       </div>
     );
   }
 
-  // if (error) {
   return (
-    <div className="form-row justify-content-between" style={{ width: "15%" }}>
-      <Link href={"/Login"}>
-        <button
-          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-          type="button"
-        >
-          Log In
-        </button>
-      </Link>
-      <Link href={"/Registration"}>
-        <button
-          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-          type="button"
-        >
-          Register
-        </button>
-      </Link>
+    <div className="d-flex justify-content-center" style={{ width: 300 }}>
+      <AppLoadingLite />
     </div>
   );
-  // }
 }
