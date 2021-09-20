@@ -168,24 +168,23 @@ const UsersInfo = () => {
   return (
     <div className={usersInfoBox.usersInfoWrapper}>
       <div className={usersInfoBox.userInfoBox__btnWrapper}>
-        {activeButton.map((btn, index) => (
-          <AdminButton
-            key={index}
-            isactive={btn.isActive}
-            onClick={() => handleButtonClick(index)}
-            title={btn.title}
-          />
-        ))}
+        {/* {activeButton.map((btn, index) => ( */}
+        <AdminButton
+          // isactive={btn.isActive}
+          // onClick={() => handleButtonClick(index)}
+          title={"IUM"}
+        />
+        {/* ))} */}
       </div>
-
-      {activeButton[0].isActive === "true" ? (
+      {/* {activeButton[0].isActive === "true" ? (
         showActiveUsersData()
       ) : activeButton[1].isActive === "true" ? (
         <h2>Disabled Users</h2>
       ) : activeButton[2].isActive === "true" ? (
         <h2>Adding New User</h2>
-      ) : null}
+      ) : null} */}
 
+      {showActiveUsersData()}
       {activeButton[0].isActive === "true"
         ? showForm && (
             <form onSubmit={handleSubmitUsersData}>

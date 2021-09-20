@@ -2,22 +2,15 @@ import React from "react";
 import LeftSideBar from "./LeftSideBar";
 
 const index = (props: any) => {
-    const {
-        leftSideCategory,
-        subCategory,
-        setLeftSideCategory,
-        setLeftSideSubCategory,
-    } = props;
-    return (
-        <div>
-            <LeftSideBar
-                leftSideCategory={leftSideCategory}
-                subCategory={subCategory}
-                setLeftSideCategory={setLeftSideCategory}
-                setLeftSideSubCategory={setLeftSideSubCategory}
-            />
-        </div>
-    );
+  const { mastercategory, setmastercategory } = props;
+  return (
+    <div>
+      <LeftSideBar
+        mastercategory={mastercategory}
+        setmastercategory={setmastercategory}
+      />
+    </div>
+  );
 };
 
 export default index;

@@ -19,7 +19,6 @@
   height: 40px;
   border: none;
   font-weight: 600;
-  font-weight: 600;
   background-color: transparent;
   text-align: left;
   font-size: medium;
@@ -44,10 +43,9 @@
   height: 40px;
   border: none;
   font-weight: 600;
-  font-weight: 600;
+  font-size: 13px;
   background-color: transparent;
   text-align: left;
-  font-size: medium;
   color: #9292a3;
   min-height: 40px;
 }
@@ -63,8 +61,10 @@
   height: 40px;
   width: 100%;
   border: none;
+  font-size: 13px;
   color: #9292a3;
   min-height: 40px;
+  transition: all 0.3s ease-in-out;
   font-weight: 600;
 }
 
@@ -76,6 +76,7 @@
 .buttonsWrapper__masterButtonsSelected {
   background-color: #fe4d01;
   text-align: left;
+  font-size: 13px;
   border: none;
   height: 40px;
   width: 100%;
@@ -111,7 +112,7 @@
   font-weight: 600;
   background-color: transparent;
   text-align: left;
-  font-size: medium;
+  font-size: small;
   transition: all 0.3s ease-in-out;
   color: #9292a3;
   min-height: 40px;
@@ -128,6 +129,7 @@
   text-align: left;
   padding-left: 2rem;
   font-weight: 600;
+  font-size: small;
   height: 40px;
   color: white;
   border: none;

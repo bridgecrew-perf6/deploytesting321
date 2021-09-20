@@ -307,15 +307,6 @@ interface UserFavorites {
   favoriteAnswers: Answer[];
 }
 
-export interface CategoryItems {
-  _id: string;
-  category: string;
-  // creator: string;
-  description: string;
-  active: boolean;
-  linkedCats?: any;
-}
-
 interface AdminLeftSideBarCategoryItems {
   _id: string;
   name: string;
