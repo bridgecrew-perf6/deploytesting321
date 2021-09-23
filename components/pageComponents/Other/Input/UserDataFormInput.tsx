@@ -1,5 +1,5 @@
 import React from "react";
-import usersInfoBox from "../../../appStyles/adminStyles/usersInfoBox.module.css";
+import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
 const UsersDataFormInput = (props: any) => {
   return (

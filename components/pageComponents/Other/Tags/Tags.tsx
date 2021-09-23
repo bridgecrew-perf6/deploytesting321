@@ -6,7 +6,7 @@ import styles from "../../../../appStyles/appStyles.module.css";
 import ProfileImg from "../../Profile/profileImg";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/mutations";
+import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/userMutations";
 import { useAuth } from "../../../authProvider/authProvider";
 import { dateToString } from "../../../globalFuncs";
 

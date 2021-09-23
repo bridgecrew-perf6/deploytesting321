@@ -30,7 +30,7 @@ export const userResolvers: ResolverMap = {
         );
 
         return userData;
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error);
       }
     },

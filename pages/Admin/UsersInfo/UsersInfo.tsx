@@ -1,109 +1,101 @@
-import React, { useState } from "react";
-// import usersInfoBox from "_appStyles/adminStyles/usersInfoBox.module.css";
+import React, { useEffect, useState } from "react";
 import usersInfoBox from "../../../appStyles/adminStyles/usersInfoBox.module.css";
-import btnStyles from "../../../appStyles/btnStyles.module.css";
-import BootstrapTable from "react-bootstrap-table-next";
-
+import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { initializeApollo } from "../../../lib/apollo";
 import {
   AdminButton,
+  IsActiveModal,
   Table,
-  UsersDataFormInput,
-  AdminPara,
+  UserUpdateModel,
 } from "_pageComponents/index";
-import { worker } from "cluster";
+import { updateInternalUserProfile } from "../../../lib/apollo/apolloFunctions";
+import filterFactory, {
+  selectFilter,
+  textFilter,
+} from "react-bootstrap-table2-filter";
+import queries from "lib/apollo/apiGraphStrings/queries";
+
+const { GET_ALL_USERS, GET_INTERNAL_USERS } = GraphResolvers.queries;
+const apolloClient = initializeApollo();
 
 const UsersInfo = () => {
-  const handleButtonClick = (index: number) => {
-    const updatedActive = activeButton.map((ab) => {
-      if (ab.id === index) {
-        if (ab.isActive === "false") {
-          ab.isActive = "true";
-        }
-      } else {
-        ab.isActive = "false";
-      }
-      return ab;
+  const { data, refetch, loading, error } = useQuery(GET_INTERNAL_USERS);
+  const [usersData, setUsersData] = useState([]);
+  const [selectedRows, setSelectedRows] = useState<[]>([]);
+  const [showUserEditModal, setShowUserEditModal] = useState(false);
+  const [modelWorkingFor, setModelWorkingFor] = useState("updateUser");
+  const [showActiveModal, setShowActiveModal] = useState(false);
+  const [showActiveModalLabel, setShowActiveModalLabel] = useState("");
+  const [UpdateInternalUser] = useMutation(
+    GraphResolvers.mutations.UPDATE_INTERNAL_USER,
+    {
+      refetchQueries: [{ query: GET_INTERNAL_USERS }],
+    }
+  );
+  const [createNewInternalUser, { loading: loadingA, error: errorA }] =
+    useMutation(GraphResolvers.mutations.CREATE_INTERNAL_USER, {
+      refetchQueries: [{ query: GET_INTERNAL_USERS }],
     });
-    setActiveButton(updatedActive);
-  };
-  const { customBtnOutline, custombtnCreate } = btnStyles;
-  const [modifyingTableRowNo, setModifyingTableRowNo] = useState(0);
-  const [showForm, setShowForm] = useState(false);
-  const [activeButton, setActiveButton] = useState([
-    {
-      id: 0,
-      isActive: "true",
-      title: "Active",
-    },
-    {
-      id: 1,
-      isActive: "false",
-      title: "Disabled",
-    },
-    {
-      id: 2,
-      isActive: "false",
-      title: "Add new user",
-    },
-  ]);
 
-  const [columnData, setColumnData] = useState({
+  const [updateActiveUsersToDisable, { loading: loadingb, error: errorb }] =
+    useMutation(GraphResolvers.mutations.UPDATE_ACTIVE_USERS_TO_DISABLE, {
+      refetchQueries: [{ query: GET_INTERNAL_USERS }],
+    });
+
+  const [updateDisableUsersToActive, { loading: loadingc, error: errorc }] =
+    useMutation(GraphResolvers.mutations.UPDATE_DISABLE_USERS_TO_ACTIVE, {
+      refetchQueries: [{ query: GET_INTERNAL_USERS }],
+    });
+
+  const tableSelectOptions = {
+    0: "true",
+    1: "false",
+  };
+  let isActiveFilter;
+  const columnData = {
     columns: [
       {
-        dataField: "id",
-        text: "Id",
+        dataField: "_id",
+        text: "ID",
+        searchable: false,
+        hidden: true,
+        sort: true,
       },
       {
         dataField: "fullName",
         text: "Full Name",
+        sort: true,
       },
       {
         dataField: "email",
         text: "Email Address",
+        sort: true,
       },
       {
         dataField: "accessRole",
         text: "Access Role",
+        sort: true,
       },
       {
         dataField: "jobTitle",
         text: "Job Type",
+        sort: true,
+      },
+      {
+        dataField: "isActive",
+        text: "Active",
+        sort: true,
+        filter: textFilter({
+          getFilter: (filter) => {
+            isActiveFilter = tableSelectOptions;
+          },
+        }),
       },
     ],
-  });
-
-  const [usersData, setUsersData] = useState([
-    {
-      id: 1,
-      fullName: "hasssaan",
-      email: "",
-      accessRole: "",
-      jobTitle: "",
-    },
-    {
-      id: 2,
-      fullName: "",
-      email: "",
-      accessRole: "",
-      jobTitle: "",
-    },
-    {
-      id: 3,
-      fullName: "",
-      email: "",
-      accessRole: "",
-      jobTitle: "",
-    },
-    {
-      id: 4,
-      fullName: "",
-      email: "",
-      accessRole: "",
-      jobTitle: "",
-    },
-  ]);
-
+  };
   const [userDataForm, setUserDataForm] = useState({
+    _id: "",
     fullName: "",
     email: "",
     phoneNumber: "",
@@ -112,174 +104,181 @@ const UsersInfo = () => {
     accessRole: "",
     groups: "",
     lastSignIn: "",
+    isActive: false,
   });
 
-  const onChangeInput = (e: React.FormEvent<HTMLInputElement>) => {
-    if (modifyingTableRowNo > 0) {
-      setUserDataForm({
-        ...userDataForm,
-        [e.currentTarget.name]: e.currentTarget.value,
-      });
-    }
-  };
+  useEffect(() => {
+    if (error) console.log("Error occured while fetching", error);
+    if (!loading && data) setUsersData(data?.internalUsers);
+  }, [loading, data]);
+
+  console.log(data?.internalUsers);
 
   const changeTableRowData = (row: any, rowIndex: number) => {
-    setShowForm(true);
-
-    setModifyingTableRowNo(row.id);
+    setModelWorkingFor("updateUser");
+    setShowUserEditModal(true);
     setUserDataForm({
       ...userDataForm,
-      fullName: row.fullName,
-      email: row.email,
-      jobTitle: row.jobTitle,
-      accessRole: row.accessRole,
+      _id: row?._id || "",
+      fullName: row?.fullName || "",
+      email: row?.email || "",
+      jobTitle: row?.jobTitle || "",
+      accessRole: row?.accessRole || "",
+      isActive: row?.isActive,
+    });
+    console.log(row?.isActive);
+  };
+
+  const handleAddNewUser = () => {
+    console.log("I am clicked");
+    setModelWorkingFor("newUser");
+    setShowUserEditModal(true);
+    setUserDataForm({
+      ...userDataForm,
+      _id: "",
+      fullName: "",
+      email: "",
+      jobTitle: "",
+      accessRole: "",
+      isActive: false,
     });
   };
 
-  const handleSubmitUsersData = (e: any) => {
+  const handleSubmitUsersData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const updatedData = usersData.map((data) => {
-      if (modifyingTableRowNo === data.id) {
-        console.log(modifyingTableRowNo, data.id);
-        return {
-          ...data,
-          fullName: userDataForm.fullName,
-          email: userDataForm.email,
-          jobTitle: userDataForm.jobTitle,
-          accessRole: userDataForm.accessRole,
-        };
-      }
-      return data;
-    });
-    console.log(updatedData);
-    setUsersData(updatedData);
+    console.log("I am clicked");
+    const formInputs = {
+      id: userDataForm._id,
+      fullName: userDataForm.fullName,
+      email: userDataForm.email,
+      jobTitle: userDataForm.jobTitle,
+      accessRole: userDataForm.accessRole,
+      isActive: userDataForm.isActive,
+    };
+    if (modelWorkingFor === "updateUser") {
+      console.log(modelWorkingFor);
+      await updateInternalUserProfile(
+        UpdateInternalUser,
+        JSON.stringify(formInputs)
+      );
+      setShowUserEditModal(false);
+    } else {
+      await createNewInternalUser({
+        variables: { formInputs: JSON.stringify(formInputs) },
+      });
+      setShowUserEditModal(false);
+    }
   };
 
   const showActiveUsersData = () => (
     <div className={usersInfoBox.userInfoBox__adminTableWrapper}>
-      <Table
-        usersdata={usersData}
-        columndata={columnData}
-        changetablerowdata={changeTableRowData}
-      />
+      {loading && usersData?.length > 0 ? (
+        <h3>Loading...</h3>
+      ) : (
+        <Table
+          changetablerowdata={changeTableRowData}
+          usersdata={usersData}
+          columndata={columnData.columns}
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
+          handleSelectedRowsDisable={handleSelectedRowsDisable}
+          handleSelectedRowsActive={handleSelectedRowsActive}
+        />
+      )}
     </div>
   );
+
+  const handleSelectedRowsActive = async () => {
+    console.log(selectedRows);
+    if (selectedRows.length > 0) {
+      setShowActiveModal(true);
+      setShowActiveModalLabel("Are you sure to Activate selected Users ?");
+    } else {
+      return;
+    }
+  };
+
+  // to bulk disable active users
+  const handleSelectedRowsDisable = async () => {
+    console.log(selectedRows);
+    if (selectedRows.length > 0) {
+      setShowActiveModal(true);
+      setShowActiveModalLabel("Are you sure to Disable selected Users ?");
+    } else {
+      return;
+    }
+  };
+
+  // to bulk active active users
+  const updateUsersToActive = async () => {
+    console.log("I am here in active");
+    await Promise.all(
+      selectedRows.map(async (s: any) => {
+        await updateDisableUsersToActive({
+          variables: { userId: s._id },
+        });
+      })
+    ).then(() => console.log("Updated to Active"));
+    setShowActiveModal(false);
+  };
+
+  // to bulk disable active users
+  const updateUsersToDisable = async () => {
+    console.log("I am here in disable");
+    await Promise.all(
+      selectedRows.map(async (s: any) => {
+        await updateActiveUsersToDisable({
+          variables: { userId: s._id },
+        });
+      })
+    ).then(() => console.log("Updated to disable"));
+    setShowActiveModal(false);
+  };
+
+  const handleCloseIsActiveModal = () => {
+    setShowActiveModal(false);
+  };
+
+  const handleCLoseModal = () => {
+    setShowUserEditModal(false);
+  };
 
   return (
     <div className={usersInfoBox.usersInfoWrapper}>
       <div className={usersInfoBox.userInfoBox__btnWrapper}>
-        {/* {activeButton.map((btn, index) => ( */}
+        <div className={usersInfoBox.userInfoBox__menuTitleWrapper}>
+          <AdminButton
+            title="IUM (Internal User Management)"
+            module="menuTitle"
+          />
+        </div>
         <AdminButton
-          // isactive={btn.isActive}
-          // onClick={() => handleButtonClick(index)}
-          title={"IUM"}
+          title="Add new user"
+          style={{ width: "300px" }}
+          onClick={handleAddNewUser}
         />
-        {/* ))} */}
       </div>
-      {/* {activeButton[0].isActive === "true" ? (
-        showActiveUsersData()
-      ) : activeButton[1].isActive === "true" ? (
-        <h2>Disabled Users</h2>
-      ) : activeButton[2].isActive === "true" ? (
-        <h2>Adding New User</h2>
-      ) : null} */}
-
       {showActiveUsersData()}
-      {activeButton[0].isActive === "true"
-        ? showForm && (
-            <form onSubmit={handleSubmitUsersData}>
-              <div className={usersInfoBox.userInfoBox__inputWrapper}>
-                <h4 style={{ marginBottom: "1rem" }}>Enter User Infomation</h4>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="Full Name" />
-                  <UsersDataFormInput
-                    type="text"
-                    required
-                    name="fullName"
-                    value={userDataForm.fullName}
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="E-mail" />
-                  <UsersDataFormInput
-                    type="email"
-                    required
-                    name="email"
-                    value={userDataForm.email}
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="Phone Number" />
-                  <UsersDataFormInput
-                    type="text"
-                    required
-                    name="phoneNumber"
-                    value={userDataForm.phoneNumber}
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="Home Address" />
-                  <UsersDataFormInput
-                    type="text"
-                    required
-                    value={userDataForm.homeAddress}
-                    name="homeAddress"
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="Job Title" />
-                  <UsersDataFormInput
-                    type="text"
-                    required
-                    value={userDataForm.jobTitle}
-                    name="jobTitle"
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="Access-Role" />
-                  <UsersDataFormInput
-                    type="text"
-                    name="accessRole"
-                    value={userDataForm.accessRole}
-                    required
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="Groups" />
-                  <UsersDataFormInput
-                    type="text"
-                    name="groups"
-                    value={userDataForm.groups}
-                    required
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-                  <AdminPara text="Last Sign-in" />
-                  <UsersDataFormInput
-                    type="text"
-                    required
-                    value={userDataForm.lastSignIn}
-                    name="lastSignIn"
-                    onChange={(e: any) => onChangeInput(e)}
-                  />
-                </div>
-                <button
-                  className={usersInfoBox.userInfoBox__btnSubmitForm}
-                  type="submit"
-                >
-                  Save User info
-                </button>
-              </div>
-            </form>
-          )
-        : null}
+      <UserUpdateModel
+        handleCLoseModal={handleCLoseModal}
+        handleSubmitUsersData={handleSubmitUsersData}
+        setUserDataForm={setUserDataForm}
+        userDataForm={userDataForm}
+        showUserEditModal={showUserEditModal}
+        setShowUserEditModal={setShowUserEditModal}
+        modelWorkingFor={modelWorkingFor}
+        setModelWorkingFor={setModelWorkingFor}
+      />
+      <IsActiveModal
+        showActiveModal={showActiveModal}
+        setShowActiveModal={setShowActiveModal}
+        handleCloseIsActiveModal={handleCloseIsActiveModal}
+        showActiveModalLabel={showActiveModalLabel}
+        updateUsersToActive={updateUsersToActive}
+        updateUsersToDisable={updateUsersToDisable}
+        loadingb={loadingb}
+        loadingc={loadingc}
+      />
     </div>
   );
 };

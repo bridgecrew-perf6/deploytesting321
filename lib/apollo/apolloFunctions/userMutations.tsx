@@ -11,9 +11,10 @@ import {
   GetAppUser,
   MainUser,
   PollHistory,
+  IinternalUser,
   User,
   UserDataProps,
-} from "../../../components/appTypes/appType";
+} from "_components/index";
 import { initializeApollo } from "../../apollo";
 import GraphResolvers from "../apiGraphStrings";
 
@@ -27,6 +28,8 @@ const {
   GET_USERPOLLS,
   SHOW_VIEWS,
   GET_ACTIVE_CHATS,
+  GET_ALL_USERS,
+  GET_SINGLE_INTERNAL_USER,
   GET_NEWEST_POLLS,
 } = GraphResolvers.queries;
 

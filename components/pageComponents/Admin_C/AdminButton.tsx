@@ -2,15 +2,17 @@ import React from "react";
 import usersInfoBox from "../../../appStyles/adminStyles/usersInfoBox.module.css";
 
 const AdminButton = (props: any) => {
-  const { isactive } = props;
+  const { module } = props;
   return (
     <button
       {...props}
+      style={props.style}
       className={
-        isactive === "false"
-          ? usersInfoBox.users_btnWrapper__btn
+        module === "menuTitle"
+          ? usersInfoBox.userInfoBox__titleButton
           : usersInfoBox.users_btnWrapper__btnActive
       }
+      onClick={props.onClick}
     >
       {props.title}
     </button>

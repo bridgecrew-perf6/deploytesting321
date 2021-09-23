@@ -8,6 +8,7 @@ import {
   answerLoader,
   chatLoader,
   replyLoader,
+  internalUserLoader,
 } from "../../graphql/loaders";
 // import { pubsub } from "../../graphql/middleware/index";
 
@@ -20,7 +21,7 @@ interface NewPollForm {
   topic: string;
 }
 
-interface User {
+export interface User {
   _id: string;
   firstname?: string;
   lastname?: string;
@@ -40,17 +41,34 @@ interface User {
   pollHistory?: PollHistory[];
 }
 
+export interface IinternalUser {
+  id: string;
+  email: string;
+  fullName: string;
+  jobTitle: string;
+  accessRole: { admin: String; employee: String; moderator: String };
+  isActive: boolean;
+  password: string;
+}
+
+export interface GetInternalUser {
+  getInternalUser: {
+    appToken: string;
+    internalUser: IinternalUser;
+  };
+}
+
 interface Follower {
   _id: String;
   appId: string;
   profilePic: string | undefined;
 }
 
-interface GetAppUser {
+export interface GetAppUser {
   getAppUserData: User;
 }
 
-interface MainUser {
+export interface MainUser {
   getUserData: {
     appToken: string;
     user: User;
@@ -106,7 +124,7 @@ interface PollHistory {
   chatMssgs?: ChatMessage[];
 }
 
-interface UserDataProps {
+export interface UserDataProps {
   getUserData: {
     appToken: string;
     user: User;
@@ -154,7 +172,8 @@ interface ApolloSeverContext {
     | ReturnType<typeof subTopicLoader>[]
     | ReturnType<typeof chatLoader>[]
     | ReturnType<typeof replyLoader>[]
-    | ReturnType<typeof answerLoader>[];
+    | ReturnType<typeof answerLoader>[]
+    | ReturnType<typeof internalUserLoader>;
   pubsub: PubSub;
 }
 
@@ -162,7 +181,7 @@ interface IHTMLElementForm extends HTMLElement {
   value?: string;
 }
 
-interface ResolverMap {
+export interface ResolverMap {
   [key: string]: {
     [key: string]: Resolver | SubscriptionResolver;
   };

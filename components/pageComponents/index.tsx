@@ -1,6 +1,11 @@
 export { default as AdminButton } from "./Admin_C/AdminButton";
 export { default as LeftSideBar } from "./Admin_C";
 export { default as Table } from "./Other/Table/Table";
-export { default as UsersDataFormInput } from "./Admin_C/UsersDataFormInput";
+export { default as UsersDataFormInput } from "./Other/Input//UserDataFormInput";
 export { AdminPara } from "./Admin_C/AdminPara";
 export { default as Metrics } from "./Admin_C/Metrics";
+export { default as Model } from "./Other/Modal/Modal";
+export { default as UserUpdateModel } from "./Admin_C/UserUpdateModel";
+export { default as SelectMenu } from "./Other/Select/SelectMenu";
+export { default as SelectMenuActive } from "./Other/Select/SelectMenuActive";
+export { default as IsActiveModal } from "./Admin_C/IsActiveModal";

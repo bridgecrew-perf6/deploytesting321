@@ -20,7 +20,7 @@ import { MaxMinBtn } from "../../../components/layout/customComps";
 import {
   addNewAnswer,
   updateViewCount,
-} from "../../../lib/apollo/apolloFunctions/mutations";
+} from "../../../lib/apollo/apolloFunctions";
 
 const { GET_POLL, GET_POLLS_ALL, GET_USER, GET_USER_FOR_POLL } =
   GraphResolvers.queries;

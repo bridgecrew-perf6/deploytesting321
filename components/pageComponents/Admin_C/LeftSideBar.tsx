@@ -5,8 +5,6 @@ import LeftSideSubBar from "./LeftSideSubBar";
 
 const LeftSideBar = (props: any) => {
   const { mastercategory, setmastercategory } = props;
-  console.log(mastercategory);
-
   const handleOpenMaster = (item: any) => {
     let cats = false;
     let updatedMaster = mastercategory.map((mc: any) => {
@@ -57,7 +55,6 @@ const LeftSideBar = (props: any) => {
       if (mc?.subCategory) {
         let sub = mc.subCategory.map((subItem: any) => {
           if (subItem._id === item._id) {
-            console.log(mc);
             subItem.active = true;
           } else {
             subItem.active = false;

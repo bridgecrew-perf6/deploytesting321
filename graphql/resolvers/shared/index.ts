@@ -13,6 +13,7 @@ import IAnswer from "../../../models/interfaces/answer";
 import IComment from "../../../models/interfaces/comment";
 import IReply from "../../../models/interfaces/reply";
 import IChat from "../../../models/interfaces/chat";
+import IinternalUsers from "../../../models/interfaces/internalUser";
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 
@@ -65,6 +66,16 @@ export const transformUser = (user: IUser, loaders: any[]) => {
     ...rest,
     registerDate: dateToString(rest.registerDate),
     pollHistory: () => poll.loadMany(rest.pollHistory),
+  };
+};
+
+export const transformInternalUser = (
+  internaluser: IinternalUsers,
+  loaders: any[]
+) => {
+  const { password, ...rest } = internaluser._doc;
+  return {
+    ...rest,
   };
 };
 
@@ -121,7 +132,6 @@ export const transformSubTopic = (subTopic: ISubTopic, loaders: any[]) => {
 
 export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
   const { creator, poll, comment } = getLoader(loaders);
-
 
   return {
     ...answer._doc,

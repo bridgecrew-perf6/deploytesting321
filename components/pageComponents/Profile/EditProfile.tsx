@@ -9,7 +9,7 @@ import { StateVals } from "../../formFuncs/formFuncs";
 import { SingleImagePicker } from "../Other/Image/ImgPicker";
 import { IoPersonCircle } from "react-icons/io5";
 import { saveImgtoCloud } from "../../apis/imgUpload";
-import { updateUserProfile } from "../../../lib/apollo/apolloFunctions/mutations";
+import { updateUserProfile } from "../../../lib/apollo/apolloFunctions/userMutations";
 
 interface ProfileModal {
   user: User;
@@ -82,7 +82,7 @@ const EditProfile = ({ user }: ProfileModal) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const resp:any = document.querySelectorAll("#editProfile input, textarea");
+    const resp: any = document.querySelectorAll("#editProfile input, textarea");
     const updatedUser: UpdatedObj = {};
 
     //Add error handling

@@ -4,6 +4,7 @@ import { topicTypeDefs } from "./topic";
 import { chatTypeDefs } from "./chat";
 import { otherTypeDefs } from "./other";
 import { rootTypeDefs } from "./root";
+import { internalUserTypeDefs } from "./internalUsers";
 
 const typeDefs = [
   rootTypeDefs,
@@ -11,7 +12,8 @@ const typeDefs = [
   pollTypeDefs,
   topicTypeDefs,
   chatTypeDefs,
-  otherTypeDefs
+  otherTypeDefs,
+  internalUserTypeDefs,
 ];
 
 export default typeDefs;
