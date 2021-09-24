@@ -26,7 +26,7 @@ export const pollResolvers: ResolverMap = {
         );
 
         return pollsData;
-      } catch (err) {
+      } catch (err: any) {
         throw new Error(err);
       }
     },

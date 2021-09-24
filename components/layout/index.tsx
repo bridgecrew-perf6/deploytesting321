@@ -8,9 +8,9 @@ import { PageForm } from "./CompStyles";
 export const SitePageContainer: React.FC<IProps> = (props) => {
   return (
     <PageForm title={props.title}>
-      <NewPoll />
-      <AddTopic />
-      <NavBar />
+      {props.title !== "Admin Panel"} && <NewPoll />
+      {props.title !== "Admin Panel"} && <AddTopic />
+      <NavBar title={props.title} />
       {props.children}
     </PageForm>
   );

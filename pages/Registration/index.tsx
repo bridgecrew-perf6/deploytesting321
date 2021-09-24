@@ -60,7 +60,7 @@ export default function Registration() {
           },
           "/Login"
         );
-    } catch (err) {
+    } catch (err: any) {
       const appMssgs = createAppMssgList([
         { message: err.message, msgType: 0 },
       ]);

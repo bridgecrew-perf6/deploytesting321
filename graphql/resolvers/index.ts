@@ -4,6 +4,7 @@ import { topicResolvers } from "./pollCategories";
 import { feedBackResolvers } from "./pollFeedBack";
 import { chatResolvers } from "./chat";
 import { otherResolvers } from "./other";
+import { internalUsersResolver } from "./internalUser";
 
 const resolvers = [
   userResolvers,
@@ -11,7 +12,8 @@ const resolvers = [
   topicResolvers,
   feedBackResolvers,
   chatResolvers,
-  otherResolvers
+  otherResolvers,
+  internalUsersResolver,
 ];
 
 export default resolvers;

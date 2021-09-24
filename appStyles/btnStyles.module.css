@@ -23,6 +23,29 @@
   border-color: #ff4d00;
 }
 
+.custombtnCreate {
+  height: 40px;
+  width: 100px;
+  border-radius: 10px;
+  border: 2px solid #ff4d00;
+  background-color: transparent;
+  align-items: center;
+  text-align: center;
+  outline: none;
+  color: #ff4d00;
+  transition: all 0.15s ease-in-out;
+}
+
+.custombtnCreate:focus {
+  outline: none;
+}
+
+.custombtnCreate:hover {
+  color: white;
+  background-color: #ff4d00;
+  transition: all 0.15s ease-in-out;
+}
+
 .customBtnOutlinePrimary {
   color: #ff4d00;
   border-color: #ff4d00;
@@ -137,7 +160,6 @@
   left: -280%;
   margin-left: -60px;
   font-size: 13px;
-
 }
 .itemToolTip_Right .tooltiptext {
   visibility: hidden;

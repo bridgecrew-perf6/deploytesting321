@@ -30,8 +30,8 @@ export const userResolvers: ResolverMap = {
         );
 
         return userData;
-      } catch (error) {
-        throw error;
+      } catch (error: any) {
+        throw new Error(error);
       }
     },
     logout: async (parent, args, context) => {
