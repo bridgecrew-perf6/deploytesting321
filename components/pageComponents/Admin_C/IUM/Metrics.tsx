@@ -1,5 +1,5 @@
 import React from "react";
-import metricStyles from "../../../appStyles/adminStyles/metricStyles.module.css";
+import metricStyles from "../../../../appStyles/adminStyles/metricStyles.module.css";
 import { Bar } from "react-chartjs-2";
 
 const Metrics = () => {

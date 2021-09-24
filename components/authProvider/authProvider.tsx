@@ -13,9 +13,7 @@ const AuthProvider: React.FC = ({ children }) => {
   };
 
   const [authState, setAuthState] = useState(initialAuthState);
-
   const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]); //This may not be needed since you can pass mssgs between pages.  Think of removing
-
   const [searchVal, updateSearchVal] = useState("");
 
   const handleSearch = (val: string) => {

@@ -9,7 +9,7 @@ const UsersDataFormInput = (props: any) => {
       value={props.value}
       type={props.type}
       id={props.id}
-      required
+      required={props.required}
       name={props.name}
     />
   );

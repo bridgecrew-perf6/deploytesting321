@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import usersInfoBox from "../../../appStyles/adminStyles/usersInfoBox.module.css";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { initializeApollo } from "../../../lib/apollo";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   AdminButton,
   IsActiveModal,
@@ -10,17 +9,27 @@ import {
   UserUpdateModel,
 } from "_pageComponents/index";
 import { updateInternalUserProfile } from "../../../lib/apollo/apolloFunctions";
-import filterFactory, {
-  selectFilter,
-  textFilter,
-} from "react-bootstrap-table2-filter";
-import queries from "lib/apollo/apiGraphStrings/queries";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 
-const { GET_ALL_USERS, GET_INTERNAL_USERS } = GraphResolvers.queries;
-const apolloClient = initializeApollo();
+const { GET_INTERNAL_USERS, GET_INTERNAL_USERS_WITH_PAGINATION } =
+  GraphResolvers.queries;
 
 const UsersInfo = () => {
-  const { data, refetch, loading, error } = useQuery(GET_INTERNAL_USERS);
+  const [pagination, setPagination] = useState({
+    pageStartIndex: 0,
+    pageEndIndex: 10,
+  });
+  // const { data, refetch, loading, error } = useQuery(GET_INTERNAL_USERS);
+  const { data, refetch, loading, error } = useQuery(
+    GET_INTERNAL_USERS_WITH_PAGINATION,
+    {
+      variables: {
+        offset: pagination.pageStartIndex,
+        limit: pagination.pageEndIndex,
+      },
+    }
+  );
+
   const [usersData, setUsersData] = useState([]);
   const [selectedRows, setSelectedRows] = useState<[]>([]);
   const [showUserEditModal, setShowUserEditModal] = useState(false);
@@ -35,17 +44,41 @@ const UsersInfo = () => {
   );
   const [createNewInternalUser, { loading: loadingA, error: errorA }] =
     useMutation(GraphResolvers.mutations.CREATE_INTERNAL_USER, {
-      refetchQueries: [{ query: GET_INTERNAL_USERS }],
+      refetchQueries: [
+        {
+          query: GET_INTERNAL_USERS_WITH_PAGINATION,
+          variables: {
+            offset: pagination.pageStartIndex,
+            limit: pagination.pageEndIndex,
+          },
+        },
+      ],
     });
 
   const [updateActiveUsersToDisable, { loading: loadingb, error: errorb }] =
     useMutation(GraphResolvers.mutations.UPDATE_ACTIVE_USERS_TO_DISABLE, {
-      refetchQueries: [{ query: GET_INTERNAL_USERS }],
+      refetchQueries: [
+        {
+          query: GET_INTERNAL_USERS_WITH_PAGINATION,
+          variables: {
+            offset: pagination.pageStartIndex,
+            limit: pagination.pageEndIndex,
+          },
+        },
+      ],
     });
 
   const [updateDisableUsersToActive, { loading: loadingc, error: errorc }] =
     useMutation(GraphResolvers.mutations.UPDATE_DISABLE_USERS_TO_ACTIVE, {
-      refetchQueries: [{ query: GET_INTERNAL_USERS }],
+      refetchQueries: [
+        {
+          query: GET_INTERNAL_USERS_WITH_PAGINATION,
+          variables: {
+            offset: pagination.pageStartIndex,
+            limit: pagination.pageEndIndex,
+          },
+        },
+      ],
     });
 
   const tableSelectOptions = {
@@ -106,13 +139,12 @@ const UsersInfo = () => {
     lastSignIn: "",
     isActive: false,
   });
+  const [pageValue, setPageValue] = useState("10");
 
   useEffect(() => {
     if (error) console.log("Error occured while fetching", error);
-    if (!loading && data) setUsersData(data?.internalUsers);
+    if (!loading && data) setUsersData(data?.internalUsersWithPagination);
   }, [loading, data]);
-
-  console.log(data?.internalUsers);
 
   const changeTableRowData = (row: any, rowIndex: number) => {
     setModelWorkingFor("updateUser");
@@ -170,6 +202,11 @@ const UsersInfo = () => {
     }
   };
 
+  const handlePagination = (number: number) => {
+    setPagination({ ...pagination, pageEndIndex: number });
+    setPageValue(number.toString());
+  };
+
   const showActiveUsersData = () => (
     <div className={usersInfoBox.userInfoBox__adminTableWrapper}>
       {loading && usersData?.length > 0 ? (
@@ -183,6 +220,8 @@ const UsersInfo = () => {
           setSelectedRows={setSelectedRows}
           handleSelectedRowsDisable={handleSelectedRowsDisable}
           handleSelectedRowsActive={handleSelectedRowsActive}
+          handlePagination={handlePagination}
+          pageValue={pageValue}
         />
       )}
     </div>
@@ -194,7 +233,7 @@ const UsersInfo = () => {
       setShowActiveModal(true);
       setShowActiveModalLabel("Are you sure to Activate selected Users ?");
     } else {
-      return;
+      return alert("Please select any User!");
     }
   };
 
@@ -205,7 +244,7 @@ const UsersInfo = () => {
       setShowActiveModal(true);
       setShowActiveModalLabel("Are you sure to Disable selected Users ?");
     } else {
-      return;
+      return alert("Please select any User!");
     }
   };
 
@@ -254,7 +293,7 @@ const UsersInfo = () => {
         </div>
         <AdminButton
           title="Add new user"
-          style={{ width: "300px" }}
+          style={{ width: "250px" }}
           onClick={handleAddNewUser}
         />
       </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import leftSideBarStyles from "../../../appStyles/adminStyles/leftSideBarStyles.module.css";
+import leftSideBarStyles from "../../../../appStyles/adminStyles/leftSideBarStyles.module.css";
 import { FaTachometerAlt } from "react-icons/fa";
 import LeftSideSubBar from "./LeftSideSubBar";
 

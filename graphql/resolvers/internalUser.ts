@@ -11,12 +11,12 @@ import bcrypt from "bcryptjs";
 import batchLoaders from "../loaders/dataLoaders";
 import { ResolverMap } from "_components/index";
 import IinternalUsers from "models/interfaces/internalUser";
-
+import { confirmationEmail } from "../utils/confirmationEmail";
 const { batchAnswers, batchPolls } = batchLoaders;
 
 export const internalUsersResolver: ResolverMap = {
   Query: {
-    internalUsers: async (parent, args, { dataLoaders }) => {
+    internalUsers: async (parent, args, context) => {
       try {
         const internaluser = InternalUsers.find().select(
           "_id email fullName accessRole jobTitle isActive"
@@ -27,12 +27,23 @@ export const internalUsersResolver: ResolverMap = {
       }
     },
 
+    internalUsersWithPagination: async (parent, { offset, limit }, context) => {
+      try {
+        const total = InternalUsers.countDocuments({});
+        const internaluser = InternalUsers.find()
+          .limit(limit)
+          .skip(offset)
+          .select("_id email fullName accessRole jobTitle isActive");
+        return internaluser;
+      } catch (error: any) {
+        throw new Error(error);
+      }
+    },
+
     getInternalUser: async (parent, { userId }, context) => {
       const { isAuth, req, res, dataLoaders } = context;
       const { auth, id } = isAuth;
-      console.log(userId);
       const user = await InternalUsers.findOne({ _id: userId });
-      console.log(user);
       if (user) {
         const userData = transformInternalUser(user, dataLoaders(["poll"]));
         userData.isAppUser = id === String(user._id);
@@ -45,26 +56,23 @@ export const internalUsersResolver: ResolverMap = {
     createNewInternalUser: async (parent, { formInputs }, context) => {
       try {
         const formObj = JSON.parse(formInputs);
-        console.log(formObj);
         let existingUser: IinternalUsers;
         existingUser = await InternalUsers.findOne({ email: formObj.email });
         if (existingUser) {
           throw new Error("User with this email already exist");
         }
+        await confirmationEmail(formObj.email, formObj.email);
         const hashPW = await bcrypt.hash(formObj.email, 12);
         const internaluser: IinternalUsers = new InternalUsers({
           ...formObj,
           password: hashPW,
         });
         const saveInternalUserResult = await internaluser.save();
-        console.log(saveInternalUserResult._id);
         return {
           ...saveInternalUserResult._doc,
           _id: saveInternalUserResult.id,
         };
       } catch (error: any) {
-        console.log("Error occured white creating internal User");
-        console.log(error);
         throw new Error(error);
       }
     },
@@ -77,7 +85,6 @@ export const internalUsersResolver: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
       try {
-        console.log(formObj);
         let updateUser = await InternalUsers.findByIdAndUpdate(
           { _id: formObj.id },
           {
@@ -85,11 +92,9 @@ export const internalUsersResolver: ResolverMap = {
           },
           { new: true, upsert: true }
         );
-        console.log("Updating user");
-        console.log(updateUser);
+
         return "User updated";
       } catch (error: any) {
-        console.log("error in update internal user", error);
         throw new Error(error);
       }
     },
@@ -102,7 +107,6 @@ export const internalUsersResolver: ResolverMap = {
       }
 
       try {
-        // console.log("Selected user in active => ", userId);
         const u = await InternalUsers.findOneAndUpdate(
           { _id: userId },
           {
@@ -113,7 +117,6 @@ export const internalUsersResolver: ResolverMap = {
         );
         return u._id;
       } catch (error: any) {
-        console.log("Error occured while updating disable to active");
         throw new Error(error);
       }
     },
@@ -126,7 +129,6 @@ export const internalUsersResolver: ResolverMap = {
       }
 
       try {
-        // console.log("Selected user in disable => ", userId);
         const u = await InternalUsers.findOneAndUpdate(
           { _id: userId },
           {
@@ -137,7 +139,6 @@ export const internalUsersResolver: ResolverMap = {
         );
         return u._id;
       } catch (error: any) {
-        console.log("Error occured while updating disable to active");
         throw new Error(error);
       }
     },

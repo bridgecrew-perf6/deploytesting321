@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
-import { Model } from "..";
+import { Model } from "_pageComponents/index";
 
 const IsActiveModal = (props: any) => {
   const {
@@ -13,7 +13,6 @@ const IsActiveModal = (props: any) => {
     loadingb,
     loadingc,
   } = props;
-  console.log(loadingb, loadingc);
   return (
     <Model
       show={showActiveModal}

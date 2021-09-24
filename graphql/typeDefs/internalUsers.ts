@@ -13,6 +13,7 @@ export const internalUserTypeDefs = gql`
 
   extend type Query {
     internalUsers: [InternalUser]!
+    internalUsersWithPagination(offset: Int, limit: Int): [InternalUser!]
     getInternalUser(userId: String!): InternalUser!
   }
 

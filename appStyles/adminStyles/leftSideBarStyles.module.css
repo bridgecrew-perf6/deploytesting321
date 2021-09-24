@@ -4,6 +4,15 @@
   width: 17rem;
   position: absolute;
   margin-left: 10px;
+  transition: all 2s;
+}
+
+@media screen and (max-width: 750px) {
+  .sideBarWrapper {
+    margin-left: -18rem;
+    visibility: hidden;
+    opacity: 0;
+  }
 }
 
 .buttonsWrapper {

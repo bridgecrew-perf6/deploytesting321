@@ -1,5 +1,5 @@
 import React from "react";
-import metricStyles from "../../../appStyles/adminStyles/metricStyles.module.css";
+import metricStyles from "../../../../appStyles/adminStyles/metricStyles.module.css";
 import ReusableChart from "./ReusableChart";
 
 const Metrics = () => {
@@ -41,7 +41,7 @@ const Metrics = () => {
           <div className={metricStyles.chartContainer}>
             {/* <h2>dsfsdf </h2> */}
             <ReusableChart
-              width={500}
+              width="500"
               height={400}
               data={data}
               datakey="name"

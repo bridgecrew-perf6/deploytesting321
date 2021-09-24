@@ -5,8 +5,9 @@ import {
   AdminPara,
   UsersDataFormInput,
   SelectMenuActive,
-} from "..";
-import usersInfoBox from "../../../appStyles/adminStyles/usersInfoBox.module.css";
+  ButtonCustomWidth,
+} from "_pageComponents/index";
+import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
 const UserUpdateModel = (props: any) => {
   const {
@@ -50,20 +51,23 @@ const UserUpdateModel = (props: any) => {
       size="md"
       modalTitle={"Update User Info"}
       handleClose={handleCLoseModal}
-      buttons={[
-        {
-          label: "Cancel",
-          color: "danger",
-          onClick: () => {
-            setShowUserEditModal(false);
-          },
-        },
-        {
-          color: "success",
-          label: "Save Changes",
-          onClick: handleSubmitUsersData,
-        },
-      ]}
+      // buttons={[
+      //   {
+      //     label: "Cancel",
+      //     color: "danger",
+      //     onClick: () => {
+      //       setShowUserEditModal(false);
+      //     },
+      //   },
+      //   {
+      //     type: "submit",
+      //     color: "success",
+      //     label: "Save Changes",
+      //     onClick: () => {
+      //       handleSubmitUsersData();
+      //     },
+      //   },
+      // ]}
     >
       <form onSubmit={handleSubmitUsersData}>
         <div className={usersInfoBox.userInfoBox__inputWrapper}>
@@ -72,7 +76,7 @@ const UserUpdateModel = (props: any) => {
             <AdminPara text="Full Name" />
             <UsersDataFormInput
               type="text"
-              required
+              required={true}
               name="fullName"
               value={userDataForm.fullName}
               onChange={(e: any) => {
@@ -92,11 +96,10 @@ const UserUpdateModel = (props: any) => {
               }}
             />
           </div>
-          <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+          {/* <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
             <AdminPara text="Phone Number" />
             <UsersDataFormInput
               type="text"
-              required
               name="phoneNumber"
               value={userDataForm.phoneNumber}
               onChange={(e: any) => {
@@ -121,7 +124,7 @@ const UserUpdateModel = (props: any) => {
                 });
               }}
             />
-          </div>
+          </div> */}
           <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
             <AdminPara text="Job Title" />
             <UsersDataFormInput
@@ -153,7 +156,7 @@ const UserUpdateModel = (props: any) => {
               setUserDataForm={setUserDataForm}
             />
           </div>
-          <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
+          {/* <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
             <AdminPara text="Groups" />
             <UsersDataFormInput
               type="text"
@@ -179,13 +182,21 @@ const UserUpdateModel = (props: any) => {
                 });
               }}
             />
+          </div> */}
+          <div className={usersInfoBox.modalButtonsWrapper}>
+            <ButtonCustomWidth
+              width={"9rem"}
+              height={"2.5rem"}
+              title="Cancel"
+              onClick={handleCLoseModal}
+            />
+            <ButtonCustomWidth
+              width={"9rem"}
+              height={"2.5rem"}
+              type="submit"
+              title="Save User info"
+            />
           </div>
-          {/* <button
-                    className={usersInfoBox.userInfoBox__btnSubmitForm}
-                    type="submit"
-                  >
-                    Save User info
-                  </button> */}
         </div>
       </form>
     </Model>

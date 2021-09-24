@@ -8,3 +8,4 @@ export type {
   User,
   UserDataProps,
 } from "./appTypes/appType";
+export { default as adminData } from "./Datas/AdminData";
