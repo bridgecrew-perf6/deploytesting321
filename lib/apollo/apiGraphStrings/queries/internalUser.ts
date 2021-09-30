@@ -39,6 +39,18 @@ const internalUserQueries = {
       }
     }
   `,
+
+  GET_ALL_ROLES: gql`
+    query AllRoles {
+      allRoles {
+        _id
+        name
+        description
+        status
+        privilages
+      }
+    }
+  `,
 };
 
 export default internalUserQueries;

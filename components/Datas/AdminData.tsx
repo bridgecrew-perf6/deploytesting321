@@ -1,5 +1,10 @@
 import { BsFolder, BsFileEarmark, BsGraphUp } from "react-icons/bs";
-import { RiAdminFill } from "react-icons/ri";
+import {
+  RiAdminFill,
+  RiChatOffFill,
+  RiChatPollFill,
+  RiQuestionAnswerFill,
+} from "react-icons/ri";
 import { AiFillSecurityScan, AiOutlineUser } from "react-icons/ai";
 import {
   FaStickyNote,
@@ -8,6 +13,7 @@ import {
   FaUserEdit,
   FaUserAlt,
 } from "react-icons/fa";
+import { GrStatusCriticalSmall } from "react-icons/gr";
 import { HiUserRemove, HiTemplate, HiUserGroup } from "react-icons/hi";
 import { MdEmail } from "react-icons/md";
 import { v4 } from "uuid";
@@ -19,6 +25,7 @@ const adminData = [
     active: true,
     selected: true,
     icon: <FaUserAlt style={{ marginTop: "-0.25rem" }} />,
+    subCategory: [],
   },
   {
     _id: v4(),
@@ -39,19 +46,19 @@ const adminData = [
         name: "Remove access rights",
         active: false,
         selected: false,
-        icon: <FaUserEdit style={{ marginTop: "-0.35rem" }} />,
+        icon: (
+          <HiUserRemove
+            style={{ marginTop: "-0.35rem", marginLeft: "-0.05rem" }}
+            size={17}
+          />
+        ),
       },
       {
         _id: v4(),
         name: "Edit access rights",
         active: false,
         selected: false,
-        icon: (
-          <HiUserRemove
-            style={{ marginTop: "-0.35rem", marginLeft: "-0.1rem" }}
-            size={17}
-          />
-        ),
+        icon: <FaUserEdit style={{ marginTop: "-0.35rem" }} />,
       },
     ],
   },
@@ -64,17 +71,38 @@ const adminData = [
     subCategory: [
       {
         _id: v4(),
-        name: "Content",
+        name: "Flagged Polls",
         active: false,
         selected: false,
-        icon: <FaStickyNote style={{ marginTop: "-0.35rem" }} />,
+        icon: <RiChatPollFill style={{ marginTop: "-0.35rem" }} />,
       },
       {
         _id: v4(),
-        name: "Users",
+        name: "Flagged Answers",
         active: false,
         selected: false,
-        icon: <FaUser style={{ marginTop: "-0.25rem" }} />,
+        icon: <RiQuestionAnswerFill style={{ marginTop: "-0.25rem" }} />,
+      },
+      {
+        _id: v4(),
+        name: "Flagged Chat Messages",
+        active: false,
+        selected: false,
+        icon: <RiChatOffFill style={{ marginTop: "-0.25rem" }} />,
+      },
+      {
+        _id: v4(),
+        name: "Flagged Users",
+        active: false,
+        selected: false,
+        icon: <FaUserSlash style={{ marginTop: "-0.25rem" }} />,
+      },
+      {
+        _id: v4(),
+        name: "Review status for violation",
+        active: false,
+        selected: false,
+        icon: <GrStatusCriticalSmall style={{ marginTop: "-0.25rem" }} />,
       },
     ],
   },
@@ -97,13 +125,6 @@ const adminData = [
         selected: false,
         icon: <FaUserSlash style={{ marginTop: "-0.35rem" }} />,
       },
-      {
-        _id: v4(),
-        name: "Flagged Users",
-        active: false,
-        selected: false,
-        icon: <BsFileEarmark style={{ marginTop: "-0.35rem" }} />,
-      },
     ],
   },
   {
@@ -112,6 +133,7 @@ const adminData = [
     active: false,
     selected: false,
     icon: <BsGraphUp style={{ marginTop: "-0.25rem" }} />,
+    subCategory: [],
   },
   {
     _id: v4(),
@@ -159,6 +181,7 @@ const adminData = [
         size={17}
       />
     ),
+    subCategory: [],
   },
 ];
 

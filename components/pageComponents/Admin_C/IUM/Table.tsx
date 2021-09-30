@@ -16,12 +16,23 @@ import {
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 import { useReactToPrint } from "react-to-print";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import { exportFile, SelectedRow } from "_components/index";
 
-const Table = (props: any) => {
+const Table: React.FC<{
+  columndata: any;
+  usersdata: [];
+  changetablerowdata: Function;
+  selectedRows: SelectedRow[];
+  setSelectedRows: Function;
+  handleSelectedRowsActive: Function;
+  handleSelectedRowsDisable: Function;
+  handlePagination: Function;
+  pageValue: string;
+}> = (props) => {
   const { SearchBar } = Search;
   const { ExportCSVButton } = CSVExport;
   const [exportButton, setExportButton] = useState(false);
-  let componentRef = useRef(null);
+  let componentRef = useRef<any>(null);
 
   const {
     columndata,
@@ -117,12 +128,12 @@ const Table = (props: any) => {
   };
 
   const tableRowEvents = {
-    onClick: (e: any, row: any, rowIndex: number) => {
+    onClick: (e: any, row: SelectedRow, rowIndex: number) => {
       changetablerowdata(row, rowIndex);
     },
   };
 
-  const MyExportCSV = (props: any) => {
+  const MyExportCSV = (props: exportFile) => {
     const handleClick = () => {
       props.onExport();
       setExportButton(false);
@@ -134,6 +145,7 @@ const Table = (props: any) => {
           height="3rem"
           onClick={handleClick}
           title="Export to CSV"
+          type="text"
         />
       </div>
     );
@@ -206,7 +218,7 @@ const Table = (props: any) => {
                       row,
                     ]);
                   } else {
-                    let selected = selectedRows.filter((s: any) => {
+                    let selected = selectedRows.filter((s: SelectedRow) => {
                       return s._id !== row._id;
                     });
                     setSelectedRows(selected);
@@ -235,6 +247,7 @@ const Table = (props: any) => {
             {!exportButton && (
               <div style={{ margin: "1rem 0rem" }}>
                 <ButtonCustomWidth
+                  type="text"
                   width="10rem"
                   height="3rem"
                   onClick={() => setExportButton(true)}
@@ -252,6 +265,9 @@ const Table = (props: any) => {
               >
                 <MyExportCSV {...props.csvProps}>Export CSV!!</MyExportCSV>
                 <ButtonCustomWidth
+                  width="10rem"
+                  height="3rem"
+                  type="text"
                   onClick={handlePrint}
                   title="Print this out!"
                 />

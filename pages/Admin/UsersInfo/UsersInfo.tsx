@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import usersInfoBox from "../../../appStyles/adminStyles/usersInfoBox.module.css";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { useMutation, useQuery } from "@apollo/client";
+import _ from "lodash";
 import {
   AdminButton,
   IsActiveModal,
@@ -10,9 +11,25 @@ import {
 } from "_pageComponents/index";
 import { updateInternalUserProfile } from "../../../lib/apollo/apolloFunctions";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import {
+  adminUserDataForm,
+  emailValidation,
+  SelectedRow,
+  validationErrorsAdmin,
+} from "_components/index";
 
-const { GET_INTERNAL_USERS, GET_INTERNAL_USERS_WITH_PAGINATION } =
-  GraphResolvers.queries;
+const {
+  GET_INTERNAL_USERS,
+  GET_INTERNAL_USERS_WITH_PAGINATION,
+  GET_ALL_ROLES,
+} = GraphResolvers.queries;
+
+export interface Roles {
+  _id: string;
+  value: string;
+  label: string;
+  isDisabled: boolean;
+}
 
 const UsersInfo = () => {
   const [pagination, setPagination] = useState({
@@ -30,12 +47,24 @@ const UsersInfo = () => {
     }
   );
 
-  const [usersData, setUsersData] = useState([]);
-  const [selectedRows, setSelectedRows] = useState<[]>([]);
+  const {
+    data: dataR,
+    loading: loadingR,
+    error: errorR,
+  } = useQuery(GET_ALL_ROLES);
+
+  const [roles, setRoles] = useState<Roles[]>([]);
+  const [usersData, setUsersData] = useState<[]>([]);
+  const [selectedRows, setSelectedRows] = useState<SelectedRow[]>([]);
   const [showUserEditModal, setShowUserEditModal] = useState(false);
   const [modelWorkingFor, setModelWorkingFor] = useState("updateUser");
   const [showActiveModal, setShowActiveModal] = useState(false);
   const [showActiveModalLabel, setShowActiveModalLabel] = useState("");
+  const [validationErrors, setValidationErrors] =
+    useState<validationErrorsAdmin>({
+      emailErr: "",
+      passwordErr: "",
+    });
   const [UpdateInternalUser] = useMutation(
     GraphResolvers.mutations.UPDATE_INTERNAL_USER,
     {
@@ -127,7 +156,7 @@ const UsersInfo = () => {
       },
     ],
   };
-  const [userDataForm, setUserDataForm] = useState({
+  const [userDataForm, setUserDataForm] = useState<adminUserDataForm>({
     _id: "",
     fullName: "",
     email: "",
@@ -142,11 +171,28 @@ const UsersInfo = () => {
   const [pageValue, setPageValue] = useState("10");
 
   useEffect(() => {
-    if (error) console.log("Error occured while fetching", error);
+    if (error) throw new Error(error.message);
     if (!loading && data) setUsersData(data?.internalUsersWithPagination);
   }, [loading, data]);
 
-  const changeTableRowData = (row: any, rowIndex: number) => {
+  useEffect(() => {
+    if (errorR) throw new Error(errorR.message);
+    if (!loadingR && dataR) {
+      let allroles: any = [];
+      dataR.allRoles.map((dR: any) => {
+        allroles.push({
+          _id: dR._id,
+          value: dR.name,
+          label: dR.name,
+          isDisabled: dR.status ? false : true,
+        });
+      });
+      let uniq = _.uniqBy(allroles, (x: any) => x.label);
+      setRoles(uniq);
+    }
+  }, [dataR]);
+
+  const changeTableRowData = (row: SelectedRow, rowIndex: number) => {
     setModelWorkingFor("updateUser");
     setShowUserEditModal(true);
     setUserDataForm({
@@ -158,7 +204,6 @@ const UsersInfo = () => {
       accessRole: row?.accessRole || "",
       isActive: row?.isActive,
     });
-    console.log(row?.isActive);
   };
 
   const handleAddNewUser = () => {
@@ -179,26 +224,36 @@ const UsersInfo = () => {
   const handleSubmitUsersData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("I am clicked");
-    const formInputs = {
-      id: userDataForm._id,
-      fullName: userDataForm.fullName,
-      email: userDataForm.email,
-      jobTitle: userDataForm.jobTitle,
-      accessRole: userDataForm.accessRole,
-      isActive: userDataForm.isActive,
-    };
-    if (modelWorkingFor === "updateUser") {
-      console.log(modelWorkingFor);
-      await updateInternalUserProfile(
-        UpdateInternalUser,
-        JSON.stringify(formInputs)
-      );
-      setShowUserEditModal(false);
-    } else {
-      await createNewInternalUser({
-        variables: { formInputs: JSON.stringify(formInputs) },
+    const errors = emailValidation(userDataForm.email);
+    console.log(errors);
+
+    if (errors === false) {
+      setValidationErrors({
+        ...validationErrors,
+        emailErr: "Not a valid Email",
       });
-      setShowUserEditModal(false);
+    } else {
+      const formInputs = {
+        id: userDataForm._id,
+        fullName: userDataForm.fullName,
+        email: userDataForm.email,
+        jobTitle: userDataForm.jobTitle,
+        accessRole: userDataForm.accessRole,
+        isActive: userDataForm.isActive,
+      };
+      if (modelWorkingFor === "updateUser") {
+        console.log(modelWorkingFor);
+        await updateInternalUserProfile(
+          UpdateInternalUser,
+          JSON.stringify(formInputs)
+        );
+        setShowUserEditModal(false);
+      } else {
+        await createNewInternalUser({
+          variables: { formInputs: JSON.stringify(formInputs) },
+        });
+        setShowUserEditModal(false);
+      }
     }
   };
 
@@ -209,7 +264,7 @@ const UsersInfo = () => {
 
   const showActiveUsersData = () => (
     <div className={usersInfoBox.userInfoBox__adminTableWrapper}>
-      {loading && usersData?.length > 0 ? (
+      {loading && usersData?.length === 0 ? (
         <h3>Loading...</h3>
       ) : (
         <Table
@@ -252,7 +307,7 @@ const UsersInfo = () => {
   const updateUsersToActive = async () => {
     console.log("I am here in active");
     await Promise.all(
-      selectedRows.map(async (s: any) => {
+      selectedRows.map(async (s: SelectedRow) => {
         await updateDisableUsersToActive({
           variables: { userId: s._id },
         });
@@ -265,7 +320,7 @@ const UsersInfo = () => {
   const updateUsersToDisable = async () => {
     console.log("I am here in disable");
     await Promise.all(
-      selectedRows.map(async (s: any) => {
+      selectedRows.map(async (s: SelectedRow) => {
         await updateActiveUsersToDisable({
           variables: { userId: s._id },
         });
@@ -301,12 +356,13 @@ const UsersInfo = () => {
       <UserUpdateModel
         handleCLoseModal={handleCLoseModal}
         handleSubmitUsersData={handleSubmitUsersData}
+        validationErrors={validationErrors}
+        setValidationErrors={setValidationErrors}
         setUserDataForm={setUserDataForm}
         userDataForm={userDataForm}
         showUserEditModal={showUserEditModal}
+        userRoles={roles}
         setShowUserEditModal={setShowUserEditModal}
-        modelWorkingFor={modelWorkingFor}
-        setModelWorkingFor={setModelWorkingFor}
       />
       <IsActiveModal
         showActiveModal={showActiveModal}

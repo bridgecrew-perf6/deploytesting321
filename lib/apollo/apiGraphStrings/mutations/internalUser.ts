@@ -37,6 +37,47 @@ const internalUserMutations = {
       }
     }
   `,
+  CREATE_NEW_ROLE: gql`
+    mutation CreateNewRole(
+      $name: String!
+      $description: String!
+      $status: Boolean!
+      $privilages: [String]
+    ) {
+      createNewRole(
+        name: $name
+        description: $description
+        status: $status
+        privilages: $privilages
+      ) {
+        _id
+      }
+    }
+  `,
+
+  UPDATE_ROLE_PRIVILAGES: gql`
+    mutation UpdateRolePrivilages($roleName: String!, $privilages: [String]!) {
+      updateRolePrivilages(roleName: $roleName, privilages: $privilages) {
+        _id
+      }
+    }
+  `,
+
+  ACTIVATE_ROLE: gql`
+    mutation ActivateRole($roleName: String!) {
+      activateRole(roleName: $roleName) {
+        _id
+      }
+    }
+  `,
+
+  DISABLE_ROLE: gql`
+    mutation DisableRole($roleName: String!) {
+      disableRole(roleName: $roleName) {
+        _id
+      }
+    }
+  `,
 };
 
 export default internalUserMutations;

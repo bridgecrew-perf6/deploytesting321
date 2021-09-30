@@ -8,7 +8,7 @@ export default interface IinternalUsers extends MongoDoc {
   email: string;
   fullName: string;
   jobTitle: string;
-  accessRole: { admin: String; employee: String; moderator: String };
+  accessRole: string;
   isActive: boolean;
   password: string;
 }

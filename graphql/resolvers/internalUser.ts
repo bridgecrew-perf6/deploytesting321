@@ -1,18 +1,9 @@
-import {
-  getAppTokens,
-  clearAppCookie,
-  transformUser,
-  transformPoll,
-  decodeJWToken,
-  transformInternalUser,
-} from "./shared";
+import { transformInternalUser } from "./shared";
 import InternalUsers from "../../models/internalUsersModel";
 import bcrypt from "bcryptjs";
-import batchLoaders from "../loaders/dataLoaders";
 import { ResolverMap } from "_components/index";
 import IinternalUsers from "models/interfaces/internalUser";
 import { confirmationEmail } from "../utils/confirmationEmail";
-const { batchAnswers, batchPolls } = batchLoaders;
 
 export const internalUsersResolver: ResolverMap = {
   Query: {
@@ -85,7 +76,7 @@ export const internalUsersResolver: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
       try {
-        let updateUser = await InternalUsers.findByIdAndUpdate(
+        await InternalUsers.findByIdAndUpdate(
           { _id: formObj.id },
           {
             ...formObj,

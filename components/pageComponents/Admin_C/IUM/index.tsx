@@ -1,8 +1,9 @@
 import { userInfo } from "os";
 import React from "react";
+import { adminLeftSidearType } from "_components/index";
 import LeftSideBar from "./LeftSideBar";
 
-const index = (props: any) => {
+const index = (props: adminLeftSidearType) => {
   const { mastercategory, setmastercategory } = props;
   return (
     <div>

@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import Select from "react-select";
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
-const SelectPagination = (props: any) => {
+const SelectPagination: React.FC<{
+  options: {
+    value: string;
+    label: string;
+  }[];
+  handlePagination: Function;
+  pageValue: string;
+}> = (props) => {
   const { handlePagination, options, pageValue } = props;
 
   const groupStyles = {
@@ -10,8 +17,6 @@ const SelectPagination = (props: any) => {
     alignItems: "center",
     justifyContent: "space-between",
   };
-
-  console.log(pageValue);
 
   const formatGroupLabel = () => (
     <div style={groupStyles}>

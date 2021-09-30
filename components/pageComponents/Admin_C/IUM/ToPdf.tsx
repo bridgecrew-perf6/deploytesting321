@@ -3,7 +3,7 @@ import { useReactToPrint } from "react-to-print";
 import { Table } from "_pageComponents/index";
 
 const ToPdf = (props: any) => {
-  const componentRef = useRef<HTMLDivElement>(null);
+  const componentRef = useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });

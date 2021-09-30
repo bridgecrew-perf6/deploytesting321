@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { masterCatType, subCatType } from "_components/index";
 import leftSideBarStyles from "../../../../appStyles/adminStyles/leftSideBarStyles.module.css";
 
-const LeftSideSubBar = (props: any) => {
+const LeftSideSubBar: React.FC<{
+  handleOpenSub: Function;
+  handleOpenMaster: Function;
+  key: Number;
+  item: masterCatType;
+}> = (props) => {
   const { item, handleOpenMaster, handleOpenSub } = props;
-  const [showSubNav, setShowSubNav] = useState(false);
-
   return (
     <>
       <button
@@ -22,7 +26,7 @@ const LeftSideSubBar = (props: any) => {
       </button>
 
       {item.subCategory
-        ? item.subCategory.map((itemSub: any, sIndex: any) => {
+        ? item.subCategory.map((itemSub: subCatType, sIndex: number) => {
             return (
               <div
                 key={sIndex}

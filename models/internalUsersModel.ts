@@ -21,9 +21,8 @@ const internalUsersSchema: Schema = new Schema({
   },
   accessRole: {
     type: String,
-    enum: ["admin", "employee", "moderator"],
-    default: "employee",
-    message: "{VALUE} is not suppoeted",
+    // type: Schema.Types.ObjectId,
+    // ref: "RolesSchema",
   },
   isActive: {
     type: Boolean,

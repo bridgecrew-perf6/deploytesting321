@@ -2,7 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { Model } from "_pageComponents/index";
 
-const IsActiveModal = (props: any) => {
+const IsActiveModal: React.FC<{
+  showActiveModal?: boolean;
+  setShowActiveModal: Function;
+  handleCloseIsActiveModal: Function;
+  showActiveModalLabel?: string;
+  updateUsersToActive: Function;
+  updateUsersToDisable: Function;
+  loadingb?: boolean;
+  loadingc?: boolean;
+}> = (props) => {
   const {
     showActiveModal,
     setShowActiveModal,

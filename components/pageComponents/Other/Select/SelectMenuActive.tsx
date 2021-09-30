@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
+import { adminUserDataForm } from "_components/index";
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
-const SelectMenuActive = (props: any) => {
+const SelectMenuActive: React.FC<{
+  activeOptions: {
+    value: boolean;
+    label: string;
+  }[];
+  selectedValue: boolean;
+  userDataForm: adminUserDataForm;
+  setUserDataForm: Function;
+}> = (props) => {
   const { activeOptions, selectedValue, userDataForm, setUserDataForm } = props;
 
   const groupStyles = {

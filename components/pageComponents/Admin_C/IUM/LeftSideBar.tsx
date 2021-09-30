@@ -2,15 +2,21 @@ import React, { useState } from "react";
 import leftSideBarStyles from "../../../../appStyles/adminStyles/leftSideBarStyles.module.css";
 import { FaTachometerAlt } from "react-icons/fa";
 import LeftSideSubBar from "./LeftSideSubBar";
+import {
+  adminLeftSidebarType,
+  masterCatType,
+  subCatType,
+} from "_components/index";
 
-const LeftSideBar = (props: any) => {
+const LeftSideBar = (props: adminLeftSidebarType) => {
   const { mastercategory, setmastercategory } = props;
-  const handleOpenMaster = (item: any) => {
+
+  const handleOpenMaster = (item: masterCatType) => {
     let cats = false;
-    let updatedMaster = mastercategory.map((mc: any) => {
+    let updatedMaster = mastercategory.map((mc: masterCatType) => {
       if (mc._id === item._id) {
         if (!mc.active) {
-          if (mc.subCategory) {
+          if (mc.subCategory.length > 0) {
             mc.active = true;
           } else {
             mc.active = true;
@@ -21,28 +27,26 @@ const LeftSideBar = (props: any) => {
           mc.selected = false;
         }
       } else {
-        if (!item?.subCategory) {
-          if (!mc.subCategory) {
+        if (item?.subCategory.length === 0) {
+          if (mc.subCategory.length === 0) {
             mc.active = false;
             mc.selected = false;
           }
         }
       }
-      if (item.subCategory) {
+      if (item.subCategory.length > 0) {
         cats = true;
       }
       return mc;
     });
 
-    updatedMaster.map((master: any) => {
-      let updated =
-        master.subCategory &&
-        master.subCategory.map((sub: any) => {
-          if (!cats) {
-            sub.active = false;
-          }
-          return sub;
-        });
+    updatedMaster.map((master: masterCatType) => {
+      let updated = master.subCategory?.map((sub: subCatType) => {
+        if (!cats) {
+          sub.active = false;
+        }
+        return sub;
+      });
       if (master.subCategory) master.subCategory = updated;
       return master;
     });
@@ -50,10 +54,11 @@ const LeftSideBar = (props: any) => {
     setmastercategory(updatedMaster);
   };
 
-  const handleOpenSub = (item: any) => {
-    let updatedMaster = mastercategory.map((mc: any) => {
-      if (mc?.subCategory) {
-        let sub = mc.subCategory.map((subItem: any) => {
+  const handleOpenSub = (item: masterCatType) => {
+    console.log("I am clicked");
+    let updatedMaster = mastercategory.map((mc: masterCatType) => {
+      if (mc?.subCategory.length > 0) {
+        let sub = mc.subCategory.map((subItem: subCatType) => {
           if (subItem._id === item._id) {
             subItem.active = true;
           } else {
@@ -66,8 +71,8 @@ const LeftSideBar = (props: any) => {
       return mc;
     });
 
-    mastercategory.map((master: any) => {
-      if (!master?.subCategory) {
+    mastercategory.map((master: masterCatType) => {
+      if (master?.subCategory.length === 0) {
         master.active = false;
         master.selected = false;
       }
@@ -84,7 +89,7 @@ const LeftSideBar = (props: any) => {
           <span style={{ paddingLeft: ".5rem" }}> &nbsp;Dashboard</span>
         </button>
 
-        {mastercategory.map((mc: any, mindex: any) => {
+        {mastercategory.map((mc: masterCatType, mindex: number) => {
           return (
             <LeftSideSubBar
               handleOpenSub={handleOpenSub}

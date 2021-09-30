@@ -3,7 +3,7 @@ import { SitePageContainer, adminData } from "_components/index";
 import {
   EditAR,
   LeftSideBar,
-  Metrics,
+  // Metrics,
   ProvideAR,
   RemoveAR,
 } from "_pageComponents/index";
@@ -32,7 +32,7 @@ const index = () => {
               </React.Fragment>
             ) : lsc.name === "Metrics" && lsc.selected === true ? (
               <React.Fragment key={index}>
-                <Metrics />
+                <h3>I am from metrics</h3>
               </React.Fragment>
             ) : (
               lsc?.subCategory &&
@@ -67,6 +67,24 @@ const index = () => {
                 ) : slsc.name === "Flagged Users" && slsc.active === true ? (
                   <React.Fragment key={sindex}>
                     <h2>Hi im Flagged Users</h2>
+                  </React.Fragment>
+                ) : slsc.name === "Flagged Polls" && slsc.active === true ? (
+                  <React.Fragment key={sindex}>
+                    <h2>Hi im Flagged Polls</h2>
+                  </React.Fragment>
+                ) : slsc.name === "Flagged Chat Messages" &&
+                  slsc.active === true ? (
+                  <React.Fragment key={sindex}>
+                    <h2>Hi im Flagged Chat messages</h2>
+                  </React.Fragment>
+                ) : slsc.name === "Flagged Answers" && slsc.active === true ? (
+                  <React.Fragment key={sindex}>
+                    <h2>Hi im Flagged Answers</h2>
+                  </React.Fragment>
+                ) : slsc.name === "Review status for violation" &&
+                  slsc.active === true ? (
+                  <React.Fragment key={sindex}>
+                    <h2>Hi im Review status for violation</h2>
                   </React.Fragment>
                 ) : null;
               })

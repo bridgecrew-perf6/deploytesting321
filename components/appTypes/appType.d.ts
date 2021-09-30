@@ -41,14 +41,34 @@ export interface User {
   pollHistory?: PollHistory[];
 }
 
+export interface Role {
+  name: string;
+  description?: string;
+  status: boolean;
+}
+
 export interface IinternalUser {
   id: string;
   email: string;
   fullName: string;
   jobTitle: string;
-  accessRole: { admin: String; employee: String; moderator: String };
+  accessRole: string;
   isActive: boolean;
   password: string;
+}
+
+export interface SelectedRow {
+  _id: string;
+  email: string;
+  fullName: string;
+  jobTitle: string;
+  accessRole: string;
+  isActive: boolean;
+}
+
+export interface exportFile {
+  children: string;
+  onExport: Function;
 }
 
 export interface GetInternalUser {
@@ -56,6 +76,52 @@ export interface GetInternalUser {
     appToken: string;
     internalUser: IinternalUser;
   };
+}
+
+export interface validationErrorsAdmin {
+  emailErr: string;
+  passwordErr: string;
+}
+
+export interface adminUserDataForm {
+  _id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  homeAddress: string;
+  jobTitle: string;
+  accessRole: string;
+  groups: string;
+  lastSignIn: string;
+  isActive: boolean;
+}
+
+export interface masterCatType {
+  _id: string;
+  active: boolean;
+  selected: boolean;
+  name: string;
+  icon: HTMLElement;
+  subCategory: {
+    _id: string;
+    active: boolean;
+    selected: boolean;
+    name: string;
+    icon: HTMLElement;
+  }[];
+}
+
+export interface subCatType {
+  _id: string;
+  active: boolean;
+  selected: boolean;
+  name: string;
+  icon: HTMLElement;
+}
+
+export interface adminLeftSidebarType {
+  mastercategory: any;
+  setmastercategory: Function;
 }
 
 interface Follower {
