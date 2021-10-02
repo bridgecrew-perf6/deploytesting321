@@ -21,7 +21,7 @@ import {
   addFollow,
   addNewChatMssg,
   removeFollow,
-} from "../../../../lib/apollo/apolloFunctions/mutations";
+} from "../../../../lib/apollo/apolloFunctions/userMutations";
 import { ToolTipCtr } from "../../../layout/customComps";
 
 const { chatSideBar, chatMessage, userMessage, chatSearch, chatInput } =
@@ -44,12 +44,10 @@ export const ChatSideBar = ({
   };
 
   return (
-    <div
-      className={`d-flex flex-column ${chatSideBar} border mr-2`}
-    >
+    <div className={`d-flex flex-column ${chatSideBar} border mr-2`}>
       <div
         className="d-flex align-items-center justify-content-center border-bottom p-2"
-        style={{ height: '50px',  minHeight:'50px' }}
+        style={{ height: "50px", minHeight: "50px" }}
       >
         Poll Participants
       </div>
@@ -145,16 +143,11 @@ export const ChatBody = ({
 }: IPollChatBox) => {
   return (
     <div className="d-flex flex-column border" style={{ width: "90%" }}>
-      <div className="p-2" style={{  height: '50px', minHeight:'50px' }}>
-
-      </div>
+      <div className="p-2" style={{ height: "50px", minHeight: "50px" }}></div>
       <div className="border flex-grow-1 p-2">
         <ChatArea pollId={pollId} appUser={appUser} data={data} />
       </div>
-      <div
-        className="pl-2 pr-2 pt-1 pb-1"
-        style={{ height: "70px" }}
-      >
+      <div className="pl-2 pr-2 pt-1 pb-1" style={{ height: "70px" }}>
         <ChatInput
           pollId={pollId}
           appUser={appUser}

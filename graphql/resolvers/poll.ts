@@ -26,8 +26,13 @@ export const pollResolvers: ResolverMap = {
         );
 
         return pollsData;
+<<<<<<< HEAD
       } catch (err) {
         throw err;
+=======
+      } catch (err: any) {
+        throw new Error(err);
+>>>>>>> origin/u-dev
       }
     },
     poll: async (_, { pollId }, ctx) => {

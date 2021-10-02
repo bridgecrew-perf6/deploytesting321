@@ -1,12 +1,17 @@
 import ISubTopic from "../../models/interfaces/subTopic";
 import User from "../../models/UserModel";
+import InternalUsers from "../../models/internalUsersModel";
 import Answer from "../../models/answerModel";
 import Poll from "../../models/PollModel";
 import Chat from "../../models/chatModel";
 import Reply from "../../models/replyModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
+<<<<<<< HEAD
 import Notification from "../../models/notificationModel";
+=======
+import IinternalUsers from "../../models/interfaces/internalUser";
+>>>>>>> origin/u-dev
 import IPoll from "../../models/interfaces/poll";
 import IUser from "../../models/interfaces/user";
 import ITopic from "../../models/interfaces/topic";
@@ -15,6 +20,18 @@ import IComment from "../../models/interfaces/comment";
 import IReply from "../../models/interfaces/reply";
 import IChat from "../../models/interfaces/chat";
 import INotification from "../../models/interfaces/notification";
+
+const batchInternalUsers: BatchInternalUser = async (ids: any) => {
+  const users: IinternalUsers[] = await InternalUsers.find({
+    _id: { $in: ids },
+  });
+  const userMap: { [key: string]: IinternalUsers } = {};
+  users.forEach((user) => {
+    userMap[user.id] = user;
+  });
+
+  return users;
+};
 
 const batchUsers: BatchUser = async (ids) => {
   const users: IUser[] = await User.find({ _id: { $in: ids } });
@@ -111,6 +128,10 @@ export default {
   batchsubTopics,
   batchAnswers,
   batchChats,
+<<<<<<< HEAD
   batchNotifications,
+=======
+  batchInternalUsers,
+>>>>>>> origin/u-dev
   // batchReplies,
 };

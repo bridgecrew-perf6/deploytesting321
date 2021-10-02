@@ -20,7 +20,7 @@ import { MaxMinBtn } from "../../../components/layout/customComps";
 import {
   addNewAnswer,
   updateViewCount,
-} from "../../../lib/apollo/apolloFunctions/mutations";
+} from "../../../lib/apollo/apolloFunctions";
 import { useAuth } from "../../../components/authProvider/authProvider";
 
 const { GET_POLL, GET_POLLS_ALL, GET_USER, GET_USER_FOR_POLL } =
@@ -51,7 +51,7 @@ const Poll = ({ pollId }: Props) => {
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
     {
-      onError: (e) => addError(e.message),
+      onError: (e: any) => addError(e.message),
     }
   );
 
@@ -127,7 +127,9 @@ const Poll = ({ pollId }: Props) => {
   const removeError = (errId: number) => {
     let udpatedErrorList: string[] = [];
     if (error.length > 1) {
-      udpatedErrorList = error.filter((item, idx) => errId === idx);
+      udpatedErrorList = error.filter(
+        (item: any, idx: number) => errId === idx
+      );
     } else {
       udpatedErrorList = [];
     }

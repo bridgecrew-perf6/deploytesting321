@@ -50,7 +50,7 @@ const LogIn: NextPage = () => {
         appContext?.setAuthToken(data.login);
         setAppMssgs([]);
         router.push("/");
-      } catch (err) {
+      } catch (err: any) {
         setFormErrors([err]);
       }
     }

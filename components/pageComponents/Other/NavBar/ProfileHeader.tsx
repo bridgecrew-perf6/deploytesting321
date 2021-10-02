@@ -7,7 +7,12 @@ import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import styles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
+import {
+  AiOutlineNotification,
+  AiFillNotification,
+  AiFillMessage,
+  AiOutlineMessage,
+} from "react-icons/ai";
 import NewPoll from "../../Home/NewPoll";
 import { UserDataProps, UserNotification } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
@@ -19,10 +24,22 @@ import { ErrorToast } from "../Error/Toast";
 import { ToolTipCtr } from "../../../layout/customComps";
 import NotificationWindow from "./NotificationWindow";
 
+<<<<<<< HEAD
 const { GET_USER, LOG_OUT, GET_NOTIFICATIONS } = GraphResolvers.queries;
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
 
 export default function ProfileHeader() {
+=======
+const { GET_USER, LOG_OUT } = GraphResolvers.queries;
+const {
+  customBtn,
+  customBtnOutline,
+  customBtnOutlinePrimary,
+  custombtnCreate,
+} = btnStyles;
+
+export default function ProfileHeader(props: any) {
+>>>>>>> origin/u-dev
   const router = useRouter();
 
   const appContext = useAuth();
@@ -41,6 +58,11 @@ export default function ProfileHeader() {
   );
 
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
+<<<<<<< HEAD
+=======
+  const [notification, toggleNotification] = useState(false);
+  const [message, setMessage] = useState(false);
+>>>>>>> origin/u-dev
 
   useEffect(() => {
     getUser();
@@ -76,6 +98,12 @@ export default function ProfileHeader() {
     <AiOutlineNotification size={28} color="#ff4d00" />
   );
 
+  const messageIcon = message ? (
+    <AiFillMessage size={24} color="#ff4d00" />
+  ) : (
+    <AiOutlineMessage size={24} color="#ff4d00" />
+  );
+
   const handleLogOut = () => {
     const appMssgs = createAppMssgList([
       {
@@ -95,6 +123,33 @@ export default function ProfileHeader() {
     );
   };
 
+  if (error) {
+    return (
+      <div
+        className="form-row justify-content-between"
+        style={{ width: "15%" }}
+      >
+        <Link href={"/Login"}>
+          <button
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            type="button"
+          >
+            Log In
+          </button>
+        </Link>
+        <Link href={"/Registration"}>
+          <button
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            type="button"
+          >
+            Register
+          </button>
+        </Link>
+      </div>
+    );
+  }
+  const { title } = props;
+
   if (data) {
     const { _id, appid, profilePic } = data.getUserData.user;
     const unreadNotifications = notificationData?.notifications.filter(
@@ -106,16 +161,22 @@ export default function ProfileHeader() {
     return (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
-        style={{ width: "30%" }}
+        style={{
+          width: title !== "Admin Panel" ? "30%" : "22rem",
+          marginLeft: 5,
+        }}
       >
-        <div
-          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-          typeof="button"
-          data-toggle="modal"
-          data-target="#newPollModal"
-        >
-          Create New Poll
-        </div>
+        {props.title !== "Admin Panel" && (
+          <div
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            typeof="button"
+            data-toggle="modal"
+            data-target="#newPollModal"
+          >
+            Create New Poll
+          </div>
+        )}
+
         {superUserList?.includes(appid) && (
           <>
             <NewTopicBtn />
@@ -126,6 +187,7 @@ export default function ProfileHeader() {
           position="bottom"
           style={{ top: "35px", left: "50%" }}
         >
+<<<<<<< HEAD
           <div
             className={`${styles.cursor} position-relative`}
             onClick={() => toggleNotification(!notification)}
@@ -144,6 +206,29 @@ export default function ProfileHeader() {
           </div>
         </ToolTipCtr>
         {notification && <NotificationWindow data={userNotifications} />}
+=======
+          {NotificationIcon}
+        </div>
+
+        {props.title === "Admin Panel" && (
+          <React.Fragment>
+            <div
+              className={styles.cursor}
+              onMouseEnter={() => setMessage(true)}
+              onMouseLeave={() => setMessage(false)}
+            >
+              {messageIcon}
+            </div>
+            <button
+              className={`${custombtnCreate} ${customBtnOutline}`}
+              type="button"
+            >
+              Create
+            </button>
+          </React.Fragment>
+        )}
+
+>>>>>>> origin/u-dev
         <div>
           <ProfileImg
             profilePic={profilePic}
@@ -156,6 +241,7 @@ export default function ProfileHeader() {
 
         <div className="dropdown">
           <a
+            style={{ border: "2px solid" }}
             className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
             type="button"
             id="siteDropDown"
@@ -179,6 +265,9 @@ export default function ProfileHeader() {
               </Link>
               <Link href={`/Polls`}>
                 <li className="dropdown-item">All Topics</li>
+              </Link>
+              <Link href={`/Admin`}>
+                <li className="dropdown-item">Admin</li>
               </Link>
               <li className="dropdown-item">About</li>
               <li className="dropdown-item">How it Works</li>

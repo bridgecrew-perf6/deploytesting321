@@ -13,8 +13,12 @@ import IAnswer from "../../../models/interfaces/answer";
 import IComment from "../../../models/interfaces/comment";
 import IReply from "../../../models/interfaces/reply";
 import IChat from "../../../models/interfaces/chat";
+<<<<<<< HEAD
 import INotification from "../../../models/interfaces/notification";
 import { ObjectId } from "mongoose";
+=======
+import IinternalUsers from "../../../models/interfaces/internalUser";
+>>>>>>> origin/u-dev
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 
@@ -67,6 +71,16 @@ export const transformUser = (user: IUser, loaders: any[]) => {
     ...rest,
     registerDate: dateToString(rest.registerDate),
     pollHistory: () => poll.loadMany(rest.pollHistory),
+  };
+};
+
+export const transformInternalUser = (
+  internaluser: IinternalUsers,
+  loaders: any[]
+) => {
+  const { password, ...rest } = internaluser._doc;
+  return {
+    ...rest,
   };
 };
 

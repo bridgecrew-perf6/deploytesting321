@@ -8,6 +8,7 @@ import {
   answerLoader,
   chatLoader,
   replyLoader,
+  internalUserLoader,
 } from "../../graphql/loaders";
 // import { pubsub } from "../../graphql/middleware/index";
 
@@ -20,7 +21,7 @@ interface NewPollForm {
   topic: string;
 }
 
-interface User {
+export interface User {
   _id: string;
   firstname?: string;
   lastname?: string;
@@ -40,17 +41,100 @@ interface User {
   pollHistory?: PollHistory[];
 }
 
+export interface Role {
+  name: string;
+  description?: string;
+  status: boolean;
+}
+
+export interface IinternalUser {
+  id: string;
+  email: string;
+  fullName: string;
+  jobTitle: string;
+  accessRole: string;
+  isActive: boolean;
+  password: string;
+}
+
+export interface SelectedRow {
+  _id: string;
+  email: string;
+  fullName: string;
+  jobTitle: string;
+  accessRole: string;
+  isActive: boolean;
+}
+
+export interface exportFile {
+  children: string;
+  onExport: Function;
+}
+
+export interface GetInternalUser {
+  getInternalUser: {
+    appToken: string;
+    internalUser: IinternalUser;
+  };
+}
+
+export interface validationErrorsAdmin {
+  emailErr: string;
+  passwordErr: string;
+}
+
+export interface adminUserDataForm {
+  _id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  homeAddress: string;
+  jobTitle: string;
+  accessRole: string;
+  groups: string;
+  lastSignIn: string;
+  isActive: boolean;
+}
+
+export interface masterCatType {
+  _id: string;
+  active: boolean;
+  selected: boolean;
+  name: string;
+  icon: HTMLElement;
+  subCategory: {
+    _id: string;
+    active: boolean;
+    selected: boolean;
+    name: string;
+    icon: HTMLElement;
+  }[];
+}
+
+export interface subCatType {
+  _id: string;
+  active: boolean;
+  selected: boolean;
+  name: string;
+  icon: HTMLElement;
+}
+
+export interface adminLeftSidebarType {
+  mastercategory: any;
+  setmastercategory: Function;
+}
+
 interface Follower {
   _id: String;
   appId: string;
   profilePic: string | undefined;
 }
 
-interface GetAppUser {
+export interface GetAppUser {
   getAppUserData: User;
 }
 
-interface MainUser {
+export interface MainUser {
   getUserData: {
     appToken: string;
     user: User;
@@ -106,7 +190,7 @@ interface PollHistory {
   chatMssgs?: ChatMessage[];
 }
 
-interface UserDataProps {
+export interface UserDataProps {
   getUserData: {
     appToken: string;
     user: User;
@@ -154,7 +238,8 @@ interface ApolloSeverContext {
     | ReturnType<typeof subTopicLoader>[]
     | ReturnType<typeof chatLoader>[]
     | ReturnType<typeof replyLoader>[]
-    | ReturnType<typeof answerLoader>[];
+    | ReturnType<typeof answerLoader>[]
+    | ReturnType<typeof internalUserLoader>;
   pubsub: PubSub;
 }
 
@@ -162,7 +247,7 @@ interface IHTMLElementForm extends HTMLElement {
   value?: string;
 }
 
-interface ResolverMap {
+export interface ResolverMap {
   [key: string]: {
     [key: string]: Resolver | SubscriptionResolver;
   };
@@ -197,6 +282,10 @@ interface AppMssg {
 interface IProps {
   title: string;
   children?: React.ReactNode;
+}
+
+interface NavProps {
+  title: string;
 }
 
 interface ITopic {
@@ -303,13 +392,13 @@ interface UserFavorites {
   favoriteAnswers: Answer[];
 }
 
-interface CategoryItems {
+interface AdminLeftSideBarCategoryItems {
   _id: string;
-  category: string;
-  // creator: string;
-  description: string;
+  name: string;
+  categoryOf: string;
+  haveCats: boolean;
   active: boolean;
-  linkedCats?: any;
+  selected: boolean;
 }
 
 interface PollsWindow {
