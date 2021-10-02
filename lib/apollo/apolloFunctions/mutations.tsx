@@ -13,6 +13,7 @@ import {
   PollHistory,
   User,
   UserDataProps,
+  UserNotification,
 } from "../../../components/appTypes/appType";
 import { initializeApollo } from "../../apollo";
 import GraphResolvers from "../apiGraphStrings";
@@ -27,6 +28,7 @@ const {
   GET_USERPOLLS,
   SHOW_VIEWS,
   GET_ACTIVE_CHATS,
+  GET_NOTIFICATIONS,
   GET_NEWEST_POLLS,
 } = GraphResolvers.queries;
 
@@ -351,6 +353,31 @@ export const addNewPoll = async (
         cache.writeQuery({
           query: GET_NEWEST_POLLS,
           data: { newestPolls: [...newestPolls, createPoll] },
+        });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updateNotifications = async (
+  updateNotificationFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: UserNotification[]
+) => {
+  try {
+    updateNotificationFunc({
+      variables: { details: JSON.stringify(details) },
+      update(cache, { data: { updateNotification } }) {
+        // const { notifications }: any = cache.readQuery({
+        //   query: GET_NOTIFICATIONS,
+        // });
+
+        cache.writeQuery({
+          query: GET_NOTIFICATIONS,
+          data: details,
         });
       },
     });

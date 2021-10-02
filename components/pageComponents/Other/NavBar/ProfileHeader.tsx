@@ -9,15 +9,17 @@ import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
 import NewPoll from "../../Home/NewPoll";
-import { UserDataProps } from "../../../appTypes/appType";
+import { UserDataProps, UserNotification } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
 import { AppLoadingLite } from "../Loading";
 import { ErrorToast } from "../Error/Toast";
+import { ToolTipCtr } from "../../../layout/customComps";
+import NotificationWindow from "./NotificationWindow";
 
-const { GET_USER, LOG_OUT } = GraphResolvers.queries;
+const { GET_USER, LOG_OUT, GET_NOTIFICATIONS } = GraphResolvers.queries;
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
 
 export default function ProfileHeader() {
@@ -25,9 +27,20 @@ export default function ProfileHeader() {
 
   const appContext = useAuth();
 
-  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
-  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
+  const [userNotifications, updateNotifications] = useState<UserNotification[]>(
+    []
+  );
+
+  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
+  const { data: notificationData, subscribeToMore } = useQuery(
+    GET_NOTIFICATIONS,
+    {
+      onCompleted: (res) => updateNotifications(res.notifications),
+    }
+  );
+
+  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
 
   useEffect(() => {
     getUser();
@@ -37,10 +50,30 @@ export default function ProfileHeader() {
     }
   }, [appContext, data]);
 
+  useEffect(() => {
+    if (data && notificationData && subscribeToMore) {
+      const userId = data.getUserData.user._id;
+      subscribeToMore({
+        document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData) return prev;
+          const newItem = subscriptionData.data.newNotification;
+
+          if (newItem.user._id !== userId) {
+            return Object.assign({}, prev, {
+              notifications: [...prev.notifications, newItem],
+            });
+          }
+          return prev;
+        },
+      });
+    }
+  }, [data, notificationData]);
+
   const NotificationIcon = notification ? (
-    <AiFillNotification size={24} color="#ff4d00" />
+    <AiFillNotification size={28} color="#ff4d00" />
   ) : (
-    <AiOutlineNotification size={24} color="#ff4d00" />
+    <AiOutlineNotification size={28} color="#ff4d00" />
   );
 
   const handleLogOut = () => {
@@ -64,6 +97,9 @@ export default function ProfileHeader() {
 
   if (data) {
     const { _id, appid, profilePic } = data.getUserData.user;
+    const unreadNotifications = notificationData?.notifications.filter(
+      (item: UserNotification) => !item.read
+    ).length;
 
     const superUserList = process.env.NEXT_PUBLIC_SUPERUSERS?.split("_");
 
@@ -85,14 +121,29 @@ export default function ProfileHeader() {
             <NewTopicBtn />
           </>
         )}
-        <div
-          className={styles.cursor}
-          onMouseEnter={() => toggleNotification(true)}
-          onMouseLeave={() => toggleNotification(false)}
+        <ToolTipCtr
+          mssg="Notifications"
+          position="bottom"
+          style={{ top: "35px", left: "50%" }}
         >
-          {NotificationIcon}
-        </div>
-
+          <div
+            className={`${styles.cursor} position-relative`}
+            onClick={() => toggleNotification(!notification)}
+          >
+            {NotificationIcon}
+            {!notification && unreadNotifications.length > 0 && (
+              <div className="position-absolute" style={{ top: -15, left: 20 }}>
+                <p
+                  className={`rounded-circle ${styles.appColor} text-white p-1 pl-2 pr-2`}
+                  style={{ fontSize: 13 }}
+                >
+                  {unreadNotifications}
+                </p>
+              </div>
+            )}
+          </div>
+        </ToolTipCtr>
+        {notification && <NotificationWindow data={userNotifications} />}
         <div>
           <ProfileImg
             profilePic={profilePic}

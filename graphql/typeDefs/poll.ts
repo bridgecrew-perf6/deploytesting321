@@ -39,6 +39,17 @@ export const pollTypeDefs = gql`
     rank: String
   }
 
+  type Notification {
+    _id: ID!
+    message: String!
+    read: Boolean
+    creationDate: String!
+    notificationType: String!
+    notificationId: String!
+    contentOwner: User!
+    user: User!
+  }
+
   type Comment {
     _id: ID!
     comment: String!
@@ -69,6 +80,7 @@ export const pollTypeDefs = gql`
     activeChats: [PollQuestion]
     pollsByTopic(topic: String!): [PollQuestion]
     pollsBySubTopic(subTopic: String!): [PollQuestion]
+    notifications: [Notification]
   }
 
   extend type Mutation {
@@ -82,9 +94,11 @@ export const pollTypeDefs = gql`
     ): Answer
     addAnswerRank(answerId: String!): String
     addView(pollId: String!): Int
+    updateNotification(details: String!): Notification
   }
 
   extend type Subscription {
     newAnswer(pollId: String!): Answer!
+    newNotification: Notification!
   }
 `;

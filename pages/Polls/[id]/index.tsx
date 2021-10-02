@@ -68,7 +68,7 @@ const Poll = ({ pollId }: Props) => {
   // //Component Mounted
 
   useEffect(() => {
-    updateViewCount(addView, pollId);
+    data && updateViewCount(addView, pollId);
   }, []);
 
   useEffect(() => {

@@ -13,6 +13,8 @@ import IAnswer from "../../../models/interfaces/answer";
 import IComment from "../../../models/interfaces/comment";
 import IReply from "../../../models/interfaces/reply";
 import IChat from "../../../models/interfaces/chat";
+import INotification from "../../../models/interfaces/notification";
+import { ObjectId } from "mongoose";
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 
@@ -122,7 +124,6 @@ export const transformSubTopic = (subTopic: ISubTopic, loaders: any[]) => {
 export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
   const { creator, poll, comment } = getLoader(loaders);
 
-
   return {
     ...answer._doc,
     _id: answer._doc._id,
@@ -133,30 +134,45 @@ export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
   };
 };
 
-export const transformComment = (comment: IComment, loaders: any[]) => {
-  const { creator, answer, reply } = getLoader(loaders);
+export const transformNotification = (
+  notification: INotification,
+  loaders: any[]
+) => {
+  const { creator } = getLoader(loaders);
 
   return {
-    ...comment._doc,
-    _id: comment.id,
-    creationDate: dateToString(comment.creationDate),
-    creator: () => creator.load(comment.creator),
-    answer: () => answer.load(comment.answer),
-    replies: () => reply.loadMany(comment.replies),
+    ...notification._doc,
+    _id: notification._doc._id,
+    creationDate: dateToString(notification._doc.creationDate),
+    user: () => creator.load(notification._doc.user),
+    contentOwner: creator.load(notification._doc.contentOwner),
   };
 };
 
-export const transformReply = (reply: IReply, loaders: any[]) => {
-  const { creator, comment } = getLoader(loaders);
+// export const transformComment = (comment: IComment, loaders: any[]) => {
+//   const { creator, answer, reply } = getLoader(loaders);
 
-  return {
-    ...reply._doc,
-    _id: reply.id,
-    creationDate: dateToString(reply.creationDate),
-    creator: () => creator.load(reply.creator),
-    comment: () => comment.load(reply.comment),
-  };
-};
+//   return {
+//     ...comment._doc,
+//     _id: comment.id,
+//     creationDate: dateToString(comment.creationDate),
+//     creator: () => creator.load(comment.creator),
+//     answer: () => answer.load(comment.answer),
+//     replies: () => reply.loadMany(comment.replies),
+//   };
+// };
+
+// export const transformReply = (reply: IReply, loaders: any[]) => {
+//   const { creator, comment } = getLoader(loaders);
+
+//   return {
+//     ...reply._doc,
+//     _id: reply.id,
+//     creationDate: dateToString(reply.creationDate),
+//     creator: () => creator.load(reply.creator),
+//     comment: () => comment.load(reply.comment),
+//   };
+// };
 
 export const getAppTokens = (id: string, res: Response) => {
   const accessToken = generateAccessToken(id);

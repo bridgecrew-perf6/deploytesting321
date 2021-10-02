@@ -7,12 +7,14 @@ import ISubTopic from "../../models/interfaces/subTopic";
 import IAnswer from "../../models/interfaces/answer";
 import IReply from "../../models/interfaces/reply";
 import IChat from "../../models/interfaces/chat";
+import INotification from "../../models/interfaces/notification";
 
 const getLoaderByDataType = (dataType: string) => {
   let loader: any;
 
   const {
     batchUsers,
+    batchNotifications,
     batchPolls,
     batchTopics,
     batchsubTopics,
@@ -25,6 +27,9 @@ const getLoaderByDataType = (dataType: string) => {
     case dataType == "user":
       loader = new DataLoader<string, IUser>(batchUsers);
       break;
+      case dataType == "user":
+        loader = new DataLoader<string, INotification>(batchNotifications);
+        break;
     case dataType == "poll":
       loader = new DataLoader<string, IPoll>(batchPolls);
       break;

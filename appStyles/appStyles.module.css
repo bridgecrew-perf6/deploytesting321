@@ -48,6 +48,10 @@
   height: 110px;
 }
 
+.ctrBxShadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
 .appbg_primary {
   background-color: #f4f4f4;
 }
@@ -93,13 +97,46 @@
 .dataWindow {
   margin: 10px 200px 10px 200px;
   width: 60vw;
-
 }
 
 .dataItem {
   border: 1px solid lightgray;
 }
 
+.notifItem:hover {
+  background-color: #f2f3f4;
+}
+
+.iconHover {
+  height: 35px;
+  width: 35px;
+  display: inline-block;
+}
+
+.iconHover:hover {
+  background-color: #ebebeb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.notifSubWindow {
+  width: 50%;
+  height: 20%;
+  background-color: white;
+  z-index: 1;
+}
+.notifSubWindow span {
+  width: 100%;
+  /* display: inline-block; */
+  cursor: pointer;
+  text-align: left;
+}
+
+.notifSubWindow span:hover {
+  background-color: #ebebeb;
+  border-radius: 10%;
+  /* display: inline-block; */
+}
 /* .itemToolTip_Top,
 .itemToolTip_Left {
   position: relative;
@@ -145,7 +182,6 @@
   border-style: solid;
   border-color: black transparent transparent transparent;
 } */
-
 
 .itemToolTip_Top:hover .tooltiptext {
   visibility: visible;
