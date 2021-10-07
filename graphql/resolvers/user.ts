@@ -17,6 +17,7 @@ import IUser from "../../models/interfaces/user";
 import { dateToString } from "../../components/globalFuncs";
 import IPoll from "../../models/interfaces/poll";
 import IAnswer from "../../models/interfaces/answer";
+import Poll from "../../models/PollModel";
 
 const { batchAnswers, batchPolls } = batchLoaders;
 
@@ -361,6 +362,118 @@ export const userResolvers: ResolverMap = {
         }
       } catch (err) {
         throw err;
+      }
+    },
+    updateTimeOnSite: async (parent, { seconds, userId }, ctx) => {
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please login to track time");
+      }
+      try {
+        const userTime = await User.findById(userId);
+        let dbHour = userTime.timeOnSite.hour;
+        let dbMin = userTime.timeOnSite.minutes;
+        let dbSec = userTime.timeOnSite.seconds;
+
+        if (dbMin >= 60) {
+          dbHour = dbHour + 1;
+          dbMin = 0;
+        }
+        if (seconds >= 60) {
+          dbMin = dbMin + 1;
+          dbSec = 0;
+        }
+        const user = await User.findByIdAndUpdate(userId, {
+          $set: {
+            "timeOnSite.hour": dbHour,
+            "timeOnSite.minutes": dbMin,
+            "timeOnSite.seconds": dbSec,
+          },
+        });
+        return user;
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    },
+
+    updateTimeSpentOnPoll: async (
+      parent,
+      { seconds, userId, pollId, hours, minutes },
+      ctx
+    ) => {
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please login to track time");
+      }
+      try {
+        const pollTime = await User.findById(userId);
+        let arr = [];
+        if (pollTime.timeSpentOnPoll.length === 0) {
+          arr.push({
+            poll: pollId,
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            pollCount: 1,
+          });
+          pollTime.timeSpentOnPoll = arr;
+          await pollTime.save();
+          return pollTime;
+        } else {
+          let pollToBeUpdated = {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            pollCount: 0,
+          };
+          const pollTime = await User.findById(userId);
+          pollTime.timeSpentOnPoll.map((t: any) => {
+            if (t.poll == pollId) {
+              pollToBeUpdated = t;
+            }
+          });
+          let dbHour = pollToBeUpdated.hours;
+          let dbMin = pollToBeUpdated.minutes;
+          let dbSec = pollToBeUpdated.seconds;
+          let pollCount = pollToBeUpdated.pollCount;
+
+          pollCount = pollCount + 1;
+
+          const user = await User.findOneAndUpdate(
+            { _id: userId, "timeSpentOnPoll.poll": pollId },
+            {
+              $set: {
+                "timeSpentOnPoll.$.poll": pollId,
+                "timeSpentOnPoll.$.hours": dbHour,
+                "timeSpentOnPoll.$.minutes": dbMin,
+                "timeSpentOnPoll.$.seconds": seconds,
+                "timeSpentOnPoll.$.pollCount": pollCount,
+              },
+            },
+            { new: true, upsert: true }
+          );
+          return user;
+        }
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    },
+
+    deletePollTimeCount: async (parent, { userId }, ctx) => {
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please login to track time");
+      }
+      try {
+        const pollTime = await User.findById(userId);
+        pollTime.timeSpentOnPoll = [];
+        await pollTime.save();
+        return "Deleted";
+      } catch (error: any) {
+        throw new Error(error.message);
       }
     },
   },

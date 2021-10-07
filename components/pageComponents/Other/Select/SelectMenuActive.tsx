@@ -44,7 +44,6 @@ const SelectMenuActive: React.FC<{
 
   const handleChangeActive = (newValue: any, actionMeta: any) => {
     console.group("Value Changed");
-    console.log(newValue);
     setUserDataForm({ ...userDataForm, isActive: newValue.value });
     console.groupEnd();
   };

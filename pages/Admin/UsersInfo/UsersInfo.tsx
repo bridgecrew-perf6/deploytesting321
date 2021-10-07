@@ -37,15 +37,7 @@ const UsersInfo = () => {
     pageEndIndex: 10,
   });
   // const { data, refetch, loading, error } = useQuery(GET_INTERNAL_USERS);
-  const { data, refetch, loading, error } = useQuery(
-    GET_INTERNAL_USERS_WITH_PAGINATION,
-    {
-      variables: {
-        offset: pagination.pageStartIndex,
-        limit: pagination.pageEndIndex,
-      },
-    }
-  );
+  const { data, refetch, loading, error } = useQuery(GET_INTERNAL_USERS);
 
   const {
     data: dataR,
@@ -65,21 +57,21 @@ const UsersInfo = () => {
       emailErr: "",
       passwordErr: "",
     });
-  const [UpdateInternalUser] = useMutation(
+  const [updateInternalUser, { loading: loadingUpdateUser }] = useMutation(
     GraphResolvers.mutations.UPDATE_INTERNAL_USER,
     {
-      refetchQueries: [{ query: GET_INTERNAL_USERS }],
+      refetchQueries: [
+        {
+          query: GET_INTERNAL_USERS,
+        },
+      ],
     }
   );
-  const [createNewInternalUser, { loading: loadingA, error: errorA }] =
+  const [createNewInternalUser, { loading: loadingCreateUser, error: errorA }] =
     useMutation(GraphResolvers.mutations.CREATE_INTERNAL_USER, {
       refetchQueries: [
         {
-          query: GET_INTERNAL_USERS_WITH_PAGINATION,
-          variables: {
-            offset: pagination.pageStartIndex,
-            limit: pagination.pageEndIndex,
-          },
+          query: GET_INTERNAL_USERS,
         },
       ],
     });
@@ -88,11 +80,7 @@ const UsersInfo = () => {
     useMutation(GraphResolvers.mutations.UPDATE_ACTIVE_USERS_TO_DISABLE, {
       refetchQueries: [
         {
-          query: GET_INTERNAL_USERS_WITH_PAGINATION,
-          variables: {
-            offset: pagination.pageStartIndex,
-            limit: pagination.pageEndIndex,
-          },
+          query: GET_INTERNAL_USERS,
         },
       ],
     });
@@ -101,11 +89,7 @@ const UsersInfo = () => {
     useMutation(GraphResolvers.mutations.UPDATE_DISABLE_USERS_TO_ACTIVE, {
       refetchQueries: [
         {
-          query: GET_INTERNAL_USERS_WITH_PAGINATION,
-          variables: {
-            offset: pagination.pageStartIndex,
-            limit: pagination.pageEndIndex,
-          },
+          query: GET_INTERNAL_USERS,
         },
       ],
     });
@@ -128,6 +112,9 @@ const UsersInfo = () => {
         dataField: "fullName",
         text: "Full Name",
         sort: true,
+        style: {
+          cursor: "pointer",
+        },
       },
       {
         dataField: "email",
@@ -163,16 +150,35 @@ const UsersInfo = () => {
     phoneNumber: "",
     homeAddress: "",
     jobTitle: "",
-    accessRole: "",
+    accessRole: {
+      value: "",
+      _id: "",
+    },
     groups: "",
     lastSignIn: "",
     isActive: false,
   });
-  const [pageValue, setPageValue] = useState("10");
 
   useEffect(() => {
     if (error) throw new Error(error.message);
-    if (!loading && data) setUsersData(data?.internalUsersWithPagination);
+    if (!loading && data) {
+      let updatedUser: any = [];
+      data?.internalUsers?.map((dR: any) => {
+        updatedUser.push({
+          _id: dR._id,
+          accessRole: dR.accessRole.role,
+          accessRoleId: dR.accessRole._id,
+          email: dR.email,
+          fullName: dR.fullName,
+          isActive: dR.isActive,
+          accessRoleStatus: dR.accessRole.status,
+          accessRolePrivileges: dR.accessRole.privileges,
+          jobTitle: dR.jobTitle,
+        });
+      });
+      let uniq: any = _.uniqBy(updatedUser, (x: any) => x.email);
+      setUsersData(uniq);
+    }
   }, [loading, data]);
 
   useEffect(() => {
@@ -182,8 +188,8 @@ const UsersInfo = () => {
       dataR.allRoles.map((dR: any) => {
         allroles.push({
           _id: dR._id,
-          value: dR.name,
-          label: dR.name,
+          value: dR.role,
+          label: dR.role,
           isDisabled: dR.status ? false : true,
         });
       });
@@ -195,13 +201,17 @@ const UsersInfo = () => {
   const changeTableRowData = (row: SelectedRow, rowIndex: number) => {
     setModelWorkingFor("updateUser");
     setShowUserEditModal(true);
+    console.log(row);
     setUserDataForm({
       ...userDataForm,
       _id: row?._id || "",
       fullName: row?.fullName || "",
       email: row?.email || "",
       jobTitle: row?.jobTitle || "",
-      accessRole: row?.accessRole || "",
+      accessRole: {
+        value: row?.accessRole || "",
+        _id: row?.accessRoleId || "",
+      },
       isActive: row?.isActive,
     });
   };
@@ -216,7 +226,10 @@ const UsersInfo = () => {
       fullName: "",
       email: "",
       jobTitle: "",
-      accessRole: "",
+      accessRole: {
+        value: "",
+        _id: "",
+      },
       isActive: false,
     });
   };
@@ -226,7 +239,7 @@ const UsersInfo = () => {
     console.log("I am clicked");
     const errors = emailValidation(userDataForm.email);
     console.log(errors);
-
+    console.log(userDataForm);
     if (errors === false) {
       setValidationErrors({
         ...validationErrors,
@@ -243,10 +256,9 @@ const UsersInfo = () => {
       };
       if (modelWorkingFor === "updateUser") {
         console.log(modelWorkingFor);
-        await updateInternalUserProfile(
-          UpdateInternalUser,
-          JSON.stringify(formInputs)
-        );
+        await updateInternalUser({
+          variables: { formInputs: JSON.stringify(formInputs) },
+        });
         setShowUserEditModal(false);
       } else {
         await createNewInternalUser({
@@ -255,11 +267,6 @@ const UsersInfo = () => {
         setShowUserEditModal(false);
       }
     }
-  };
-
-  const handlePagination = (number: number) => {
-    setPagination({ ...pagination, pageEndIndex: number });
-    setPageValue(number.toString());
   };
 
   const showActiveUsersData = () => (
@@ -275,8 +282,6 @@ const UsersInfo = () => {
           setSelectedRows={setSelectedRows}
           handleSelectedRowsDisable={handleSelectedRowsDisable}
           handleSelectedRowsActive={handleSelectedRowsActive}
-          handlePagination={handlePagination}
-          pageValue={pageValue}
         />
       )}
     </div>
@@ -363,6 +368,8 @@ const UsersInfo = () => {
         showUserEditModal={showUserEditModal}
         userRoles={roles}
         setShowUserEditModal={setShowUserEditModal}
+        loadingA={loadingCreateUser}
+        loadingB={loadingUpdateUser}
       />
       <IsActiveModal
         showActiveModal={showActiveModal}

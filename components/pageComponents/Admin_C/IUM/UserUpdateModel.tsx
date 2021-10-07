@@ -21,6 +21,8 @@ const UserUpdateModel: React.FC<{
   userDataForm: adminUserDataForm;
   setUserDataForm: Function;
   userRoles: Roles[];
+  loadingA: boolean;
+  loadingB: boolean;
 }> = (props) => {
   const {
     showUserEditModal,
@@ -32,6 +34,8 @@ const UserUpdateModel: React.FC<{
     userDataForm,
     setUserDataForm,
     userRoles,
+    loadingA,
+    loadingB,
   } = props;
 
   const accessRoles = [
@@ -129,7 +133,7 @@ const UserUpdateModel: React.FC<{
             <AdminPara text="Access-Role" />
             <SelectMenu
               options={roles}
-              selectedValue={userDataForm.accessRole}
+              selectedValue={userDataForm.accessRole.value}
               userDataForm={userDataForm}
               setUserDataForm={setUserDataForm}
             />
@@ -157,6 +161,7 @@ const UserUpdateModel: React.FC<{
               width={"9rem"}
               height={"2.5rem"}
               type="submit"
+              loading={loadingA || loadingB}
               title="Save User info"
               onClick={() => "f"}
             />
@@ -168,65 +173,3 @@ const UserUpdateModel: React.FC<{
 };
 
 export default UserUpdateModel;
-
-//  <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-//   <AdminPara text="Phone Number" />
-//   <UsersDataFormInput
-//     type="text"
-//     name="phoneNumber"
-//     validationErrors={validationErrors}
-//     value={userDataForm.phoneNumber}
-//     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-//       setUserDataForm({
-//         ...userDataForm,
-//         phoneNumber: e.target.value,
-//       });
-//     }}
-//   />
-// </div>
-// <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-//   <AdminPara text="Home Address" />
-//   <UsersDataFormInput
-//     type="text"
-//     required
-//     validationErrors={validationErrors}
-//     value={userDataForm.homeAddress}
-//     name="homeAddress"
-//     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-//       setUserDataForm({
-//         ...userDataForm,
-//         homeAddress: e.target.value,
-//       });
-//     }}
-//   />
-// </div>
-
-//    <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-//   <AdminPara text="Groups" />
-//   <UsersDataFormInput
-//     type="text"
-//     name="groups"
-//     validationErrors={validationErrors}
-//     value={userDataForm.groups}
-//     required
-//     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-//       setUserDataForm({ ...userDataForm, groups: e.target.value });
-//     }}
-//   />
-// </div>
-// <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-//   <AdminPara text="Last Sign-in" />
-//   <UsersDataFormInput
-//     type="text"
-//     required
-//     value={userDataForm.lastSignIn}
-//     validationErrors={validationErrors}
-//     name="lastSignIn"
-//     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-//       setUserDataForm({
-//         ...userDataForm,
-//         lastSignIn: e.target.value,
-//       });
-//     }}
-//   />
-// </div>

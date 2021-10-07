@@ -41,25 +41,6 @@ const adminData = [
         selected: false,
         icon: <RiAdminFill style={{ marginTop: "-0.35rem" }} />,
       },
-      {
-        _id: v4(),
-        name: "Remove access rights",
-        active: false,
-        selected: false,
-        icon: (
-          <HiUserRemove
-            style={{ marginTop: "-0.35rem", marginLeft: "-0.05rem" }}
-            size={17}
-          />
-        ),
-      },
-      {
-        _id: v4(),
-        name: "Edit access rights",
-        active: false,
-        selected: false,
-        icon: <FaUserEdit style={{ marginTop: "-0.35rem" }} />,
-      },
     ],
   },
   {

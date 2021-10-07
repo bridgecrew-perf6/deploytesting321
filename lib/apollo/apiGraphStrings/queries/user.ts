@@ -23,6 +23,17 @@ const userQueries = {
             favoriteId
             favoriteType
           }
+          timeOnSite {
+            hour
+            minutes
+            seconds
+          }
+          timeSpentOnPoll {
+            hours
+            minutes
+            seconds
+            pollCount
+          }
         }
       }
     }
@@ -69,6 +80,11 @@ const userQueries = {
           _id
           favoriteId
           favoriteType
+        }
+        timeOnSite {
+          hour
+          minutes
+          seconds
         }
       }
     }

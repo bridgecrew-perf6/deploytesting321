@@ -28,6 +28,7 @@ const RoleActionModal = (props: any) => {
       handleClose={handleCloseRoleModal}
       height={"3rem"}
       width={"8rem"}
+      footer={true}
       buttons={[
         {
           label: "Cancel",

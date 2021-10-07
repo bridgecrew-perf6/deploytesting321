@@ -1,3 +1,4 @@
+import { privilegeMongo } from "./../../models/interfaces/roleInterface";
 import { Request } from "express";
 import { PubSub } from "graphql-subscriptions";
 import {
@@ -12,6 +13,12 @@ import {
 } from "../../graphql/loaders";
 // import { pubsub } from "../../graphql/middleware/index";
 
+export interface siteTime {
+  hour: number;
+  minutes: number;
+  seconds: number;
+}
+
 interface ErrorMssg {
   message: string;
 }
@@ -19,6 +26,11 @@ interface ErrorMssg {
 interface NewPollForm {
   question: string;
   topic: string;
+}
+
+export interface timeOnPoll {
+  poll: string;
+  time: string;
 }
 
 export interface User {
@@ -39,12 +51,15 @@ export interface User {
   profilePic?: string;
   registerDate?: Date;
   pollHistory?: PollHistory[];
+  timeOnSite?: siteTime;
+  timeSpentOnSite: timeOnPoll[];
 }
 
 export interface Role {
-  name: string;
+  role: string;
   description?: string;
-  status: boolean;
+  status: string;
+  privileges: privilegeMongo;
 }
 
 export interface IinternalUser {
@@ -52,12 +67,13 @@ export interface IinternalUser {
   email: string;
   fullName: string;
   jobTitle: string;
-  accessRole: string;
+  accessRole: Role;
   isActive: boolean;
   password: string;
 }
 
 export interface SelectedRow {
+  accessRoleId: string;
   _id: string;
   email: string;
   fullName: string;
@@ -90,7 +106,10 @@ export interface adminUserDataForm {
   phoneNumber: string;
   homeAddress: string;
   jobTitle: string;
-  accessRole: string;
+  accessRole: {
+    value: string;
+    _id: string;
+  };
   groups: string;
   lastSignIn: string;
   isActive: boolean;

@@ -5,18 +5,25 @@ import userRightsStyles from "../../../../../appStyles/adminStyles/userRightsSty
 import GraphResolvers from "../../../../../lib/apollo/apiGraphStrings";
 import _ from "lodash";
 import RoleActionModal from "./RoleActionModal";
-import PrivilagesModal from "./PrivilagesModal";
+import ManageUserPrivileges from "./ManageUserPrivileges";
 import CreateRoleModal from "./CreateRoleModal";
-import { privilages } from "_components/index";
+import ManagePrivileges from "./ManagePrivileges";
+import CreatePrivelege from "./CreatePrivileges";
 
-const { GET_ALL_ROLES } = GraphResolvers.queries;
+const { GET_ALL_ROLES, GET_ALL_PRIVILEGES } = GraphResolvers.queries;
 
 interface rolesType {
-  name: string;
+  role: string;
   description: string;
   status: string;
   action: any;
-  privilages: string[];
+  privileges: string[];
+}
+
+export interface privilege {
+  _id?: any;
+  privilegeName: string;
+  privilegeStatus: boolean;
 }
 
 const ProvideAR = () => {
@@ -27,12 +34,64 @@ const ProvideAR = () => {
   const [selectedRole, setSelectedRole] = useState("");
   const [showPrivModal, setShowPrivModal] = useState(false);
   const [selectedRoleValue, setSelectedROleValue] = useState({});
-  const [privilagesData, setPrivilagesData] = useState(privilages);
+  const [allPrivileges, setAllPrivileges] = useState([]);
+  const [managePrivModal, setManagePrivModal] = useState(false);
+  const [actionOnPrivlige, setActionOnPrivilege] = useState();
   const [roleData, setRoleData] = useState({
-    name: "",
+    role: "",
     description: "",
   });
+  const [createPrivilegeModal, setCreatePrivilegeModal] = useState(false);
+  const [privelegeInfo, setPrivilegeInfo] = useState<privilege>({
+    privilegeName: "",
+    privilegeStatus: true,
+  });
   const [showCreateRoleModal, setShowCreateRoleModal] = useState(false);
+  const {
+    data: privilegesData,
+    refetch: pRefetch,
+    loading: privsLoading,
+  } = useQuery(GET_ALL_PRIVILEGES);
+
+  const [
+    deletePrivilege,
+    { loading: privDeleteLoading, error: pricDeleteError },
+  ] = useMutation(GraphResolvers.mutations.DELETE_PRIVILEGE, {
+    refetchQueries: [
+      {
+        query: GET_ALL_PRIVILEGES,
+      },
+    ],
+  });
+
+  const [
+    createNewPrivilege,
+    { loading: createPrivLoading, error: createPrivError },
+  ] = useMutation(GraphResolvers.mutations.CREATE_NEW_PRIVILEGE, {
+    refetchQueries: [
+      {
+        query: GET_ALL_PRIVILEGES,
+      },
+    ],
+  });
+
+  const [
+    updatePrivilege,
+    { loading: updatePrivLoading, error: updatePrivError },
+  ] = useMutation(GraphResolvers.mutations.UPDATE_PRIVILEGES, {
+    refetchQueries: [
+      {
+        query: GET_ALL_PRIVILEGES,
+      },
+    ],
+  });
+
+  useEffect(() => {
+    if (privilegesData && !privsLoading) {
+      setAllPrivileges(privilegesData.allPrivileges);
+    }
+  }, [privilegesData]);
+
   const [activateRole, { loading: loadingA, error: errorA }] = useMutation(
     GraphResolvers.mutations.ACTIVATE_ROLE,
     {
@@ -78,8 +137,8 @@ const ProvideAR = () => {
   const columnData = {
     columns: [
       {
-        dataField: "name",
-        text: "Name",
+        dataField: "role",
+        text: "Role",
         sort: true,
         events: {
           onClick: (
@@ -89,7 +148,7 @@ const ProvideAR = () => {
             row: any,
             rowIndex: number
           ) => {
-            setSelectedRole(row.name);
+            setSelectedRole(row.role);
             handleRolePrivilages(row);
           },
         },
@@ -107,6 +166,9 @@ const ProvideAR = () => {
       {
         dataField: "action",
         text: "Action",
+        style: {
+          cursor: "pointer",
+        },
         events: {
           onClick: (
             e: any,
@@ -115,13 +177,13 @@ const ProvideAR = () => {
             row: any,
             rowIndex: number
           ) => {
-            if (row.status === false) {
+            if (row.status === "Inactive") {
               setRoleLabelOnModal("Activate");
-              setSelectedRole(row.name);
+              setSelectedRole(row.role);
               handleRoleModal();
             } else {
               setRoleLabelOnModal("Deactivate");
-              setSelectedRole(row.name);
+              setSelectedRole(row.role);
               handleRoleModal();
             }
           },
@@ -129,37 +191,32 @@ const ProvideAR = () => {
       },
     ],
   };
-  console.log(rolesdata);
 
   const handleRolePrivilages = (row: any) => {
-    // console.log(row);
     setSelectedROleValue(row);
     setShowPrivModal(true);
   };
 
   const handleUpdatePrivilages = async () => {
-    console.log(selectedRole);
     let validatedPrivilages: any = [];
-    privilagesData.map((pd: any) => {
-      if (pd.active === true) {
-        validatedPrivilages.push(pd.name);
+    allPrivileges.map((pd: any) => {
+      if (pd.privilegeStatus === true) {
+        validatedPrivilages.push(pd._id);
       }
     });
-    console.log(validatedPrivilages);
     await updateRolePrivilages({
-      variables: { roleName: selectedRole, privilages: validatedPrivilages },
+      variables: { roleName: selectedRole, privileges: validatedPrivilages },
     });
     setShowPrivModal(false);
   };
 
   const handleCreateNewRole = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Creating new role");
     await createNewRole({
       variables: {
-        name: roleData.name,
+        role: roleData.role,
         description: roleData.description,
-        status: true,
+        status: "Active",
       },
     });
     setShowCreateRoleModal(false);
@@ -187,10 +244,25 @@ const ProvideAR = () => {
     setShowCreateRoleModal(false);
     setShowPrivModal(false);
     setShowRoleActionModal(false);
+    setManagePrivModal(false);
+  };
+
+  const handleCloseCreatePricModal = () => {
+    setCreatePrivilegeModal(false);
+  };
+
+  const handleSubmitCreatePrivilege = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    await createNewPrivilege({
+      variables: { privilegeName: privelegeInfo.privilegeName },
+    });
+    setCreatePrivilegeModal(false);
+    setPrivilegeInfo({ ...privelegeInfo, privilegeName: "" });
   };
 
   const activateRoleFunction = async () => {
-    console.log("Activating");
     await activateRole({
       variables: { roleName: selectedRole },
     });
@@ -198,12 +270,34 @@ const ProvideAR = () => {
   };
 
   const disableRoleFunction = async () => {
-    console.log("I am here");
-    console.log("Disabling");
     await disableRole({
       variables: { roleName: selectedRole },
     });
     setShowRoleActionModal(false);
+  };
+
+  const handleDeletePrivilege = async (_id: String) => {
+    await deletePrivilege({
+      variables: { _id: _id },
+    });
+    let updatedPriv = allPrivileges.filter((p: privilege) => {
+      return p._id !== _id;
+    });
+    setAllPrivileges(updatedPriv);
+  };
+
+  const handleUpdatePrivilege = async (
+    _id: string,
+    privName: string,
+    privStatus: boolean
+  ) => {
+    await updatePrivilege({
+      variables: {
+        privilegeId: _id,
+        privilegeName: privName,
+        privilegeStatus: privStatus,
+      },
+    });
   };
 
   useEffect(() => {
@@ -212,28 +306,29 @@ const ProvideAR = () => {
       let roles: rolesType[] = [];
       data?.allRoles.map((r: any) => {
         roles.push({
-          name: r.name,
+          role: r.role,
           description: r.description,
           status: r.status,
-          action: r.status ? (
-            <div
-              className="badge badge-pill badge-danger"
-              style={{ fontSize: 14, lineHeight: 1.5 }}
-            >
-              Click to Disable
-            </div>
-          ) : (
-            <div
-              className="badge badge-pill badge-primary "
-              style={{ fontSize: 14, lineHeight: 1.5 }}
-            >
-              Click to Enable
-            </div>
-          ),
-          privilages: r.privilages,
+          action:
+            r.status === "Active" ? (
+              <div
+                className="badge badge-pill badge-danger"
+                style={{ fontSize: 14, lineHeight: 1.5 }}
+              >
+                Click to Disable
+              </div>
+            ) : (
+              <div
+                className="badge badge-pill badge-primary "
+                style={{ fontSize: 14, lineHeight: 1.5 }}
+              >
+                Click to Enable
+              </div>
+            ),
+          privileges: r.privileges,
         });
       });
-      let uniq = _.uniqBy(roles, (x) => x.name);
+      let uniq = _.uniqBy(roles, (x) => x.role);
       setRolesData(uniq);
     }
   }, [data, loading]);
@@ -241,14 +336,22 @@ const ProvideAR = () => {
   return (
     <div className={userRightsStyles.userRightsWrapper}>
       <h1>Access Rights</h1>
-      <div style={{ marginTop: "1rem" }}></div>
-      <ButtonCustomWidth
-        height="2.5rem"
-        width="8rem"
-        type="text"
-        onClick={handleCreateModal}
-        title="Create new role"
-      />
+      <div className={userRightsStyles.upperButtons}>
+        <ButtonCustomWidth
+          height="2.5rem"
+          width="8rem"
+          type="text"
+          onClick={handleCreateModal}
+          title="Create new role"
+        />
+        <ButtonCustomWidth
+          height="2.5rem"
+          width="10rem"
+          type="text"
+          onClick={() => setManagePrivModal(true)}
+          title="Manage Privilege"
+        />
+      </div>
       <div className={userRightsStyles.tableWrapper}>{getTableOfRoles()}</div>
       <RoleActionModal
         handleCloseRoleModal={handleCloseRoleModal}
@@ -260,7 +363,7 @@ const ProvideAR = () => {
         loadingA={loadingA}
         loadingB={loadingB}
       />
-      <PrivilagesModal
+      <ManageUserPrivileges
         showPrivModal={showPrivModal}
         setShowPrivModal={setShowPrivModal}
         handleCloseRoleModal={handleCloseRoleModal}
@@ -268,8 +371,8 @@ const ProvideAR = () => {
         handleUpdatePrivilages={handleUpdatePrivilages}
         selectedRoleValue={selectedRoleValue}
         loadingD={loadingD}
-        privilagesData={privilagesData}
-        setPrivilagesData={setPrivilagesData}
+        allPrivileges={allPrivileges}
+        setAllPrivileges={setAllPrivileges}
       />
       <CreateRoleModal
         showCreateRoleModal={showCreateRoleModal}
@@ -280,6 +383,31 @@ const ProvideAR = () => {
         roleData={roleData}
         setRoleData={setRoleData}
         loadingC={loadingC}
+      />
+      <ManagePrivileges
+        managePrivModal={managePrivModal}
+        setManagePrivModal={setManagePrivModal}
+        handleCloseRoleModal={handleCloseRoleModal}
+        setCreatePrivilegeModal={setCreatePrivilegeModal}
+        actionOnPrivlige={actionOnPrivlige}
+        setActionOnPrivilege={setActionOnPrivilege}
+      />
+      <CreatePrivelege
+        privelegeInfo={privelegeInfo}
+        setPrivilegeInfo={setPrivilegeInfo}
+        createPrivilegeModal={createPrivilegeModal}
+        setCreatePrivilegeModal={setCreatePrivilegeModal}
+        handleSubmitCreatePrivilege={handleSubmitCreatePrivilege}
+        createPrivLoading={createPrivLoading}
+        createPrivError={createPrivError}
+        handleCloseCreatePricModal={handleCloseCreatePricModal}
+        actionOnPrivlige={actionOnPrivlige}
+        allPrivileges={allPrivileges}
+        setAllPrivileges={setAllPrivileges}
+        handleDeletePrivilege={handleDeletePrivilege}
+        privDeleteLoading={privDeleteLoading}
+        handleUpdatePrivilege={handleUpdatePrivilege}
+        updatePrivLoading={updatePrivLoading}
       />
     </div>
   );

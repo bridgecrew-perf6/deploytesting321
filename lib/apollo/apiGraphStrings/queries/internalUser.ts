@@ -8,7 +8,17 @@ const internalUserQueries = {
         email
         fullName
         isActive
-        accessRole
+        accessRole {
+          _id
+          role
+          description
+          status
+          privileges {
+            _id
+            privilegeName
+            privilegeStatus
+          }
+        }
         jobTitle
       }
     }
@@ -21,7 +31,17 @@ const internalUserQueries = {
         email
         fullName
         isActive
-        accessRole
+        accessRole {
+          _id
+          role
+          description
+          status
+          privileges {
+            _id
+            privilegeName
+            privilegeStatus
+          }
+        }
         jobTitle
       }
     }
@@ -34,7 +54,17 @@ const internalUserQueries = {
         email
         fullName
         isActive
-        accessRole
+        accessRole {
+          _id
+          role
+          description
+          status
+          privileges {
+            _id
+            privilegeName
+            privilegeStatus
+          }
+        }
         jobTitle
       }
     }
@@ -44,10 +74,14 @@ const internalUserQueries = {
     query AllRoles {
       allRoles {
         _id
-        name
+        role
         description
         status
-        privilages
+        privileges {
+          _id
+          privilegeName
+          privilegeStatus
+        }
       }
     }
   `,

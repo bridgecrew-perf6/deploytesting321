@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider, {
   Search,
@@ -17,6 +17,7 @@ import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.
 import { useReactToPrint } from "react-to-print";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import { exportFile, SelectedRow } from "_components/index";
+import _ from "lodash";
 
 const Table: React.FC<{
   columndata: any;
@@ -26,8 +27,6 @@ const Table: React.FC<{
   setSelectedRows: Function;
   handleSelectedRowsActive: Function;
   handleSelectedRowsDisable: Function;
-  handlePagination: Function;
-  pageValue: string;
 }> = (props) => {
   const { SearchBar } = Search;
   const { ExportCSVButton } = CSVExport;
@@ -42,8 +41,6 @@ const Table: React.FC<{
     setSelectedRows,
     handleSelectedRowsActive,
     handleSelectedRowsDisable,
-    handlePagination,
-    pageValue,
   } = props;
 
   const customTotal = (from: number, to: number, size: number) => (
@@ -79,7 +76,7 @@ const Table: React.FC<{
 
   const options = {
     paginationSize: 5,
-    pageStartIndex: 0,
+    pageStartIndex: 1,
     alwaysShowAllBtns: true, // Always show next and previous button
     // withFirstAndLast: false, // Hide the going to First and Last page button
     // hideSizePerPage: true, // Hide the sizePerPage dropdown always
@@ -129,6 +126,7 @@ const Table: React.FC<{
 
   const tableRowEvents = {
     onClick: (e: any, row: SelectedRow, rowIndex: number) => {
+      console.log(row);
       changetablerowdata(row, rowIndex);
     },
   };
@@ -186,7 +184,7 @@ const Table: React.FC<{
                 <AdminButton
                   style={{ boxShadow: "none" }}
                   module="disable"
-                  title="Active"
+                  title="Activate"
                   onClick={handleSelectedRowsActive}
                 />
                 <AdminButton
@@ -236,14 +234,6 @@ const Table: React.FC<{
               tabIndexCell
               filter={filterFactory()}
             />
-            <div style={{ display: "flex" }}>
-              <h6 style={{ marginTop: ".5rem", marginRight: ".5rem" }}>Show</h6>
-              <SelectPagination
-                options={optionsPagination}
-                handlePagination={handlePagination}
-                pageValue={pageValue}
-              />
-            </div>
             {!exportButton && (
               <div style={{ margin: "1rem 0rem" }}>
                 <ButtonCustomWidth

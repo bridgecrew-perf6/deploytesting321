@@ -20,9 +20,8 @@ const internalUsersSchema: Schema = new Schema({
     required: true,
   },
   accessRole: {
-    type: String,
-    // type: Schema.Types.ObjectId,
-    // ref: "RolesSchema",
+    type: Schema.Types.ObjectId,
+    ref: "RolesSchema",
   },
   isActive: {
     type: Boolean,

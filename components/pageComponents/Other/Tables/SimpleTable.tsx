@@ -9,7 +9,7 @@ const SimpleTable = (props: any) => {
       <BootstrapTable
         {...props.baseProps}
         bootstrap4
-        keyField="name"
+        keyField="role"
         data={rolesdata}
         columns={columndata}
         rowStyle={{
