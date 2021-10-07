@@ -6,7 +6,8 @@ export const rolesResolver: ResolverMap = {
   Query: {
     allRoles: async (parent, args, context) => {
       try {
-        const roles = await RolesSchema.find();
+        const roles = await RolesSchema.find().populate("privileges");
+        console.log(roles);
         return roles;
       } catch (error: any) {
         throw new Error(error.message);
@@ -23,7 +24,8 @@ export const rolesResolver: ResolverMap = {
       }
       try {
         console.log("Deleting all roles");
-        await RolesSchema.deleteMany({ status: status });
+
+        await RolesSchema.remove({});
         return "delete all data";
       } catch (error: any) {
         throw new Error(error.message);
@@ -40,10 +42,10 @@ export const rolesResolver: ResolverMap = {
         console.log("Selected Role => ", roleName);
         console.log("From activate");
         const role = await RolesSchema.findOneAndUpdate(
-          { name: roleName },
+          { role: roleName },
           {
             $set: {
-              status: true,
+              status: "Active",
             },
           }
         );
@@ -64,10 +66,10 @@ export const rolesResolver: ResolverMap = {
         console.log("From Deactivate");
 
         const role = await RolesSchema.findOneAndUpdate(
-          { name: roleName },
+          { role: roleName },
           {
             $set: {
-              status: false,
+              status: "Inactive",
             },
           }
         );
@@ -79,41 +81,48 @@ export const rolesResolver: ResolverMap = {
 
     createNewRole: async (
       parent,
-      { name, description, status, privilages },
+      { role, description, status, privileges },
       context
     ) => {
+      console.log("Creating role => ", role);
       try {
-        let existingRole: roleInterface;
+        let existingRole;
         existingRole = await RolesSchema.findOne({
-          name: name,
+          role: role,
         });
         if (existingRole) {
           throw new Error("Role with this name already exist");
         }
-        let lowerCase = name.toLowerCase();
+        let lowerCase = role.toLowerCase();
+        console.log("Lowercase => ", lowerCase);
+        console.log(privileges);
         const newRole: roleInterface = new RolesSchema({
-          name: lowerCase,
+          role: lowerCase,
           description: description,
           status: status,
-          privilages: privilages,
+          privileges: privileges,
         });
-        const role = await newRole.save();
-        return role;
+        console.log(newRole);
+        const roleCreated = await newRole
+          .save()
+          .then((r) => r.populate("privileges").execPopulate());
+        return roleCreated;
       } catch (error: any) {
         throw new Error(error.message);
       }
     },
 
-    updateRolePrivilages: async (parent, { roleName, privilages }, context) => {
+    updateRolePrivilages: async (parent, { roleName, privileges }, context) => {
+      console.log(roleName, privileges);
       try {
         const updatedRole = await RolesSchema.findOneAndUpdate(
-          { name: roleName },
+          { role: roleName },
           {
             $set: {
-              privilages: privilages,
+              privileges: privileges,
             },
           }
-        );
+        ).populate("privileges");
         console.log(updatedRole);
         return updatedRole;
       } catch (error: any) {

@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import PrivilegesInterface from "./privilegesInterface";
 
 interface MongoDoc extends Document {
   _doc: any;
@@ -6,8 +7,14 @@ interface MongoDoc extends Document {
 
 export default interface RoleInterface extends MongoDoc {
   _id: string;
-  name: string;
+  role: string;
   description: string;
-  status: Boolean;
-  privilages?: [String];
+  status: String;
+  privileges?: [privilegeMongo];
+}
+
+export interface privilegeMongo {
+  _id: string;
+  privilegeName?: string;
+  privilegeStatus?: string;
 }

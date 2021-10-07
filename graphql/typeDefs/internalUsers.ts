@@ -1,13 +1,11 @@
 import { gql } from "apollo-server-micro";
 
-const privilages = [];
-
 export const internalUserTypeDefs = gql`
   type InternalUser {
     _id: ID!
     fullName: String!
     email: String!
-    accessRole: String!
+    accessRole: Role
     isActive: Boolean!
     password: String!
     jobTitle: String!
@@ -15,10 +13,10 @@ export const internalUserTypeDefs = gql`
 
   type Role {
     _id: ID!
-    name: String!
+    role: String!
     description: String
-    status: Boolean!
-    privilages: [String]
+    status: String!
+    privileges: [Privilege]
   }
 
   extend type Query {
@@ -32,15 +30,16 @@ export const internalUserTypeDefs = gql`
     activateRole(roleName: String!): Role!
     disableRole(roleName: String!): Role!
     createNewRole(
-      name: String!
+      role: String!
       description: String!
-      status: Boolean!
-      privilages: [String]
+      status: String!
+      privileges: [String]
     ): Role!
-    deleteAllRoles(status: Boolean!): String!
-    updateRolePrivilages(roleName: String!, privilages: [String]!): Role!
+    deleteAllRoles: String!
+    updateRolePrivilages(roleName: String!, privileges: [String]): Role!
     createNewInternalUser(formInputs: String!): InternalUser!
-    updateInternalUser(formInputs: String!): String!
+    deletAllInternalUsers: String!
+    updateInternalUser(formInputs: String!): InternalUser!
     updateActiveUsersToDisable(userId: String!): InternalUser!
     updateDisableUsersToActive(userId: String!): InternalUser!
   }

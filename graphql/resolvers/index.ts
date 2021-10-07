@@ -6,6 +6,7 @@ import { chatResolvers } from "./chat";
 import { otherResolvers } from "./other";
 import { internalUsersResolver } from "./internalUser";
 import { rolesResolver } from "./roleResolver";
+import { privilegesResolver } from "./privilegesResolver";
 
 const resolvers = [
   userResolvers,
@@ -16,6 +17,7 @@ const resolvers = [
   otherResolvers,
   internalUsersResolver,
   rolesResolver,
+  privilegesResolver,
 ];
 
 export default resolvers;

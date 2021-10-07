@@ -16,20 +16,22 @@ const Model = (props: any) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>{props.children}</Modal.Body>
-      <Modal.Footer>
-        {props.buttons &&
-          props.buttons.map((btn: any, index: any) => (
-            <Button
-              style={{ width: props.width, height: props.height }}
-              key={index}
-              variant={btn.color}
-              onClick={btn.onClick}
-              type={btn.type}
-            >
-              {btn.label}
-            </Button>
-          ))}
-      </Modal.Footer>
+      {props.footer ? (
+        <Modal.Footer>
+          {props.buttons &&
+            props.buttons.map((btn: any, index: any) => (
+              <Button
+                style={{ width: props.width, height: props.height }}
+                key={index}
+                variant={btn.color}
+                onClick={btn.onClick}
+                type={btn.type}
+              >
+                {btn.label}
+              </Button>
+            ))}
+        </Modal.Footer>
+      ) : null}
     </Modal>
   );
 };

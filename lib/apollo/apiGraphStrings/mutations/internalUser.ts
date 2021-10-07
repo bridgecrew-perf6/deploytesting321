@@ -15,7 +15,9 @@ const internalUserMutations = {
   `,
   UPDATE_INTERNAL_USER: gql`
     mutation UpdateInternalUser($formInputs: String!) {
-      updateInternalUser(formInputs: $formInputs)
+      updateInternalUser(formInputs: $formInputs) {
+        _id
+      }
     }
   `,
   DELETE_INTERNAL_USER: gql`
@@ -39,16 +41,16 @@ const internalUserMutations = {
   `,
   CREATE_NEW_ROLE: gql`
     mutation CreateNewRole(
-      $name: String!
+      $role: String!
       $description: String!
-      $status: Boolean!
-      $privilages: [String]
+      $status: String!
+      $privileges: [String]
     ) {
       createNewRole(
-        name: $name
+        role: $role
         description: $description
         status: $status
-        privilages: $privilages
+        privileges: $privileges
       ) {
         _id
       }
@@ -56,8 +58,8 @@ const internalUserMutations = {
   `,
 
   UPDATE_ROLE_PRIVILAGES: gql`
-    mutation UpdateRolePrivilages($roleName: String!, $privilages: [String]!) {
-      updateRolePrivilages(roleName: $roleName, privilages: $privilages) {
+    mutation UpdateRolePrivilages($roleName: String!, $privileges: [String]!) {
+      updateRolePrivilages(roleName: $roleName, privileges: $privileges) {
         _id
       }
     }

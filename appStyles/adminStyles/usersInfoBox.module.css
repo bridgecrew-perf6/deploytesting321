@@ -3,7 +3,7 @@
 }
 
 .adminContentWrapper {
-  margin-left: 18rem;
+  margin-left: 18.8rem;
   transition: all 2s;
 }
 
@@ -131,7 +131,25 @@
 
 .userInfoBox__input:focus {
   outline: none;
-  border: 3px solid #555;
+  border: 2px solid #555;
+}
+
+.userInfoBox__inputError {
+  width: 60%;
+  height: 35px;
+  text-align: left;
+  border: 1px solid #d33354;
+  background-color: #fee0e0 !important;
+  margin-bottom: 10px;
+  padding: 8px 15px;
+  outline: none;
+  transition: 0.5s;
+  font-size: 14px;
+}
+
+.userInfoBox__inputError:focus {
+  outline: none;
+  border: 1px solid #d33354;
 }
 
 .userInfoBox__textArea {
@@ -223,4 +241,45 @@
   right: 0px !important;
   display: flex;
   justify-content: space-between;
+}
+
+.managePrivilegesIconsWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.onlyIconButton {
+  background: transparent;
+  background-color: #ffb631;
+  color: black;
+  font-size: medium;
+  align-items: center;
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.onlyIconButton:hover {
+  color: #ffb631;
+  background-color: white;
+  border: 2px solid #ffb631;
+}
+
+.buttonWithBlueBack {
+  background: transparent;
+  background-color: #345995;
+  color: white;
+  align-items: center;
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+  transition: all 0.3s ease-in-out;
+  padding: 0 !important;
+}
+
+.buttonWithBlueBack:hover {
+  color: #345995;
+  background-color: white;
+  border: 2px solid #345995;
 }

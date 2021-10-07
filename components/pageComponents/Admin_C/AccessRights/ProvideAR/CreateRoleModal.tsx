@@ -25,7 +25,7 @@ const CreateRoleModal = (props: any) => {
     <Model
       show={showCreateRoleModal}
       size="md"
-      modalTitle={"Caution!"}
+      modalTitle={"Create Role"}
       handleClose={handleCloseRoleModal}
       height={"3rem"}
       width={"10rem"}
@@ -34,16 +34,16 @@ const CreateRoleModal = (props: any) => {
       <form onSubmit={handleCreateNewRole}>
         <div className={usersInfoBox.userInfoBox__inputWrapper}>
           <div className={usersInfoBox.userInfoBox__singleInputWrapper}>
-            <AdminPara text="Name" />
+            <AdminPara text="Role" />
             <UsersDataFormInput
               type="text"
               required={true}
-              name="name"
-              value={roleData.name}
+              name="role"
+              value={roleData.role}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setRoleData({
                   ...roleData,
-                  name: e.currentTarget.value,
+                  role: e.currentTarget.value,
                 });
               }}
             />

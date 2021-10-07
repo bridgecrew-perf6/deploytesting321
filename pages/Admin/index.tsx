@@ -3,7 +3,7 @@ import { SitePageContainer, adminData } from "_components/index";
 import {
   EditAR,
   LeftSideBar,
-  // Metrics,
+  Metrics,
   ProvideAR,
   RemoveAR,
 } from "_pageComponents/index";
@@ -32,7 +32,7 @@ const index = () => {
               </React.Fragment>
             ) : lsc.name === "Metrics" && lsc.selected === true ? (
               <React.Fragment key={index}>
-                <h3>I am from metrics</h3>
+                <Metrics />
               </React.Fragment>
             ) : (
               lsc?.subCategory &&

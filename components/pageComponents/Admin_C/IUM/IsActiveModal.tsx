@@ -30,6 +30,7 @@ const IsActiveModal: React.FC<{
       modalTitle={"Caution!"}
       handleClose={handleCloseIsActiveModal}
       height={"3rem"}
+      footer={true}
       width={"8rem"}
       buttons={[
         {

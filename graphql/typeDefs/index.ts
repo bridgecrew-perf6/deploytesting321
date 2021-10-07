@@ -5,6 +5,7 @@ import { chatTypeDefs } from "./chat";
 import { otherTypeDefs } from "./other";
 import { rootTypeDefs } from "./root";
 import { internalUserTypeDefs } from "./internalUsers";
+import { privilegeTypeDef } from "./privilegeTypeDef";
 
 const typeDefs = [
   rootTypeDefs,
@@ -14,6 +15,7 @@ const typeDefs = [
   chatTypeDefs,
   otherTypeDefs,
   internalUserTypeDefs,
+  privilegeTypeDef,
 ];
 
 export default typeDefs;

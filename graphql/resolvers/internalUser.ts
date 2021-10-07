@@ -9,9 +9,17 @@ export const internalUsersResolver: ResolverMap = {
   Query: {
     internalUsers: async (parent, args, context) => {
       try {
-        const internaluser = InternalUsers.find().select(
-          "_id email fullName accessRole jobTitle isActive"
-        );
+        const internaluser = InternalUsers.find()
+          .select("_id email fullName accessRole jobTitle isActive")
+          .populate({
+            path: "accessRole",
+            populate: [
+              {
+                path: "privileges",
+                model: "PrivilegesSchema",
+              },
+            ],
+          });
         return internaluser;
       } catch (error: any) {
         throw new Error(error);
@@ -24,7 +32,16 @@ export const internalUsersResolver: ResolverMap = {
         const internaluser = InternalUsers.find()
           .limit(limit)
           .skip(offset)
-          .select("_id email fullName accessRole jobTitle isActive");
+          .select("_id email fullName accessRole jobTitle isActive")
+          .populate({
+            path: "accessRole",
+            populate: [
+              {
+                path: "privileges",
+                model: "PrivilegesSchema",
+              },
+            ],
+          });
         return internaluser;
       } catch (error: any) {
         throw new Error(error);
@@ -34,7 +51,15 @@ export const internalUsersResolver: ResolverMap = {
     getInternalUser: async (parent, { userId }, context) => {
       const { isAuth, req, res, dataLoaders } = context;
       const { auth, id } = isAuth;
-      const user = await InternalUsers.findOne({ _id: userId });
+      const user = await InternalUsers.findOne({ _id: userId }).populate({
+        path: "accessRole",
+        populate: [
+          {
+            path: "privileges",
+            model: "PrivilegesSchema",
+          },
+        ],
+      });
       if (user) {
         const userData = transformInternalUser(user, dataLoaders(["poll"]));
         userData.isAppUser = id === String(user._id);
@@ -56,6 +81,7 @@ export const internalUsersResolver: ResolverMap = {
         const hashPW = await bcrypt.hash(formObj.email, 12);
         const internaluser: IinternalUsers = new InternalUsers({
           ...formObj,
+          accessRole: formObj.accessRole._id,
           password: hashPW,
         });
         const saveInternalUserResult = await internaluser.save();
@@ -76,13 +102,35 @@ export const internalUsersResolver: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
       try {
-        await InternalUsers.findByIdAndUpdate(
+        const updatedUser = await InternalUsers.findByIdAndUpdate(
           { _id: formObj.id },
           {
             ...formObj,
+            accessRole: formObj.accessRole._id,
           },
           { new: true, upsert: true }
         );
+        return updatedUser;
+      } catch (error: any) {
+        throw new Error(error);
+      }
+    },
+
+    deletAllInternalUsers: async (parent, { roleId }, ctx) => {
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please Log In!");
+      }
+      try {
+        await InternalUsers.remove({});
+        //  const u = await InternalUsers.updateMany(
+        //    {
+        //      $set: {
+        //        accessRole: "roleId,
+        //      },
+        //    }
+        //  );
 
         return "User updated";
       } catch (error: any) {

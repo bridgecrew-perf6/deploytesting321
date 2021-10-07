@@ -2,19 +2,21 @@ import React from "react";
 import { Spinner } from "react-bootstrap";
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
-const ButtonCustomWidth = (props: any) => {
-  const { width, height, onClick, title, type, disabled, loading } = props;
+const ButtonWithBlueBack = (props: any) => {
+  const { width, height, onClick, title, type, disabled, margin, loading } =
+    props;
   return (
     <button
-      style={{ width: width, height: height }}
+      style={{ width: width, height: height, margin: margin }}
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={usersInfoBox.buttonCustomWIdth}
+      className={usersInfoBox.buttonWithBlueBack}
     >
       {loading ? <Spinner animation="grow" variant="secondary" /> : title}
     </button>
   );
 };
 
-export default ButtonCustomWidth;
+export default ButtonWithBlueBack;
+// 345995;

@@ -10,6 +10,14 @@ interface Favorites {
   favoriteId: string;
 }
 
+interface pollTime {
+  _id: string;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  pollCount: number;
+}
+
 export default interface IUser extends MongoDoc {
   email: string;
   appid: string;
@@ -29,4 +37,10 @@ export default interface IUser extends MongoDoc {
   pollHistory: string[];
   imgHistory: string[];
   favorites: Favorites[];
+  timeOnSite?: {
+    hour: number;
+    minutes: number;
+    seconds: number;
+  };
+  timeSpentOnPoll?: pollTime[];
 }

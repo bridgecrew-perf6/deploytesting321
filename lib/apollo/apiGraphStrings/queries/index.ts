@@ -4,6 +4,7 @@ import otherQueries from "./other";
 import topicQueries from "./topics";
 import pollFeedBackQueries from "./pollFeedback";
 import internalUserQueries from "./internalUser";
+import privilegeQueries from "./privilegesQueries";
 
 export default {
   ...userQueries,
@@ -12,4 +13,5 @@ export default {
   ...pollFeedBackQueries,
   ...otherQueries,
   ...internalUserQueries,
+  ...privilegeQueries,
 };
