@@ -14,12 +14,8 @@ import {
   IinternalUser,
   User,
   UserDataProps,
-<<<<<<< HEAD:lib/apollo/apolloFunctions/mutations.tsx
   UserNotification,
 } from "../../../components/appTypes/appType";
-=======
-} from "_components/index";
->>>>>>> origin/u-dev:lib/apollo/apolloFunctions/userMutations.tsx
 import { initializeApollo } from "../../apollo";
 import GraphResolvers from "../apiGraphStrings";
 
@@ -33,12 +29,7 @@ const {
   GET_USERPOLLS,
   SHOW_VIEWS,
   GET_ACTIVE_CHATS,
-<<<<<<< HEAD:lib/apollo/apolloFunctions/mutations.tsx
   GET_NOTIFICATIONS,
-=======
-  GET_ALL_USERS,
-  GET_SINGLE_INTERNAL_USER,
->>>>>>> origin/u-dev:lib/apollo/apolloFunctions/userMutations.tsx
   GET_NEWEST_POLLS,
 } = GraphResolvers.queries;
 

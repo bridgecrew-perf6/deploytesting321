@@ -41,7 +41,7 @@ const NavBar: React.FC<NavProps> = (props) => {
         </a>
       </Link>
       <SearchBar search={goToSearch} style={{ width: "48%" }} />
-      <ProfileHeader title={title} />
+      <ProfileHeader />
     </nav>
   );
 };

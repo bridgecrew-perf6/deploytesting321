@@ -7,11 +7,8 @@ import Chat from "../../models/chatModel";
 import Reply from "../../models/replyModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
-<<<<<<< HEAD
 import Notification from "../../models/notificationModel";
-=======
 import IinternalUsers from "../../models/interfaces/internalUser";
->>>>>>> origin/u-dev
 import IPoll from "../../models/interfaces/poll";
 import IUser from "../../models/interfaces/user";
 import ITopic from "../../models/interfaces/topic";
@@ -128,10 +125,7 @@ export default {
   batchsubTopics,
   batchAnswers,
   batchChats,
-<<<<<<< HEAD
   batchNotifications,
-=======
   batchInternalUsers,
->>>>>>> origin/u-dev
   // batchReplies,
 };

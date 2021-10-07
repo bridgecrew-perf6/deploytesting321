@@ -13,12 +13,9 @@ import IAnswer from "../../../models/interfaces/answer";
 import IComment from "../../../models/interfaces/comment";
 import IReply from "../../../models/interfaces/reply";
 import IChat from "../../../models/interfaces/chat";
-<<<<<<< HEAD
 import INotification from "../../../models/interfaces/notification";
 import { ObjectId } from "mongoose";
-=======
 import IinternalUsers from "../../../models/interfaces/internalUser";
->>>>>>> origin/u-dev
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 

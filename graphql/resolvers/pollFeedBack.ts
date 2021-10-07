@@ -151,8 +151,6 @@ export const feedBackResolvers: ResolverMap = {
           //update
           { $set: { read: true } }
         );
-
-        console.log(notifications);
       } catch (err) {
         throw err;
       }

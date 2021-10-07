@@ -7,6 +7,7 @@ import {
   addNewAnswer,
   addNewChatMssg,
   addNewPoll,
+  updateNotifications,
 } from "./userMutations";
 
 import { updateInternalUserProfile } from "./internalUserMutations";
@@ -20,5 +21,6 @@ export {
   addNewAnswer,
   addNewChatMssg,
   addNewPoll,
+  updateNotifications,
   updateInternalUserProfile,
 };

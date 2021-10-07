@@ -9,7 +9,7 @@ import { BsThreeDots } from "react-icons/bs";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation } from "@apollo/client";
 import { FaRegCheckCircle } from "react-icons/fa";
-import { updateNotifications } from "../../../../lib/apollo/apolloFunctions/mutations";
+import { updateNotifications } from "../../../../lib/apollo/apolloFunctions";
 
 const {
   appColor,
@@ -40,7 +40,7 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
     });
   };
 
-  const changeNotifications = (changeType: string) => {
+  const changeNotifications = (changeType: string, changeId: string = "") => {
     let updatedData: UserNotification[] = [];
 
     if (changeType === "all") {
@@ -49,8 +49,36 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
       });
     }
 
+    if (changeType !== "all" && changeId) {
+      const matchIdx = data.findIndex((item) => item._id === changeId);
+
+      updatedData = data.map((item, idx) => {
+        if (idx === matchIdx) {
+          return { ...item, read: true };
+        }
+        return item;
+      });
+    }
+
     updateNotifications(modifyNotifications, updatedData);
   };
+
+  // return (
+  //   <div
+  //     className="modal fade"
+  //     id="notifWindow"
+  //     aria-labelledby="notifWindowLabel"
+  //     aria-hidden="true"
+  //     tabIndex={-1}
+  //   >
+  //     <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+  //       <div className="modal-content">
+  //         <h5 className={formTxt}>Notifications</h5>
+  //         <div className="modal-body">Test</div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <div
@@ -71,7 +99,12 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
       <Scrollbars style={{ width: "100%", height: "95%" }}>
         <div className="mt-2">
           {data.map((item) => (
-            <NotificationItem key={item._id} data={item} nav={goToRoute} />
+            <NotificationItem
+              key={item._id}
+              data={item}
+              nav={goToRoute}
+              changeNotification={changeNotifications}
+            />
           ))}
         </div>
       </Scrollbars>
@@ -123,9 +156,14 @@ const NotifSubWindow = ({ update }: NotifSubWindow) => {
 interface NotificationItem {
   data: UserNotification;
   nav: (id: string) => void;
+  changeNotification: (changeType: string, changeId: string) => void;
 }
 
-const NotificationItem = ({ data, nav }: NotificationItem) => {
+const NotificationItem = ({
+  data,
+  nav,
+  changeNotification,
+}: NotificationItem) => {
   const imgIcon = data.user.profilePic ? (
     <img
       src={data.user.profilePic}
@@ -158,7 +196,7 @@ const NotificationItem = ({ data, nav }: NotificationItem) => {
 
       {!data.read && (
         <span
-          onClick={() => console.log("triggered")}
+          onClick={() => changeNotification("", data._id)}
           className={`rounded-circle ${appColor} mr-2`}
           style={{ height: 14, width: 15, cursor: "pointer" }}
         />

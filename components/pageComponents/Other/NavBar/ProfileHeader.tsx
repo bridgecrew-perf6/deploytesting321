@@ -2,25 +2,17 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { IoPersonCircle } from "react-icons/io5";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import styles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
-import {
-  AiOutlineNotification,
-  AiFillNotification,
-  AiFillMessage,
-  AiOutlineMessage,
-} from "react-icons/ai";
-import NewPoll from "../../Home/NewPoll";
+import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
 import { UserDataProps, UserNotification } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
 import { AppLoadingLite } from "../Loading";
-import { ErrorToast } from "../Error/Toast";
 import { ToolTipCtr } from "../../../layout/customComps";
 import NotificationWindow from "./NotificationWindow";
 
