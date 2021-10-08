@@ -23,23 +23,23 @@ export const userTypeDefs = gql`
     pollHistory: [PollQuestion!]
     favorites: [Favorite]
     following: [Following]
-    timeOnSite: siteTime
-    timeSpentOnPoll: [timeOnPoll]
+    # timeOnSite: siteTime
+    # timeSpentOnPoll: [timeOnPoll]
   }
 
-  type timeOnPoll {
-    _id: ID!
-    hours: Int
-    minutes: Int
-    seconds: Int
-    pollCount: Int
-  }
+  # type timeOnPoll {
+  #   poll: String
+  #   hours: Int
+  #   minutes: Int
+  #   seconds: Int
+  #   pollCount: Int
+  # }
 
-  type siteTime {
-    hour: Int
-    minutes: Int
-    seconds: Int
-  }
+  # type siteTime {
+  #   hour: Int
+  #   minutes: Int
+  #   seconds: Int
+  # }
 
   type Favorites {
     favoritePolls: [PollQuestion]
@@ -83,14 +83,14 @@ export const userTypeDefs = gql`
     removeFollow(userId: String!): Following!
     addFavorite(favoriteType: String!, favoriteId: String!): Favorite!
     removeFavorite(favoriteType: String!, favoriteId: String!): Favorite!
-    updateTimeOnSite(seconds: Int!, userId: String!): User!
-    updateTimeSpentOnPoll(
-      pollId: String!
-      userId: String!
-      seconds: Int!
-      minutes: Int!
-      hours: Int!
-    ): User!
-    deletePollTimeCount(userId: String!): String!
+    # updateTimeOnSite(seconds: Int!, userId: String!): User!
+    # updateTimeSpentOnPoll(
+    #   poll: String!
+    #   userId: String!
+    #   seconds: Int!
+    #   minutes: Int!
+    #   hours: Int!
+    # ): User!
+    # deletePollTimeCount(userId: String!): String!
   }
 `;

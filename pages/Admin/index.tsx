@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { SitePageContainer, adminData } from "_components/index";
 import {
-  EditAR,
+  FAnswers,
+  FChatMsgs,
+  FPolls,
   LeftSideBar,
   Metrics,
   ProvideAR,
-  RemoveAR,
+  ReviewStatusForViolation,
 } from "_pageComponents/index";
 import UsersInfo from "./UsersInfo/UsersInfo";
 import usersInfoBox from "../../appStyles/adminStyles/usersInfoBox.module.css";
@@ -42,16 +44,6 @@ const index = () => {
                   <React.Fragment key={sindex}>
                     <ProvideAR />
                   </React.Fragment>
-                ) : slsc.name === "Remove access rights" &&
-                  slsc.active === true ? (
-                  <React.Fragment key={sindex}>
-                    <RemoveAR />
-                  </React.Fragment>
-                ) : slsc.name === "Edit access rights" &&
-                  slsc.active === true ? (
-                  <React.Fragment key={sindex}>
-                    <EditAR />
-                  </React.Fragment>
                 ) : slsc.name === "Content" && slsc.active === true ? (
                   <React.Fragment key={sindex}>
                     <h2>Hi im Content</h2>
@@ -70,21 +62,21 @@ const index = () => {
                   </React.Fragment>
                 ) : slsc.name === "Flagged Polls" && slsc.active === true ? (
                   <React.Fragment key={sindex}>
-                    <h2>Hi im Flagged Polls</h2>
+                    <FPolls />
                   </React.Fragment>
                 ) : slsc.name === "Flagged Chat Messages" &&
                   slsc.active === true ? (
                   <React.Fragment key={sindex}>
-                    <h2>Hi im Flagged Chat messages</h2>
+                    <FChatMsgs />
                   </React.Fragment>
                 ) : slsc.name === "Flagged Answers" && slsc.active === true ? (
                   <React.Fragment key={sindex}>
-                    <h2>Hi im Flagged Answers</h2>
+                    <FAnswers />
                   </React.Fragment>
                 ) : slsc.name === "Review status for violation" &&
                   slsc.active === true ? (
                   <React.Fragment key={sindex}>
-                    <h2>Hi im Review status for violation</h2>
+                    <ReviewStatusForViolation />
                   </React.Fragment>
                 ) : null;
               })

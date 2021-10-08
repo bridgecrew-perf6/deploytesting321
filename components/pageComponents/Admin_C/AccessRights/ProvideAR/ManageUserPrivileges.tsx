@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { AdminPara, Model } from "_pageComponents/index";
 import userRightsStyles from "../../../../../appStyles/adminStyles/userRightsStyles.module.css";
 
@@ -62,7 +61,9 @@ const ManageUserPrivileges = (props: any) => {
         {
           color: "warning",
           label: loadingD ? (
-            <Spinner animation="grow" variant="secondary" />
+            <div className="spinner-grow text-secondary" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
           ) : (
             "Update Privileges"
           ),

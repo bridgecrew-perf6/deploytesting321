@@ -19,3 +19,10 @@ export { default as SelectGraph } from "./Other/Select/SelectGraph";
 export { default as SimpleTable } from "./Other/Tables/SimpleTable";
 export { default as TextAreaSimple } from "./Other/Input/TextAreaSimple";
 export { Metrics } from "./Admin_C/Metrics";
+export {
+  FUsers,
+  FPolls,
+  FAnswers,
+  FChatMsgs,
+  ReviewStatusForViolation,
+} from "./Admin_C/Moderation";

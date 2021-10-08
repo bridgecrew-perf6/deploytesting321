@@ -13,11 +13,11 @@ import {
 } from "../../graphql/loaders";
 // import { pubsub } from "../../graphql/middleware/index";
 
-export interface siteTime {
-  hour: number;
-  minutes: number;
-  seconds: number;
-}
+// export interface siteTime {
+//   hour: number;
+//   minutes: number;
+//   seconds: number;
+// }
 
 interface ErrorMssg {
   message: string;
@@ -28,10 +28,10 @@ interface NewPollForm {
   topic: string;
 }
 
-export interface timeOnPoll {
-  poll: string;
-  time: string;
-}
+// export interface timeOnPoll {
+//   poll: string;
+//   time: string;
+// }
 
 export interface User {
   _id: string;
@@ -51,8 +51,8 @@ export interface User {
   profilePic?: string;
   registerDate?: Date;
   pollHistory?: PollHistory[];
-  timeOnSite?: siteTime;
-  timeSpentOnSite: timeOnPoll[];
+  // timeOnSite?: siteTime;
+  // timeSpentOnSite: timeOnPoll[];
 }
 
 export interface Role {
