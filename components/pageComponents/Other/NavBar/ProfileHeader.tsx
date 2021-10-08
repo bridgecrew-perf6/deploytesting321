@@ -2,43 +2,42 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { IoPersonCircle } from "react-icons/io5";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import styles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
-import {
-  AiOutlineNotification,
-  AiFillNotification,
-  AiFillMessage,
-  AiOutlineMessage,
-} from "react-icons/ai";
-import NewPoll from "../../Home/NewPoll";
-import { UserDataProps } from "../../../appTypes/appType";
+import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
+import { UserDataProps, UserNotification } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
 import { AppLoadingLite } from "../Loading";
-import { ErrorToast } from "../Error/Toast";
+import { ToolTipCtr } from "../../../layout/customComps";
+import NotificationWindow from "./NotificationWindow";
 
-const { GET_USER, LOG_OUT } = GraphResolvers.queries;
-const {
-  customBtn,
-  customBtnOutline,
-  customBtnOutlinePrimary,
-  custombtnCreate,
-} = btnStyles;
+const { GET_USER, LOG_OUT, GET_NOTIFICATIONS } = GraphResolvers.queries;
+const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
 
-export default function ProfileHeader(props: any) {
+export default function ProfileHeader() {
   const router = useRouter();
 
   const appContext = useAuth();
 
-  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
-  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const [notification, toggleNotification] = useState(false);
-  const [message, setMessage] = useState(false);
+  const [userNotifications, updateNotifications] = useState<UserNotification[]>(
+    []
+  );
+
+  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
+  const { data: notificationData, subscribeToMore } = useQuery(
+    GET_NOTIFICATIONS,
+    {
+      onCompleted: (res) => updateNotifications(res.notifications),
+    }
+  );
+
+  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
 
   useEffect(() => {
     getUser();
@@ -48,16 +47,30 @@ export default function ProfileHeader(props: any) {
     }
   }, [appContext, data]);
 
-  const NotificationIcon = notification ? (
-    <AiFillNotification size={24} color="#ff4d00" />
-  ) : (
-    <AiOutlineNotification size={24} color="#ff4d00" />
-  );
+  useEffect(() => {
+    if (data && notificationData && subscribeToMore) {
+      const userId = data.getUserData.user._id;
+      subscribeToMore({
+        document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData) return prev;
+          const newItem = subscriptionData.data.newNotification;
 
-  const messageIcon = message ? (
-    <AiFillMessage size={24} color="#ff4d00" />
+          if (newItem.user._id !== userId) {
+            return Object.assign({}, prev, {
+              notifications: [...prev.notifications, newItem],
+            });
+          }
+          return prev;
+        },
+      });
+    }
+  }, [data, notificationData]);
+
+  const NotificationIcon = notification ? (
+    <AiFillNotification size={28} color="#ff4d00" />
   ) : (
-    <AiOutlineMessage size={24} color="#ff4d00" />
+    <AiOutlineNotification size={28} color="#ff4d00" />
   );
 
   const handleLogOut = () => {
@@ -79,88 +92,55 @@ export default function ProfileHeader(props: any) {
     );
   };
 
-  if (error) {
-    return (
-      <div
-        className="form-row justify-content-between"
-        style={{ width: "15%" }}
-      >
-        <Link href={"/Login"}>
-          <button
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            type="button"
-          >
-            Log In
-          </button>
-        </Link>
-        <Link href={"/Registration"}>
-          <button
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            type="button"
-          >
-            Register
-          </button>
-        </Link>
-      </div>
-    );
-  }
-  const { title } = props;
-
   if (data) {
     const { _id, appid, profilePic } = data.getUserData.user;
+    const unreadNotifications = notificationData?.notifications.filter(
+      (item: UserNotification) => !item.read
+    ).length;
 
     const superUserList = process.env.NEXT_PUBLIC_SUPERUSERS?.split("_");
 
     return (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
-        style={{
-          width: title !== "Admin Panel" ? "30%" : "22rem",
-          marginLeft: 5,
-        }}
+        style={{ width: "30%" }}
       >
-        {props.title !== "Admin Panel" && (
-          <div
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            typeof="button"
-            data-toggle="modal"
-            data-target="#newPollModal"
-          >
-            Create New Poll
-          </div>
-        )}
-
+        <div
+          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+          typeof="button"
+          data-toggle="modal"
+          data-target="#newPollModal"
+        >
+          Create New Poll
+        </div>
         {superUserList?.includes(appid) && (
           <>
             <NewTopicBtn />
           </>
         )}
-        <div
-          className={styles.cursor}
-          onMouseEnter={() => toggleNotification(true)}
-          onMouseLeave={() => toggleNotification(false)}
+        <ToolTipCtr
+          mssg="Notifications"
+          position="bottom"
+          style={{ top: "35px", left: "50%" }}
         >
-          {NotificationIcon}
-        </div>
-
-        {props.title === "Admin Panel" && (
-          <React.Fragment>
-            <div
-              className={styles.cursor}
-              onMouseEnter={() => setMessage(true)}
-              onMouseLeave={() => setMessage(false)}
-            >
-              {messageIcon}
-            </div>
-            <button
-              className={`${custombtnCreate} ${customBtnOutline}`}
-              type="button"
-            >
-              Create
-            </button>
-          </React.Fragment>
-        )}
-
+          <div
+            className={`${styles.cursor} position-relative`}
+            onClick={() => toggleNotification(!notification)}
+          >
+            {NotificationIcon}
+            {!notification && unreadNotifications.length > 0 && (
+              <div className="position-absolute" style={{ top: -15, left: 20 }}>
+                <p
+                  className={`rounded-circle ${styles.appColor} text-white p-1 pl-2 pr-2`}
+                  style={{ fontSize: 13 }}
+                >
+                  {unreadNotifications}
+                </p>
+              </div>
+            )}
+          </div>
+        </ToolTipCtr>
+        {notification && <NotificationWindow data={userNotifications} />}
         <div>
           <ProfileImg
             profilePic={profilePic}
@@ -173,7 +153,6 @@ export default function ProfileHeader(props: any) {
 
         <div className="dropdown">
           <a
-            style={{ border: "2px solid" }}
             className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
             type="button"
             id="siteDropDown"
@@ -197,9 +176,6 @@ export default function ProfileHeader(props: any) {
               </Link>
               <Link href={`/Polls`}>
                 <li className="dropdown-item">All Topics</li>
-              </Link>
-              <Link href={`/Admin`}>
-                <li className="dropdown-item">Admin</li>
               </Link>
               <li className="dropdown-item">About</li>
               <li className="dropdown-item">How it Works</li>

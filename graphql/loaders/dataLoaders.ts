@@ -7,6 +7,7 @@ import Chat from "../../models/chatModel";
 import Reply from "../../models/replyModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
+import Notification from "../../models/notificationModel";
 import IinternalUsers from "../../models/interfaces/internalUser";
 import IPoll from "../../models/interfaces/poll";
 import IUser from "../../models/interfaces/user";
@@ -15,6 +16,7 @@ import IAnswer from "../../models/interfaces/answer";
 import IComment from "../../models/interfaces/comment";
 import IReply from "../../models/interfaces/reply";
 import IChat from "../../models/interfaces/chat";
+import INotification from "../../models/interfaces/notification";
 
 const batchInternalUsers: BatchInternalUser = async (ids: any) => {
   const users: IinternalUsers[] = await InternalUsers.find({
@@ -59,6 +61,17 @@ const batchAnswers: BatchAnswers = async (ids) => {
   });
 
   return ids.map((id) => answerMap[id]);
+};
+
+const batchNotifications: BatchNotifications = async (ids) => {
+  const notifications = await Notification.find({ _id: { $in: ids } });
+  const notificationMap: { [key: string]: INotification } = {};
+
+  notifications.forEach((notification) => {
+    notificationMap[notification.id] = notification;
+  });
+
+  return ids.map((id) => notificationMap[id]);
 };
 
 const batchChats: BatchChats = async (ids) => {
@@ -112,6 +125,7 @@ export default {
   batchsubTopics,
   batchAnswers,
   batchChats,
+  batchNotifications,
   batchInternalUsers,
   // batchReplies,
 };

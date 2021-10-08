@@ -1,14 +1,24 @@
-import { ResolverMap } from "../../components/appTypes/appType";
+import {
+  ResolverMap,
+  UserNotification,
+} from "../../components/appTypes/appType";
 import Answer from "../../models/answerModel";
 import IPoll from "../../models/interfaces/poll";
 import Poll from "../../models/PollModel";
+import Notification from "../../models/notificationModel";
 import User from "../../models/UserModel";
-import { transformAnswer, transformPoll } from "./shared";
+import {
+  transformAnswer,
+  transformNotification,
+  transformPoll,
+} from "./shared";
 import batchLoaders from "../loaders/dataLoaders";
 import IAnswer from "../../models/interfaces/answer";
 import { getNumRanking } from "./shared/metrics";
 import IUser from "../../models/interfaces/user";
 import mongoose from "mongoose";
+import INotification from "../../models/interfaces/notification";
+import { showAbbreviatedTxt } from "../../components/globalFuncs";
 
 const { batchAnswers } = batchLoaders;
 
@@ -25,7 +35,22 @@ export const feedBackResolvers: ResolverMap = {
         return answerData;
         // return getNumRanking(answerData);
       } catch (err) {
-        throw new Error(err);
+        throw err;
+      }
+    },
+    notifications: async (parent, args, ctx) => {
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+
+      try {
+        const notifications = await Notification.find({
+          contentOwner: id,
+        });
+        return notifications.map((item) =>
+          transformNotification(item, dataLoaders(["user"]))
+        );
+      } catch (err) {
+        throw err;
       }
     },
   },
@@ -65,18 +90,67 @@ export const feedBackResolvers: ResolverMap = {
         }
 
         const savedAnswer = await pollAnswer.save();
+
         const createdAnswer = transformAnswer(
           savedAnswer,
           dataLoaders(["user", "poll"])
         );
 
-        pollItem.answers.push(pollAnswer._id);
-
         await pollItem.save();
 
         pubsub.publish("newAnswer", { newAnswer: createdAnswer });
+        pollItem.answers.push(pollAnswer._id);
+
+        //Push to Notification
+        if (pollItem.creator.toString() !== id) {
+          const creator = await User.findById(id);
+
+          const notification = new Notification({
+            message: `${
+              creator.appid
+            } added an answer to the poll: ${showAbbreviatedTxt(
+              pollItem.question
+            )}`,
+            user: id,
+            notificationType: "poll",
+            notificationId: pollItem._id,
+            contentOwner: pollItem.creator.toString(),
+            read: false,
+          });
+
+          const savedNotification = await notification.save();
+
+          const newNotification = transformNotification(
+            savedNotification,
+            dataLoaders(["user"])
+          );
+
+          pubsub.publish("newNotification", { newNotification });
+        }
 
         return createdAnswer;
+      } catch (err) {
+        throw err;
+      }
+    },
+    updateNotification: async (parent, { details }, ctx) => {
+      const { isAuth, req, res, pubsub, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please Log In!");
+      }
+
+      const detailObjList: UserNotification[] = JSON.parse(details);
+      const updatedIds = detailObjList.map((item) => item._id);
+
+      try {
+        const notifications = await Notification.updateMany(
+          //query
+          { _id: { $in: updatedIds } },
+          //update
+          { $set: { read: true } }
+        );
       } catch (err) {
         throw err;
       }
@@ -186,6 +260,10 @@ export const feedBackResolvers: ResolverMap = {
     newAnswer: {
       subscribe: (parent, args, { pubsub }) =>
         pubsub.asyncIterator("newAnswer"),
+    },
+    newNotification: {
+      subscribe: (parent, args, { pubsub }) =>
+        pubsub.asyncIterator("newNotification"),
     },
   },
 };

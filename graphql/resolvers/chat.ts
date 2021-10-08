@@ -22,7 +22,7 @@ export const chatResolvers: ResolverMap = {
           transformChat(item, dataLoaders(["user", "poll"]))
         );
       } catch (err) {
-        throw new Error(err);
+        throw  err;
       }
     },
     messageByUser: async (parent, args, { dataLoaders }) => {},

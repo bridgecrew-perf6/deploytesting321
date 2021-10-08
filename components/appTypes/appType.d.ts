@@ -438,3 +438,14 @@ interface SrchCustomBtn extends CustomBtn {
   count: number;
   data: PollHistory[] | Answer[] | ITopic[] | ISubTopic[] | null;
 }
+
+interface UserNotification {
+  _id: string;
+  message: string;
+  notificationType: string;
+  notificationId: string;
+  contentOwner: User;
+  user: User;
+  creationDate: string;
+  read?: boolean;
+}
