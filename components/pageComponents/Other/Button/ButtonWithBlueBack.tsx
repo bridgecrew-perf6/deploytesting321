@@ -1,5 +1,4 @@
 import React from "react";
-import { Spinner } from "react-bootstrap";
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
 const ButtonWithBlueBack = (props: any) => {
@@ -13,7 +12,13 @@ const ButtonWithBlueBack = (props: any) => {
       disabled={disabled}
       className={usersInfoBox.buttonWithBlueBack}
     >
-      {loading ? <Spinner animation="grow" variant="secondary" /> : title}
+      {loading ? (
+        <div className="spinner-grow text-secondary" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      ) : (
+        title
+      )}
     </button>
   );
 };

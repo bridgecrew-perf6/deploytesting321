@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { Model } from "_pageComponents/index";
 
 const IsActiveModal: React.FC<{
@@ -46,12 +45,16 @@ const IsActiveModal: React.FC<{
             showActiveModalLabel ===
             "Are you sure to Activate selected Users ?" ? (
               loadingc ? (
-                <Spinner animation="grow" variant="secondary" />
+                <div className="spinner-grow text-secondary" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
               ) : (
                 "Activate"
               )
             ) : loadingb ? (
-              <Spinner animation="grow" variant="secondary" />
+              <div className="spinner-grow text-secondary" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
             ) : (
               "Disable"
             ),

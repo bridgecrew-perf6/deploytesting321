@@ -55,7 +55,6 @@ const LeftSideBar = (props: adminLeftSidebarType) => {
   };
 
   const handleOpenSub = (item: masterCatType) => {
-    console.log("I am clicked");
     let updatedMaster = mastercategory.map((mc: masterCatType) => {
       if (mc?.subCategory.length > 0) {
         let sub = mc.subCategory.map((subItem: subCatType) => {

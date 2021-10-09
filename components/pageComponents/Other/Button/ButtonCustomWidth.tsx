@@ -1,5 +1,4 @@
 import React from "react";
-import { Spinner } from "react-bootstrap";
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
 const ButtonCustomWidth = (props: any) => {
@@ -12,7 +11,13 @@ const ButtonCustomWidth = (props: any) => {
       disabled={disabled}
       className={usersInfoBox.buttonCustomWIdth}
     >
-      {loading ? <Spinner animation="grow" variant="secondary" /> : title}
+      {loading ? (
+        <div className="spinner-grow text-secondary" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      ) : (
+        title
+      )}
     </button>
   );
 };

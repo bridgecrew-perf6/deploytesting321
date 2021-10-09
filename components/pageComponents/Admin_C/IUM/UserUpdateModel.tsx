@@ -13,7 +13,6 @@ import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.
 
 const UserUpdateModel: React.FC<{
   showUserEditModal: boolean;
-  setShowUserEditModal: Function;
   handleCLoseModal: Function;
   handleSubmitUsersData: React.FormEventHandler;
   validationErrors: validationErrorsAdmin;
@@ -26,7 +25,6 @@ const UserUpdateModel: React.FC<{
 }> = (props) => {
   const {
     showUserEditModal,
-    setShowUserEditModal,
     handleCLoseModal,
     handleSubmitUsersData,
     validationErrors,
@@ -38,20 +36,20 @@ const UserUpdateModel: React.FC<{
     loadingB,
   } = props;
 
-  const accessRoles = [
-    {
-      value: "admin",
-      label: "Admin",
-    },
-    {
-      value: "employee",
-      label: "Employee",
-    },
-    {
-      value: "moderator",
-      label: "Moderator",
-    },
-  ];
+  // const accessRoles = [
+  //   {
+  //     value: "admin",
+  //     label: "Admin",
+  //   },
+  //   {
+  //     value: "employee",
+  //     label: "Employee",
+  //   },
+  //   {
+  //     value: "moderator",
+  //     label: "Moderator",
+  //   },
+  // ];
 
   const [roles, setRoles] = useState(userRoles);
   useEffect(() => {
