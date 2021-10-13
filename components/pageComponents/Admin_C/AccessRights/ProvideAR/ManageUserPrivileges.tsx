@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
-import { AdminPara, Model } from "_pageComponents/index";
+import { AdminPara, ButtonCustomWidth, Model } from "_pageComponents/index";
 import userRightsStyles from "../../../../../appStyles/adminStyles/userRightsStyles.module.css";
 
 const ManageUserPrivileges = (props: any) => {
@@ -18,11 +17,9 @@ const ManageUserPrivileges = (props: any) => {
 
   const handleCheckbox = (p: any) => {
     let up;
-    console.log(p);
     up = allPrivileges.map((pd: any, index: number) => {
       if (pd.privilegeName === p.privilegeName) {
         if (pd.privilegeStatus === true) {
-          console.log("found");
           return {
             ...pd,
             privilegeName: pd.privilegeName,
@@ -38,7 +35,17 @@ const ManageUserPrivileges = (props: any) => {
       }
       return pd;
     });
-    console.log(up);
+    setAllPrivileges(up);
+  };
+
+  const handleSelectDeselectAll = () => {
+    let up;
+    up = allPrivileges.map((pd: any, index: number) => {
+      return {
+        ...pd,
+        privilegeStatus: !pd.privilegeStatus,
+      };
+    });
     setAllPrivileges(up);
   };
 
@@ -62,7 +69,9 @@ const ManageUserPrivileges = (props: any) => {
         {
           color: "warning",
           label: loadingD ? (
-            <Spinner animation="grow" variant="secondary" />
+            <div className="spinner-grow text-secondary" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
           ) : (
             "Update Privileges"
           ),
@@ -70,7 +79,15 @@ const ManageUserPrivileges = (props: any) => {
         },
       ]}
     >
-      <h5>Which privilages would u like to select for "{selectedRole}"?</h5>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h5>Which privilages would u like to select for "{selectedRole}"?</h5>
+        <ButtonCustomWidth
+          width="14rem"
+          height="3rem"
+          title="Select/Unselect All"
+          onClick={handleSelectDeselectAll}
+        />
+      </div>
       {allPrivileges.length === 0 ? (
         <h6>Loading...</h6>
       ) : (

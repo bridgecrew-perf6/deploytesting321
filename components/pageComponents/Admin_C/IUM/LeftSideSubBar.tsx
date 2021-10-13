@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { masterCatType, subCatType } from "_components/index";
 import leftSideBarStyles from "../../../../appStyles/adminStyles/leftSideBarStyles.module.css";
 
@@ -9,6 +9,7 @@ const LeftSideSubBar: React.FC<{
   item: masterCatType;
 }> = (props) => {
   const { item, handleOpenMaster, handleOpenSub } = props;
+
   return (
     <>
       <button

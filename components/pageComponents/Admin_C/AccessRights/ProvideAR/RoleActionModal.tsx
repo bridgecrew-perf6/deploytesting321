@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
 import { Model } from "_pageComponents/index";
 
 const RoleActionModal = (props: any) => {
@@ -42,12 +41,16 @@ const RoleActionModal = (props: any) => {
           label:
             roleLabelOnModal === "Activate" ? (
               loadingA ? (
-                <Spinner animation="grow" variant="secondary" />
+                <div className="spinner-grow text-secondary" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
               ) : (
                 "Activate"
               )
             ) : loadingB ? (
-              <Spinner animation="grow" variant="secondary" />
+              <div className="spinner-grow text-secondary" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
             ) : (
               "Disable"
             ),

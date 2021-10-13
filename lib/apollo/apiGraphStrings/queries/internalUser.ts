@@ -1,6 +1,11 @@
 import { gql } from "@apollo/client";
 
 const internalUserQueries = {
+  INTERNAL_USER_LOGOUT: gql`
+    query InternalUserLogout {
+      internalUserLogout
+    }
+  `,
   GET_INTERNAL_USERS: gql`
     query AllInternalUsers {
       internalUsers {

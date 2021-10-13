@@ -126,7 +126,6 @@ const Table: React.FC<{
 
   const tableRowEvents = {
     onClick: (e: any, row: SelectedRow, rowIndex: number) => {
-      console.log(row);
       changetablerowdata(row, rowIndex);
     },
   };
@@ -223,7 +222,6 @@ const Table: React.FC<{
                   }
                 },
                 onSelectAll: (isSelect, rows, e) => {
-                  console.log(rows);
                   if (isSelect) {
                     setSelectedRows(rows);
                   } else {

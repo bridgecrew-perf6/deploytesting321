@@ -23,8 +23,6 @@ export const privilegesResolver: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
       try {
-        console.log("Deleting all privileges");
-
         await PrivilegesSchema.remove({});
         return "delete all data";
       } catch (error: any) {
@@ -33,7 +31,6 @@ export const privilegesResolver: ResolverMap = {
     },
 
     createNewPrivilege: async (parent, { privilegeName }, context) => {
-      console.log("Creating privileges => ", privilegeName);
       try {
         let existingPrivilege;
         existingPrivilege = await PrivilegesSchema.findOne({
@@ -46,7 +43,6 @@ export const privilegesResolver: ResolverMap = {
           privilegeName: privilegeName,
           privilegeStatus: true,
         });
-        console.log(newPrivilege);
         const privilegeCreated = await newPrivilege.save();
         return privilegeCreated;
       } catch (error: any) {
@@ -69,7 +65,6 @@ export const privilegesResolver: ResolverMap = {
             },
           }
         );
-        console.log(updatedPrivilege);
         return updatedPrivilege;
       } catch (error: any) {
         throw new Error(error.message);
@@ -80,7 +75,6 @@ export const privilegesResolver: ResolverMap = {
         await PrivilegesSchema.findOneAndDelete({
           _id: _id,
         });
-        console.log("Deleted privilege");
         return "Privilege deleted";
       } catch (error: any) {
         throw new Error(error.message);

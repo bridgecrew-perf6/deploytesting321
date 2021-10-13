@@ -15,8 +15,6 @@ export const updateInternalUserProfile = async (
   formInputs: string
 ) => {
   const formObj: IinternalUser = JSON.parse(formInputs);
-  console.log("From mutation");
-  console.log(formObj);
   try {
     await updateFunc({
       variables: { formInputs },

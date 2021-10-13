@@ -88,7 +88,12 @@ const ProvideAR = () => {
 
   useEffect(() => {
     if (privilegesData && !privsLoading) {
-      setAllPrivileges(privilegesData.allPrivileges);
+      let privData: any = _.sortBy(privilegesData.allPrivileges, [
+        function (o) {
+          return o.privilegeName;
+        },
+      ]);
+      setAllPrivileges(privData);
     }
   }, [privilegesData]);
 

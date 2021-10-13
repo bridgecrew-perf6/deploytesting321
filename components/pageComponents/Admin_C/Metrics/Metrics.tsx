@@ -77,7 +77,6 @@ const Metrics = () => {
 
   const handleChange = (newValue: any, actionMeta: any) => {
     console.group("Value Changed");
-    console.log(newValue);
     if (newValue.value === "week") {
       setOptionSelected(dataWeek);
     } else if (newValue.value === "month") {

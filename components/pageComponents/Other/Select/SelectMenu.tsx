@@ -45,8 +45,6 @@ const SelectMenu: React.FC<{
   );
 
   const handleChange = (newValue: any, actionMeta: any) => {
-    console.group("Value Changed");
-    console.log(newValue);
     setUserDataForm({
       ...userDataForm,
       accessRole: {
@@ -54,7 +52,6 @@ const SelectMenu: React.FC<{
         _id: newValue._id,
       },
     });
-    console.groupEnd();
   };
 
   return (

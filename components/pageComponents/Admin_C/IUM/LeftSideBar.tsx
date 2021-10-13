@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import leftSideBarStyles from "../../../../appStyles/adminStyles/leftSideBarStyles.module.css";
 import { FaTachometerAlt } from "react-icons/fa";
 import LeftSideSubBar from "./LeftSideSubBar";
@@ -7,9 +7,18 @@ import {
   masterCatType,
   subCatType,
 } from "_components/index";
-
+import { useQuery } from "@apollo/client";
+import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
+// adminLeftSidebarType;
 const LeftSideBar = (props: adminLeftSidebarType) => {
-  const { mastercategory, setmastercategory } = props;
+  const {
+    mastercategory,
+    setmastercategory,
+    setLoadingChecks,
+    loadingChecks,
+    data,
+    // userId,
+  } = props;
 
   const handleOpenMaster = (item: masterCatType) => {
     let cats = false;
@@ -55,7 +64,6 @@ const LeftSideBar = (props: adminLeftSidebarType) => {
   };
 
   const handleOpenSub = (item: masterCatType) => {
-    console.log("I am clicked");
     let updatedMaster = mastercategory.map((mc: masterCatType) => {
       if (mc?.subCategory.length > 0) {
         let sub = mc.subCategory.map((subItem: subCatType) => {
@@ -81,6 +89,70 @@ const LeftSideBar = (props: adminLeftSidebarType) => {
     setmastercategory(updatedMaster);
   };
 
+  const query = GraphResolvers.queries;
+
+  const [role, setRole] = useState("");
+
+  const filterCategories = () => {
+    console.log(role);
+    if (role === "admin") {
+      setmastercategory(mastercategory);
+    } else {
+      let newUpdated;
+      if (role === "moderator" || role === "employee" || role === "site user") {
+        let updated = mastercategory?.filter((m: masterCatType) => {
+          return (
+            m.name !== "Internal User Management (IUM)" &&
+            m.name !== "Access Rights"
+          );
+        });
+        newUpdated = updated;
+      }
+      if (role === "employee") {
+        let updated = newUpdated?.filter((m: masterCatType) => {
+          return m.name !== "Moderation";
+        });
+        newUpdated = updated;
+      }
+      let indexes: any = [];
+      let f = false;
+
+      newUpdated.map((m: masterCatType, index: number) => {
+        m.subCategory.map((s: any) => {
+          if (s.active === true) f = true;
+        });
+        console.log(f);
+        if (!f) {
+          if (m.subCategory.length === 0) {
+            indexes.push(index);
+          }
+        }
+      });
+
+      if (f) {
+        newUpdated.map((m: masterCatType) => {
+          m.selected = false;
+          return m;
+        });
+      }
+
+      if (indexes.length && !f) {
+        newUpdated[indexes[0]].selected = true;
+        newUpdated[indexes[0]].active = true;
+      }
+      console.log(newUpdated);
+      setmastercategory(newUpdated);
+    }
+    setLoadingChecks(false);
+  };
+
+  useEffect(() => {
+    if (data) setRole(data.getInternalUser.accessRole.role);
+    if (role) {
+      filterCategories();
+    }
+  }, [data, role]);
+
   return (
     <div className={leftSideBarStyles.sideBarWrapper}>
       <div className={leftSideBarStyles.buttonsWrapper}>
@@ -89,16 +161,17 @@ const LeftSideBar = (props: adminLeftSidebarType) => {
           <span style={{ paddingLeft: ".5rem" }}> &nbsp;Dashboard</span>
         </button>
 
-        {mastercategory.map((mc: masterCatType, mindex: number) => {
-          return (
-            <LeftSideSubBar
-              handleOpenSub={handleOpenSub}
-              handleOpenMaster={handleOpenMaster}
-              key={mindex}
-              item={mc}
-            />
-          );
-        })}
+        {!loadingChecks &&
+          mastercategory?.map((mc: masterCatType, mindex: number) => {
+            return (
+              <LeftSideSubBar
+                handleOpenSub={handleOpenSub}
+                handleOpenMaster={handleOpenMaster}
+                key={mindex}
+                item={mc}
+              />
+            );
+          })}
       </div>
     </div>
   );

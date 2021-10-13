@@ -166,13 +166,13 @@ const UsersInfo = () => {
       data?.internalUsers?.map((dR: any) => {
         updatedUser.push({
           _id: dR._id,
-          accessRole: dR.accessRole.role,
-          accessRoleId: dR.accessRole._id,
+          accessRole: dR.accessRole?.role || null,
+          accessRoleId: dR.accessRole?._id || null,
           email: dR.email,
           fullName: dR.fullName,
           isActive: dR.isActive,
-          accessRoleStatus: dR.accessRole.status,
-          accessRolePrivileges: dR.accessRole.privileges,
+          accessRoleStatus: dR.accessRole?.status || null,
+          accessRolePrivileges: dR.accessRole?.privileges || null,
           jobTitle: dR.jobTitle,
         });
       });
@@ -201,7 +201,6 @@ const UsersInfo = () => {
   const changeTableRowData = (row: SelectedRow, rowIndex: number) => {
     setModelWorkingFor("updateUser");
     setShowUserEditModal(true);
-    console.log(row);
     setUserDataForm({
       ...userDataForm,
       _id: row?._id || "",
@@ -217,7 +216,6 @@ const UsersInfo = () => {
   };
 
   const handleAddNewUser = () => {
-    console.log("I am clicked");
     setModelWorkingFor("newUser");
     setShowUserEditModal(true);
     setUserDataForm({
@@ -236,10 +234,7 @@ const UsersInfo = () => {
 
   const handleSubmitUsersData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("I am clicked");
     const errors = emailValidation(userDataForm.email);
-    console.log(errors);
-    console.log(userDataForm);
     if (errors === false) {
       setValidationErrors({
         ...validationErrors,
@@ -255,7 +250,6 @@ const UsersInfo = () => {
         isActive: userDataForm.isActive,
       };
       if (modelWorkingFor === "updateUser") {
-        console.log(modelWorkingFor);
         await updateInternalUser({
           variables: { formInputs: JSON.stringify(formInputs) },
         });
@@ -288,7 +282,6 @@ const UsersInfo = () => {
   );
 
   const handleSelectedRowsActive = async () => {
-    console.log(selectedRows);
     if (selectedRows.length > 0) {
       setShowActiveModal(true);
       setShowActiveModalLabel("Are you sure to Activate selected Users ?");
@@ -299,7 +292,6 @@ const UsersInfo = () => {
 
   // to bulk disable active users
   const handleSelectedRowsDisable = async () => {
-    console.log(selectedRows);
     if (selectedRows.length > 0) {
       setShowActiveModal(true);
       setShowActiveModalLabel("Are you sure to Disable selected Users ?");
@@ -310,7 +302,6 @@ const UsersInfo = () => {
 
   // to bulk active active users
   const updateUsersToActive = async () => {
-    console.log("I am here in active");
     await Promise.all(
       selectedRows.map(async (s: SelectedRow) => {
         await updateDisableUsersToActive({
@@ -323,7 +314,6 @@ const UsersInfo = () => {
 
   // to bulk disable active users
   const updateUsersToDisable = async () => {
-    console.log("I am here in disable");
     await Promise.all(
       selectedRows.map(async (s: SelectedRow) => {
         await updateActiveUsersToDisable({

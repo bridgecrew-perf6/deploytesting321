@@ -23,10 +23,15 @@
   max-height: 250px;
   height: auto;
   width: 35%;
+  cursor: pointer;
 }
 
 .appColor {
   background-color: #ff4d00;
+}
+
+.appWidth {
+  width: 10rem !important;
 }
 
 .appImg {

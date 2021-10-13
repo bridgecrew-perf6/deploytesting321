@@ -46,15 +46,15 @@ const Poll = ({ pollId }: Props) => {
     variables: { pollId },
   });
 
-  const { data: appUserData } = useQuery(GET_USER, {
-    onCompleted: (res) => {
-      setUser(res.getUserData.user);
-    },
-  });
-  console.log(userInfo);
+  // const { data: appUserData } = useQuery(GET_USER, {
+  //   onCompleted: (res) => {
+  //     setUser(res.getUserData.user);
+  //   },
+  // });
+  // console.log(userInfo);
 
   const [getUser, { data: user }] = useLazyQuery(GET_USER_FOR_POLL);
-  console.log(data);
+  // console.log(data);
 
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
