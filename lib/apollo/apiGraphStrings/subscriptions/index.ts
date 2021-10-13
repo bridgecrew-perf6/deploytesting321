@@ -3,5 +3,5 @@ import otherSubscriptions from "./other";
 
 export default {
   ...pollSubscriptions,
-  ...otherSubscriptions
+  ...otherSubscriptions,
 };

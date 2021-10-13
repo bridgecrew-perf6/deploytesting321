@@ -357,7 +357,6 @@ const UsersInfo = () => {
         userDataForm={userDataForm}
         showUserEditModal={showUserEditModal}
         userRoles={roles}
-        setShowUserEditModal={setShowUserEditModal}
         loadingA={loadingCreateUser}
         loadingB={loadingUpdateUser}
       />

@@ -11,7 +11,6 @@ import Answer from "../../models/answerModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
 import Notification from "../../models/notificationModel";
-
 import configs from "../../endpoints.config";
 import IPoll from "../../models/interfaces/poll";
 import ISubTopic from "../../models/interfaces/subTopic";
