@@ -1,4 +1,3 @@
-import { privilages } from "_components/index";
 import { model, Schema, models } from "mongoose";
 import RoleInterface from "./interfaces/roleInterface";
 

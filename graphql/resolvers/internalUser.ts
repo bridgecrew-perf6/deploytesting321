@@ -12,6 +12,7 @@ import { confirmationEmail } from "../utils/confirmationEmail";
 import batchLoaders from "../loaders/dataLoaders";
 import { generateRandomPasswrod } from "graphql/utils/passwordGenerator";
 import { sendResetPasswordMail } from "graphql/utils/resetPassEmail";
+import Cookies from "js-cookie";
 
 const { batchInternalUsers } = batchLoaders;
 
@@ -78,11 +79,13 @@ export const internalUsersResolver: ResolverMap = {
     },
     internalUserLogout: async (parent, { email, password }, context) => {
       const { req, res } = context;
-
+      console.log("I am called");
+      console.log(req?.headers?.cookie);
       if (req?.headers?.cookie) {
         clearAppCookieForInternalUser(res);
         return "User is logged out!";
       }
+      Cookies.remove("internalUserPolditSession");
       return "Not logged in";
     },
   },

@@ -9,7 +9,6 @@ import {
   Table,
   UserUpdateModel,
 } from "_pageComponents/index";
-import { updateInternalUserProfile } from "../../../lib/apollo/apolloFunctions";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import {
   adminUserDataForm,

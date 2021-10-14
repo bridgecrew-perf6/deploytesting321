@@ -20,6 +20,7 @@ import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
 import { AppLoadingLite } from "../Loading";
 import { ToolTipCtr } from "../../../layout/customComps";
 import NotificationWindow from "./NotificationWindow";
+import Cookies from "js-cookie";
 
 const { GET_USER, LOG_OUT, GET_NOTIFICATIONS, INTERNAL_USER_LOGOUT } =
   GraphResolvers.queries;
@@ -40,11 +41,6 @@ export default function ProfileHeader(props: any) {
     []
   );
   const [message, setMessage] = useState(false);
-  const [internalUserLogout, {}] = useLazyQuery(INTERNAL_USER_LOGOUT, {
-    onCompleted: () => {
-      router.push("/");
-    },
-  });
 
   const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
   const { data: notificationData, subscribeToMore } = useQuery(
@@ -116,7 +112,7 @@ export default function ProfileHeader(props: any) {
   };
   const { title } = props;
 
-  if (data) {
+  if (data && props.title !== "Admin Panel") {
     const { _id, appid, profilePic } = data.getUserData.user;
     const unreadNotifications = notificationData?.notifications.filter(
       (item: UserNotification) => !item.read
@@ -132,16 +128,6 @@ export default function ProfileHeader(props: any) {
           marginLeft: 5,
         }}
       >
-        {props.title !== "Admin Panel" && (
-          <div
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            typeof="button"
-            data-toggle="modal"
-            data-target="#newPollModal"
-          >
-            Create New Poll
-          </div>
-        )}
         {superUserList?.includes(appid) && (
           <>
             <NewTopicBtn />
@@ -171,28 +157,6 @@ export default function ProfileHeader(props: any) {
         </ToolTipCtr>
 
         {notification && <NotificationWindow data={userNotifications} />}
-
-        {props.title === "Admin Panel" && (
-          <React.Fragment>
-            <div
-              className={styles.cursor}
-              onMouseEnter={() => setMessage(true)}
-              onMouseLeave={() => setMessage(false)}
-            >
-              {messageIcon}
-            </div>
-            <button
-              className={`${custombtnCreate} ${customBtnOutline}`}
-              type="button"
-              onClick={() => {
-                internalUserLogout();
-                router.push("/");
-              }}
-            >
-              Logout
-            </button>
-          </React.Fragment>
-        )}
 
         <div>
           <ProfileImg
@@ -230,9 +194,6 @@ export default function ProfileHeader(props: any) {
               <Link href={`/Polls`}>
                 <li className="dropdown-item">All Topics</li>
               </Link>
-              <Link href={`/Admin`}>
-                <li className="dropdown-item">Admin</li>
-              </Link>
               <li className="dropdown-item">About</li>
               <li className="dropdown-item">How it Works</li>
               <li className="dropdown-item">Suggestions</li>
@@ -248,7 +209,7 @@ export default function ProfileHeader(props: any) {
     );
   }
 
-  if (error) {
+  if (error && props.title !== "Admin Panel" && !data) {
     return (
       <div
         className="form-row justify-content-between"
@@ -276,7 +237,80 @@ export default function ProfileHeader(props: any) {
 
   return (
     <div className="d-flex justify-content-center" style={{ width: 300 }}>
-      <AppLoadingLite />
+      {props.title === "Admin Panel" ? (
+        <div
+          className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
+          style={{
+            width: title !== "Admin Panel" ? "30%" : "22rem",
+            marginLeft: 5,
+          }}
+        >
+          <React.Fragment>
+            <div
+              className={styles.cursor}
+              onMouseEnter={() => setMessage(true)}
+              onMouseLeave={() => setMessage(false)}
+            >
+              {messageIcon}
+            </div>
+            <button
+              className={`${custombtnCreate} ${customBtnOutline}`}
+              type="button"
+              onClick={() => {
+                Cookies.remove("internalUserPolditSession");
+                router.push("/Admin/Login");
+              }}
+            >
+              Logout
+            </button>
+          </React.Fragment>
+
+          <div>
+            <ProfileImg
+              profilePic={""}
+              id={""}
+              appId={""}
+              picStyle={{ height: 50, width: 50 }}
+              color={"gray"}
+            />
+          </div>
+          <div className="dropdown">
+            <a
+              className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+              type="button"
+              id="siteDropDown"
+              data-toggle="dropdown"
+            >
+              <GiHamburgerMenu
+                size={22}
+                aria-haspopup="true"
+                aria-expanded="false"
+              />
+            </a>
+
+            <div
+              className={`dropdown-menu ${styles.dropDownCtr}`}
+              aria-labelledby="siteDropDown"
+            >
+              <ul className="d-flex flex-column h-100 justify-content-center">
+                <Link href={`/Polls`}>
+                  <li className="dropdown-item">All Topics</li>
+                </Link>
+                <li className="dropdown-item">About</li>
+                <li className="dropdown-item">How it Works</li>
+                <li className="dropdown-item">Suggestions</li>
+                <li className="dropdown-item">Support</li>
+                <li className="dropdown-item">Settings</li>
+                <li className="dropdown-item" onClick={() => handleLogOut()}>
+                  Log Out
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <AppLoadingLite />
+      )}
     </div>
   );
 }

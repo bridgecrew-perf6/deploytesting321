@@ -95,7 +95,17 @@ const LeftSideBar = (props: adminLeftSidebarType) => {
 
   const filterCategories = () => {
     console.log(role);
+    let i;
+
     if (role === "admin") {
+      for (i = 0; i < mastercategory.length; i++) {
+        if (mastercategory[i].selected === true) {
+          break;
+        }
+      }
+      for (let j = i + 1; j < mastercategory.length; j++) {
+        mastercategory[j].selected = false;
+      }
       setmastercategory(mastercategory);
     } else {
       let newUpdated;
@@ -140,7 +150,6 @@ const LeftSideBar = (props: adminLeftSidebarType) => {
         newUpdated[indexes[0]].selected = true;
         newUpdated[indexes[0]].active = true;
       }
-      console.log(newUpdated);
       setmastercategory(newUpdated);
     }
     setLoadingChecks(false);
