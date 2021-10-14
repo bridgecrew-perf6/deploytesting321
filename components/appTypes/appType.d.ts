@@ -139,6 +139,10 @@ export interface subCatType {
 }
 
 export interface adminLeftSidebarType {
+  // userId: string;
+  data: any;
+  loadingChecks: any;
+  setLoadingChecks: Function;
   mastercategory: any;
   setmastercategory: Function;
 }
@@ -216,16 +220,25 @@ export interface UserDataProps {
   };
 }
 
+export interface InternalUserDataProps {
+  getInternalUserData: {
+    appToken: string;
+    internalUser: any;
+  };
+}
+
 interface PollsAll {
   polls: PollHistory[] | undefined;
 }
 
 interface CookieOptions {
+  HttpOnly: boolean;
   domain?: string;
-  httpOnly: boolean;
+  // httpOnly: boolean;
   path?: string;
   maxAge: number;
   expires?: Date;
+  // secure: boolean;
 }
 
 declare module "express" {
@@ -296,6 +309,15 @@ enum MsgTyp {
 interface AppMssg {
   msgType?: MsgTyp;
   message?: string;
+}
+
+interface CategoryItems {
+  _id: string;
+  category: string;
+  // creator: string;
+  description: string;
+  active: boolean;
+  linkedCats?: any;
 }
 
 interface IProps {

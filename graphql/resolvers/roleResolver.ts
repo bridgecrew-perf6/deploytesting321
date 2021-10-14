@@ -7,8 +7,18 @@ export const rolesResolver: ResolverMap = {
     allRoles: async (parent, args, context) => {
       try {
         const roles = await RolesSchema.find().populate("privileges");
-        console.log(roles);
         return roles;
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    },
+
+    getARole: async (parent, { roleName }, context) => {
+      try {
+        const role = await RolesSchema.findOne({ role: roleName }).populate(
+          "privileges"
+        );
+        return role;
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -23,10 +33,22 @@ export const rolesResolver: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
       try {
-        console.log("Deleting all roles");
-
         await RolesSchema.remove({});
         return "delete all data";
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    },
+
+    deleteARole: async (parent, { roleId }, ctx) => {
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please Log In!");
+      }
+      try {
+        await RolesSchema.findByIdAndDelete(roleId);
+        return "Role Deleted";
       } catch (error: any) {
         throw new Error(error.message);
       }
@@ -39,8 +61,6 @@ export const rolesResolver: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
       try {
-        console.log("Selected Role => ", roleName);
-        console.log("From activate");
         const role = await RolesSchema.findOneAndUpdate(
           { role: roleName },
           {
@@ -62,9 +82,6 @@ export const rolesResolver: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
       try {
-        console.log("Selected Role => ", roleName);
-        console.log("From Deactivate");
-
         const role = await RolesSchema.findOneAndUpdate(
           { role: roleName },
           {
@@ -84,7 +101,6 @@ export const rolesResolver: ResolverMap = {
       { role, description, status, privileges },
       context
     ) => {
-      console.log("Creating role => ", role);
       try {
         let existingRole;
         existingRole = await RolesSchema.findOne({
@@ -94,15 +110,12 @@ export const rolesResolver: ResolverMap = {
           throw new Error("Role with this name already exist");
         }
         let lowerCase = role.toLowerCase();
-        console.log("Lowercase => ", lowerCase);
-        console.log(privileges);
         const newRole: roleInterface = new RolesSchema({
           role: lowerCase,
           description: description,
           status: status,
           privileges: privileges,
         });
-        console.log(newRole);
         const roleCreated = await newRole
           .save()
           .then((r) => r.populate("privileges").execPopulate());
@@ -113,7 +126,6 @@ export const rolesResolver: ResolverMap = {
     },
 
     updateRolePrivilages: async (parent, { roleName, privileges }, context) => {
-      console.log(roleName, privileges);
       try {
         const updatedRole = await RolesSchema.findOneAndUpdate(
           { role: roleName },
@@ -123,7 +135,6 @@ export const rolesResolver: ResolverMap = {
             },
           }
         ).populate("privileges");
-        console.log(updatedRole);
         return updatedRole;
       } catch (error: any) {
         throw new Error(error.message);

@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 
 const internalUserMutations = {
   LOGIN_INTERNAL_USER: gql`
-    mutation LoginInternalUser($credentials: String!) {
-      login(credentials: $credentials)
+    mutation InternalUserLogin($email: String!, $password: String!) {
+      internalUserLogin(email: $email, password: $password)
     }
   `,
   CREATE_INTERNAL_USER: gql`
@@ -76,6 +76,17 @@ const internalUserMutations = {
   DISABLE_ROLE: gql`
     mutation DisableRole($roleName: String!) {
       disableRole(roleName: $roleName) {
+        _id
+      }
+    }
+  `,
+
+  CHANGE_INTERNAL_USER_PASSWORD: gql`
+    mutation ChangeInternalUserPassword(
+      $userId: String!
+      $newPassword: String!
+    ) {
+      changeInternalUserPassword(userId: $userId, newPassword: $newPassword) {
         _id
       }
     }

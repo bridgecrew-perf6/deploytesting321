@@ -23,7 +23,9 @@ const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * parseInt(RefreshTokenExpires);
 
 const REFRESH_TOKEN_COOKIE_OPTIONS: CookieOptions = {
   // domain: process.env.BASE_URL.split("//")[1].split(":")[0],
-  httpOnly: true,
+  // domain: "http://localhost:3000/",
+  HttpOnly: false,
+  // httpOnly: false,
   // secure: true,
   path: "/",
   maxAge: REFRESH_TOKEN_MAX_AGE,
@@ -39,6 +41,24 @@ const generateRefreshToken = (id: string) => {
   const tokenExpiry = new Date(Date.now() + REFRESH_TOKEN_MAX_AGE);
 
   const refreshToken = jwt.sign({ id }, RefreshKey, {
+    expiresIn: `${RefreshTokenExpires}d`,
+  });
+
+  return {
+    refreshToken,
+    expiry: tokenExpiry,
+    options: REFRESH_TOKEN_COOKIE_OPTIONS,
+  };
+};
+
+const generateAccessTokenForInternalUser = (id: string, roleId: string) => {
+  return jwt.sign({ id, roleId }, JwtKey, { expiresIn: `${JwtExpires}min` });
+};
+
+const generateRefreshTokenForInternalUser = (id: string, roleId: string) => {
+  const tokenExpiry = new Date(Date.now() + REFRESH_TOKEN_MAX_AGE);
+
+  const refreshToken = jwt.sign({ id, roleId }, RefreshKey, {
     expiresIn: `${RefreshTokenExpires}d`,
   });
 
@@ -195,17 +215,41 @@ export const getAppTokens = (id: string, res: Response) => {
   return accessToken;
 };
 
-export const clearAppCookie = (res: Response) => {
+export const getAppTokensForInternalUser = (
+  id: string,
+  roleId: string,
+  res: Response
+) => {
+  console.log("got roleId => ", roleId);
+  const accessToken = generateAccessTokenForInternalUser(id, roleId);
+  const appCookie = generateRefreshTokenForInternalUser(id, roleId);
+  const { refreshToken, options } = appCookie;
+
+  res.cookie("internalUserPolditSession", refreshToken, options); //Store refresh token cookie on browser
+
+  return accessToken;
+};
+
+export const clearAppCookieForInternalUser = (res: Response) => {
   //Clear current cookie from browser
-  res.cookie("poldIt-Session", "", {
+  res.cookie("internalUserPolditSession", "", {
     ...REFRESH_TOKEN_COOKIE_OPTIONS,
     maxAge: -1,
   });
 };
 
+export const clearAppCookie = (res: Response) => {
+  //Clear current cookie from browser
+  res.cookie("poldIt-Session", {
+    ...REFRESH_TOKEN_COOKIE_OPTIONS,
+    maxAge: -1,
+  });
+  console.log("I am here");
+};
+
 export const decodeJWToken = async (tokenVal: string) => {
   try {
-    const payload = await jwt.verify(tokenVal, JwtKey);
+    const payload = jwt.verify(tokenVal, JwtKey);
     return payload;
   } catch (err) {
     throw err;

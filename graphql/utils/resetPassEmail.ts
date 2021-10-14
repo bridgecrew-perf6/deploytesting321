@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
 
-export const confirmationEmail = async (email: string, password: string) => {
+export const sendResetPasswordMail = async (email: string, token: string) => {
+  console.log("sending Email");
+  console.log(email);
+
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -8,13 +11,14 @@ export const confirmationEmail = async (email: string, password: string) => {
       pass: "97coderr",
     },
   });
+  // console.log(transporter);
   var mailOptions = {
     from: "geekycoder18@gmail.com",
     to: email,
     subject: `Verryfy email send on ${Date.now()}`,
     text: "abcd",
-    html: `<strong> Your email has been confirmed =>
-      <h5>Your password for Poldit is ${password}</h5>
+    html: `<strong> Please click this link to change your Password =>
+      <a href=http://localhost:3000/Admin/${token}>Click to Change your Password</a> 
      </strong> `,
   };
 

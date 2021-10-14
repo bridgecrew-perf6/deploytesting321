@@ -5,6 +5,7 @@ import {
   transformUser,
   transformPoll,
   decodeJWToken,
+  clearAppCookieForInternalUser,
 } from "./shared";
 import batchLoaders from "../loaders/dataLoaders";
 import bcrypt from "bcryptjs";
@@ -40,6 +41,7 @@ export const userResolvers: ResolverMap = {
 
       if (req?.headers?.cookie) {
         clearAppCookie(res);
+        clearAppCookieForInternalUser(res);
         return "User is logged out!";
       }
       return "Not logged in";

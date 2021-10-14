@@ -19,15 +19,12 @@ import IChat from "../../models/interfaces/chat";
 import INotification from "../../models/interfaces/notification";
 
 const batchInternalUsers: BatchInternalUser = async (ids: any) => {
-  const users: IinternalUsers[] = await InternalUsers.find({
+  const internalUser: IinternalUsers[] = await InternalUsers.findOne({
     _id: { $in: ids },
   });
-  const userMap: { [key: string]: IinternalUsers } = {};
-  users.forEach((user) => {
-    userMap[user.id] = user;
-  });
+  console.log("InternalUser", internalUser);
 
-  return users;
+  return internalUser;
 };
 
 const batchUsers: BatchUser = async (ids) => {

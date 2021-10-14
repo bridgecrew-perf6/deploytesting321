@@ -36,21 +36,6 @@ const UserUpdateModel: React.FC<{
     loadingB,
   } = props;
 
-  // const accessRoles = [
-  //   {
-  //     value: "admin",
-  //     label: "Admin",
-  //   },
-  //   {
-  //     value: "employee",
-  //     label: "Employee",
-  //   },
-  //   {
-  //     value: "moderator",
-  //     label: "Moderator",
-  //   },
-  // ];
-
   const [roles, setRoles] = useState(userRoles);
   useEffect(() => {
     if (userRoles) setRoles(userRoles);
