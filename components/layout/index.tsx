@@ -6,8 +6,9 @@ import AddTopic from "../pageComponents/Other/TopicWindow/addTopicForm";
 import { PageForm } from "./CompStyles";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { siteTime } from "_components/index";
+// import { siteTime } from "_components/index";
 import schedule from "node-schedule";
+import NotificationWindow from "_components/pageComponents/Other/NavBar/NotificationWindow";
 
 const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS, GET_USER } =
   GraphResolvers.queries;

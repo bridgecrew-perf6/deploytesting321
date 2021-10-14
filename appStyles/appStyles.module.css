@@ -124,9 +124,11 @@
 
 .notifSubWindow {
   width: 50%;
-  height: 20%;
+  height: 85px;
   background-color: white;
   z-index: 1;
+  top: 50px;
+  right: 6px;
 }
 .notifSubWindow span {
   width: 100%;

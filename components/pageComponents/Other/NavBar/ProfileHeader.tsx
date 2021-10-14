@@ -41,7 +41,6 @@ export default function ProfileHeader() {
 
   useEffect(() => {
     getUser();
-    // appContext?.authState?.getUserData?.appToken !== "" && getUser();
     if (data) {
       appContext && appContext.updateUserData(data.getUserData);
     }
@@ -125,10 +124,12 @@ export default function ProfileHeader() {
         >
           <div
             className={`${styles.cursor} position-relative`}
-            onClick={() => toggleNotification(!notification)}
+            typeof="button"
+            data-toggle="modal"
+            data-target="#notifWindow"
           >
             {NotificationIcon}
-            {!notification && unreadNotifications.length > 0 && (
+            {unreadNotifications > 0 && (
               <div className="position-absolute" style={{ top: -15, left: 20 }}>
                 <p
                   className={`rounded-circle ${styles.appColor} text-white p-1 pl-2 pr-2`}
@@ -140,7 +141,7 @@ export default function ProfileHeader() {
             )}
           </div>
         </ToolTipCtr>
-        {notification && <NotificationWindow data={userNotifications} />}
+        <NotificationWindow data={notificationData?.notifications} />
         <div>
           <ProfileImg
             profilePic={profilePic}
@@ -171,7 +172,6 @@ export default function ProfileHeader() {
           >
             <ul className="d-flex flex-column h-100 justify-content-center">
               <Link href={`/Profile/${appid}`}>
-                {/* <Link href={{ pathname: "/Profile", query: { userId: _id } }}> */}
                 <li className="dropdown-item">{`${appid} Profile`}</li>
               </Link>
               <Link href={`/Polls`}>

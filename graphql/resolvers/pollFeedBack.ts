@@ -141,8 +141,9 @@ export const feedBackResolvers: ResolverMap = {
         throw new Error("Not Authenticated.  Please Log In!");
       }
 
-      const detailObjList: UserNotification[] = JSON.parse(details);
-      const updatedIds = detailObjList.map((item) => item._id);
+      const updatedIds = JSON.parse(details);
+      // const detailObjList: UserNotification[] = JSON.parse(details);
+      // const updatedIds = detailObjList.map((item) => item._id);
 
       try {
         const notifications = await Notification.updateMany(

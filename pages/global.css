@@ -11,6 +11,13 @@
   min-height: 100vh;
 }
 
+.modal {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.modal-backdrop {
+  position: relative;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

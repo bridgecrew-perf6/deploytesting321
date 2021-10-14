@@ -1,4 +1,5 @@
 import styles from "../../../../appStyles/appStyles.module.css";
+import windowStyles from "../../../../appStyles/windowStyles.module.css";
 import { Scrollbars } from "react-custom-scrollbars";
 import { UserNotification } from "../../../appTypes/appType";
 import React, { useState } from "react";
@@ -40,74 +41,80 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
     });
   };
 
-  const changeNotifications = (changeType: string, changeId: string = "") => {
-    let updatedData: UserNotification[] = [];
+  const changeNotifications = (changeId: string = "") => {
+    let updatedData: string | string[];
 
-    if (changeType === "all") {
-      updatedData = data.map((item) => {
-        return { ...item, read: true };
-      });
-    }
-
-    if (changeType !== "all" && changeId) {
-      const matchIdx = data.findIndex((item) => item._id === changeId);
-
-      updatedData = data.map((item, idx) => {
-        if (idx === matchIdx) {
-          return { ...item, read: true };
-        }
-        return item;
-      });
+    if (changeId) {
+      updatedData = changeId;
+    } else {
+      updatedData = data.map((item) => item._id);
     }
 
     updateNotifications(modifyNotifications, updatedData);
   };
 
-  // return (
-  //   <div
-  //     className="modal fade"
-  //     id="notifWindow"
-  //     aria-labelledby="notifWindowLabel"
-  //     aria-hidden="true"
-  //     tabIndex={-1}
-  //   >
-  //     <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-  //       <div className="modal-content">
-  //         <h5 className={formTxt}>Notifications</h5>
-  //         <div className="modal-body">Test</div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
+  // const changeNotifications = (changeType: string, changeId: string = "") => {
+  //   let updatedData: UserNotification[] = [];
+
+  //   if (changeType === "all") {
+  //     updatedData = data.map((item) => {
+  //       return { ...item, read: true };
+  //     });
+  //   }
+
+  //   if (changeType !== "all" && changeId) {
+  //     const matchIdx = data.findIndex((item) => item._id === changeId);
+
+  //     updatedData = data.map((item, idx) => {
+  //       if (idx === matchIdx) {
+  //         return { ...item, read: true };
+  //       }
+  //       return item;
+  //     });
+  //   }
+
+  //   updateNotifications(modifyNotifications, updatedData);
+  // };
 
   return (
     <div
-      className={`position-absolute p-2 ${appbg_secondary} ${ctrBxShadow} rounded position-relative`}
-      style={{ top: 90, right: 40, width: "25em", height: "70em" }}
+      className={`modal fade`}
+      id="notifWindow"
+      aria-labelledby="notifWindowLabel"
+      aria-hidden="true"
+      tabIndex={-1}
     >
-      <div className="d-flex align-items-center justify-content-between">
-        <h5 className={formTxt}>Notifications</h5>
-        <div
-          className={`mr-2 ${iconHover} d-flex align-items-center justify-content-center`}
-          style={{ cursor: "pointer" }}
-          onClick={() => toggleSubWindow(!subWindow)}
-        >
-          <BsThreeDots size={25} />
+      <div
+        className={`modal-dialog modal-lg modal-dialog-scrollable position-relative ${windowStyles.notifWindow}`}
+      >
+        <div className="modal-content p-2">
+          <div className="d-flex align-items-center justify-content-between">
+            <h5 className={formTxt}>Notifications</h5>
+            <div
+              className={`mr-2 ${iconHover} d-flex align-items-center justify-content-center`}
+              style={{ cursor: "pointer" }}
+              onClick={() => toggleSubWindow(!subWindow)}
+            >
+              <BsThreeDots size={25} />
+            </div>
+          </div>
+          {subWindow && <NotifSubWindow update={changeNotifications} />}
+          <div className={"modal-body"}>
+            <Scrollbars style={{ width: "100%", height: "95%" }}>
+              <div className="mt-2">
+                {data.map((item) => (
+                  <NotificationItem
+                    key={item._id}
+                    data={item}
+                    nav={goToRoute}
+                    changeNotification={changeNotifications}
+                  />
+                ))}
+              </div>
+            </Scrollbars>
+          </div>
         </div>
       </div>
-      {subWindow && <NotifSubWindow update={changeNotifications} />}
-      <Scrollbars style={{ width: "100%", height: "95%" }}>
-        <div className="mt-2">
-          {data.map((item) => (
-            <NotificationItem
-              key={item._id}
-              data={item}
-              nav={goToRoute}
-              changeNotification={changeNotifications}
-            />
-          ))}
-        </div>
-      </Scrollbars>
     </div>
   );
 };
@@ -115,18 +122,17 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
 export default NotificationWindow;
 
 interface NotifSubWindow {
-  update: (changeType: string) => void;
+  update: (changeId?: string) => void;
 }
 
 const NotifSubWindow = ({ update }: NotifSubWindow) => {
   return (
     <div
       className={`position-absolute ${notifSubWindow} ${ctrBxShadow} p-2 mr-1`}
-      style={{ right: 15, width: "50%", height: "8%", zIndex: 1 }}
     >
       <span
         className="d-flex align-items-center w-100 p-1"
-        onClick={() => update("all")}
+        onClick={() => update()}
       >
         <FaRegCheckCircle size={22} color="#969696" />
         <a
@@ -156,7 +162,7 @@ const NotifSubWindow = ({ update }: NotifSubWindow) => {
 interface NotificationItem {
   data: UserNotification;
   nav: (id: string) => void;
-  changeNotification: (changeType: string, changeId: string) => void;
+  changeNotification: (changeId?: string) => void;
 }
 
 const NotificationItem = ({
@@ -196,7 +202,7 @@ const NotificationItem = ({
 
       {!data.read && (
         <span
-          onClick={() => changeNotification("", data._id)}
+          onClick={() => changeNotification(data._id)}
           className={`rounded-circle ${appColor} mr-2`}
           style={{ height: 14, width: 15, cursor: "pointer" }}
         />

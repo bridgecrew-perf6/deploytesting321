@@ -366,19 +366,39 @@ export const updateNotifications = async (
   updateNotificationFunc: (
     options?: MutationFunctionOptions<any, OperationVariables> | undefined
   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: UserNotification[]
+  details: string | string[]
 ) => {
   try {
     updateNotificationFunc({
-      variables: { details: JSON.stringify(details) },
+      variables: {
+        details: JSON.stringify(details),
+      },
       update(cache, { data: { updateNotification } }) {
-        // const { notifications }: any = cache.readQuery({
-        //   query: GET_NOTIFICATIONS,
-        // });
+        const notifications: any = cache.readQuery({
+          query: GET_NOTIFICATIONS,
+        });
+
+        let updatedNotifications: UserNotification[] = [];
+
+        if (typeof details === "string" && notifications) {
+          updatedNotifications = notifications.notifications.map(
+            (item: UserNotification) => {
+              if (item._id === details) {
+                return { ...item, read: true };
+              }
+              return item;
+            }
+          );
+        } else
+          updatedNotifications = notifications?.notifications.map(
+            (item: UserNotification) => {
+              return { ...item, read: true };
+            }
+          );
 
         cache.writeQuery({
           query: GET_NOTIFICATIONS,
-          data: details,
+          data: { notifications: updatedNotifications },
         });
       },
     });
