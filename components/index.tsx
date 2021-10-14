@@ -17,8 +17,4 @@ export type {
 } from "./appTypes/appType";
 export { default as adminData } from "./Datas/AdminData";
 export { default as privilages } from "./Datas/PrivilagesData";
-<<<<<<< HEAD
-// export type { siteTime } from "./appTypes/appType";
-=======
->>>>>>> fa227085ca7cce700544ea24958a2017313b09db
 export { emailValidation } from "./formFuncs/emailErrorFunc";

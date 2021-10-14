@@ -5,13 +5,6 @@ import NavBar from "../pageComponents/Other/NavBar";
 import AddTopic from "../pageComponents/Other/TopicWindow/addTopicForm";
 import { PageForm } from "./CompStyles";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
-<<<<<<< HEAD
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-// import { siteTime } from "_components/index";
-import schedule from "node-schedule";
-import NotificationWindow from "_components/pageComponents/Other/NavBar/NotificationWindow";
-=======
->>>>>>> fa227085ca7cce700544ea24958a2017313b09db
 
 // const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS, GET_USER } =
 //   GraphResolvers.queries;

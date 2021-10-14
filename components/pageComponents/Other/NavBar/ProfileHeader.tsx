@@ -139,19 +139,12 @@ export default function ProfileHeader(props: any) {
         >
           <div
             className={`${styles.cursor} position-relative`}
-<<<<<<< HEAD
             typeof="button"
             data-toggle="modal"
             data-target="#notifWindow"
           >
             {NotificationIcon}
             {unreadNotifications > 0 && (
-=======
-            onClick={() => toggleNotification((notification) => !notification)}
-          >
-            {NotificationIcon}
-            {!notification && unreadNotifications?.length > 0 && (
->>>>>>> fa227085ca7cce700544ea24958a2017313b09db
               <div className="position-absolute" style={{ top: -15, left: 20 }}>
                 <p
                   className={`rounded-circle ${styles.appColor} text-white p-1 pl-2 pr-2`}
@@ -163,13 +156,7 @@ export default function ProfileHeader(props: any) {
             )}
           </div>
         </ToolTipCtr>
-<<<<<<< HEAD
         <NotificationWindow data={notificationData?.notifications} />
-=======
-
-        {notification && <NotificationWindow data={userNotifications} />}
-
->>>>>>> fa227085ca7cce700544ea24958a2017313b09db
         <div>
           <ProfileImg
             profilePic={profilePic}
