@@ -10,7 +10,9 @@ const connectDb = (handler: any) => async (req: Request, res: Response) => {
 
   const { DEV_DB_URL, PROD_DB_URL } = process.env;
 
-  const dbUri = isDev ? (DEV_DB_URL as string) : (PROD_DB_URL as string);
+  const localDB = "mongodb://localhost:27017/poldit";
+
+  const dbUri = isDev ? (localDB as string) : (PROD_DB_URL as string);
 
   if (mongoose.connections[0].readyState !== 1) {
     try {
