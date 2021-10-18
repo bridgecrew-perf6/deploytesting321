@@ -11,7 +11,6 @@ import AppLoading, {
   AppLoadingLite,
 } from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
-import { siteTime } from "_components/index";
 
 const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS, GET_USER } =
   GraphResolvers.queries;

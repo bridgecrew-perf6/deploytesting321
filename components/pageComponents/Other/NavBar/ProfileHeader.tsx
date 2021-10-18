@@ -127,11 +127,20 @@ export default function ProfileHeader(props: any) {
           marginLeft: 5,
         }}
       >
+        <div
+          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+          typeof="button"
+          data-toggle="modal"
+          data-target="#newPollModal"
+        >
+          Create New Poll
+        </div>
         {superUserList?.includes(appid) && (
           <>
             <NewTopicBtn />
           </>
         )}
+
         <ToolTipCtr
           mssg="Notifications"
           position="bottom"

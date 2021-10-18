@@ -96,10 +96,10 @@ export const feedBackResolvers: ResolverMap = {
           dataLoaders(["user", "poll"])
         );
 
+        pollItem.answers.push(pollAnswer._id);
         await pollItem.save();
 
         pubsub.publish("newAnswer", { newAnswer: createdAnswer });
-        pollItem.answers.push(pollAnswer._id);
 
         //Push to Notification
         if (pollItem.creator.toString() !== id) {
