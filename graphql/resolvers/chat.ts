@@ -1,4 +1,4 @@
-import { ResolverMap } from "../../components/appTypes/appType";
+import { ChatFeed, ResolverMap } from "../../components/appTypes/appType";
 import { v4 as uuidv4 } from "uuid";
 import Chat from "../../models/chatModel";
 import Poll from "../../models/PollModel";
@@ -22,7 +22,7 @@ export const chatResolvers: ResolverMap = {
           transformChat(item, dataLoaders(["user", "poll"]))
         );
       } catch (err) {
-        throw  err;
+        throw err;
       }
     },
     messageByUser: async (parent, args, { dataLoaders }) => {},
@@ -33,6 +33,56 @@ export const chatResolvers: ResolverMap = {
         return pollMessages.map((item: IChat) =>
           transformChat(item, dataLoaders(["user", "poll"]))
         );
+      } catch (err) {
+        throw err;
+      }
+    },
+    messageFeedByPoll: async (
+      parent,
+      { pollId, cursor, limit },
+      { dataLoaders }
+    ) => {
+      const noCursorOffset = !cursor ? 1 : 0;
+      if (limit <= 0) {
+        throw new Error("Cannot fetch records for negative or 0 limit");
+      }
+
+      try {
+        const pollMessages: IChat[] = await Chat.find({ poll: pollId });
+
+        if (!cursor) {
+          cursor = pollMessages[pollMessages.length - 1]._id.toString();
+        }
+
+        const newMessageIdx = pollMessages.findIndex(
+          (msg) => msg._id.toString() === cursor
+        );
+
+        const offset = newMessageIdx - limit + noCursorOffset;
+
+        let messages: IChat[] = [];
+        let hasMoreData: boolean = false;
+        let newCursor: string = "";
+
+        if (offset > 0) {
+          messages = pollMessages.slice(offset, newMessageIdx + noCursorOffset);
+          hasMoreData = true;
+          newCursor = pollMessages[offset]._id.toString();
+        } else {
+          messages = pollMessages.slice(0, newMessageIdx + noCursorOffset);
+        }
+
+        const messageDetails = messages.map((item: IChat) =>
+          transformChat(item, dataLoaders(["user", "poll"]))
+        );
+
+        const chatFeed: ChatFeed = {
+          cursor: newCursor,
+          messages: messageDetails,
+          hasMoreData,
+        };
+
+        return chatFeed;
       } catch (err) {
         throw err;
       }

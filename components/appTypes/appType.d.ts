@@ -456,6 +456,12 @@ interface CustomBtn {
   data: any[];
 }
 
+interface ChatFeed {
+  cursor: string;
+  messages: ChatMessage[];
+  hasMoreData: boolean;
+}
+
 interface SrchCustomBtn extends CustomBtn {
   count: number;
   data: PollHistory[] | Answer[] | ITopic[] | ISubTopic[] | null;

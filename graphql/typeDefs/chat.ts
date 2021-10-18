@@ -11,10 +11,17 @@ export const chatTypeDefs = gql`
     isAnswer: Boolean!
   }
 
+  type ChatFeed {
+    cursor: String!
+    messages: [ChatMessage]!
+    hasMoreData: Boolean!
+  }
+
   extend type Query {
-    messages: [ChatMessage!]
+    messages: [ChatMessage]!
     messageByUser(userId: String!): [ChatMessage]
     messagesByPoll(pollId: String!): [ChatMessage]
+    messageFeedByPoll(cursor: String, pollId: String!, limit: Int): ChatFeed
   }
 
   extend type Mutation {
