@@ -31,6 +31,7 @@ import {
 } from "@chakra-ui/react";
 import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
+import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
 
 const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL } = GraphResolvers.queries;
 const apolloClient = initializeApollo();
@@ -209,14 +210,8 @@ const Poll = ({ pollId }: Props) => {
                         user={user && user?.getUserDataForPoll}
                       />
                     </TabPanel>
-                    <TabPanel>
-                      <Flex
-                        minH="715px"
-                        justifyContent="center"
-                        alignItems="center"
-                      >
-                        <Text>This is the userList Tab!</Text>
-                      </Flex>
+                    <TabPanel p="0">
+                      <UserTab />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>

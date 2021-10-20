@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Box,
   Flex,
@@ -7,9 +8,7 @@ import {
   IconButton,
   Spinner,
   useDisclosure,
-  Image,
   Collapse,
-  Button,
 } from "@chakra-ui/react";
 import TimeAgo from "react-timeago";
 import TextareaAutosize from "react-textarea-autosize";
@@ -19,9 +18,12 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
+import { BsFlagFill } from "react-icons/bs";
 import { BiErrorCircle } from "react-icons/bi";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation } from "@apollo/client";
+import Pagination from "react-js-pagination";
+import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
 
 const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
   const [value, setValue] = useState<string>("");
@@ -33,17 +35,11 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
 
   useEffect(() => {
     if (answers) {
-      const pagination = answers.slice(0, 5 * page);
+      const pagination = answers.slice(5 * page - 5, 5 * page);
       setAnsState(pagination);
     }
   }, [answers, page]);
 
-  const onPageChange = () => {
-    if (page * 5 >= answers.length) {
-      return;
-    }
-    setPage(page + 1);
-  };
   const likeHandler = (
     feedback: string,
     feedbackVal: boolean,
@@ -179,38 +175,40 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
           </Flex>
         </Box>
       ) : (
-        <Box bg="#f2f2f2" pb="6">
+        <Box bg="#f2f2f2">
           {loading ? (
             <Flex h="640px" justify="center" align="center">
               <Spinner size="xl" />
             </Flex>
           ) : (
-            <Scrollbars style={{ height: "640px" }}>
-              {ansState &&
-                ansState.map((c: any) => (
-                  <Box key={c._id} px={6}>
-                    <CardContent
-                      data={c}
-                      likes={c?.likes?.length}
-                      dislikes={c?.dislikes?.length}
-                      likeHandler={likeHandler}
-                    />
-                  </Box>
-                ))}
-              <Box
-                textAlign="center"
-                display={page * 5 >= answers.length ? "none" : "block"}
-              >
-                <Text
-                  fontSize="xs"
-                  cursor="pointer"
-                  color="blue.400"
-                  onClick={() => onPageChange()}
-                >
-                  Load More
-                </Text>
-              </Box>
-            </Scrollbars>
+            <>
+              <Scrollbars style={{ height: "640px" }}>
+                {ansState &&
+                  ansState.map((c: any) => (
+                    <Box key={c._id} px={6}>
+                      <CardContent
+                        data={c}
+                        likes={c?.likes?.length}
+                        dislikes={c?.dislikes?.length}
+                        likeHandler={likeHandler}
+                      />
+                    </Box>
+                  ))}
+              </Scrollbars>
+              <Flex justify="center" align="center" py="4">
+                <Pagination
+                  activePage={page}
+                  prevPageText="Prev"
+                  nextPageText="Next"
+                  itemsCountPerPage={5}
+                  totalItemsCount={answers && answers.length}
+                  pageRangeDisplayed={5}
+                  onChange={(e: any) => setPage(e)}
+                  itemClass="page-item"
+                  linkClass="page-link"
+                />
+              </Flex>
+            </>
           )}
         </Box>
       )}
@@ -220,6 +218,11 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
 
 const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
   const { isOpen, onToggle } = useDisclosure();
+  const {
+    isOpen: lbOpen,
+    onOpen: onLbOpen,
+    onClose: onLbClose,
+  } = useDisclosure();
 
   return (
     <Box
@@ -254,8 +257,13 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
         {isOpen ? "Hide" : "Show"} attachment
       </Text>
       <Collapse in={isOpen} animateOpacity>
-        <Box p="2">
-          <Image src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png" />
+        <Box p="4" textAlign="center" cursor="pointer" onClick={onLbOpen}>
+          <Image
+            src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
+            width={500}
+            height={500}
+            loading="lazy"
+          />
         </Box>
       </Collapse>
       <Flex justifyContent="space-between" alignItems="center">
@@ -293,6 +301,17 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
               </Text>
             </Box>
           </Flex>
+          <Flex justify="center" align="center">
+            <IconButton
+              icon={<BsFlagFill size="14px" />}
+              aria-label="thumbsup"
+              variant="ghost"
+              _focus={{ outline: "none" }}
+              size="sm"
+              ml="1"
+              color="gray.500"
+            />
+          </Flex>
         </Flex>
         <Box>
           <Text color="gray.700" fontSize="sm">
@@ -300,6 +319,11 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
           </Text>
         </Box>
       </Flex>
+      <LightBoxImage
+        url="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
+        lbOpen={lbOpen}
+        onLbClose={onLbClose}
+      />
     </Box>
   );
 };

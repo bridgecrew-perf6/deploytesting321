@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Flex,
+  IconButton,
   Input,
   Spinner,
   Text,
@@ -16,6 +17,7 @@ import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation, useQuery } from "@apollo/client";
 import { addNewChatMssg } from "../../../../lib/apollo/apolloFunctions/mutations";
 import { BiErrorCircle } from "react-icons/bi";
+import { BsFlagFill } from "react-icons/bs";
 
 const ChatTab = ({ pollId, user }: any) => {
   const { loading, error, data, subscribeToMore } = useQuery(
@@ -88,7 +90,7 @@ const ChatTab = ({ pollId, user }: any) => {
           <Spinner size="xl" />
         </Flex>
       ) : (
-        <Scrollbars style={{ height: "675px" }} ref={scrollRef as any}>
+        <Scrollbars style={{ height: "718px" }} ref={scrollRef as any}>
           <Box p="4">
             {data?.messagesByPoll.map((d: any) =>
               user._id !== d?.creator?._id ? (
@@ -132,11 +134,20 @@ const ChatTab = ({ pollId, user }: any) => {
                         {d.message}
                       </Text>
                     </Box>
-                    <Box>
+                    <Flex>
                       <Text fontSize="xs" color="gray.500" ml="2" mt="1">
                         <TimeAgo date={d.creationDate} live={false} />
                       </Text>
-                    </Box>
+                      <IconButton
+                        icon={<BsFlagFill size="12px" />}
+                        aria-label="thumbsup"
+                        variant="ghost"
+                        _focus={{ outline: "none" }}
+                        size="xs"
+                        ml="1"
+                        color="gray.500"
+                      />
+                    </Flex>
                   </Flex>
                 </Flex>
               ) : (

@@ -5,6 +5,10 @@ import {
   Flex,
   HStack,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -14,6 +18,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { AiOutlineHeart } from "react-icons/ai";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import TimeAgo from "react-timeago";
 import {
   FacebookIcon,
@@ -25,6 +30,8 @@ import {
 } from "react-share";
 
 import { BiShareAlt } from "react-icons/bi";
+import { BiDotsVerticalRounded } from "react-icons/bi";
+import { IoMdCopy } from "react-icons/io";
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -64,6 +71,34 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                   {st.subTopic}
                 </Tag>
               ))}
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label="dotMenu"
+                icon={<BiDotsVerticalRounded size="20px" />}
+                variant="ghost"
+                _focus={{ outline: "none" }}
+                _hover={{ bg: "none" }}
+                _active={{ bg: "none" }}
+                size="xs"
+                ml="1"
+                color="gray.500"
+              />
+              <MenuList>
+                <MenuItem
+                  _focus={{ outline: "none" }}
+                  _hover={{ bg: "gray.200" }}
+                >
+                  Report
+                </MenuItem>
+                <MenuItem
+                  _focus={{ outline: "none" }}
+                  _hover={{ bg: "gray.200" }}
+                >
+                  Setting
+                </MenuItem>
+              </MenuList>
+            </Menu>
           </HStack>
         </Flex>
         <Box pt="8" pb="4" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
@@ -97,7 +132,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
             >
               <PopoverArrow />
               <PopoverBody>
-                <Flex justify="flex-start" align="center" px="4" py="2">
+                <Flex justify="flex-start" align="center" px="2" py="2">
                   <FacebookShareButton url="https://poldit.vercel.app/">
                     <FacebookIcon round={true} size="24px" />
                   </FacebookShareButton>
@@ -109,6 +144,14 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                   <LinkedinShareButton url="https://chakra-ui.com">
                     <LinkedinIcon round={true} size="24px" />
                   </LinkedinShareButton>
+                  <Flex ml="2">
+                    <CopyToClipboard
+                      text={"I'm in your clipboard Now!!!"}
+                      onCopy={() => console.log("COPIED")}
+                    >
+                      <IoMdCopy size="24px" style={{ cursor: "pointer" }} />
+                    </CopyToClipboard>
+                  </Flex>
                 </Flex>
               </PopoverBody>
             </PopoverContent>
