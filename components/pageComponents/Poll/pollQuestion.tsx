@@ -107,6 +107,11 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
           </Text>
         </Box>
         <Flex justifyContent="flex-end" alignItems="center">
+          <Box mr="2">
+            <Text fontSize="xs" color="gray.400">
+              Last activity: 2 days ago
+            </Text>
+          </Box>
           <IconButton
             aria-label="heart"
             icon={<AiOutlineHeart size="22px" />}
