@@ -21,11 +21,13 @@ import { getMainDefinition } from "@apollo/client/utilities";
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 let appToken: String | null = null;
 let appCookie: String | null = null;
-console.log(process.env);
+
 let isDev =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? true
     : false;
+
+console.log(process.env.NEXT_PUBLIC_WS_API_DEV)
 
 const {
   NEXT_PUBLIC_WS_API_DEV,
