@@ -27,14 +27,14 @@ let isDev =
     ? true
     : false;
 
-console.log(process.env.NEXT_PUBLIC_WS_API_DEV)
 
-const {
-  NEXT_PUBLIC_WS_API_DEV,
-  NEXT_PUBLIC_WS_API_PROD,
-  NEXT_PUBLIC_HTTP_API_DEV,
-  NEXT_PUBLIC_HTTP_API_PROD,
-} = process.env;
+
+// const {
+//   NEXT_PUBLIC_WS_API_DEV,
+//   NEXT_PUBLIC_WS_API_PROD,
+//   NEXT_PUBLIC_HTTP_API_DEV,
+//   NEXT_PUBLIC_HTTP_API_PROD,
+// } = process.env;
 
 export const storeTokens = (
   sessionToken: String = "",
@@ -48,8 +48,8 @@ export const storeTokens = (
 const wsLink = process.browser
   ? new WebSocketLink({
       uri: isDev
-        ? (NEXT_PUBLIC_WS_API_DEV as string)
-        : (NEXT_PUBLIC_WS_API_PROD as string),
+        ? (process.env.NEXT_PUBLIC_WS_API_DEV as string)
+        : (process.env.NEXT_PUBLIC_WS_API_PROD as string),
       options: {
         reconnect: true,
         // lazy: true,
@@ -57,7 +57,7 @@ const wsLink = process.browser
     })
   : null;
 const httpLink = new HttpLink({
-  uri: isDev ? NEXT_PUBLIC_HTTP_API_DEV : NEXT_PUBLIC_HTTP_API_PROD,
+  uri: isDev ? process.env.NEXT_PUBLIC_HTTP_API_DEV : process.env.NEXT_PUBLIC_HTTP_API_PROD,
   credentials: "same-origin",
 });
 
