@@ -53,29 +53,6 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
     updateNotifications(modifyNotifications, updatedData);
   };
 
-  // const changeNotifications = (changeType: string, changeId: string = "") => {
-  //   let updatedData: UserNotification[] = [];
-
-  //   if (changeType === "all") {
-  //     updatedData = data.map((item) => {
-  //       return { ...item, read: true };
-  //     });
-  //   }
-
-  //   if (changeType !== "all" && changeId) {
-  //     const matchIdx = data.findIndex((item) => item._id === changeId);
-
-  //     updatedData = data.map((item, idx) => {
-  //       if (idx === matchIdx) {
-  //         return { ...item, read: true };
-  //       }
-  //       return item;
-  //     });
-  //   }
-
-  //   updateNotifications(modifyNotifications, updatedData);
-  // };
-
   return (
     <div
       className={`modal fade`}
