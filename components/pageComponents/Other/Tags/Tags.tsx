@@ -6,11 +6,7 @@ import styles from "../../../../appStyles/appStyles.module.css";
 import ProfileImg from "../../Profile/profileImg";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-<<<<<<< HEAD
-import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/mutations";
-=======
 import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/userMutations";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import { useAuth } from "../../../authProvider/authProvider";
 import { dateToString } from "../../../globalFuncs";
 
@@ -24,11 +20,8 @@ interface TagWindow {
 }
 
 export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
-<<<<<<< HEAD
-=======
   const appContext = useAuth();
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   const [btnState, toggleBtn] = useState(false);
 
   const likeIcon = btnState ? (
@@ -45,12 +38,8 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
   });
 
   useEffect(() => {
-<<<<<<< HEAD
-    isFavorite();
-=======
     appContext?.authState?.getUserData?.appToken !== "" && isFavorite();
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     if (data) {
       toggleBtn(data.isFavorite);
     }

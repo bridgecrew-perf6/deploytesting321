@@ -6,31 +6,16 @@ import {
   Answer,
   PollHistory,
   SelectedImage,
-<<<<<<< HEAD
-} from "../../../components/appTypes/appType";
-import { SitePageContainer } from "../../../components/layout";
-import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
-import PollChat from "../../../components/pageComponents/Poll/Chat";
-import { useMutation, useQuery } from "@apollo/client";
-import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
-import { saveImgtoCloud } from "../../../components/apis/imgUpload";
-=======
   User,
 } from "../../../components/appTypes/appType";
 import { SitePageContainer } from "../../../components/layout";
 import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
-import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
-import PollChat from "../../../components/pageComponents/Poll/Chat";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
 import { saveImgtoCloud } from "../../../components/apis/imgUpload";
-import { AddAnswer } from "../../../components/pageComponents/Poll/pollComps";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
-import { MaxMinBtn } from "../../../components/layout/customComps";
 import {
   addNewAnswer,
   updateViewCount,
-<<<<<<< HEAD
 } from "../../../lib/apollo/apolloFunctions/mutations";
 import AnsBox from "../../../components/pageComponents/Poll/AnsBox/AnsBox";
 import {
@@ -48,13 +33,6 @@ import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
 
 const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL } = GraphResolvers.queries;
-=======
-} from "../../../lib/apollo/apolloFunctions";
-import { useAuth } from "../../../components/authProvider/authProvider";
-
-const { GET_POLL, GET_POLLS_ALL, GET_USER, GET_USER_FOR_POLL } =
-  GraphResolvers.queries;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 const apolloClient = initializeApollo();
 
 interface Props {
@@ -63,25 +41,13 @@ interface Props {
 }
 
 const Poll = ({ pollId }: Props) => {
-<<<<<<< HEAD
   //States
   const [error, updateError] = useState<string[]>([]);
 
-=======
-  const appContext = useAuth();
-
-  //States
-  const [error, updateError] = useState<string[]>([]);
-  const [answerWindow, showAnswerWindow] = useState(false);
-  const [answersSection, showAnswersSection] = useState(false);
-  const [chatSection, showChatSection] = useState(false);
-  const [userInfo, setUser] = useState();
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   //Graph API Requests
   const { data } = useQuery(GET_POLL, {
     variables: { pollId },
   });
-<<<<<<< HEAD
   const flexObj = {
     flex: {
       base: "0 0 100%",
@@ -92,27 +58,11 @@ const Poll = ({ pollId }: Props) => {
   };
 
   const { data: user } = useQuery(GET_USER_FOR_POLL);
-=======
-
-  // const { data: appUserData } = useQuery(GET_USER, {
-  //   onCompleted: (res) => {
-  //     setUser(res.getUserData.user);
-  //   },
-  // });
-  // console.log(userInfo);
-
-  const [getUser, { data: user }] = useLazyQuery(GET_USER_FOR_POLL);
-  // console.log(data);
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
     {
-<<<<<<< HEAD
       onError: (e) => addError(e.message),
-=======
-      onError: (e: any) => addError(e.message),
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     }
   );
 
@@ -121,10 +71,7 @@ const Poll = ({ pollId }: Props) => {
   const {
     data: answerData,
     loading,
-<<<<<<< HEAD
     error: answerError,
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     subscribeToMore,
   } = useQuery(GraphResolvers.queries.GET_ANSWERS_BY_POLL, {
     variables: { pollId },
@@ -133,19 +80,10 @@ const Poll = ({ pollId }: Props) => {
   // //Component Mounted
 
   useEffect(() => {
-<<<<<<< HEAD
     updateViewCount(addView, pollId);
   }, []);
 
   useEffect(() => {
-=======
-    data && updateViewCount(addView, pollId);
-  }, []);
-
-  useEffect(() => {
-    appContext?.authState?.getUserData?.appToken !== "" && getUser();
-
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     if (answerData && subscribeToMore) {
       subscribeToMore({
         document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
@@ -175,26 +113,9 @@ const Poll = ({ pollId }: Props) => {
         },
       });
     }
-<<<<<<< HEAD
   }, [data, answerData]);
 
   // //Functions
-=======
-  }, [pollId, user, data, answerData]);
-
-  // //Functions
-  const toggleAddAnswer = () => {
-    showAnswerWindow(!answerWindow);
-  };
-
-  const toggleSection = (section: string) => {
-    if (section === "answers") {
-      showAnswersSection(!answersSection);
-    } else {
-      showChatSection(!chatSection);
-    }
-  };
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
   const addError = (errMssg?: string) => {
     if (errMssg) {
@@ -205,13 +126,7 @@ const Poll = ({ pollId }: Props) => {
   const removeError = (errId: number) => {
     let udpatedErrorList: string[] = [];
     if (error.length > 1) {
-<<<<<<< HEAD
       udpatedErrorList = error.filter((item, idx) => errId === idx);
-=======
-      udpatedErrorList = error.filter(
-        (item: any, idx: number) => errId === idx
-      );
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     } else {
       udpatedErrorList = [];
     }
@@ -230,27 +145,14 @@ const Poll = ({ pollId }: Props) => {
 
     addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
-<<<<<<< HEAD
   console.log("myData>>>", data);
   console.log("ansDATA>>>", answerData);
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
   if (data) {
     return (
       <SitePageContainer title={`Poll`}>
         <div style={{ marginTop: "100px" }}>
-<<<<<<< HEAD
           <PollQuestion pollData={data.poll} />
-=======
-          <PollQuestion
-            pollData={data.poll}
-            numAnswers={
-              answerData?.answersByPoll ? answerData?.answersByPoll.length : 0
-            }
-            showAdd={toggleAddAnswer}
-          />
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
           {error && (
             <ErrorToast
               mssgs={error}
@@ -258,7 +160,6 @@ const Poll = ({ pollId }: Props) => {
               removeError={removeError}
             />
           )}
-<<<<<<< HEAD
           <Flex wrap="wrap" pb={6} bg="white" px={[0, 0, 20, 20, 36]}>
             <Box {...flexObj} p={4}>
               <AnsBox
@@ -332,47 +233,6 @@ const Poll = ({ pollId }: Props) => {
 			  />
 			  </div>
 		  */}
-=======
-          {answerWindow && (
-            <div className="m-3">
-              <AddAnswer
-                addAnswer={addAnswer}
-                addError={addError}
-                toggleWindow={toggleAddAnswer}
-              />
-            </div>
-          )}
-          <div className="position-relative">
-            <MaxMinBtn
-              btnState={answersSection}
-              toggleBtn={toggleSection}
-              btnCat="answers"
-            />
-            <PollAnswers
-              creator={data.poll.creator}
-              poll={data.poll._id}
-              loading={loading}
-              answers={answerData?.answersByPoll}
-              showSection={answersSection}
-              addError={addError}
-            />
-          </div>
-
-          <div className="position-relative mb-2">
-            <MaxMinBtn
-              btnState={chatSection}
-              toggleBtn={toggleSection}
-              btnCat="chat"
-            />
-            <PollChat
-              pollId={data.poll._id}
-              addAnswer={addAnswer}
-              addError={addError}
-              showSection={chatSection}
-              user={user?.getUserDataForPoll}
-            />
-          </div>
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         </div>
       </SitePageContainer>
     );

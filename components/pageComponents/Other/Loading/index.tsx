@@ -32,17 +32,12 @@ export default AppLoading;
 
 export const AppLoadingLite = () => {
   return (
-<<<<<<< HEAD
-    <div className="d-flex justify-content-center">
-      <div className="spinner-border" style={{color:'#ff4d00'}} role="status">
-=======
     <div className="d-flex  justify-content-center">
       <div
         className="spinner-border"
         style={{ color: "#ff4d00" }}
         role="status"
       >
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         <span className="sr-only">Loading...</span>
       </div>
     </div>

@@ -1,8 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { storeTokens } from "../../lib/apollo";
-<<<<<<< HEAD
-import { AppMssg, User, UserDataProps } from "../appTypes/appType";
-=======
 import {
   AppMssg,
   InternalUserDataProps,
@@ -11,7 +8,6 @@ import {
 } from "../appTypes/appType";
 import { AppContextInterface } from "./authType";
 import jwt_decode from "jwt-decode";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const AuthContext = createContext<AppContextInterface | null>(null);
 
@@ -23,12 +19,6 @@ const AuthProvider: React.FC = ({ children }) => {
     },
   };
 
-<<<<<<< HEAD
-  const [authState, setAuthState] = useState(initialAuthState);
-
-  const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]); //This may not be needed since you can pass mssgs between pages.  Think of removing
-
-=======
   const initialAuthStateForInternlaUser: InternalUserDataProps = {
     getInternalUserData: {
       appToken: "",
@@ -41,15 +31,12 @@ const AuthProvider: React.FC = ({ children }) => {
   );
   const [authState, setAuthState] = useState(initialAuthState);
   const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]); //This may not be needed since you can pass mssgs between pages.  Think of removing
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   const [searchVal, updateSearchVal] = useState("");
 
   const handleSearch = (val: string) => {
     updateSearchVal(val);
   };
 
-<<<<<<< HEAD
-=======
   const setAuthTokenForInternalUser = (token: string) => {
     let tokenData: any;
     storeTokens(token);
@@ -69,7 +56,6 @@ const AuthProvider: React.FC = ({ children }) => {
     setInternalUserAuthState(updatedInternalUserToken);
   };
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   const setAuthToken = (token: string) => {
     storeTokens(token);
     const updatedAuthState: UserDataProps = {
@@ -87,8 +73,6 @@ const AuthProvider: React.FC = ({ children }) => {
     setAuthState(userData);
   };
 
-<<<<<<< HEAD
-=======
   const updateInternalUserData = (internalUser: InternalUserDataProps) => {
     setInternalUserAuthState(internalUser);
   };
@@ -101,7 +85,6 @@ const AuthProvider: React.FC = ({ children }) => {
     // }
   };
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   const signOut = () => {
     setAuthState(initialAuthState);
 
@@ -113,20 +96,11 @@ const AuthProvider: React.FC = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-<<<<<<< HEAD
-=======
         internalUserAuthState,
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         authState,
         appMssgs,
         searchVal,
         setAuthToken,
-<<<<<<< HEAD
-        updateAppMssgs,
-        handleSearch,
-        updateUserData,
-        signOut,
-=======
         setAuthTokenForInternalUser,
         updateAppMssgs,
         handleSearch,
@@ -134,7 +108,6 @@ const AuthProvider: React.FC = ({ children }) => {
         updateInternalUserData,
         signOut,
         signOutInternalUser,
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       }}
     >
       {children}

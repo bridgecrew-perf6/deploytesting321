@@ -4,15 +4,6 @@ import NewPoll from "../pageComponents/Home/NewPoll";
 import NavBar from "../pageComponents/Other/NavBar";
 import AddTopic from "../pageComponents/Other/TopicWindow/addTopicForm";
 import { PageForm } from "./CompStyles";
-<<<<<<< HEAD
-
-export const SitePageContainer: React.FC<IProps> = (props) => {
-  return (
-    <PageForm title={props.title}>
-      <NewPoll />
-      <AddTopic />
-      <NavBar />
-=======
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
 
 // const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS, GET_USER } =
@@ -68,7 +59,6 @@ export const SitePageContainer: React.FC<IProps> = (props: any) => {
       {props.title !== "Admin Panel"} && <NewPoll />
       {props.title !== "Admin Panel"} && <AddTopic />
       <NavBar title={props.title} />
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       {props.children}
     </PageForm>
   );

@@ -30,11 +30,7 @@ export const topicResolvers: ResolverMap = {
 
         return getAlphabeticalList(subTopicsWithData, "subTopic");
       } catch (err) {
-<<<<<<< HEAD
-        throw new err();
-=======
         throw err;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       }
     },
     subTopicsPerTopic: async (parent, { topic }, { dataLoaders }) => {
@@ -120,17 +116,11 @@ export const topicResolvers: ResolverMap = {
 
       let existingSubTopic;
 
-<<<<<<< HEAD
-      try {
-        existingSubTopic = await SubTopic.findOne({
-          subTopic: subTopicObj.subTopic,
-=======
       const regExpString = new RegExp(subTopicObj.subTopic, "i"); //case insenstive search for value in DB
 
       try {
         existingSubTopic = await SubTopic.findOne({
           subTopic: regExpString,
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         });
 
         if (existingSubTopic) {

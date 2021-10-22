@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { ResolverMap } from "../../components/appTypes/appType";
-=======
 import { ChatFeed, ResolverMap } from "../../components/appTypes/appType";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import { v4 as uuidv4 } from "uuid";
 import Chat from "../../models/chatModel";
 import Poll from "../../models/PollModel";
@@ -26,11 +22,7 @@ export const chatResolvers: ResolverMap = {
           transformChat(item, dataLoaders(["user", "poll"]))
         );
       } catch (err) {
-<<<<<<< HEAD
-        throw new Error(err);
-=======
         throw err;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       }
     },
     messageByUser: async (parent, args, { dataLoaders }) => {},
@@ -45,8 +37,6 @@ export const chatResolvers: ResolverMap = {
         throw err;
       }
     },
-<<<<<<< HEAD
-=======
     messageFeedByPoll: async (
       parent,
       { pollId, cursor, limit },
@@ -97,7 +87,6 @@ export const chatResolvers: ResolverMap = {
         throw err;
       }
     },
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   },
   Mutation: {
     createMessage: async (parent, { details }, ctx) => {

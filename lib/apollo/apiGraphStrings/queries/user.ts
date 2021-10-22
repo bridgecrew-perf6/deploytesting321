@@ -23,8 +23,6 @@ const userQueries = {
             favoriteId
             favoriteType
           }
-<<<<<<< HEAD
-=======
           # timeOnSite {
           #   hour
           #   minutes
@@ -36,7 +34,6 @@ const userQueries = {
           #   seconds
           #   pollCount
           # }
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         }
       }
     }
@@ -84,14 +81,11 @@ const userQueries = {
           favoriteId
           favoriteType
         }
-<<<<<<< HEAD
-=======
         # timeOnSite {
         #   hour
         #   minutes
         #   seconds
         # }
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       }
     }
   `,

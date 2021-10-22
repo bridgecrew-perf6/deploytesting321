@@ -13,16 +13,10 @@ export const Logo = () => {
   );
 };
 
-<<<<<<< HEAD
-export const LogoText = () => {
-  return (
-    <img
-=======
 export const LogoText = (props: any) => {
   return (
     <img
       onClick={props.onClick}
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       className={styles.textCtr}
       src={
         "https://res.cloudinary.com/rahmad12/image/upload/v1630088216/PoldIt/App_Imgs/appLogo_only_new_feghxj.png"

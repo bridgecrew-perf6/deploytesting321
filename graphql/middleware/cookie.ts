@@ -18,12 +18,7 @@ const cookie = (
   res.setHeader("Set-Cookie", serialize(name, value, options));
 };
 
-<<<<<<< HEAD
-const withCookies = (handler:any) => (req:Request, res: ResponseCustom) => {
-  
-=======
 const withCookies = (handler: any) => (req: Request, res: ResponseCustom) => {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   res.cookie = (name, value, options) => cookie(res, name, value, options);
 
   return handler(req, res);

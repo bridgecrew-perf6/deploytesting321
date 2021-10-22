@@ -5,10 +5,7 @@ import {
   transformUser,
   transformPoll,
   decodeJWToken,
-<<<<<<< HEAD
-=======
   clearAppCookieForInternalUser,
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 } from "./shared";
 import batchLoaders from "../loaders/dataLoaders";
 import bcrypt from "bcryptjs";
@@ -21,10 +18,7 @@ import IUser from "../../models/interfaces/user";
 import { dateToString } from "../../components/globalFuncs";
 import IPoll from "../../models/interfaces/poll";
 import IAnswer from "../../models/interfaces/answer";
-<<<<<<< HEAD
-=======
 import Poll from "../../models/PollModel";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const { batchAnswers, batchPolls } = batchLoaders;
 
@@ -38,11 +32,7 @@ export const userResolvers: ResolverMap = {
         );
 
         return userData;
-<<<<<<< HEAD
-      } catch (error) {
-=======
       } catch (error: any) {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         throw new Error(error);
       }
     },
@@ -51,10 +41,7 @@ export const userResolvers: ResolverMap = {
 
       if (req?.headers?.cookie) {
         clearAppCookie(res);
-<<<<<<< HEAD
-=======
         clearAppCookieForInternalUser(res);
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         return "User is logged out!";
       }
       return "Not logged in";
@@ -63,20 +50,12 @@ export const userResolvers: ResolverMap = {
       const { isAuth, req, res, dataLoaders } = context;
       const { auth, id } = isAuth;
 
-<<<<<<< HEAD
-      if (!auth) {
-=======
       if (!auth || !id) {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         throw new Error("Not Authenticated.  Please Log In!");
       }
 
       try {
-<<<<<<< HEAD
-        const user = await User.findById(id);
-=======
         const user = await User.findById(id).populate("poll");
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
         if (user) {
           const userData = transformUser(user, dataLoaders(["poll"]));
@@ -387,8 +366,6 @@ export const userResolvers: ResolverMap = {
         throw err;
       }
     },
-<<<<<<< HEAD
-=======
     // updateTimeOnSite: async (parent, { seconds, userId }, ctx) => {
     //   const { isAuth, req, res, dataLoaders } = ctx;
     //   const { auth, id } = isAuth;
@@ -521,6 +498,5 @@ export const userResolvers: ResolverMap = {
     //     throw new Error(error.message);
     //   }
     // },
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   },
 };

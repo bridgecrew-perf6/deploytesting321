@@ -77,12 +77,9 @@ export const getStoredSearch = () => {
 //   localStorage.setItem("PoldIt-data", JSON.stringify({ objToStore }));
 //   return;
 // };
-<<<<<<< HEAD
-=======
 export const showAbbreviatedTxt = (mssg: string) => {
   if (mssg.length > 25) {
     return `${mssg.slice(0, 25)}...`;
   }
   return mssg;
 };
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5

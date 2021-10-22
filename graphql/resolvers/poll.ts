@@ -27,11 +27,7 @@ export const pollResolvers: ResolverMap = {
 
         return pollsData;
       } catch (err) {
-<<<<<<< HEAD
-        throw new Error(err);
-=======
         throw err;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       }
     },
     poll: async (_, { pollId }, ctx) => {
@@ -283,18 +279,7 @@ export const pollResolvers: ResolverMap = {
           creator.pollHistory.push(poll._id);
         } else creator.pollHistory = [poll._id];
 
-<<<<<<< HEAD
         await creator.save();
-=======
-        if (creator.following && creator.following.length > 0) {
-        
-
-
-        }
-
-        await creator.save();
-
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         return createdPoll;
       } catch (err) {
         throw err;
@@ -316,13 +301,10 @@ export const pollResolvers: ResolverMap = {
       }
     },
   },
-<<<<<<< HEAD
-=======
   // Subscription: {
   //   newNotification: {
   //     subscribe: (parent, args, { pubsub }) =>
   //       pubsub.asyncIterator("newNotification"),
   //   },
   // },
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 };

@@ -4,20 +4,13 @@ import {
   transformAnswer,
   transformTopic,
   transformSubTopic,
-<<<<<<< HEAD
-=======
   transformNotification,
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 } from "./shared";
 import Poll from "../../models/PollModel";
 import Answer from "../../models/answerModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
-<<<<<<< HEAD
-
-=======
 import Notification from "../../models/notificationModel";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import configs from "../../endpoints.config";
 import IPoll from "../../models/interfaces/poll";
 import ISubTopic from "../../models/interfaces/subTopic";
@@ -131,10 +124,6 @@ export const otherResolvers: ResolverMap = {
         throw err;
       }
     },
-<<<<<<< HEAD
-  },
-  Mutation: {},
-=======
     // notifications: async (parent, args, ctx) => {
     //   const { isAuth, req, res, dataLoaders } = ctx;
     //   const { auth, id } = isAuth;
@@ -159,5 +148,4 @@ export const otherResolvers: ResolverMap = {
   //     },
   //   },
   // },
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 };

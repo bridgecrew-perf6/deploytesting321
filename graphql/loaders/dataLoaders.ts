@@ -1,20 +1,14 @@
 import ISubTopic from "../../models/interfaces/subTopic";
 import User from "../../models/UserModel";
-<<<<<<< HEAD
-=======
 import InternalUsers from "../../models/internalUsersModel";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import Answer from "../../models/answerModel";
 import Poll from "../../models/PollModel";
 import Chat from "../../models/chatModel";
 import Reply from "../../models/replyModel";
 import Topic from "../../models/TopicModel";
 import SubTopic from "../../models/SubTopicModel";
-<<<<<<< HEAD
-=======
 import Notification from "../../models/notificationModel";
 import IinternalUsers from "../../models/interfaces/internalUser";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import IPoll from "../../models/interfaces/poll";
 import IUser from "../../models/interfaces/user";
 import ITopic from "../../models/interfaces/topic";
@@ -22,8 +16,6 @@ import IAnswer from "../../models/interfaces/answer";
 import IComment from "../../models/interfaces/comment";
 import IReply from "../../models/interfaces/reply";
 import IChat from "../../models/interfaces/chat";
-<<<<<<< HEAD
-=======
 import INotification from "../../models/interfaces/notification";
 
 const batchInternalUsers: BatchInternalUser = async (ids: any) => {
@@ -34,7 +26,6 @@ const batchInternalUsers: BatchInternalUser = async (ids: any) => {
 
   return internalUser;
 };
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const batchUsers: BatchUser = async (ids) => {
   const users: IUser[] = await User.find({ _id: { $in: ids } });
@@ -69,8 +60,6 @@ const batchAnswers: BatchAnswers = async (ids) => {
   return ids.map((id) => answerMap[id]);
 };
 
-<<<<<<< HEAD
-=======
 const batchNotifications: BatchNotifications = async (ids) => {
   const notifications = await Notification.find({ _id: { $in: ids } });
   const notificationMap: { [key: string]: INotification } = {};
@@ -82,7 +71,6 @@ const batchNotifications: BatchNotifications = async (ids) => {
   return ids.map((id) => notificationMap[id]);
 };
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 const batchChats: BatchChats = async (ids) => {
   const chats = await Chat.find({ _id: { $in: ids } });
   const chatsMap: { [key: string]: IChat } = {};
@@ -134,10 +122,7 @@ export default {
   batchsubTopics,
   batchAnswers,
   batchChats,
-<<<<<<< HEAD
-=======
   batchNotifications,
   batchInternalUsers,
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   // batchReplies,
 };

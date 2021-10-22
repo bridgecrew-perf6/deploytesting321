@@ -67,20 +67,13 @@ const hasCookie = (req: Request) => {
   try {
     decodedToken = jwt.verify(cookie, RefreshKey);
     userId = (decodedToken as Token).id;
-<<<<<<< HEAD
-=======
 
     hasValidCookie = true;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   } catch (err) {
     hasValidCookie = false;
   }
 
-<<<<<<< HEAD
-  hasValidCookie = true;
-=======
   // hasValidCookie = true;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
   return { hasValidCookie, userId };
 };

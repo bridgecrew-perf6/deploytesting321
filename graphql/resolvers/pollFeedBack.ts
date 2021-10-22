@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import { ResolverMap } from "../../components/appTypes/appType";
-import Answer from "../../models/answerModel";
-import IPoll from "../../models/interfaces/poll";
-import Poll from "../../models/PollModel";
-import User from "../../models/UserModel";
-import { transformAnswer, transformPoll } from "./shared";
-=======
 import {
   ResolverMap,
   UserNotification,
@@ -20,17 +12,13 @@ import {
   transformNotification,
   transformPoll,
 } from "./shared";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import batchLoaders from "../loaders/dataLoaders";
 import IAnswer from "../../models/interfaces/answer";
 import { getNumRanking } from "./shared/metrics";
 import IUser from "../../models/interfaces/user";
 import mongoose from "mongoose";
-<<<<<<< HEAD
-=======
 import INotification from "../../models/interfaces/notification";
 import { showAbbreviatedTxt } from "../../components/globalFuncs";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const { batchAnswers } = batchLoaders;
 
@@ -47,9 +35,6 @@ export const feedBackResolvers: ResolverMap = {
         return answerData;
         // return getNumRanking(answerData);
       } catch (err) {
-<<<<<<< HEAD
-        throw new Error(err);
-=======
         throw err;
       }
     },
@@ -66,7 +51,6 @@ export const feedBackResolvers: ResolverMap = {
         );
       } catch (err) {
         throw err;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       }
     },
   },
@@ -106,26 +90,16 @@ export const feedBackResolvers: ResolverMap = {
         }
 
         const savedAnswer = await pollAnswer.save();
-<<<<<<< HEAD
-=======
-
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         const createdAnswer = transformAnswer(
           savedAnswer,
           dataLoaders(["user", "poll"])
         );
 
         pollItem.answers.push(pollAnswer._id);
-<<<<<<< HEAD
-
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         await pollItem.save();
 
         pubsub.publish("newAnswer", { newAnswer: createdAnswer });
 
-<<<<<<< HEAD
-=======
         //Push to Notification
         if (pollItem.creator.toString() !== id) {
           const creator = await User.findById(id);
@@ -153,14 +127,11 @@ export const feedBackResolvers: ResolverMap = {
           pubsub.publish("newNotification", { newNotification });
         }
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         return createdAnswer;
       } catch (err) {
         throw err;
       }
     },
-<<<<<<< HEAD
-=======
     updateNotification: async (parent, { details }, ctx) => {
       const { isAuth, req, res, pubsub, dataLoaders } = ctx;
       const { auth, id } = isAuth;
@@ -184,7 +155,6 @@ export const feedBackResolvers: ResolverMap = {
         throw err;
       }
     },
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     handleLikeDislike: async (
       parent,
       { feedback, feedbackVal, answerId, pollId },
@@ -291,12 +261,9 @@ export const feedBackResolvers: ResolverMap = {
       subscribe: (parent, args, { pubsub }) =>
         pubsub.asyncIterator("newAnswer"),
     },
-<<<<<<< HEAD
-=======
     newNotification: {
       subscribe: (parent, args, { pubsub }) =>
         pubsub.asyncIterator("newNotification"),
     },
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   },
 };

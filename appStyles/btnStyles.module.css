@@ -23,8 +23,6 @@
   border-color: #ff4d00;
 }
 
-<<<<<<< HEAD
-=======
 .custombtnCreate {
   height: 40px;
   width: 100px;
@@ -48,7 +46,6 @@
   transition: all 0.15s ease-in-out;
 }
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 .customBtnOutlinePrimary {
   color: #ff4d00;
   border-color: #ff4d00;
@@ -163,10 +160,6 @@
   left: -280%;
   margin-left: -60px;
   font-size: 13px;
-<<<<<<< HEAD
-
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 }
 .itemToolTip_Right .tooltiptext {
   visibility: hidden;

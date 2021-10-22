@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 import { privilegeMongo } from "./../../models/interfaces/roleInterface";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import { Request } from "express";
 import { PubSub } from "graphql-subscriptions";
 import {
@@ -12,11 +9,6 @@ import {
   answerLoader,
   chatLoader,
   replyLoader,
-<<<<<<< HEAD
-} from "../../graphql/loaders";
-// import { pubsub } from "../../graphql/middleware/index";
-
-=======
   internalUserLoader,
 } from "../../graphql/loaders";
 // import { pubsub } from "../../graphql/middleware/index";
@@ -27,7 +19,6 @@ import {
 //   seconds: number;
 // }
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 interface ErrorMssg {
   message: string;
 }
@@ -37,16 +28,12 @@ interface NewPollForm {
   topic: string;
 }
 
-<<<<<<< HEAD
-interface User {
-=======
 // export interface timeOnPoll {
 //   poll: string;
 //   time: string;
 // }
 
 export interface User {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   _id: string;
   firstname?: string;
   lastname?: string;
@@ -64,8 +51,6 @@ export interface User {
   profilePic?: string;
   registerDate?: Date;
   pollHistory?: PollHistory[];
-<<<<<<< HEAD
-=======
   // timeOnSite?: siteTime;
   // timeSpentOnSite: timeOnPoll[];
 }
@@ -160,7 +145,6 @@ export interface adminLeftSidebarType {
   setLoadingChecks: Function;
   mastercategory: any;
   setmastercategory: Function;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 }
 
 interface Follower {
@@ -169,19 +153,11 @@ interface Follower {
   profilePic: string | undefined;
 }
 
-<<<<<<< HEAD
-interface GetAppUser {
-  getAppUserData: User;
-}
-
-interface MainUser {
-=======
 export interface GetAppUser {
   getAppUserData: User;
 }
 
 export interface MainUser {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   getUserData: {
     appToken: string;
     user: User;
@@ -237,19 +213,13 @@ interface PollHistory {
   chatMssgs?: ChatMessage[];
 }
 
-<<<<<<< HEAD
-interface UserDataProps {
-=======
 export interface UserDataProps {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   getUserData: {
     appToken: string;
     user: User;
   };
 }
 
-<<<<<<< HEAD
-=======
 export interface InternalUserDataProps {
   getInternalUserData: {
     appToken: string;
@@ -257,19 +227,11 @@ export interface InternalUserDataProps {
   };
 }
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 interface PollsAll {
   polls: PollHistory[] | undefined;
 }
 
 interface CookieOptions {
-<<<<<<< HEAD
-  domain?: string;
-  httpOnly: boolean;
-  path?: string;
-  maxAge: number;
-  expires?: Date;
-=======
   HttpOnly: boolean;
   domain?: string;
   // httpOnly: boolean;
@@ -277,7 +239,6 @@ interface CookieOptions {
   maxAge: number;
   expires?: Date;
   // secure: boolean;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 }
 
 declare module "express" {
@@ -309,12 +270,8 @@ interface ApolloSeverContext {
     | ReturnType<typeof subTopicLoader>[]
     | ReturnType<typeof chatLoader>[]
     | ReturnType<typeof replyLoader>[]
-<<<<<<< HEAD
-    | ReturnType<typeof answerLoader>[];
-=======
     | ReturnType<typeof answerLoader>[]
     | ReturnType<typeof internalUserLoader>;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   pubsub: PubSub;
 }
 
@@ -322,11 +279,7 @@ interface IHTMLElementForm extends HTMLElement {
   value?: string;
 }
 
-<<<<<<< HEAD
-interface ResolverMap {
-=======
 export interface ResolverMap {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   [key: string]: {
     [key: string]: Resolver | SubscriptionResolver;
   };
@@ -358,8 +311,6 @@ interface AppMssg {
   message?: string;
 }
 
-<<<<<<< HEAD
-=======
 interface CategoryItems {
   _id: string;
   category: string;
@@ -369,19 +320,15 @@ interface CategoryItems {
   linkedCats?: any;
 }
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 interface IProps {
   title: string;
   children?: React.ReactNode;
 }
 
-<<<<<<< HEAD
-=======
 interface NavProps {
   title: string;
 }
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 interface ITopic {
   _id: string;
   topic: string;
@@ -486,7 +433,6 @@ interface UserFavorites {
   favoriteAnswers: Answer[];
 }
 
-<<<<<<< HEAD
 interface CategoryItems {
   _id: string;
   category: string;
@@ -494,7 +440,8 @@ interface CategoryItems {
   description: string;
   active: boolean;
   linkedCats?: any;
-=======
+}
+
 interface AdminLeftSideBarCategoryItems {
   _id: string;
   name: string;
@@ -502,7 +449,6 @@ interface AdminLeftSideBarCategoryItems {
   haveCats: boolean;
   active: boolean;
   selected: boolean;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 }
 
 interface PollsWindow {
@@ -519,21 +465,16 @@ interface CustomBtn {
   data: any[];
 }
 
-<<<<<<< HEAD
-=======
 interface ChatFeed {
   cursor: string;
   messages: ChatMessage[];
   hasMoreData: boolean;
 }
 
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 interface SrchCustomBtn extends CustomBtn {
   count: number;
   data: PollHistory[] | Answer[] | ITopic[] | ISubTopic[] | null;
 }
-<<<<<<< HEAD
-=======
 
 interface UserNotification {
   _id: string;
@@ -545,4 +486,3 @@ interface UserNotification {
   creationDate: string;
   read?: boolean;
 }
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5

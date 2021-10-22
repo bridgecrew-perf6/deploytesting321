@@ -2,19 +2,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLazyQuery, useQuery } from "@apollo/client";
-<<<<<<< HEAD
-import { IoPersonCircle } from "react-icons/io5";
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import styles from "../../../../appStyles/appStyles.module.css";
 import btnStyles from "../../../../appStyles/btnStyles.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
-<<<<<<< HEAD
-import { AiOutlineNotification, AiFillNotification } from "react-icons/ai";
-import NewPoll from "../../Home/NewPoll";
-import { UserDataProps } from "../../../appTypes/appType";
-=======
 import {
   AiOutlineNotification,
   AiFillNotification,
@@ -22,18 +13,10 @@ import {
   AiOutlineMessage,
 } from "react-icons/ai";
 import { UserDataProps, UserNotification } from "../../../appTypes/appType";
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
 import { useAuth } from "../../../authProvider/authProvider";
 import ProfileImg from "../../Profile/profileImg";
 import AddTopic, { NewTopicBtn } from "../TopicWindow/addTopicForm";
-<<<<<<< HEAD
-
-const { GET_USER, LOG_OUT } = GraphResolvers.queries;
-const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
-
-export default function ProfileHeader() {
-=======
 import { AppLoadingLite } from "../Loading";
 import { ToolTipCtr } from "../../../layout/customComps";
 import NotificationWindow from "./NotificationWindow";
@@ -49,18 +32,10 @@ const {
 } = btnStyles;
 
 export default function ProfileHeader(props: any) {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   const router = useRouter();
 
   const appContext = useAuth();
 
-<<<<<<< HEAD
-  const [getUser, { data, error }] = useLazyQuery(GET_USER, {
-    variables: { userId: "" },
-  });
-  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
-  const [notification, toggleNotification] = useState(false);
-=======
   const [notification, toggleNotification] = useState(false);
   const [userNotifications, updateNotifications] = useState<UserNotification[]>(
     []
@@ -76,21 +51,12 @@ export default function ProfileHeader(props: any) {
   );
 
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
   useEffect(() => {
     getUser();
     if (data) {
       appContext && appContext.updateUserData(data.getUserData);
     }
-<<<<<<< HEAD
-  }, [data]);
-
-  const NotificationIcon = notification ? (
-    <AiFillNotification size={24} color="#ff4d00" />
-  ) : (
-    <AiOutlineNotification size={24} color="#ff4d00" />
-=======
   }, [appContext, data]);
 
   useEffect(() => {
@@ -123,7 +89,6 @@ export default function ProfileHeader(props: any) {
     <AiFillNotification size={28} color="#ff4d00" />
   ) : (
     <AiOutlineNotification size={28} color="#ff4d00" />
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   );
 
   const handleLogOut = () => {
@@ -144,37 +109,6 @@ export default function ProfileHeader(props: any) {
       "/Login"
     );
   };
-<<<<<<< HEAD
-
-  if (error) {
-    return (
-      <div
-        className="form-row justify-content-between"
-        style={{ width: "15%" }}
-      >
-        <Link href={"/Login"}>
-          <button
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            type="button"
-          >
-            Log In
-          </button>
-        </Link>
-        <Link href={"/Registration"}>
-          <button
-            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-            type="button"
-          >
-            Register
-          </button>
-        </Link>
-      </div>
-    );
-  }
-
-  if (data) {
-    const { _id, appid, profilePic } = data.getUserData.user;
-=======
   const { title } = props;
 
   if (data && props.title !== "Admin Panel") {
@@ -182,21 +116,16 @@ export default function ProfileHeader(props: any) {
     const unreadNotifications = notificationData?.notifications.filter(
       (item: UserNotification) => !item.read
     ).length;
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
     const superUserList = process.env.NEXT_PUBLIC_SUPERUSERS?.split("_");
 
     return (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
-<<<<<<< HEAD
-        style={{ width: "30%" }}
-=======
         style={{
           width: title !== "Admin Panel" ? "30%" : "22rem",
           marginLeft: 5,
         }}
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       >
         <div
           className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
@@ -211,16 +140,6 @@ export default function ProfileHeader(props: any) {
             <NewTopicBtn />
           </>
         )}
-<<<<<<< HEAD
-        <div
-          className={styles.cursor}
-          onMouseEnter={() => toggleNotification(true)}
-          onMouseLeave={() => toggleNotification(false)}
-        >
-          {NotificationIcon}
-        </div>
-
-=======
 
         <ToolTipCtr
           mssg="Notifications"
@@ -247,7 +166,6 @@ export default function ProfileHeader(props: any) {
           </div>
         </ToolTipCtr>
         <NotificationWindow data={notificationData?.notifications} />
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         <div>
           <ProfileImg
             profilePic={profilePic}
@@ -278,10 +196,6 @@ export default function ProfileHeader(props: any) {
           >
             <ul className="d-flex flex-column h-100 justify-content-center">
               <Link href={`/Profile/${appid}`}>
-<<<<<<< HEAD
-                {/* <Link href={{ pathname: "/Profile", query: { userId: _id } }}> */}
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
                 <li className="dropdown-item">{`${appid} Profile`}</li>
               </Link>
               <Link href={`/Polls`}>
@@ -302,11 +216,6 @@ export default function ProfileHeader(props: any) {
     );
   }
 
-<<<<<<< HEAD
-  return (
-    <div className="spinner-border text-primary" role="status">
-      <span className="sr-only">Loading...</span>
-=======
   if (error && props.title !== "Admin Panel" && !data) {
     return (
       <div
@@ -409,7 +318,6 @@ export default function ProfileHeader(props: any) {
       ) : (
         <AppLoadingLite />
       )}
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     </div>
   );
 }
