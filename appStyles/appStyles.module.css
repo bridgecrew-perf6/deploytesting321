@@ -23,12 +23,23 @@
   max-height: 250px;
   height: auto;
   width: 35%;
+<<<<<<< HEAD
+=======
+  cursor: pointer;
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 }
 
 .appColor {
   background-color: #ff4d00;
 }
 
+<<<<<<< HEAD
+=======
+.appWidth {
+  width: 10rem !important;
+}
+
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 .appImg {
   height: 100%;
   width: auto;
@@ -48,6 +59,13 @@
   height: 110px;
 }
 
+<<<<<<< HEAD
+=======
+.ctrBxShadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 .appbg_primary {
   background-color: #f4f4f4;
 }
@@ -83,6 +101,12 @@
 }
 
 .header_fixed {
+<<<<<<< HEAD
+=======
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   position: fixed;
   top: 0;
   left: 0;
@@ -93,13 +117,55 @@
 .dataWindow {
   margin: 10px 200px 10px 200px;
   width: 60vw;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 }
 
 .dataItem {
   border: 1px solid lightgray;
 }
 
+<<<<<<< HEAD
+=======
+.notifItem:hover {
+  background-color: #f2f3f4;
+}
+
+.iconHover {
+  height: 35px;
+  width: 35px;
+  display: inline-block;
+}
+
+.iconHover:hover {
+  background-color: #ebebeb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.notifSubWindow {
+  width: 50%;
+  height: 85px;
+  background-color: white;
+  z-index: 1;
+  top: 50px;
+  right: 6px;
+}
+.notifSubWindow span {
+  width: 100%;
+  /* display: inline-block; */
+  cursor: pointer;
+  text-align: left;
+}
+
+.notifSubWindow span:hover {
+  background-color: #ebebeb;
+  border-radius: 10%;
+  /* display: inline-block; */
+}
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 /* .itemToolTip_Top,
 .itemToolTip_Left {
   position: relative;
@@ -146,7 +212,10 @@
   border-color: black transparent transparent transparent;
 } */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 .itemToolTip_Top:hover .tooltiptext {
   visibility: visible;
 }

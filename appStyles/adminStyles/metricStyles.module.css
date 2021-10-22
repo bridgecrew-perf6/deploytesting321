@@ -1,0 +1,27 @@
+.metricScreenWrapper {
+  height: 150vh;
+  min-height: 150vh;
+  background-color: #fff;
+}
+
+.metricsContentWrapper {
+  padding: 3rem 2rem;
+}
+
+.chartsDisplayWrapper {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  margin-bottom: 2rem;
+}
+
+.chartWrapper {
+  overflow: visible;
+  max-width: 35rem;
+  width: 35rem;
+}
+
+.chartContainer {
+  max-width: 35rem;
+  width: 35rem;
+}

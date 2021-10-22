@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, useRef } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
@@ -12,7 +12,7 @@ import AppLoading, {
 } from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
 
-const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS } =
+const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS, GET_USER } =
   GraphResolvers.queries;
 
 const Home = () => {
@@ -36,6 +36,8 @@ const Home = () => {
   const { data: trendingPolls } = useQuery(GET_TRENDING_POLLS, {
     onCompleted: (res) => updateData("Trending Polls", res.trendingPolls),
   });
+
+  // console.log(userId);
 
   const updateBtnItem = (btnName: string, prop: string, val: any) => {
     const updatedItems = homeBtns.map((item) => {
@@ -81,8 +83,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log("triggered");
-
     if (
       activeChats &&
       homeBtns[0].data.length !== activeChats.activeChats.length

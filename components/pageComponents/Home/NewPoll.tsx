@@ -25,7 +25,11 @@ import { saveImgtoCloud } from "../../apis/imgUpload";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { filterSearchVals } from "../../formFuncs/miscFuncs";
 import { ToolTipCtr } from "../../layout/customComps";
+<<<<<<< HEAD
 import { addNewPoll } from "../../../lib/apollo/apolloFunctions/mutations";
+=======
+import { addNewPoll } from "../../../lib/apollo/apolloFunctions/userMutations";
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const RichTextEditor = dynamic(() => import("../Other/RichText"), {
   ssr: false,

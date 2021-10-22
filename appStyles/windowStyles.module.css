@@ -6,4 +6,24 @@
   opacity: 0;
 }
 
+<<<<<<< HEAD
 
+=======
+.notifWindow {
+  /* position: absolute; */
+  top: 7vh;
+  right: -41.5vw;
+  width: 25em;
+  height: 70em;
+}
+
+@media (max-width: 1800px) {
+  .notifWindow {
+    /* position: absolute; */
+    top: 7vh;
+    right: -37vw;
+    width: 25em;
+    height: 42em;
+  }
+}
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5

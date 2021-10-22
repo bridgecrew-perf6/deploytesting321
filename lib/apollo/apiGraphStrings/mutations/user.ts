@@ -32,6 +32,16 @@ const userMutations = {
       }
     }
   `,
+<<<<<<< HEAD
+=======
+  // UPDATE_TIME_ON_SITE: gql`
+  //   mutation updateTimeOnSite($userId: String!, $seconds: Int!) {
+  //     updateTimeOnSite(userId: $userId, seconds: $seconds) {
+  //       _id
+  //     }
+  //   }
+  // `,
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 };
 
 export default userMutations;

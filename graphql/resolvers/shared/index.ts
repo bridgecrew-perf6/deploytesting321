@@ -13,6 +13,12 @@ import IAnswer from "../../../models/interfaces/answer";
 import IComment from "../../../models/interfaces/comment";
 import IReply from "../../../models/interfaces/reply";
 import IChat from "../../../models/interfaces/chat";
+<<<<<<< HEAD
+=======
+import INotification from "../../../models/interfaces/notification";
+import { ObjectId } from "mongoose";
+import IinternalUsers from "../../../models/interfaces/internalUser";
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const { JwtKey, RefreshTokenExpires, JwtExpires, RefreshKey } = configs;
 
@@ -20,7 +26,13 @@ const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * parseInt(RefreshTokenExpires);
 
 const REFRESH_TOKEN_COOKIE_OPTIONS: CookieOptions = {
   // domain: process.env.BASE_URL.split("//")[1].split(":")[0],
+<<<<<<< HEAD
   httpOnly: true,
+=======
+  // domain: "http://localhost:3000/",
+  HttpOnly: false,
+  // httpOnly: false,
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   // secure: true,
   path: "/",
   maxAge: REFRESH_TOKEN_MAX_AGE,
@@ -46,6 +58,27 @@ const generateRefreshToken = (id: string) => {
   };
 };
 
+<<<<<<< HEAD
+=======
+const generateAccessTokenForInternalUser = (id: string, roleId: string) => {
+  return jwt.sign({ id, roleId }, JwtKey, { expiresIn: `${JwtExpires}min` });
+};
+
+const generateRefreshTokenForInternalUser = (id: string, roleId: string) => {
+  const tokenExpiry = new Date(Date.now() + REFRESH_TOKEN_MAX_AGE);
+
+  const refreshToken = jwt.sign({ id, roleId }, RefreshKey, {
+    expiresIn: `${RefreshTokenExpires}d`,
+  });
+
+  return {
+    refreshToken,
+    expiry: tokenExpiry,
+    options: REFRESH_TOKEN_COOKIE_OPTIONS,
+  };
+};
+
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 const getLoader = (dataLoaderList: any[]) => {
   const loaderObj: { [key: string]: any } = {};
 
@@ -68,6 +101,19 @@ export const transformUser = (user: IUser, loaders: any[]) => {
   };
 };
 
+<<<<<<< HEAD
+=======
+export const transformInternalUser = (
+  internaluser: IinternalUsers,
+  loaders: any[]
+) => {
+  const { password, ...rest } = internaluser._doc;
+  return {
+    ...rest,
+  };
+};
+
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 export const transformChat = (chat: IChat, loaders: any[]) => {
   const { creator, poll } = getLoader(loaders);
 
@@ -122,7 +168,10 @@ export const transformSubTopic = (subTopic: ISubTopic, loaders: any[]) => {
 export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
   const { creator, poll, comment } = getLoader(loaders);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   return {
     ...answer._doc,
     _id: answer._doc._id,
@@ -133,6 +182,7 @@ export const transformAnswer = (answer: IAnswer, loaders: any[]) => {
   };
 };
 
+<<<<<<< HEAD
 export const transformComment = (comment: IComment, loaders: any[]) => {
   const { creator, answer, reply } = getLoader(loaders);
 
@@ -157,6 +207,47 @@ export const transformReply = (reply: IReply, loaders: any[]) => {
     comment: () => comment.load(reply.comment),
   };
 };
+=======
+export const transformNotification = (
+  notification: INotification,
+  loaders: any[]
+) => {
+  const { creator } = getLoader(loaders);
+
+  return {
+    ...notification._doc,
+    _id: notification._doc._id,
+    creationDate: dateToString(notification._doc.creationDate),
+    user: () => creator.load(notification._doc.user),
+    contentOwner: creator.load(notification._doc.contentOwner),
+  };
+};
+
+// export const transformComment = (comment: IComment, loaders: any[]) => {
+//   const { creator, answer, reply } = getLoader(loaders);
+
+//   return {
+//     ...comment._doc,
+//     _id: comment.id,
+//     creationDate: dateToString(comment.creationDate),
+//     creator: () => creator.load(comment.creator),
+//     answer: () => answer.load(comment.answer),
+//     replies: () => reply.loadMany(comment.replies),
+//   };
+// };
+
+// export const transformReply = (reply: IReply, loaders: any[]) => {
+//   const { creator, comment } = getLoader(loaders);
+
+//   return {
+//     ...reply._doc,
+//     _id: reply.id,
+//     creationDate: dateToString(reply.creationDate),
+//     creator: () => creator.load(reply.creator),
+//     comment: () => comment.load(reply.comment),
+//   };
+// };
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 export const getAppTokens = (id: string, res: Response) => {
   const accessToken = generateAccessToken(id);
@@ -168,17 +259,54 @@ export const getAppTokens = (id: string, res: Response) => {
   return accessToken;
 };
 
+<<<<<<< HEAD
 export const clearAppCookie = (res: Response) => {
   //Clear current cookie from browser
   res.cookie("poldIt-Session", "", {
     ...REFRESH_TOKEN_COOKIE_OPTIONS,
     maxAge: -1,
   });
+=======
+export const getAppTokensForInternalUser = (
+  id: string,
+  roleId: string,
+  res: Response
+) => {
+  console.log("got roleId => ", roleId);
+  const accessToken = generateAccessTokenForInternalUser(id, roleId);
+  const appCookie = generateRefreshTokenForInternalUser(id, roleId);
+  const { refreshToken, options } = appCookie;
+
+  res.cookie("internalUserPolditSession", refreshToken, options); //Store refresh token cookie on browser
+
+  return accessToken;
+};
+
+export const clearAppCookieForInternalUser = (res: Response) => {
+  //Clear current cookie from browser
+  res.cookie("internalUserPolditSession", "", {
+    ...REFRESH_TOKEN_COOKIE_OPTIONS,
+    maxAge: -1,
+  });
+};
+
+export const clearAppCookie = (res: Response) => {
+  //Clear current cookie from browser
+  res.cookie("poldIt-Session", {
+    ...REFRESH_TOKEN_COOKIE_OPTIONS,
+    maxAge: -1,
+  });
+  console.log("I am here");
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 };
 
 export const decodeJWToken = async (tokenVal: string) => {
   try {
+<<<<<<< HEAD
     const payload = await jwt.verify(tokenVal, JwtKey);
+=======
+    const payload = jwt.verify(tokenVal, JwtKey);
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
     return payload;
   } catch (err) {
     throw err;

@@ -12,6 +12,29 @@ const otherQueries = {
       }
     }
   `,
+<<<<<<< HEAD
+=======
+  GET_NOTIFICATIONS: gql`
+    query Notifications {
+      notifications {
+        _id
+        message
+        creationDate
+        read
+        notificationType
+        notificationId
+        contentOwner {
+          _id
+        }
+        user {
+          _id
+          appid
+          profilePic
+        }
+      }
+    }
+  `,
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   SEARCH_ALL: gql`
     query SearchAll($searchVal: String, $page: Int, $limit: Int) {
       searchAll(searchVal: $searchVal, page: $page, limit: $limit) {

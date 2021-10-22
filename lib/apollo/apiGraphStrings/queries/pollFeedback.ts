@@ -48,6 +48,30 @@ const pollFeedBackQueries = {
       }
     }
   `,
+<<<<<<< HEAD
+=======
+  GET_POLL_CHAT_PAGES: gql`
+    query MessageFeedByPoll($cursor: String, $pollId: String!, $limit: Int) {
+      messageFeedByPoll(cursor: $cursor, pollId: $pollId, limit: $limit) {
+        cursor
+        hasMoreData
+        messages {
+          _id
+          message
+          creator {
+            _id
+            appid
+            profilePic
+          }
+          creationDate
+          poll {
+            _id
+          }
+        }
+      }
+    }
+  `,
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 };
 
 export default pollFeedBackQueries;

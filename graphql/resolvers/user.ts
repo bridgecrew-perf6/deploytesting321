@@ -5,6 +5,10 @@ import {
   transformUser,
   transformPoll,
   decodeJWToken,
+<<<<<<< HEAD
+=======
+  clearAppCookieForInternalUser,
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 } from "./shared";
 import batchLoaders from "../loaders/dataLoaders";
 import bcrypt from "bcryptjs";
@@ -17,6 +21,10 @@ import IUser from "../../models/interfaces/user";
 import { dateToString } from "../../components/globalFuncs";
 import IPoll from "../../models/interfaces/poll";
 import IAnswer from "../../models/interfaces/answer";
+<<<<<<< HEAD
+=======
+import Poll from "../../models/PollModel";
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const { batchAnswers, batchPolls } = batchLoaders;
 
@@ -30,7 +38,11 @@ export const userResolvers: ResolverMap = {
         );
 
         return userData;
+<<<<<<< HEAD
       } catch (error) {
+=======
+      } catch (error: any) {
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         throw new Error(error);
       }
     },
@@ -39,6 +51,10 @@ export const userResolvers: ResolverMap = {
 
       if (req?.headers?.cookie) {
         clearAppCookie(res);
+<<<<<<< HEAD
+=======
+        clearAppCookieForInternalUser(res);
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         return "User is logged out!";
       }
       return "Not logged in";
@@ -47,12 +63,20 @@ export const userResolvers: ResolverMap = {
       const { isAuth, req, res, dataLoaders } = context;
       const { auth, id } = isAuth;
 
+<<<<<<< HEAD
       if (!auth) {
+=======
+      if (!auth || !id) {
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         throw new Error("Not Authenticated.  Please Log In!");
       }
 
       try {
+<<<<<<< HEAD
         const user = await User.findById(id);
+=======
+        const user = await User.findById(id).populate("poll");
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
         if (user) {
           const userData = transformUser(user, dataLoaders(["poll"]));
@@ -363,5 +387,140 @@ export const userResolvers: ResolverMap = {
         throw err;
       }
     },
+<<<<<<< HEAD
+=======
+    // updateTimeOnSite: async (parent, { seconds, userId }, ctx) => {
+    //   const { isAuth, req, res, dataLoaders } = ctx;
+    //   const { auth, id } = isAuth;
+    //   if (!auth) {
+    //     throw new Error("Not Authenticated.  Please login to track time");
+    //   }
+    //   try {
+    //     const userTime = await User.findById(userId);
+    //     let dbHour = userTime.timeOnSite.hour;
+    //     let dbMin = userTime.timeOnSite.minutes;
+    //     let dbSec = userTime.timeOnSite.seconds;
+
+    //     if (dbMin >= 60) {
+    //       dbHour = dbHour + 1;
+    //       dbMin = 0;
+    //     }
+    //     if (seconds >= 60) {
+    //       dbMin = dbMin + 1;
+    //       dbSec = 0;
+    //     }
+    //     const user = await User.findByIdAndUpdate(userId, {
+    //       $set: {
+    //         "timeOnSite.hour": dbHour,
+    //         "timeOnSite.minutes": dbMin,
+    //         "timeOnSite.seconds": dbSec,
+    //       },
+    //     });
+    //     return user;
+    //   } catch (error: any) {
+    //     throw new Error(error.message);
+    //   }
+    // },
+
+    // updateTimeSpentOnPoll: async (
+    //   parent,
+    //   { seconds, userId, poll, hours, minutes },
+    //   ctx
+    // ) => {
+    //   const { isAuth, req, res, dataLoaders } = ctx;
+    //   const { auth, id } = isAuth;
+    //   if (!auth) {
+    //     throw new Error("Not Authenticated.  Please login to track time");
+    //   }
+    //   try {
+    //     // const pollTime = await User.findByIdAndUpdate(userId, {
+    //     //   $set: {
+    //     //     timeSpentOnPoll: [],
+    //     //   },
+    //     // });
+    //     // // console.log
+    //     // return pollTime;
+    //     const pollTime = await User.findById(userId);
+    //     let arr = [];
+    //     if (pollTime.timeSpentOnPoll.length === 0) {
+    //       arr.push({
+    //         poll: poll,
+    //         hours: 0,
+    //         minutes: 0,
+    //         seconds: 0,
+    //         pollCount: 1,
+    //       });
+    //       pollTime.timeSpentOnPoll = arr;
+    //       await pollTime.save();
+    //       return pollTime;
+    //     } else {
+    //       let pollToBeUpdated: any = {
+    //         hours: hours,
+    //         minutes: minutes,
+    //         seconds: seconds,
+    //         pollCount: 1,
+    //       };
+    //       console.log(hours, minutes, seconds);
+    //       const pollTime = await User.findOneAndUpdate(
+    //         { _id: userId, "timeSpentOnPoll.poll": poll },
+    //         {
+    //           "tmeSpentOnPoll.$.poll": poll,
+    //           "tmeSpentOnPoll.$.hours": hours,
+    //           "tmeSpentOnPoll.$.minutes": minutes,
+    //           "tmeSpentOnPoll.$.seconds": seconds,
+    //           "tmeSpentOnPoll.$.pollCount": 1,
+    //         },
+    //         { new: true, upsert: true }
+    //       );
+    //       console.log(pollTime);
+    //       pollTime.timeSpentOnPoll.map((t: any) => {
+    //         if (t.poll == poll) {
+    //           pollToBeUpdated = t;
+    //         }
+    //       });
+    //       let dbHour = pollToBeUpdated.hours;
+    //       let dbMin = pollToBeUpdated.minutes;
+    //       let dbSec = pollToBeUpdated.seconds;
+    //       let pollCount = pollToBeUpdated.pollCount;
+
+    //       pollCount = pollCount + 1;
+
+    //       const user = await User.findOneAndUpdate(
+    //         { _id: userId },
+    //         {
+    //           $set: {
+    //             "timeSpentOnPoll.$.poll": poll,
+    //             "timeSpentOnPoll.$.hours": dbHour,
+    //             "timeSpentOnPoll.$.minutes": dbMin,
+    //             "timeSpentOnPoll.$.seconds": seconds,
+    //             "timeSpentOnPoll.$.pollCount": pollCount,
+    //           },
+    //         },
+    //         { new: true, upsert: true }
+    //       );
+    //       console.log(pollTime);
+    //       return pollTime;
+    //     }
+    //   } catch (error: any) {
+    //     throw new Error(error.message);
+    //   }
+    // },
+
+    // deletePollTimeCount: async (parent, { userId }, ctx) => {
+    //   const { isAuth, req, res, dataLoaders } = ctx;
+    //   const { auth, id } = isAuth;
+    //   if (!auth) {
+    //     throw new Error("Not Authenticated.  Please login to track time");
+    //   }
+    //   try {
+    //     const pollTime = await User.findById(userId);
+    //     pollTime.timeSpentOnPoll = [];
+    //     await pollTime.save();
+    //     return "Deleted";
+    //   } catch (error: any) {
+    //     throw new Error(error.message);
+    //   }
+    // },
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   },
 };

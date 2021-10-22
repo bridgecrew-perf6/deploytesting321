@@ -1,0 +1,56 @@
+.userRightsWrapper {
+  height: 150vh;
+  min-height: 150vh;
+  background-color: #fff;
+  padding: 1rem;
+}
+
+.tableWrapper {
+  height: auto;
+  width: auto;
+  margin: 1.5rem 0px;
+}
+
+.privilagesWrapper {
+  margin-top: 2rem;
+  height: 20rem;
+  max-height: 20rem;
+  overflow-y: scroll;
+}
+
+.singlePrivilage {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 14rem;
+  margin: 0px 10%;
+  align-items: center;
+}
+
+.privilagesCheckBoxes {
+  margin-top: 0.7rem !important;
+}
+
+.upperButtons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.actionRemoveWrapper {
+  height: 20rem;
+  overflow-y: scroll;
+  margin-bottom: 2rem;
+}
+
+.removePrivileges:first-child {
+  margin-top: 1.5rem;
+}
+
+.removePrivileges {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 1rem;
+  margin-bottom: -7px;
+}

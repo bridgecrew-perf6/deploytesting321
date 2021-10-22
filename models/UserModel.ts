@@ -79,6 +79,26 @@ const userSchema: Schema = new Schema({
       },
     },
   ],
+<<<<<<< HEAD
+=======
+  // timeOnSite: {
+  //   hour: { type: Number },
+  //   minutes: { type: Number },
+  //   seconds: { type: Number },
+  // },
+  // timeSpentOnPoll: [
+  //   {
+  //     poll: {
+  //       type: Schema.Types.ObjectId,
+  //       ref: "Poll",
+  //     },
+  //     hours: { type: Number },
+  //     minutes: { type: Number },
+  //     seconds: { type: Number },
+  //     pollCount: { type: Number },
+  //   },
+  // ],
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 });
 
 export default models.User || model<IUser>("User", userSchema);

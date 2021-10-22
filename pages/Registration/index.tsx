@@ -60,7 +60,11 @@ export default function Registration() {
           },
           "/Login"
         );
+<<<<<<< HEAD
     } catch (err) {
+=======
+    } catch (err: any) {
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       const appMssgs = createAppMssgList([
         { message: err.message, msgType: 0 },
       ]);

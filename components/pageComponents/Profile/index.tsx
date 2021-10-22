@@ -11,7 +11,11 @@ import EditProfile from "./EditProfile";
 import Badge from "./Badge";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { Reference, StoreObject, useMutation } from "@apollo/client";
+<<<<<<< HEAD
 import { removeFollow } from "../../../lib/apollo/apolloFunctions/mutations";
+=======
+import { removeFollow } from "../../../lib/apollo/apolloFunctions/userMutations";
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import Link from "next/link";
 
 const {

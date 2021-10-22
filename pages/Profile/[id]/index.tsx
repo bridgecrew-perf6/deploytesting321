@@ -74,7 +74,10 @@ const Profile = ({ userId }: Profile) => {
       updateProfileType(0, "numCount", numCount);
       updateProfileType(0, "error", null);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   }, [data, favData, pollData, profileItems]);
 
   //Functions

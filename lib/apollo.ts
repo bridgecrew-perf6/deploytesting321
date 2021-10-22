@@ -21,7 +21,6 @@ import { getMainDefinition } from "@apollo/client/utilities";
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 let appToken: String | null = null;
 let appCookie: String | null = null;
-
 let isDev =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? true

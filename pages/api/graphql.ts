@@ -70,8 +70,13 @@ const graphqlWithSubscriptionHandler = (req: any, res: any, next: any) => {
     apolloServer.installSubscriptionHandlers(res.socket.server);
     const handler = apolloServer.createHandler({ path: "/api/graphql" });
     req.method === "OPTIONS"
+<<<<<<< HEAD
     ? res.end()
     : (res.socket.server.apolloServer = cors(handler));
+=======
+      ? res.end()
+      : (res.socket.server.apolloServer = cors(handler));
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   }
 
   return res.socket.server.apolloServer(req, res, next);

@@ -39,6 +39,20 @@ export const pollTypeDefs = gql`
     rank: String
   }
 
+<<<<<<< HEAD
+=======
+  type Notification {
+    _id: ID!
+    message: String!
+    read: Boolean
+    creationDate: String!
+    notificationType: String!
+    notificationId: String!
+    contentOwner: User!
+    user: User!
+  }
+
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   type Comment {
     _id: ID!
     comment: String!
@@ -69,6 +83,10 @@ export const pollTypeDefs = gql`
     activeChats: [PollQuestion]
     pollsByTopic(topic: String!): [PollQuestion]
     pollsBySubTopic(subTopic: String!): [PollQuestion]
+<<<<<<< HEAD
+=======
+    notifications: [Notification]
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   }
 
   extend type Mutation {
@@ -82,9 +100,17 @@ export const pollTypeDefs = gql`
     ): Answer
     addAnswerRank(answerId: String!): String
     addView(pollId: String!): Int
+<<<<<<< HEAD
+=======
+    updateNotification(details: String!): Notification
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   }
 
   extend type Subscription {
     newAnswer(pollId: String!): Answer!
+<<<<<<< HEAD
+=======
+    newNotification: Notification!
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   }
 `;

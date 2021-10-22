@@ -23,8 +23,29 @@ export const userTypeDefs = gql`
     pollHistory: [PollQuestion!]
     favorites: [Favorite]
     following: [Following]
+<<<<<<< HEAD
   }
 
+=======
+    # timeOnSite: siteTime
+    # timeSpentOnPoll: [timeOnPoll]
+  }
+
+  # type timeOnPoll {
+  #   poll: String
+  #   hours: Int
+  #   minutes: Int
+  #   seconds: Int
+  #   pollCount: Int
+  # }
+
+  # type siteTime {
+  #   hour: Int
+  #   minutes: Int
+  #   seconds: Int
+  # }
+
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   type Favorites {
     favoritePolls: [PollQuestion]
     favoriteAnswers: [Answer]
@@ -67,5 +88,17 @@ export const userTypeDefs = gql`
     removeFollow(userId: String!): Following!
     addFavorite(favoriteType: String!, favoriteId: String!): Favorite!
     removeFavorite(favoriteType: String!, favoriteId: String!): Favorite!
+<<<<<<< HEAD
+=======
+    # updateTimeOnSite(seconds: Int!, userId: String!): User!
+    # updateTimeSpentOnPoll(
+    #   poll: String!
+    #   userId: String!
+    #   seconds: Int!
+    #   minutes: Int!
+    #   hours: Int!
+    # ): User!
+    # deletePollTimeCount(userId: String!): String!
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
   }
 `;

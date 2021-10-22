@@ -18,7 +18,7 @@ const connectDb = (handler: any) => async (req: Request, res: Response) => {
   if (mongoose.connections[0].readyState !== 1) {
     try {
       await mongoose.connect(dbUri, configs.MONGO_OPTIONS);
-    } catch (err) {
+    } catch (err:any) {
       console.error(err.message);
       process.exit(1);
     }
