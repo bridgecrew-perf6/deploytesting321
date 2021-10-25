@@ -5,6 +5,7 @@ import {
 import Answer from "../../models/answerModel";
 import IPoll from "../../models/interfaces/poll";
 import Poll from "../../models/PollModel";
+import Chat from "../../models/chatModel";
 import Notification from "../../models/notificationModel";
 import User from "../../models/UserModel";
 import {
@@ -18,7 +19,11 @@ import { getNumRanking } from "./shared/metrics";
 import IUser from "../../models/interfaces/user";
 import mongoose from "mongoose";
 import INotification from "../../models/interfaces/notification";
-import { showAbbreviatedTxt } from "../../components/globalFuncs";
+import {
+  dateToString,
+  getSortedListByDate,
+  showAbbreviatedTxt,
+} from "../../components/globalFuncs";
 
 const { batchAnswers } = batchLoaders;
 
@@ -49,6 +54,51 @@ export const feedBackResolvers: ResolverMap = {
         return notifications.map((item) =>
           transformNotification(item, dataLoaders(["user"]))
         );
+      } catch (err) {
+        throw err;
+      }
+    },
+    lastActivity: async (parent, { pollId }, ctx) => {
+      interface activityDates {
+        activityType: string;
+        creationDate: Date;
+      }
+
+      try {
+        const poll = await Poll.findById(pollId);
+        const pollDateTime = poll.creationDate;
+
+        let activityDateList: activityDates[] = [];
+        activityDateList.push({
+          activityType: "poll",
+          creationDate: pollDateTime,
+        });
+
+        if (poll.answers && poll.answers.length > 0) {
+          const answersData = await Answer.find({ _id: { $in: poll.answers } });
+          const answerDates: activityDates[] = answersData.map((item) => {
+            return {
+              activityType: "answer",
+              creationDate: item.creationDate,
+            };
+          });
+          activityDateList = [...activityDateList, ...answerDates];
+        }
+
+        if (poll.chatMssgs && poll.chatMssgs.length > 0) {
+          const chatData = await Chat.find({ _id: { $in: poll.chatMssgs } });
+          const chatDates: activityDates[] = chatData.map((item) => {
+            return {
+              activityType: "chat",
+              creationDate: item.creationDate,
+            };
+          });
+          activityDateList = [...activityDateList, ...chatDates];
+        }
+
+        const datesSorted = getSortedListByDate(activityDateList);
+
+        return dateToString(datesSorted[0].creationDate);
       } catch (err) {
         throw err;
       }

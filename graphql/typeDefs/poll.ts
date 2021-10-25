@@ -81,6 +81,7 @@ export const pollTypeDefs = gql`
     pollsByTopic(topic: String!): [PollQuestion]
     pollsBySubTopic(subTopic: String!): [PollQuestion]
     notifications: [Notification]
+    lastActivity(pollId: String!): String
   }
 
   extend type Mutation {

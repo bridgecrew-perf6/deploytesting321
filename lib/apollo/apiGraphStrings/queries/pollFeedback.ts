@@ -31,6 +31,11 @@ const pollFeedBackQueries = {
       isFavorite(favType: $favType, favId: $favId)
     }
   `,
+  LAST_ACTIVITY: gql`
+    query LastActivity($pollId: String!) {
+      lastActivity(pollId: $pollId)
+    }
+  `,
   GET_POLL_CHATS: gql`
     query MessagesByPoll($pollId: String!) {
       messagesByPoll(pollId: $pollId) {
