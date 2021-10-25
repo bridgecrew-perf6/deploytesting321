@@ -64,13 +64,21 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               </Text>
             </Flex>
           </Flex>
-          <HStack align="start" mt="1" pr="2">
-            {pollData.subTopics &&
-              pollData.subTopics.map((st) => (
-                <Tag fontWeight="bold" color="gray.500" size="sm" key={st._id}>
-                  {st.subTopic}
-                </Tag>
-              ))}
+          <HStack align="start" pr="2" spacing="0">
+            <Box mt="2px">
+              {pollData.subTopics &&
+                pollData.subTopics.map((st) => (
+                  <Tag
+                    fontWeight="bold"
+                    color="gray.500"
+                    size="sm"
+                    key={st._id}
+                    mr="2"
+                  >
+                    {st.subTopic}
+                  </Tag>
+                ))}
+            </Box>
             <Menu>
               <MenuButton
                 as={IconButton}
@@ -81,7 +89,6 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                 _hover={{ bg: "none" }}
                 _active={{ bg: "none" }}
                 size="xs"
-                ml="1"
                 color="gray.500"
               />
               <MenuList>

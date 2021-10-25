@@ -145,8 +145,6 @@ const Poll = ({ pollId }: Props) => {
 
     addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
-  console.log("myData>>>", data);
-  console.log("ansDATA>>>", answerData);
 
   if (data) {
     return (

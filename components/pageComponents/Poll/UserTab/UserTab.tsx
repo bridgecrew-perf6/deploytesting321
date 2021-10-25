@@ -42,17 +42,19 @@ const UserListItem = ({ id }: { id: number }) => {
             </Text>
           </Box>
         </Flex>
-        <Flex ml="6" align="center">
-          <BsCardList size="20px" style={{ marginTop: "2px" }} />
-          <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
-            229
-          </Text>
-        </Flex>
         <Flex align="center">
-          <BsChat size="20px" />
-          <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
-            129
-          </Text>
+          <Flex align="center">
+            <BsCardList size="20px" style={{ marginTop: "2px" }} />
+            <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
+              229
+            </Text>
+          </Flex>
+          <Flex align="center" ml="6">
+            <BsChat size="20px" />
+            <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
+              129
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
     </Box>

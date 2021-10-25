@@ -10,15 +10,15 @@ const connectDb = (handler: any) => async (req: Request, res: Response) => {
 
   const { DEV_DB_URL, PROD_DB_URL } = process.env;
 
-  // const localDB = "mongodb://localhost:27017/poldit";
+  const localDB = "mongodb://localhost:27017/poldit";
 
-  // const dbUri = isDev ? (localDB as string) : (PROD_DB_URL as string);
-  const dbUri = isDev ? (DEV_DB_URL as string) : (PROD_DB_URL as string);
+  const dbUri = isDev ? (localDB as string) : (PROD_DB_URL as string);
+  // const dbUri = isDev ? (DEV_DB_URL as string) : (PROD_DB_URL as string);
 
   if (mongoose.connections[0].readyState !== 1) {
     try {
       await mongoose.connect(dbUri, configs.MONGO_OPTIONS);
-    } catch (err:any) {
+    } catch (err: any) {
       console.error(err.message);
       process.exit(1);
     }
