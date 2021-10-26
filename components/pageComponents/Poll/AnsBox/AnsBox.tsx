@@ -322,7 +322,7 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
           cursor="pointer"
           color="blue.400"
         >
-          {isOpen ? "Hide" : "Show"} attachment
+          {isOpen ? "Hide" : "Show"} more
         </Text>
         <Collapse in={isOpen} animateOpacity>
           <Box p="4" textAlign="center" cursor="pointer" onClick={onLbOpen}>

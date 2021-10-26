@@ -33,8 +33,17 @@ const UserListItem = ({ id }: { id: number }) => {
             size="sm"
             color="gray.800"
           />
-          <Box px="3">
+          <Box mx="3" position="relative">
             <Avatar name="xav dave" src={picUrl} size="md" cursor="pointer" />
+            <Box
+              position="absolute"
+              w="8px"
+              h="8px"
+              borderRadius="50%"
+              bg={id % 2 === 0 ? "green.300" : "gray.400"}
+              top="2px"
+              right="3px"
+            ></Box>
           </Box>
           <Box>
             <Text color="gray.600" fontSize={["sm", "sm", "md"]}>

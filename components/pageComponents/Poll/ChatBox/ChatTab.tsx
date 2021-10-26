@@ -5,6 +5,8 @@ import {
   Flex,
   IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   Spinner,
   Text,
   Tooltip,
@@ -214,14 +216,23 @@ const ChatTab = ({ pollId, user }: any) => {
       </Scrollbars>
       <form onSubmit={(e) => onSend(e)}>
         <Flex py="4" px={[4, 4, 8]} bg="white" borderTop="1px solid #ececec">
-          <Input
-            name="msg"
-            type="text"
-            borderRadius="6px 0 0 6px"
-            placeholder="Type message here..."
-            id="msg"
-            _focus={{ borderColor: "orange.400" }}
-          />
+          <InputGroup>
+            <Input
+              name="msg"
+              type="text"
+              borderRadius="6px 0 0 6px"
+              placeholder="Type message here..."
+              id="msg"
+              _focus={{ borderColor: "orange.400" }}
+            />
+            <InputRightElement
+              children={
+                <Text fontWeight="extrabold" fontSize="xl" color="gray.700">
+                  A
+                </Text>
+              }
+            />
+          </InputGroup>
           <Button
             ml="1"
             bg="gray.700"
