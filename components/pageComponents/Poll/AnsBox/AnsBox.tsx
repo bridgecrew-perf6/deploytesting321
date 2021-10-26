@@ -23,11 +23,11 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
-import { BsFlagFill } from "react-icons/bs";
 import { BiErrorCircle } from "react-icons/bi";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation } from "@apollo/client";
 import Pagination from "react-js-pagination";
+import ReactPlayer from "react-player/lazy";
 import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
 import "../../../../appStyles/pagination.module.css";
 
@@ -262,15 +262,12 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
   return (
     <Box
       bg="white"
-      pl={[4, 4, 7]}
-      pr="2"
-      pb={4}
-      pt={5}
-      my={6}
+      my="4"
+      py="4"
       rounded="lg"
       boxShadow="0 0 32px rgb(0 0 0 / 8%), 0rem 16px 16px -16px rgb(0 0 0 / 10%);"
     >
-      <Flex w="100%">
+      <Flex w="100%" pl="3" pr="1">
         <Flex
           w="100%"
           justifyContent="space-between"
@@ -317,29 +314,36 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
           </Menu>
         </Box>
       </Flex>
-      <Box pt={5} pb={1} px={2}>
+      <Box pt={5} pb={1} px={5}>
         <Text fontSize={["sm", "sm", "sm"]}>{data?.answer}</Text>
+        <Text
+          onClick={onToggle}
+          fontSize="xs"
+          cursor="pointer"
+          color="blue.400"
+        >
+          {isOpen ? "Hide" : "Show"} attachment
+        </Text>
+        <Collapse in={isOpen} animateOpacity>
+          <Box p="4" textAlign="center" cursor="pointer" onClick={onLbOpen}>
+            {/*
+			  <Image
+			  src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
+			  width={500}
+			  height={500}
+			  loading="lazy"
+			  />
+			  */}
+            <ReactPlayer
+              url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
+              height="260px"
+              width="100%"
+              controls={true}
+            />
+          </Box>
+        </Collapse>
       </Box>
-      <Text
-        onClick={onToggle}
-        fontSize="xs"
-        cursor="pointer"
-        color="blue.400"
-        pl="2"
-      >
-        {isOpen ? "Hide" : "Show"} attachment
-      </Text>
-      <Collapse in={isOpen} animateOpacity>
-        <Box p="4" textAlign="center" cursor="pointer" onClick={onLbOpen}>
-          <Image
-            src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
-            width={500}
-            height={500}
-            loading="lazy"
-          />
-        </Box>
-      </Collapse>
-      <Flex justifyContent="space-between" alignItems="center">
+      <Flex justifyContent="space-between" alignItems="center" px="3">
         <Flex justifyContent="flex-start" alignItems="center">
           <Flex justifyContent="center" alignItems="center" mr={3}>
             <IconButton
@@ -373,17 +377,6 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
                 {dislikes}
               </Text>
             </Box>
-          </Flex>
-          <Flex justify="center" align="center">
-            <IconButton
-              icon={<BsFlagFill size="14px" />}
-              aria-label="thumbsup"
-              variant="ghost"
-              _focus={{ outline: "none" }}
-              size="sm"
-              ml="1"
-              color="gray.500"
-            />
           </Flex>
         </Flex>
         <Box mr="4">

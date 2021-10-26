@@ -2,6 +2,7 @@ import { PollHistory } from "../../appTypes/appType";
 import {
   Avatar,
   Box,
+  Button,
   Flex,
   HStack,
   IconButton,
@@ -16,6 +17,8 @@ import {
   PopoverTrigger,
   Tag,
   Text,
+  Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -38,17 +41,15 @@ interface PollQuestion {
 }
 
 const PollQuestion = ({ pollData }: PollQuestion) => {
+  const { onOpen, onClose, isOpen } = useDisclosure();
   return (
     <Box py="10" px={[4, 4, 24, 24, 40]}>
       <Box
         bg="white"
         boxShadow="0 1px 10px -1px rgba(0,0,0,.2)"
-        pl="6"
-        pr="2"
-        pt="4"
-        pb="1"
+        borderRadius="md"
       >
-        <Flex justifyContent="space-between">
+        <Flex justifyContent="space-between" pl="5" pt="4" pr="1">
           <Flex>
             <Avatar
               name="xav dave"
@@ -64,7 +65,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               </Text>
             </Flex>
           </Flex>
-          <HStack align="start" pr="2" spacing="0">
+          <HStack align="start" spacing="0">
             <Box mt="2px">
               {pollData.subTopics &&
                 pollData.subTopics.map((st) => (
@@ -95,6 +96,13 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                 <MenuItem
                   _focus={{ outline: "none" }}
                   _hover={{ bg: "gray.200" }}
+                  onClick={onOpen}
+                >
+                  Edit
+                </MenuItem>
+                <MenuItem
+                  _focus={{ outline: "none" }}
+                  _hover={{ bg: "gray.200" }}
                 >
                   Report
                 </MenuItem>
@@ -108,12 +116,45 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
             </Menu>
           </HStack>
         </Flex>
-        <Box pt="8" pb="4" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
-          <Text fontSize={["sm", "sm", "md"]}>
-            {pollData?.question && pollData.question}
-          </Text>
+        <Box py="6" pl={[4, 6, 8]} mr={[6, 6, 8, 10, 16]}>
+          {!isOpen ? (
+            <Text fontSize={["sm", "sm", "md"]}>
+              {pollData?.question && pollData.question}
+            </Text>
+          ) : (
+            <Box>
+              <Textarea defaultValue={pollData.question} />
+              <Flex w="100%" justify="flex-end" align="center" mt="4" pr="1">
+                <Button
+                  bg="poldit.100"
+                  color="white"
+                  size="sm"
+                  border="1px"
+                  mr="2"
+                  onClick={onClose}
+                  _hover={{ bg: "poldit.100", color: "white" }}
+                  _focus={{ outline: "none" }}
+                  _active={{
+                    bg: "white",
+                    color: "poldit.100",
+                    borderColor: "poldit.100",
+                  }}
+                >
+                  Update
+                </Button>
+                <Button
+                  size="sm"
+                  colorScheme="blackAlpha"
+                  onClick={onClose}
+                  _focus={{ outline: "none" }}
+                >
+                  Cancel
+                </Button>
+              </Flex>
+            </Box>
+          )}
         </Box>
-        <Flex justifyContent="flex-end" alignItems="center">
+        <Flex justifyContent="flex-end" alignItems="center" mr="2" pb="1">
           <Box mr="2">
             <Text fontSize="xs" color="gray.400">
               Last activity: 2 days ago
@@ -125,6 +166,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
             bg="none"
             _hover={{ bg: "none" }}
             _focus={{ outline: "none" }}
+            size="sm"
           />
 
           <Popover placement="top">
@@ -135,6 +177,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                 bg="none"
                 _hover={{ bg: "none" }}
                 _focus={{ outline: "none" }}
+                size="sm"
               />
             </PopoverTrigger>
             <PopoverContent
