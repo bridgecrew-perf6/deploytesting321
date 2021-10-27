@@ -32,21 +32,47 @@ import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
 import "../../../../appStyles/pagination.module.css";
 
 const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
-  const [value, setValue] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
-  const [ansState, setAnsState] = useState([]);
+  const [ansState, setAnsState] = useState<any[]>([]);
+  const [orgAns, setOrgAns] = useState<any[] | null>(null);
   const [page, setPage] = useState(1);
   const [handleLikes_disLikes] = useMutation(
     GraphResolvers.mutations.LIKE_DISLIKE_HANDLER
   );
 
   useEffect(() => {
-    let num = Number(noOfAns) as number;
     if (answers) {
-      const pagination = answers.slice(num * page - num, num * page);
+      let sortArray = [...answers];
+      if (sortBy === "rank") {
+        sortArray.sort((a, b) => a.rank - b.rank);
+      }
+      if (sortBy === "mostLiked") {
+        sortArray.sort((a, b) => b.likes.length - a.likes.length);
+      }
+      if (sortBy === "mostDisliked") {
+        sortArray.sort((a, b) => b.dislikes.length - a.dislikes.length);
+      }
+      if (sortBy === "newest") {
+        sortArray.sort(function (a, b) {
+          const aDate: any = new Date(a.creationDate);
+          const bDate: any = new Date(b.creationDate);
+          return bDate - aDate;
+        });
+      }
+      setOrgAns(sortArray);
+    }
+  }, [answers, sortBy]);
+
+  useEffect(() => {
+    let num = Number(noOfAns) as number;
+    console.log("I'm triggered!!");
+    if (orgAns) {
+      console.log("ANS**>>", orgAns);
+      const pagination = orgAns.slice(num * page - num, num * page);
       setAnsState(pagination);
     }
-  }, [answers, page, noOfAns]);
+  }, [orgAns, page, noOfAns, sortBy]);
 
   const likeHandler = (
     feedback: string,
@@ -87,8 +113,8 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
           borderColor="#d2d2d7"
           size="sm"
           maxW="160px"
-          value={value}
-          onChange={(val) => setValue(val.target.value)}
+          value={sortBy}
+          onChange={(val) => setSortBy(val.target.value)}
         >
           <option value="rank">Rank</option>
           <option value="mostLiked">Most Liked</option>
@@ -326,20 +352,20 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
         </Text>
         <Collapse in={isOpen} animateOpacity>
           <Box p="4" textAlign="center" cursor="pointer" onClick={onLbOpen}>
+            <Image
+              src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
+              width={500}
+              height={500}
+              loading="lazy"
+            />
             {/*
-			  <Image
-			  src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
-			  width={500}
-			  height={500}
-			  loading="lazy"
+			  <ReactPlayer
+			  url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
+			  height="260px"
+			  width="100%"
+			  controls={true}
 			  />
 			  */}
-            <ReactPlayer
-              url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
-              height="260px"
-              width="100%"
-              controls={true}
-            />
           </Box>
         </Collapse>
       </Box>
