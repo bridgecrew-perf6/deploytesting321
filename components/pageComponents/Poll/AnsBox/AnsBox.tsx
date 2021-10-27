@@ -89,11 +89,11 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
           maxW="160px"
           value={value}
           onChange={(val) => setValue(val.target.value)}
-          placeholder="Sort by"
         >
-          <option value="Option 1">Option 1</option>
-          <option value="Option 2">Option 2</option>
-          <option value="Option 3">Option 3</option>
+          <option value="rank">Rank</option>
+          <option value="mostLiked">Most Liked</option>
+          <option value="mostDisliked">Most Disliked</option>
+          <option value="newest">Newest</option>
         </Select>
         <Text fontSize="sm" color="gray.600">
           4 Answers

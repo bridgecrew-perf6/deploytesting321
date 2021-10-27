@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, IconButton, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, IconButton, Image, Text } from "@chakra-ui/react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BsCardList } from "react-icons/bs";
@@ -53,7 +53,7 @@ const UserListItem = ({ id }: { id: number }) => {
         </Flex>
         <Flex align="center">
           <Flex align="center">
-            <BsCardList size="20px" style={{ marginTop: "2px" }} />
+            <Image src="/P-10.png" w="20px" />
             <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
               229
             </Text>

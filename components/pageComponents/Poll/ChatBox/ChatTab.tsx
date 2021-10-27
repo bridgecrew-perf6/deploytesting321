@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   IconButton,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
@@ -29,8 +30,6 @@ const ChatTab = ({ pollId, user }: any) => {
       notifyOnNetworkStatusChange: true,
     }
   );
-
-  console.log("CHAT_LOADING", loading);
 
   useEffect(() => {
     if (data) {
@@ -171,10 +170,24 @@ const ChatTab = ({ pollId, user }: any) => {
                     bg="white"
                     borderRadius="18px 18px 18px 0"
                     boxShadow="0 0 32px rgb(0 0 0 / 8%), 0rem 16px 16px -16px rgb(0 0 0 / 10%);"
+                    position="relative"
+                    borderColor="poldit.100"
+                    borderRightWidth={
+                      d?.message === "Another test now" ? "1px" : "none"
+                    }
                   >
                     <Text color="gray.700" fontSize={["sm", "sm", "md"]} p="4">
                       {d.message}
                     </Text>
+                    {d?.message === "Another test now" && (
+                      <Image
+                        src="/P-10.png"
+                        w="13px"
+                        position="absolute"
+                        top="0"
+                        right="0"
+                      />
+                    )}
                   </Box>
                   <Flex>
                     <Text fontSize="xs" color="gray.500" ml="2" mt="1">
