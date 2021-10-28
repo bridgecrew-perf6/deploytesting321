@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import TimeAgo from "react-timeago";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";

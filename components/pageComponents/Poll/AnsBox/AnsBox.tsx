@@ -30,6 +30,7 @@ import Pagination from "react-js-pagination";
 import ReactPlayer from "react-player/lazy";
 import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
 import "../../../../appStyles/pagination.module.css";
+import { EditAnsModal } from "./EditAnsModal";
 
 const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
   const [sortBy, setSortBy] = useState<string>("rank");
@@ -68,7 +69,6 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
     let num = Number(noOfAns) as number;
     console.log("I'm triggered!!");
     if (orgAns) {
-      console.log("ANS**>>", orgAns);
       const pagination = orgAns.slice(num * page - num, num * page);
       setAnsState(pagination);
     }
@@ -99,6 +99,8 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
     let inputValue = document.getElementById("answerInput") as HTMLInputElement;
     inputValue.value = "";
   };
+
+  console.log("ANSSTTE", ansState);
 
   return (
     <Box bg="white" minW="350px" boxShadow="0 1px 10px -1px rgba(0,0,0,.2)">
@@ -260,7 +262,7 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                     activePage={page}
                     prevPageText="Prev"
                     nextPageText="Next"
-                    itemsCountPerPage={noOfAns}
+                    itemsCountPerPage={Number(noOfAns)}
                     totalItemsCount={answers && answers.length}
                     pageRangeDisplayed={5}
                     onChange={(e: any) => setPage(e)}
@@ -283,6 +285,11 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
     isOpen: lbOpen,
     onOpen: onLbOpen,
     onClose: onLbClose,
+  } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
   } = useDisclosure();
 
   return (
@@ -324,6 +331,13 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
               color="gray.500"
             />
             <MenuList>
+              <MenuItem
+                _focus={{ outline: "none" }}
+                _hover={{ bg: "gray.200" }}
+                onClick={onEditOpen}
+              >
+                Edit
+              </MenuItem>
               <MenuItem
                 _focus={{ outline: "none" }}
                 _hover={{ bg: "gray.200" }}
@@ -415,6 +429,11 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
         url="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
         lbOpen={lbOpen}
         onLbClose={onLbClose}
+      />
+      <EditAnsModal
+        isEditOpen={isEditOpen}
+        onEditClose={onEditClose}
+        ansData={data}
       />
     </Box>
   );
