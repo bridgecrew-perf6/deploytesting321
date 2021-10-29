@@ -25,7 +25,11 @@ export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
         <form onSubmit={updateAnsHandler}>
           <ModalBody>
             <Box>
-              <Textarea defaultValue={ansData?.answer} name="ansTextarea" />
+              <Textarea
+                defaultValue={ansData?.answer}
+                name="ansTextarea"
+                _focus={{ borderColor: "poldit.100" }}
+              />
               <Box mt="4" maxW="250px">
                 <Input type="file" border="none" />
               </Box>

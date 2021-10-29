@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import TimeAgo from "react-timeago";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
@@ -22,7 +22,8 @@ import { addNewChatMssg } from "../../../../lib/apollo/apolloFunctions/mutations
 import { BiErrorCircle } from "react-icons/bi";
 import { BsFlagFill } from "react-icons/bs";
 
-const ChatTab = ({ pollId, user }: any) => {
+const ChatTab = ({ pollId, user, addAnswer }: any) => {
+  const [userAnswer, setUserAnswer] = useState("");
   const { loading, error, data, subscribeToMore, fetchMore } = useQuery(
     GraphResolvers.queries.GET_POLL_CHAT_PAGES,
     {
@@ -60,22 +61,23 @@ const ChatTab = ({ pollId, user }: any) => {
 
   const scrollRef = useRef();
 
-  const onSend = (e: any, isAnswer: boolean = false) => {
+  const onSend = (isAnswer: boolean = false) => {
     //If isAnswer is true, use Add New Answer mutation along with chat message mutation so it updates the Answer Window above.  Client way is easier than backend way which is repetitive code
-    e.preventDefault();
-    if (!e.target.msg.value) {
+    if (!userAnswer) {
       return;
     }
 
     const details = JSON.stringify({
-      message: e.target.msg.value,
+      message: userAnswer,
       poll: pollId,
       isAnswer,
     });
     console.log(details);
     addNewChatMssg(addChatMssg, details, pollId);
-    let inputValue = document.getElementById("msg") as HTMLInputElement;
-    inputValue.value = "";
+    if (isAnswer && addAnswer) {
+      addAnswer(userAnswer, []);
+    }
+    setUserAnswer("");
   };
   useEffect(() => {
     if (scrollRef && scrollRef.current) {
@@ -227,37 +229,45 @@ const ChatTab = ({ pollId, user }: any) => {
           )}
         </Flex>
       </Scrollbars>
-      <form onSubmit={(e) => onSend(e)}>
-        <Flex py="4" px={[4, 4, 8]} bg="white" borderTop="1px solid #ececec">
-          <InputGroup>
-            <Input
-              name="msg"
-              type="text"
-              borderRadius="6px 0 0 6px"
-              placeholder="Type message here..."
-              id="msg"
-              _focus={{ borderColor: "orange.400" }}
-            />
-            <InputRightElement
-              children={
-                <Text fontWeight="extrabold" fontSize="xl" color="gray.700">
+      <Flex py="4" px={[4, 4, 8]} bg="white" borderTop="1px solid #ececec">
+        <InputGroup>
+          <Input
+            name="msg"
+            type="text"
+            borderRadius="6px 0 0 6px"
+            placeholder="Type message here..."
+            id="msg"
+            value={userAnswer}
+            onChange={(e) => setUserAnswer(e.target.value)}
+            _focus={{ borderColor: "orange.400" }}
+          />
+          <InputRightElement
+            children={
+              <Tooltip label="Submit as answer" hasArrow placement="top">
+                <Text
+                  fontWeight="extrabold"
+                  fontSize="xl"
+                  color="gray.700"
+                  cursor="pointer"
+                  onClick={() => onSend(true)}
+                >
                   A
                 </Text>
-              }
-            />
-          </InputGroup>
-          <Button
-            ml="1"
-            bg="gray.700"
-            borderRadius="0 6px 6px 0"
-            type="submit"
-            _focus={{ outline: "none" }}
-            _hover={{ bg: "gray.800" }}
-          >
-            <RiSendPlaneFill color="white" size="20px" />
-          </Button>
-        </Flex>
-      </form>
+              </Tooltip>
+            }
+          />
+        </InputGroup>
+        <Button
+          ml="1"
+          bg="gray.700"
+          borderRadius="0 6px 6px 0"
+          _focus={{ outline: "none" }}
+          _hover={{ bg: "gray.800" }}
+          onClick={() => onSend(false)}
+        >
+          <RiSendPlaneFill color="white" size="20px" />
+        </Button>
+      </Flex>
     </Box>
   );
 };

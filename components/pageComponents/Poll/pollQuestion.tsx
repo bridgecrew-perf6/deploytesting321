@@ -126,7 +126,10 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
             </Text>
           ) : (
             <Box>
-              <Textarea defaultValue={pollData.question} />
+              <Textarea
+                defaultValue={pollData.question}
+                _focus={{ borderColor: "poldit.100" }}
+              />
               <Flex w="100%" justify="flex-end" align="center" mt="4" pr="1">
                 <Button
                   bg="poldit.100"

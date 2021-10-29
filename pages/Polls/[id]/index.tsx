@@ -205,6 +205,7 @@ const Poll = ({ pollId }: Props) => {
                       <ChatTab
                         pollId={data.poll._id}
                         user={user && user?.getUserDataForPoll}
+                        addAnswer={addAnswer}
                       />
                     </TabPanel>
                     <TabPanel p="0">
