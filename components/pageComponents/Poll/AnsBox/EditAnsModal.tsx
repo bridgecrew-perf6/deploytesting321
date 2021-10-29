@@ -9,7 +9,9 @@ import {
   Textarea,
   Input,
   Box,
+  IconButton,
 } from "@chakra-ui/react";
+import { AiOutlineCamera } from "react-icons/ai";
 
 export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
   const updateAnsHandler = (e: any) => {
@@ -30,8 +32,11 @@ export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
                 name="ansTextarea"
                 _focus={{ borderColor: "poldit.100" }}
               />
-              <Box mt="4" maxW="250px">
-                <Input type="file" border="none" />
+              <Box mt="3" ml="1">
+                <label>
+                  <input type="file" style={{ display: "none" }} />
+                  <AiOutlineCamera size="25px" />
+                </label>
               </Box>
             </Box>
           </ModalBody>

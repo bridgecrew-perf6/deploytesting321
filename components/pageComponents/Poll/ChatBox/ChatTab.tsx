@@ -34,13 +34,10 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
 
   useEffect(() => {
     if (data) {
-      console.log("CHAT3rd##", data);
       subscribeToMore({
         document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
         variables: { pollId },
         updateQuery: (prev, { subscriptionData }) => {
-          console.log("sub_PREV*>", prev);
-          console.log("sub_DATA*>", subscriptionData);
           if (!subscriptionData) return prev;
           const newChatItem = subscriptionData.data.newMessage;
           return Object.assign({}, prev, {
@@ -72,7 +69,6 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
       poll: pollId,
       isAnswer,
     });
-    console.log(details);
     addNewChatMssg(addChatMssg, details, pollId);
     if (isAnswer && addAnswer) {
       addAnswer(userAnswer, []);
@@ -129,7 +125,7 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
   return (
     <Box bg="#f2f2f2">
       <Scrollbars
-        style={{ height: "718px" }}
+        style={{ height: "754px" }}
         ref={scrollRef as any}
         onScroll={onScrollHandler}
       >
@@ -173,22 +169,25 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
                     borderRadius="18px 18px 18px 0"
                     boxShadow="0 0 32px rgb(0 0 0 / 8%), 0rem 16px 16px -16px rgb(0 0 0 / 10%);"
                     position="relative"
-                    borderColor="poldit.100"
-                    borderRightWidth={
-                      d?.message === "Another test now" ? "1px" : "none"
+                    borderColor="blue.100"
+                    borderWidth={
+                      d?.message === "Another test now" ? "2px" : "none"
                     }
                   >
                     <Text color="gray.700" fontSize={["sm", "sm", "md"]} p="4">
                       {d.message}
                     </Text>
                     {d?.message === "Another test now" && (
-                      <Image
-                        src="/P-10.png"
-                        w="13px"
+                      <Text
+                        fontWeight="extrabold"
+                        fontSize="xl"
+                        color="gray.700"
                         position="absolute"
-                        top="0"
-                        right="0"
-                      />
+                        top="11px"
+                        right="-10px"
+                      >
+                        A
+                      </Text>
                     )}
                   </Box>
                   <Flex>

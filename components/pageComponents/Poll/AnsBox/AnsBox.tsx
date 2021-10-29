@@ -67,7 +67,6 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
 
   useEffect(() => {
     let num = Number(noOfAns) as number;
-    console.log("I'm triggered!!");
     if (orgAns) {
       const pagination = orgAns.slice(num * page - num, num * page);
       setAnsState(pagination);
@@ -99,8 +98,6 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
     let inputValue = document.getElementById("answerInput") as HTMLInputElement;
     inputValue.value = "";
   };
-
-  console.log("ANSSTTE", ansState);
 
   return (
     <Box bg="white" minW="350px" boxShadow="0 1px 10px -1px rgba(0,0,0,.2)">
@@ -231,33 +228,8 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                     </Box>
                   ))}
               </Scrollbars>
-              <Flex justify="center" align="center" py="4" wrap="wrap">
-                <Flex
-                  flex={{ base: "0 0 100%", xl: "0 0 30%" }}
-                  maxW={{ base: "100%", xl: "30%" }}
-                  justify={{ base: "center", xl: "flex-start" }}
-                  align="center"
-                >
-                  <Select
-                    border="1px"
-                    borderColor="#d2d2d7"
-                    size="sm"
-                    maxW="80px"
-                    value={noOfAns}
-                    onChange={(val) => setNoOfAns(val.target.value)}
-                    ml={{ base: "0", xl: 8 }}
-                    mb={{ base: "3", xl: 0 }}
-                  >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                  </Select>
-                </Flex>
-                <Flex
-                  flex={{ base: "0 0 100%", xl: "0 0 70%" }}
-                  maxW={{ base: "100%", xl: "70%" }}
-                  justify={{ base: "center", xl: "flex-start" }}
-                >
+              <Box pt="4" pb="3">
+                <Flex align="center" justify="center">
                   <Pagination
                     activePage={page}
                     prevPageText="Prev"
@@ -270,7 +242,21 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                     linkClass="page-link"
                   />
                 </Flex>
-              </Flex>
+                <Box align="center" mt="2">
+                  <Select
+                    border="1px"
+                    borderColor="#d2d2d7"
+                    size="sm"
+                    maxW="80px"
+                    value={noOfAns}
+                    onChange={(val) => setNoOfAns(val.target.value)}
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                  </Select>
+                </Box>
+              </Box>
             </>
           )}
         </Box>

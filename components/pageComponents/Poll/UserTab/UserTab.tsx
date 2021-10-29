@@ -1,7 +1,14 @@
-import { Avatar, Box, Flex, IconButton, Image, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Flex,
+  IconButton,
+  Image,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { BsCardList } from "react-icons/bs";
 import { BsChat } from "react-icons/bs";
 
 const picUrl =
@@ -9,7 +16,7 @@ const picUrl =
 export const UserTab = () => {
   return (
     <Box bg="white">
-      <Scrollbars style={{ height: "790px" }}>
+      <Scrollbars style={{ height: "826px" }}>
         {Array.from(Array(20).keys()).map((x) => (
           <UserListItem key={x} id={x} />
         ))}
@@ -23,22 +30,24 @@ const UserListItem = ({ id }: { id: number }) => {
     <Box bg="#f2f2f2" my="2" mx={[1, 1, 3]} borderRadius="lg">
       <Flex py="4" px={[1, 1, 4]} align="center" justify="space-around">
         <Flex align="center">
-          <IconButton
-            icon={<AiOutlinePlusCircle size="23px" />}
-            aria-label="thumbsup"
-            variant="ghost"
-            _focus={{ outline: "none" }}
-            _hover={{ bg: "none" }}
-            _active={{ bg: "none" }}
-            size="sm"
-            color="gray.800"
-          />
+          <Tooltip hasArrow placement="top" label="Follow">
+            <IconButton
+              icon={<AiOutlinePlusCircle size="23px" />}
+              aria-label="thumbsup"
+              variant="ghost"
+              _focus={{ outline: "none" }}
+              _hover={{ bg: "none" }}
+              _active={{ bg: "none" }}
+              size="sm"
+              color="gray.800"
+            />
+          </Tooltip>
           <Box mx="3" position="relative">
             <Avatar name="xav dave" src={picUrl} size="md" cursor="pointer" />
             <Box
               position="absolute"
-              w="8px"
-              h="8px"
+              w="9px"
+              h="9px"
               borderRadius="50%"
               bg={id % 2 === 0 ? "green.300" : "gray.400"}
               top="2px"
@@ -52,18 +61,22 @@ const UserListItem = ({ id }: { id: number }) => {
           </Box>
         </Flex>
         <Flex align="center">
-          <Flex align="center">
-            <Image src="/P-10.png" w="20px" />
-            <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
-              229
-            </Text>
-          </Flex>
-          <Flex align="center" ml="6">
-            <BsChat size="20px" />
-            <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
-              129
-            </Text>
-          </Flex>
+          <Tooltip hasArrow placement="top" label="Answers">
+            <Flex align="center">
+              <Image src="/P-10.png" w="20px" />
+              <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
+                229
+              </Text>
+            </Flex>
+          </Tooltip>
+          <Tooltip hasArrow placement="top" label="Chat messages">
+            <Flex align="center" ml="6">
+              <BsChat size="20px" />
+              <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
+                129
+              </Text>
+            </Flex>
+          </Tooltip>
         </Flex>
       </Flex>
     </Box>
