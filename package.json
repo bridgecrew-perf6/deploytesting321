@@ -14,6 +14,8 @@
     "@apollo/client": "^3.3.6",
     "@apollo/react-hooks": "^4.0.0",
     "@apollo/react-ssr": "^4.0.0",
+    "@azure/cognitiveservices-contentmoderator": "^5.0.1",
+    "@azure/ms-rest-azure-js": "^2.1.0",
     "@types/react-bootstrap-table-next": "^4.0.15",
     "@types/react-bootstrap-table2-paginator": "^2.1.2",
     "@types/react-chartjs-2": "^2.5.7",

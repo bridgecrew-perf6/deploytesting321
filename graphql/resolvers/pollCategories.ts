@@ -6,6 +6,7 @@ import ITopic from "../../models/interfaces/topic";
 import ISubTopic from "../../models/interfaces/subTopic";
 import batchLoaders from "../loaders/dataLoaders";
 import { getAlphabeticalList } from "../../components/globalFuncs";
+import { moderateText } from "./shared/moderation";
 
 export const topicResolvers: ResolverMap = {
   Query: {
@@ -104,6 +105,14 @@ export const topicResolvers: ResolverMap = {
 
       if (!auth) {
         throw new Error("Not Authenticated.  Please Log In!");
+      }
+
+      const moderationResults = await moderateText(subTopicInfo);
+
+      if (moderationResults && moderationResults.blockContent) {
+        throw new Error(
+          "Content contains inappropriate language.  Please update and resubmit."
+        );
       }
 
       const subTopicObj = JSON.parse(subTopicInfo);

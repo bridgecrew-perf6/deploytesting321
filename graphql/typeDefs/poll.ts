@@ -86,7 +86,9 @@ export const pollTypeDefs = gql`
 
   extend type Mutation {
     createPoll(details: String!): PollQuestion
+    updatePoll(details: String!): String!
     createAnswer(details: String!): Answer
+    updateAnswer(details: String!): String!
     handleLikeDislike(
       feedback: String!
       feedbackVal: Boolean!

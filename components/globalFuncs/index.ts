@@ -83,3 +83,10 @@ export const showAbbreviatedTxt = (mssg: string) => {
   }
   return mssg;
 };
+
+export const roundValue = (val: number | undefined) => {
+  if (!val) {
+    return 0;
+  }
+  return Math.round(val * 100);
+};

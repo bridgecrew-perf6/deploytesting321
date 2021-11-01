@@ -24,6 +24,8 @@ import {
   getSortedListByDate,
   showAbbreviatedTxt,
 } from "../../components/globalFuncs";
+import { moderateText } from "./shared/moderation";
+import pushNotification from "./shared/notification";
 
 const { batchAnswers } = batchLoaders;
 
@@ -51,7 +53,12 @@ export const feedBackResolvers: ResolverMap = {
         const notifications = await Notification.find({
           contentOwner: id,
         });
-        return notifications.map((item) =>
+
+        const sortedNotifications = notifications.sort(
+          (a, b) => b.creationDate - a.creationDate
+        );
+
+        return sortedNotifications.map((item) =>
           transformNotification(item, dataLoaders(["user"]))
         );
       } catch (err) {
@@ -90,6 +97,7 @@ export const feedBackResolvers: ResolverMap = {
           const chatDates: activityDates[] = chatData.map((item) => {
             return {
               activityType: "chat",
+
               creationDate: item.creationDate,
             };
           });
@@ -111,6 +119,14 @@ export const feedBackResolvers: ResolverMap = {
 
       if (!auth) {
         throw new Error("Not Authenticated.  Please Log In!");
+      }
+
+      const moderationResults = await moderateText(details);
+
+      if (moderationResults && moderationResults.blockContent) {
+        throw new Error(
+          "Content contains inappropriate language.  Please update and resubmit."
+        );
       }
 
       const detailObj = JSON.parse(details);
@@ -152,33 +168,65 @@ export const feedBackResolvers: ResolverMap = {
         pubsub.publish("newAnswer", { newAnswer: createdAnswer });
 
         //Push to Notification
-        if (pollItem.creator.toString() !== id) {
-          const creator = await User.findById(id);
+        if (pollItem.creator.toString() !== id && id) {
+          pushNotification("poll", id, pollItem, pubsub, dataLoaders);
+          // const creator = await User.findById(id);
 
-          const notification = new Notification({
-            message: `${
-              creator.appid
-            } added an answer to the poll: ${showAbbreviatedTxt(
-              pollItem.question
-            )}`,
-            user: id,
-            notificationType: "poll",
-            notificationId: pollItem._id,
-            contentOwner: pollItem.creator.toString(),
-            read: false,
-          });
+          // const notification = new Notification({
+          //   message: `${
+          //     creator.appid
+          //   } added an answer to the poll: ${showAbbreviatedTxt(
+          //     pollItem.question
+          //   )}`,
+          //   user: id,
+          //   notificationType: "poll",
+          //   notificationId: pollItem._id,
+          //   contentOwner: pollItem.creator.toString(),
+          //   read: false,
+          // });
 
-          const savedNotification = await notification.save();
+          // const savedNotification = await notification.save();
 
-          const newNotification = transformNotification(
-            savedNotification,
-            dataLoaders(["user"])
-          );
+          // const newNotification = transformNotification(
+          //   savedNotification,
+          //   dataLoaders(["user"])
+          // );
 
-          pubsub.publish("newNotification", { newNotification });
+          // pubsub.publish("newNotification", { newNotification });
         }
 
         return createdAnswer;
+      } catch (err) {
+        throw err;
+      }
+    },
+    updateAnswer: async (_, { details }, ctx) => {
+      const formObj = JSON.parse(details);
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please Log In!");
+      }
+
+      const moderationResults = await moderateText(details);
+
+      if (moderationResults && moderationResults.blockContent) {
+        throw new Error(
+          "Content contains inappropriate language.  Please update and resubmit."
+        );
+      }
+
+      const detailObj = JSON.parse(details);
+
+      try {
+        await Answer.findByIdAndUpdate(
+          detailObj._id,
+          { ...detailObj },
+          { new: true, upsert: true }
+        );
+
+        return "Answer updated";
       } catch (err) {
         throw err;
       }

@@ -127,12 +127,6 @@ const userQueries = {
       users {
         _id
         appid
-        firstname
-        email
-        pollHistory {
-          _id
-          question
-        }
       }
     }
   `,

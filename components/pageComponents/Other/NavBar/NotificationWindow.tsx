@@ -39,6 +39,8 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
     router.push({
       pathname: `/Polls/${routeId}`,
     });
+
+    ($("#notifWindow") as any).modal("hide"); //closes modal programitically
   };
 
   const changeNotifications = (changeId: string = "") => {
@@ -163,11 +165,12 @@ const NotificationItem = ({
       <div
         className="ml-3 text-muted d-flex flex-column p-1"
         style={{ width: "80%", cursor: "pointer" }}
-        onClick={() => {
-          if (data.notificationType === "poll") {
-            nav(data.notificationId);
-          }
-        }}
+        onClick={() => nav(data.notificationId)}
+        // onClick={() => {
+        //   if (data.notificationType === "poll") {
+        //     nav(data.notificationId);
+        //   }
+        // }}
       >
         <span className="" style={{ fontSize: 14.5, fontWeight: 600 }}>
           {data.message}

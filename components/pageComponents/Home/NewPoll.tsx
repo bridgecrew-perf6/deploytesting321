@@ -41,7 +41,7 @@ export default function NewPoll() {
   const { CREATE_POLL } = GraphResolvers.mutations;
   const { GET_POLLS_ALL, GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } =
     GraphResolvers.queries;
-  const [createPoll] = useMutation(CREATE_POLL);
+  const [createPoll, { error }] = useMutation(CREATE_POLL);
   const { data } = useQuery(GET_TOPICS);
   const [getSubTopics, { data: subTopicsData }] = useLazyQuery(
     GET_SUBTOPICS_PER_TOPIC
@@ -132,6 +132,13 @@ export default function NewPoll() {
       // });
 
       addNewPoll(createPoll, JSON.stringify(pollItem));
+
+      if (error) {
+        errors.push({
+          message: error.message,
+        });
+        return;
+      }
 
       ($("#newPollModal") as any).modal("hide"); //closes modal programitically
       clearForm();

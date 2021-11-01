@@ -12,6 +12,7 @@ import { dateToString } from "../../components/globalFuncs";
 import { withFilter } from "apollo-server";
 import IChat from "../../models/interfaces/chat";
 import IPoll from "../../models/interfaces/poll";
+import pushNotification from "./shared/notification";
 
 export const chatResolvers: ResolverMap = {
   Query: {
@@ -109,6 +110,14 @@ export const chatResolvers: ResolverMap = {
 
         const poll: IPoll = await Poll.findById(detailObj.poll);
 
+        if (
+          poll.creator.toString() !== id &&
+          poll.chatMssgs.length === 0 &&
+          id
+        ) {
+          pushNotification("chat", id, poll, pubsub, dataLoaders);
+        }
+
         if (poll.chatMssgs) {
           poll.chatMssgs.push(chatMssg._id);
         } else poll.chatMssgs = [chatMssg._id];
@@ -132,5 +141,9 @@ export const chatResolvers: ResolverMap = {
       subscribe: (parent, args, { pubsub }) =>
         pubsub.asyncIterator("newMessage"),
     },
+    // newNotification: {
+    //   subscribe: (parent, args, { pubsub }) =>
+    //     pubsub.asyncIterator("newNotification"),
+    // },
   },
 };

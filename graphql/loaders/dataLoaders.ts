@@ -17,6 +17,7 @@ import IComment from "../../models/interfaces/comment";
 import IReply from "../../models/interfaces/reply";
 import IChat from "../../models/interfaces/chat";
 import INotification from "../../models/interfaces/notification";
+// import { BatchAnswers, BatchChats, BatchInternalUser, BatchNotifications, BatchPolls, BatchSubTopics, BatchTopics, BatchUser } from "./loaders";
 
 const batchInternalUsers: BatchInternalUser = async (ids: any) => {
   const internalUser: IinternalUsers[] = await InternalUsers.findOne({

@@ -26,4 +26,6 @@ export default {
   CloudinaryName: process.env.NEXT_PUBLIC_CLOUDINARYNAME ?? "",
   CloudinaryAPIKey: process.env.NEXT_PUBLIC_CLOUDINARYAPIKEY ?? "",
   CloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET ?? "",
+  ModeratorAPIKey: process.env.MODERATOR_KEY ?? "",
+  ModeratorEndPoint: process.env.MODERATOR_API ?? "",
 };

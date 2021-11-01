@@ -329,6 +329,24 @@ interface NavProps {
   title: string;
 }
 
+interface ModerationResults {
+  moderationType: string;
+  sexuallyExplicitCat: number;
+  sexuallySugestiveCat: number;
+  offensiveLangCat: number;
+  terms: ModerationTerm[];
+  language: string;
+  reviewRecommended: boolean;
+  blockContent: boolean;
+}
+
+interface ModerationTerm {
+  index: number;
+  originalIndex: number;
+  listId: number;
+  term: string;
+}
+
 interface ITopic {
   _id: string;
   topic: string;

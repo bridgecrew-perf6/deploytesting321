@@ -9,7 +9,8 @@
 .notifWindow {
   /* position: absolute; */
   top: 7vh;
-  right: -41.5vw;
+  right: -40%;
+  /* right: -41.5vw; */
   width: 25em;
   height: 70em;
 }

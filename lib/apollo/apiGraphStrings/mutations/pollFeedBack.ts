@@ -9,6 +9,11 @@ const pollFeedBackMutations = {
       }
     }
   `,
+  UPDATE_ANSWER: gql`
+  mutation UpdateAnswer($details: String!) {
+    updateAnswer(details: $details)
+  }
+`,
   LIKE_DISLIKE_HANDLER: gql`
     mutation HandleLikeDislike(
       $feedback: String!

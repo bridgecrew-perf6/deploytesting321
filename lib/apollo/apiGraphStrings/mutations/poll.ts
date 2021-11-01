@@ -9,6 +9,11 @@ const pollMutations = {
       }
     }
   `,
+  UPDATE_POLL: gql`
+  mutation UpdatePoll($details: String!) {
+    updatePoll(details: $details)
+  }
+`,
   ADD_VIEW: gql`
     mutation AddView($pollId: String!) {
       addView(pollId: $pollId)

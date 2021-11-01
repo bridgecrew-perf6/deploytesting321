@@ -10,6 +10,8 @@ import { transformPoll } from "./shared";
 import loaders from "../loaders/dataLoaders";
 import IAnswer from "../../models/interfaces/answer";
 import { Types } from "mongoose";
+import { moderateText } from "./shared/moderation";
+import pushNotification from "./shared/notification";
 
 const { batchPolls } = loaders;
 
@@ -239,11 +241,19 @@ export const pollResolvers: ResolverMap = {
   },
   Mutation: {
     createPoll: async (_, { details }, ctx) => {
-      const { isAuth, req, res, dataLoaders } = ctx;
+      const { isAuth, req, res, dataLoaders, pubsub } = ctx;
       const { auth, id } = isAuth;
 
       if (!auth) {
         throw new Error("Not Authenticated.  Please Log In!");
+      }
+
+      const moderationResults = await moderateText(details);
+
+      if (moderationResults && moderationResults.blockContent) {
+        throw new Error(
+          "Content contains inappropriate language.  Please update and resubmit."
+        );
       }
 
       const detailObj = JSON.parse(details);
@@ -269,7 +279,7 @@ export const pollResolvers: ResolverMap = {
           dataLoaders(["user", "topic", "subTopic", "answer", "chat"])
         );
 
-        const creator = await User.findById(id);
+        const creator: IUser = await User.findById(id);
 
         if (!creator) {
           throw new Error("User not found");
@@ -279,15 +289,58 @@ export const pollResolvers: ResolverMap = {
           creator.pollHistory.push(poll._id);
         } else creator.pollHistory = [poll._id];
 
-        if (creator.following && creator.following.length > 0) {
-        
+        const followers = await User.find(
+          { "following.appId": creator.appid },
+          { _id: 1 }
+        );
 
-
+        if (followers.length > 0 && id) {
+          followers.forEach(({ _id }) =>
+            pushNotification(
+              "follower",
+              id,
+              savedPoll,
+              pubsub,
+              dataLoaders,
+              _id.toString()
+            )
+          );
         }
 
         await creator.save();
 
         return createdPoll;
+      } catch (err) {
+        throw err;
+      }
+    },
+    updatePoll: async (_, { details }, ctx) => {
+      const formObj = JSON.parse(details);
+      const { isAuth, req, res, dataLoaders } = ctx;
+      const { auth, id } = isAuth;
+
+      if (!auth) {
+        throw new Error("Not Authenticated.  Please Log In!");
+      }
+
+      const moderationResults = await moderateText(details);
+
+      if (moderationResults && moderationResults.blockContent) {
+        throw new Error(
+          "Content contains inappropriate language.  Please update and resubmit."
+        );
+      }
+
+      const detailObj = JSON.parse(details);
+
+      try {
+        await Poll.findByIdAndUpdate(
+          detailObj._id,
+          { ...detailObj },
+          { new: true, upsert: true }
+        );
+
+        return "Poll updated";
       } catch (err) {
         throw err;
       }

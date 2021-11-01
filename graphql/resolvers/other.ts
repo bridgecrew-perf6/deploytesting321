@@ -15,6 +15,7 @@ import configs from "../../endpoints.config";
 import IPoll from "../../models/interfaces/poll";
 import ISubTopic from "../../models/interfaces/subTopic";
 import ITopic from "../../models/interfaces/topic";
+import { moderateText } from "./shared/moderation";
 
 export const otherResolvers: ResolverMap = {
   Query: {
@@ -124,6 +125,11 @@ export const otherResolvers: ResolverMap = {
         throw err;
       }
     },
+    // moderateContent: async (parent, { val }, ctx) => {
+    //   const resp = await moderateText(val);
+    //   console.log(resp);
+    //   return resp;
+    // },
     // notifications: async (parent, args, ctx) => {
     //   const { isAuth, req, res, dataLoaders } = ctx;
     //   const { auth, id } = isAuth;
