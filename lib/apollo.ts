@@ -17,7 +17,7 @@ import configs from "../endpoints.config";
 
 import { getMainDefinition } from "@apollo/client/utilities";
 // import { ApolloLink } from "apollo-link";
-
+//Test
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 let appToken: String | null = null;
 let appCookie: String | null = null;
