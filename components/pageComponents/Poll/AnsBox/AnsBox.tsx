@@ -13,6 +13,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  RadioGroup,
+  Progress,
+  Radio,
+  Button,
 } from "@chakra-ui/react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import TimeAgo from "react-timeago";
@@ -35,6 +39,7 @@ import { EditAnsModal } from "./EditAnsModal";
 const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
   const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
+  const [ansOptions, setAnsOptions] = useState<string>("2");
   const [ansState, setAnsState] = useState<any[]>([]);
   const [orgAns, setOrgAns] = useState<any[] | null>(null);
   const [page, setPage] = useState(1);
@@ -101,101 +106,6 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
 
   return (
     <Box bg="white" minW="350px" boxShadow="0 1px 10px -1px rgba(0,0,0,.2)">
-      <Flex
-        alignItems="center"
-        justifyContent="space-between"
-        py={4}
-        px={[4, 6]}
-      >
-        <Select
-          border="1px"
-          borderColor="#d2d2d7"
-          size="sm"
-          maxW="160px"
-          value={sortBy}
-          onChange={(val) => setSortBy(val.target.value)}
-        >
-          <option value="rank">Rank</option>
-          <option value="mostLiked">Most Liked</option>
-          <option value="mostDisliked">Most Disliked</option>
-          <option value="newest">Newest</option>
-        </Select>
-        <Text fontSize="sm" color="gray.600">
-          4 Answers
-        </Text>
-      </Flex>
-      <form style={{ width: "100%" }} onSubmit={onAddAnswer}>
-        <Flex
-          bg="#f2f2f2"
-          px="6"
-          py="4"
-          justify="center"
-          align="center"
-          borderBottom="1px"
-          borderColor="#d2d2d7"
-        >
-          <Flex
-            w={["90%", "90%", "90%"]}
-            bg="white"
-            borderRadius="2xl"
-            overflow="hidden"
-            border="1px"
-            borderColor="#d2d2d7"
-            h="100%"
-          >
-            <TextareaAutosize
-              minRows={1}
-              style={{
-                width: "100%",
-                resize: "none",
-                border: "none",
-                outline: "none",
-                padding: "12px",
-              }}
-              className="text123"
-              placeholder="Write an Answer"
-              name="answerInput"
-              id="answerInput"
-            />
-            <Box>
-              <HStack
-                align="flex-end"
-                justify="center"
-                h="100%"
-                mr="3"
-                spacing="0"
-                pb="2"
-              >
-                <IconButton
-                  aria-label="addAnswer"
-                  icon={<BiWinkSmile size="20px" />}
-                  variant="ghost"
-                  size="sm"
-                  _focus={{ outline: "none" }}
-                  m="0"
-                />
-                <IconButton
-                  aria-label="addAnswer"
-                  icon={<AiFillCamera size="20px" />}
-                  variant="ghost"
-                  size="sm"
-                  _focus={{ outline: "none" }}
-                  m="0"
-                />
-                <IconButton
-                  aria-label="addAnswer"
-                  icon={<RiSendPlaneFill size="20px" />}
-                  size="sm"
-                  variant="ghost"
-                  type="submit"
-                  _focus={{ outline: "none" }}
-                  m="0"
-                />
-              </HStack>
-            </Box>
-          </Flex>
-        </Flex>
-      </form>
       {error ? (
         <Box bg="#f2f2f2" pb="6">
           <Flex minH="640px" justify="center" align="center">
@@ -215,48 +125,206 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
             </Flex>
           ) : (
             <>
-              <Scrollbars style={{ height: "640px" }}>
-                {ansState &&
-                  ansState.map((c: any) => (
-                    <Box key={c._id} px={6}>
-                      <CardContent
-                        data={c}
-                        likes={c?.likes?.length}
-                        dislikes={c?.dislikes?.length}
-                        likeHandler={likeHandler}
-                      />
-                    </Box>
-                  ))}
-              </Scrollbars>
-              <Box pt="4" pb="3">
-                <Flex align="center" justify="center">
-                  <Pagination
-                    activePage={page}
-                    prevPageText="Prev"
-                    nextPageText="Next"
-                    itemsCountPerPage={Number(noOfAns)}
-                    totalItemsCount={answers && answers.length}
-                    pageRangeDisplayed={5}
-                    onChange={(e: any) => setPage(e)}
-                    itemClass="page-item"
-                    linkClass="page-link"
-                  />
-                </Flex>
-                <Box align="center" mt="2">
-                  <Select
-                    border="1px"
-                    borderColor="#d2d2d7"
-                    size="sm"
-                    maxW="80px"
-                    value={noOfAns}
-                    onChange={(val) => setNoOfAns(val.target.value)}
+              {true ? (
+                <Box py={6} px={[4, 6]}>
+                  <Box mb="4">
+                    <Text
+                      fontSize="lg"
+                      color="gray.800"
+                      fontWeight="bold"
+                      align="center"
+                    >
+                      Choice your Answer.
+                    </Text>
+                  </Box>
+                  <RadioGroup
+                    value={ansOptions}
+                    onChange={(e) => setAnsOptions(e)}
                   >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                  </Select>
+                    {["1", "2", "3", "4", "5"].map((x, id) => (
+                      <Flex pb="3" key={x}>
+                        <Box bg="white" p="4" borderRadius="lg" minW="400px">
+                          <Radio
+                            value={x}
+                            colorScheme="green"
+                            _active={{ outline: "none" }}
+                            _focus={{ outline: "none" }}
+                            borderColor="gray.400"
+                          >
+                            <Box ml="2" cursor="pointer">
+                              <Text fontSize="sm" color="gray.600" mb="2">
+                                This is the Long sentence with will probably go
+                                onto the next Line. Will it go to the next line?
+                                what do u think?
+                              </Text>
+                              <Progress
+                                value={(id + 1) * 18}
+                                colorScheme="green"
+                                size="sm"
+                                borderRadius="sm"
+                              />
+                            </Box>
+                          </Radio>
+                        </Box>
+                      </Flex>
+                    ))}
+                  </RadioGroup>
+                  <Box mt="2" ml="2">
+                    <Flex justify="center" align="center">
+                      <Button
+                        bg="green.500"
+                        color="white"
+                        size="sm"
+                        _active={{ outline: "none", bg: "green.400" }}
+                        _focus={{ outline: "none" }}
+                        _hover={{ bg: "green.500", color: "white" }}
+                      >
+                        Submit Answer
+                      </Button>
+                    </Flex>
+                  </Box>
                 </Box>
-              </Box>
+              ) : (
+                <>
+                  <Flex
+                    alignItems="center"
+                    justifyContent="space-between"
+                    py={4}
+                    px={[4, 6]}
+                  >
+                    <Select
+                      border="1px"
+                      borderColor="#d2d2d7"
+                      size="sm"
+                      maxW="160px"
+                      value={sortBy}
+                      onChange={(val) => setSortBy(val.target.value)}
+                    >
+                      <option value="rank">Rank</option>
+                      <option value="mostLiked">Most Liked</option>
+                      <option value="mostDisliked">Most Disliked</option>
+                      <option value="newest">Newest</option>
+                    </Select>
+                    <Text fontSize="sm" color="gray.600">
+                      4 Answers
+                    </Text>
+                  </Flex>
+                  <form style={{ width: "100%" }} onSubmit={onAddAnswer}>
+                    <Flex
+                      bg="#f2f2f2"
+                      px="6"
+                      py="4"
+                      justify="center"
+                      align="center"
+                      borderBottom="1px"
+                      borderColor="#d2d2d7"
+                    >
+                      <Flex
+                        w={["90%", "90%", "90%"]}
+                        bg="white"
+                        borderRadius="2xl"
+                        overflow="hidden"
+                        border="1px"
+                        borderColor="#d2d2d7"
+                        h="100%"
+                      >
+                        <TextareaAutosize
+                          minRows={1}
+                          style={{
+                            width: "100%",
+                            resize: "none",
+                            border: "none",
+                            outline: "none",
+                            padding: "12px",
+                          }}
+                          className="text123"
+                          placeholder="Write an Answer"
+                          name="answerInput"
+                          id="answerInput"
+                        />
+                        <Box>
+                          <HStack
+                            align="flex-end"
+                            justify="center"
+                            h="100%"
+                            mr="3"
+                            spacing="0"
+                            pb="2"
+                          >
+                            <IconButton
+                              aria-label="addAnswer"
+                              icon={<BiWinkSmile size="20px" />}
+                              variant="ghost"
+                              size="sm"
+                              _focus={{ outline: "none" }}
+                              m="0"
+                            />
+                            <IconButton
+                              aria-label="addAnswer"
+                              icon={<AiFillCamera size="20px" />}
+                              variant="ghost"
+                              size="sm"
+                              _focus={{ outline: "none" }}
+                              m="0"
+                            />
+                            <IconButton
+                              aria-label="addAnswer"
+                              icon={<RiSendPlaneFill size="20px" />}
+                              size="sm"
+                              variant="ghost"
+                              type="submit"
+                              _focus={{ outline: "none" }}
+                              m="0"
+                            />
+                          </HStack>
+                        </Box>
+                      </Flex>
+                    </Flex>
+                  </form>
+                  <Scrollbars style={{ height: "640px" }}>
+                    {ansState &&
+                      ansState.map((c: any) => (
+                        <Box key={c._id} px={6}>
+                          <CardContent
+                            data={c}
+                            likes={c?.likes?.length}
+                            dislikes={c?.dislikes?.length}
+                            likeHandler={likeHandler}
+                          />
+                        </Box>
+                      ))}
+                  </Scrollbars>
+                  <Box pt="4" pb="3">
+                    <Flex align="center" justify="center">
+                      <Pagination
+                        activePage={page}
+                        prevPageText="Prev"
+                        nextPageText="Next"
+                        itemsCountPerPage={Number(noOfAns)}
+                        totalItemsCount={answers && answers.length}
+                        pageRangeDisplayed={5}
+                        onChange={(e: any) => setPage(e)}
+                        itemClass="page-item"
+                        linkClass="page-link"
+                      />
+                    </Flex>
+                    <Box align="center" mt="2">
+                      <Select
+                        border="1px"
+                        borderColor="#d2d2d7"
+                        size="sm"
+                        maxW="80px"
+                        value={noOfAns}
+                        onChange={(val) => setNoOfAns(val.target.value)}
+                      >
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                      </Select>
+                    </Box>
+                  </Box>
+                </>
+              )}
             </>
           )}
         </Box>
