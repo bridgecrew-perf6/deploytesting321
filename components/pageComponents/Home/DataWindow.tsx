@@ -14,7 +14,6 @@ interface DataWindow {
 }
 
 const DataWindow = ({ data }: DataWindow) => {
-
   return (
     <div
       className={`alert alert-none d-flex align-items-center ${appbg_other} ${dataWindow}`}

@@ -12,6 +12,9 @@ const pollSubscriptions = {
           appid
           profilePic
         }
+        poll {
+          _id
+        }
       }
     }
   `,
@@ -39,28 +42,28 @@ const pollSubscriptions = {
     }
   `,
   ANSWERS_SUBSCRIPTION: gql`
-  subscription OnAnswerUpdated($pollId: String!) {
-    updatedAnswers(pollId: $pollId) {
-      _id
-      answer
-      creator {
+    subscription OnAnswerUpdated($pollId: String!) {
+      updatedAnswers(pollId: $pollId) {
         _id
-        appid
+        answer
+        creator {
+          _id
+          appid
+        }
+        answerImages
+        creationDate
+        likes {
+          userId
+          like
+        }
+        dislikes {
+          userId
+          dislike
+        }
+        rank
       }
-      answerImages
-      creationDate
-      likes {
-        userId
-        like
-      }
-      dislikes {
-        userId
-        dislike
-      }
-      rank
     }
-  }
-`,
+  `,
 };
 
 export default pollSubscriptions;

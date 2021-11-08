@@ -21,7 +21,11 @@ import {
   addFollow,
   addNewChatMssg,
   removeFollow,
+<<<<<<< HEAD
+} from "../../../../lib/apollo/apolloFunctions/mutations";
+=======
 } from "../../../../lib/apollo/apolloFunctions/userMutations";
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 import { ToolTipCtr } from "../../../layout/customComps";
 
 const { chatSideBar, chatMessage, userMessage, chatSearch, chatInput } =
@@ -142,7 +146,11 @@ export const ChatBody = ({
   addError,
 }: IPollChatBox) => {
   return (
+<<<<<<< HEAD
+    <div className="d-flex flex-column border">
+=======
     <div className="d-flex flex-column border" style={{ width: "90%" }}>
+>>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       <div className="p-2" style={{ height: "50px", minHeight: "50px" }}></div>
       <div className="border flex-grow-1 p-2">
         <ChatArea pollId={pollId} appUser={appUser} data={data} />

@@ -36,3 +36,16 @@ input::-webkit-inner-spin-button {
 .toolbar-class {
   border: 1px solid #ccc;
 }
+/* pagination color */
+.page-link {
+  color: #ff4d00 !important;
+}
+.page-item.active .page-link {
+  background-color: #ff4d00 !important;
+  border-color: #ff4d00 !important;
+  color: #fff !important;
+}
+.page-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}

@@ -10,21 +10,29 @@ import {
 } from "../../../components/appTypes/appType";
 import { SitePageContainer } from "../../../components/layout";
 import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
-import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
-import PollChat from "../../../components/pageComponents/Poll/Chat";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
 import { saveImgtoCloud } from "../../../components/apis/imgUpload";
-import { AddAnswer } from "../../../components/pageComponents/Poll/pollComps";
-import { MaxMinBtn } from "../../../components/layout/customComps";
 import {
   addNewAnswer,
   updateViewCount,
-} from "../../../lib/apollo/apolloFunctions";
-import { useAuth } from "../../../components/authProvider/authProvider";
+} from "../../../lib/apollo/apolloFunctions/mutations";
+import AnsBox from "../../../components/pageComponents/Poll/AnsBox/AnsBox";
+import {
+  Box,
+  Flex,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+} from "@chakra-ui/react";
+import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
+import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
+import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
 
-const { GET_POLL, GET_POLLS_ALL, GET_USER, GET_USER_FOR_POLL } =
-  GraphResolvers.queries;
+const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL } = GraphResolvers.queries;
 const apolloClient = initializeApollo();
 
 interface Props {
@@ -33,33 +41,28 @@ interface Props {
 }
 
 const Poll = ({ pollId }: Props) => {
-  const appContext = useAuth();
-
   //States
   const [error, updateError] = useState<string[]>([]);
-  const [answerWindow, showAnswerWindow] = useState(false);
-  const [answersSection, showAnswersSection] = useState(false);
-  const [chatSection, showChatSection] = useState(false);
-  const [userInfo, setUser] = useState();
+
   //Graph API Requests
   const { data } = useQuery(GET_POLL, {
     variables: { pollId },
   });
+  const flexObj = {
+    flex: {
+      base: "0 0 100%",
+      lg: "0 0 50%",
+    },
+    maxW: { base: "100%", lg: "50%" },
+    justifyContent: "center",
+  };
 
-  // const { data: appUserData } = useQuery(GET_USER, {
-  //   onCompleted: (res) => {
-  //     setUser(res.getUserData.user);
-  //   },
-  // });
-  // console.log(userInfo);
-
-  const [getUser, { data: user }] = useLazyQuery(GET_USER_FOR_POLL);
-  // console.log(data);
+  const { data: user } = useQuery(GET_USER_FOR_POLL);
 
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
     {
-      onError: (e: any) => addError(e.message),
+      onError: (e) => addError(e.message),
     }
   );
 
@@ -68,6 +71,7 @@ const Poll = ({ pollId }: Props) => {
   const {
     data: answerData,
     loading,
+    error: answerError,
     subscribeToMore,
   } = useQuery(GraphResolvers.queries.GET_ANSWERS_BY_POLL, {
     variables: { pollId },
@@ -76,12 +80,10 @@ const Poll = ({ pollId }: Props) => {
   // //Component Mounted
 
   useEffect(() => {
-    data && updateViewCount(addView, pollId);
+    updateViewCount(addView, pollId);
   }, []);
 
   useEffect(() => {
-    appContext?.authState?.getUserData?.appToken !== "" && getUser();
-
     if (answerData && subscribeToMore) {
       subscribeToMore({
         document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
@@ -111,20 +113,9 @@ const Poll = ({ pollId }: Props) => {
         },
       });
     }
-  }, [pollId, user, data, answerData]);
+  }, [data, answerData]);
 
   // //Functions
-  const toggleAddAnswer = () => {
-    showAnswerWindow(!answerWindow);
-  };
-
-  const toggleSection = (section: string) => {
-    if (section === "answers") {
-      showAnswersSection(!answersSection);
-    } else {
-      showChatSection(!chatSection);
-    }
-  };
 
   const addError = (errMssg?: string) => {
     if (errMssg) {
@@ -135,9 +126,7 @@ const Poll = ({ pollId }: Props) => {
   const removeError = (errId: number) => {
     let udpatedErrorList: string[] = [];
     if (error.length > 1) {
-      udpatedErrorList = error.filter(
-        (item: any, idx: number) => errId === idx
-      );
+      udpatedErrorList = error.filter((item, idx) => errId === idx);
     } else {
       udpatedErrorList = [];
     }
@@ -161,13 +150,7 @@ const Poll = ({ pollId }: Props) => {
     return (
       <SitePageContainer title={`Poll`}>
         <div style={{ marginTop: "100px" }}>
-          <PollQuestion
-            pollData={data.poll}
-            numAnswers={
-              answerData?.answersByPoll ? answerData?.answersByPoll.length : 0
-            }
-            showAdd={toggleAddAnswer}
-          />
+          <PollQuestion pollData={data.poll} />
           {error && (
             <ErrorToast
               mssgs={error}
@@ -175,45 +158,80 @@ const Poll = ({ pollId }: Props) => {
               removeError={removeError}
             />
           )}
-          {answerWindow && (
-            <div className="m-3">
-              <AddAnswer
+          <Flex wrap="wrap" pb={6} bg="white" px={[0, 0, 20, 20, 36]}>
+            <Box {...flexObj} p={4}>
+              <AnsBox
+                answers={answerData?.answersByPoll}
+                loading={loading}
                 addAnswer={addAnswer}
-                addError={addError}
-                toggleWindow={toggleAddAnswer}
+                poll={data.poll._id}
+                error={answerError}
               />
-            </div>
-          )}
-          <div className="position-relative">
-            <MaxMinBtn
-              btnState={answersSection}
-              toggleBtn={toggleSection}
-              btnCat="answers"
-            />
-            <PollAnswers
-              creator={data.poll.creator}
-              poll={data.poll._id}
-              loading={loading}
-              answers={answerData?.answersByPoll}
-              showSection={answersSection}
-              addError={addError}
-            />
-          </div>
-
-          <div className="position-relative mb-2">
-            <MaxMinBtn
-              btnState={chatSection}
-              toggleBtn={toggleSection}
-              btnCat="chat"
-            />
-            <PollChat
-              pollId={data.poll._id}
-              addAnswer={addAnswer}
-              addError={addError}
-              showSection={chatSection}
-              user={user?.getUserDataForPoll}
-            />
-          </div>
+            </Box>
+            <Box {...flexObj} p={4}>
+              <Box
+                bg="white"
+                pt={6}
+                minW="350px"
+                boxShadow="0 1px 10px -1px rgba(0,0,0,.2)"
+              >
+                <Tabs isFitted>
+                  <TabList mx={[0, 0, 6]}>
+                    <Tab
+                      _focus={{ outline: "none" }}
+                      fontWeight="bold"
+                      _selected={{
+                        color: "poldit.100",
+                        borderBottom: "2px solid",
+                      }}
+                      fontSize={["sm", "sm", "md"]}
+                    >
+                      Chat
+                    </Tab>
+                    <Tab
+                      _focus={{ outline: "none" }}
+                      fontWeight="bold"
+                      _selected={{
+                        color: "poldit.100",
+                        borderBottom: "2px solid",
+                      }}
+                      fontSize={["sm", "sm", "md"]}
+                    >
+                      User List
+                    </Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel p="0">
+                      <ChatTab
+                        pollId={data.poll._id}
+                        user={user && user?.getUserDataForPoll}
+                        addAnswer={addAnswer}
+                      />
+                    </TabPanel>
+                    <TabPanel p="0">
+                      <UserTab />
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </Box>
+            </Box>
+          </Flex>
+          {/*
+			  <div className="position-relative mb-2">
+			  <MaxMinBtn
+			  btnState={chatSection}
+			  toggleBtn={toggleSection}
+			  btnCat="chat"
+			  />
+			  <PollChat
+			  pollId={data.poll._id}
+			  addAnswer={addAnswer}
+			  addError={addError}
+			  showSection={chatSection}
+			  user={user && user?.getUserDataForPoll}
+			  />
+			  </div>
+		  */}
         </div>
       </SitePageContainer>
     );
