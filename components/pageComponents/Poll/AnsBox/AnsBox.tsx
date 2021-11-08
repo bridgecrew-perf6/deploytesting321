@@ -1,4 +1,5 @@
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   Box,
   Flex,
@@ -31,10 +32,16 @@ import { BiErrorCircle } from "react-icons/bi";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation } from "@apollo/client";
 import Pagination from "react-js-pagination";
-import ReactPlayer from "react-player/lazy";
+// import ReactPlayer from "react-player/lazy";
 import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
 import "../../../../appStyles/pagination.module.css";
 import { EditAnsModal } from "./EditAnsModal";
+const BtnImage = dynamic(
+  () => {
+    return import("./ImageModal");
+  },
+  { ssr: false }
+);
 
 const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
   const [sortBy, setSortBy] = useState<string>("rank");
@@ -419,13 +426,8 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
           {isOpen ? "Hide" : "Show"} more
         </Text>
         <Collapse in={isOpen} animateOpacity>
-          <Box p="4" textAlign="center" cursor="pointer" onClick={onLbOpen}>
-            <Image
-              src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
-              width={500}
-              height={500}
-              loading="lazy"
-            />
+          <Box p="4" textAlign="center" cursor="pointer">
+            <BtnImage src="https://wallpaperaccess.com/full/215112.jpg" />
             {/*
 			  <ReactPlayer
 			  url="https://www.youtube.com/watch?v=ysz5S6PUM-U"

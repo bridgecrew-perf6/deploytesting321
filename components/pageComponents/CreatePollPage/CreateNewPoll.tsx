@@ -7,6 +7,7 @@ import {
   IconButton,
   Input,
   Select,
+  Spinner,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -16,10 +17,12 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import { FiTrash } from "react-icons/fi";
+import { useLazyQuery, useQuery } from "@apollo/client";
 
 const CreateNewPoll: React.FC<{}> = () => {
   const [selectedTopic, setSelectedTopic] = useState<null | string>(null);
@@ -31,26 +34,24 @@ const CreateNewPoll: React.FC<{}> = () => {
   const [optionText, setOptionText] = useState<string>("");
   const { onOpen, onClose, isOpen } = useDisclosure();
 
-  const topics = [
-    "Art",
-    "Music",
-    "Parenting",
-    "Sports",
-    "Technology",
-    "Coding",
-    "Writing",
-    "Gaming",
-  ];
-  const subTopicsArary = [
-    "Art",
-    "Music",
-    "Parenting",
-    "Sports",
-    "Technology",
-    "Coding",
-    "Writing",
-    "Gaming",
-  ];
+  const { GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
+
+  const {
+    data: topicData,
+    loading: topicLoading,
+    error: topicError,
+  } = useQuery(GET_TOPICS);
+
+  const [
+    getSubTopics,
+    { data: subTopicsData, loading: subTopicLoading, error: subTopicError },
+  ] = useLazyQuery(GET_SUBTOPICS_PER_TOPIC);
+
+  useEffect(() => {
+    if (selectedTopic) {
+      getSubTopics({ variables: { topic: selectedTopic } });
+    }
+  }, [selectedTopic]);
 
   const handleSubTopics = (x: string) => {
     let findSt = selectedSub.find((st) => x === st);
@@ -68,15 +69,17 @@ const CreateNewPoll: React.FC<{}> = () => {
     setSelectedSub([...filterSub]);
   };
   useEffect(() => {
-    if (subSearch) {
-      const filterSt = subTopicsArary.filter((st) =>
-        st.toLowerCase().includes(subSearch.toLowerCase())
-      );
-      setSubTopics(filterSt);
-    } else {
-      setSubTopics(subTopicsArary);
+    if (!subTopicLoading && subTopicsData && subTopicsData.subTopicsPerTopic) {
+      if (subSearch) {
+        const filterSt = subTopicsData?.subTopicsPerTopic.filter((st: any) =>
+          st.subTopic.toLowerCase().includes(subSearch.toLowerCase())
+        );
+        setSubTopics(filterSt);
+      } else {
+        setSubTopics(subTopicsData?.subTopicsPerTopic);
+      }
     }
-  }, [subSearch]);
+  }, [subSearch, subTopicsData]);
 
   const handleOptions = () => {
     if (!optionText) return;
@@ -216,129 +219,147 @@ const CreateNewPoll: React.FC<{}> = () => {
         </Box>
         {/* Topics*/}
         <Box mt="4">
-          <Flex wrap="wrap">
-            {topics.map((t, id) => (
-              <Box px="2" key={id} mb="2">
-                <Tag
-                  bg="poldit.100"
-                  color="white"
-                  size="lg"
-                  onClick={() => setSelectedTopic(t)}
-                  cursor="pointer"
-                >
-                  <TagLabel>{t}</TagLabel>
-                </Tag>
-              </Box>
-            ))}
-          </Flex>
-        </Box>
-        {/* sub Topics Header*/}
-        <Box mt="8">
-          <Flex align="center" wrap="wrap">
-            <Text fontSize="md" fontWeight="bold" mb="2">
-              Select Poll SubTopic(s)
-            </Text>
-            {selectedSub &&
-              selectedSub.map((t, id) => (
-                <Box ml="4" key={id} mb="2">
+          {topicLoading ? (
+            <Spinner ml="4" />
+          ) : (
+            <Flex wrap="wrap">
+              {topicData.topics.map((t: any) => (
+                <Box px="2" key={t._id} mb="2">
                   <Tag
-                    bg="white"
-                    color="poldit.100"
-                    borderRadius="full"
-                    borderColor="poldit.100"
-                    borderWidth="1px"
+                    bg="poldit.100"
+                    color="white"
+                    size="lg"
+                    onClick={() => {
+                      setSelectedSub([]);
+                      setSelectedTopic(t.topic);
+                    }}
+                    cursor="pointer"
                   >
-                    <TagLabel>{t}</TagLabel>
-                    <TagCloseButton onClick={() => removeSubTopic(t)} />
+                    <TagLabel>{t.topic}</TagLabel>
                   </Tag>
                 </Box>
               ))}
-          </Flex>
+            </Flex>
+          )}
         </Box>
-        {/* sub Topics Search Input*/}
-        <Box mt="4">
-          <Input
-            placeholder="Search SubTopics..."
-            borderColor="gray.300"
-            _focus={{ borderColor: "poldit.100" }}
-            maxW="350px"
-            value={subSearch}
-            onChange={(e) => setSubSearch(e.target.value)}
-          />
-        </Box>
-        <Box mt="6">
-          <Scrollbars
-            autoHeight
-            autoHeightMin={100}
-            autoHeightMax={200}
-            style={{ overflowY: "hidden" }}
-          >
-            <Flex pb="4">
-              {subTopics.map((t, id) => (
-                <Box
-                  key={id}
-                  mr="4"
+        {/* sub topic starts*/}
+        <Box>
+          {selectedTopic && (
+            <Box>
+              {/* sub Topics Header*/}
+              <Box mt="8">
+                <Flex align="center" wrap="wrap">
+                  <Text fontSize="md" fontWeight="bold" mb="2">
+                    Select Poll SubTopic(s)
+                  </Text>
+                  {selectedSub &&
+                    selectedSub.map((t, id) => (
+                      <Box ml="4" key={id} mb="2">
+                        <Tag
+                          bg="white"
+                          color="poldit.100"
+                          borderRadius="full"
+                          borderColor="poldit.100"
+                          borderWidth="1px"
+                        >
+                          <TagLabel>{t}</TagLabel>
+                          <TagCloseButton onClick={() => removeSubTopic(t)} />
+                        </Tag>
+                      </Box>
+                    ))}
+                </Flex>
+              </Box>
+              {/* sub Topics Search Input*/}
+              <Box mt="4">
+                <Input
+                  placeholder="Search SubTopics..."
                   borderColor="gray.300"
-                  borderWidth="1px"
-                  borderRadius="md"
-                  overflow="hidden"
-                  minW="160px"
-                  minH="80px"
-                  onClick={() => handleSubTopics(t)}
-                  cursor="pointer"
-                >
-                  <Box
-                    px="4"
-                    py="2"
-                    bg="gray.200"
-                    borderBottomWidth="1px"
-                    borderColor="gray.300"
-                  >
-                    <Text fontSize="sm">{t}</Text>
-                  </Box>
-                  <Box p="4">
-                    <Text fontSize="xs" color="gray.500">
-                      This is the description
-                    </Text>
-                  </Box>
-                </Box>
-              ))}
-            </Flex>
-          </Scrollbars>
-        </Box>
-        {/*Add new sub topic*/}
-        <Box mt="6">
-          <Flex justify="space-between" align="center">
-            {isOpen ? (
-              <IconButton
-                aria-label="addNewSubTopic"
-                size="xs"
-                bg="white"
-                onClick={onClose}
-                icon={<AiOutlineMinusSquare size="26" />}
-                _focus={{ outline: "none" }}
-              />
-            ) : (
-              <Tooltip label="Add New Sub-Topic" hasArrow placement="top">
-                <IconButton
-                  aria-label="addNewSubTopic"
-                  size="xs"
-                  bg="white"
-                  onClick={onOpen}
-                  icon={<AiOutlinePlusSquare size="26" />}
-                  _focus={{ outline: "none" }}
+                  _focus={{ borderColor: "poldit.100" }}
+                  maxW="350px"
+                  value={subSearch}
+                  onChange={(e) => setSubSearch(e.target.value)}
                 />
-              </Tooltip>
-            )}
-            <Flex>
-              <Text fontSize="sm" color="gray.600">
-                Select up to 3
-              </Text>
-              <Text fontSize="sm" color="gray.600" ml="6">
-                {selectedSub.length}/3
-              </Text>
-            </Flex>
-          </Flex>
+              </Box>
+              <Box mt="6">
+                {subTopicLoading ? (
+                  <Spinner ml="4" />
+                ) : (
+                  <Scrollbars
+                    autoHeight
+                    autoHeightMin={100}
+                    autoHeightMax={200}
+                    style={{ overflowY: "hidden" }}
+                  >
+                    <Flex pb="4">
+                      {subTopics.map((t: any) => (
+                        <Box
+                          key={t._id}
+                          mr="4"
+                          borderColor="gray.300"
+                          borderWidth="1px"
+                          borderRadius="md"
+                          overflow="hidden"
+                          minW="160px"
+                          minH="80px"
+                          onClick={() => handleSubTopics(t.subTopic)}
+                          cursor="pointer"
+                        >
+                          <Box
+                            px="4"
+                            py="2"
+                            bg="gray.200"
+                            borderBottomWidth="1px"
+                            borderColor="gray.300"
+                          >
+                            <Text fontSize="sm">{t.subTopic}</Text>
+                          </Box>
+                          <Box p="4">
+                            <Text fontSize="xs" color="gray.500">
+                              This is the description
+                            </Text>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Flex>
+                  </Scrollbars>
+                )}
+              </Box>
+              {/*Add new sub topic*/}
+              <Box mt="6">
+                <Flex justify="space-between" align="center">
+                  {isOpen ? (
+                    <IconButton
+                      aria-label="addNewSubTopic"
+                      size="xs"
+                      bg="white"
+                      onClick={onClose}
+                      icon={<AiOutlineMinusSquare size="26" />}
+                      _focus={{ outline: "none" }}
+                    />
+                  ) : (
+                    <Tooltip label="Add New Sub-Topic" hasArrow placement="top">
+                      <IconButton
+                        aria-label="addNewSubTopic"
+                        size="xs"
+                        bg="white"
+                        onClick={onOpen}
+                        icon={<AiOutlinePlusSquare size="26" />}
+                        _focus={{ outline: "none" }}
+                      />
+                    </Tooltip>
+                  )}
+                  <Flex>
+                    <Text fontSize="sm" color="gray.600">
+                      Select up to 3
+                    </Text>
+                    <Text fontSize="sm" color="gray.600" ml="6">
+                      {selectedSub.length}/3
+                    </Text>
+                  </Flex>
+                </Flex>
+              </Box>
+            </Box>
+          )}
         </Box>
         {/*Add new sub topic Form*/}
         {isOpen && (
