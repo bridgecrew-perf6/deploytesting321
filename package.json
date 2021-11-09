@@ -93,7 +93,7 @@
     "slick-carousel": "^1.8.1",
     "subscriptions-transport-ws": "^0.9.18",
     "uuid": "^8.3.2",
-    "validator": "^13.6.0",
+    "validator": "^13.7.0",
     "ws": "^7.5.5"
   },
   "devDependencies": {
