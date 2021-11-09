@@ -7,7 +7,6 @@ import {
   UserDataProps,
 } from "../appTypes/appType";
 import { AppContextInterface } from "./authType";
-import jwt_decode from "jwt-decode";
 
 const AuthContext = createContext<AppContextInterface | null>(null);
 
@@ -19,16 +18,6 @@ const AuthProvider: React.FC = ({ children }) => {
     },
   };
 
-  const initialAuthStateForInternlaUser: InternalUserDataProps = {
-    getInternalUserData: {
-      appToken: "",
-      internalUser: { _id: "", email: "", accessRole: "" },
-    },
-  };
-
-  const [internalUserAuthState, setInternalUserAuthState] = useState(
-    initialAuthStateForInternlaUser
-  );
   const [authState, setAuthState] = useState(initialAuthState);
   const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]); //This may not be needed since you can pass mssgs between pages.  Think of removing
   const [searchVal, updateSearchVal] = useState("");
@@ -37,24 +26,24 @@ const AuthProvider: React.FC = ({ children }) => {
     updateSearchVal(val);
   };
 
-  const setAuthTokenForInternalUser = (token: string) => {
-    let tokenData: any;
-    storeTokens(token);
-    tokenData = jwt_decode(token);
+  // const setAuthTokenForInternalUser = (token: string) => {
+  //   let tokenData: any;
+  //   storeTokens(token);
+  //   tokenData = jwt_decode(token);
 
-    const updatedInternalUserToken: InternalUserDataProps = {
-      getInternalUserData: {
-        ...internalUserAuthState.getInternalUserData,
-        appToken: token,
-        internalUser: {
-          ...internalUserAuthState.getInternalUserData.internalUser,
-          _id: tokenData.id,
-          accessRole: tokenData.roleId,
-        },
-      },
-    };
-    setInternalUserAuthState(updatedInternalUserToken);
-  };
+  //   const updatedInternalUserToken: InternalUserDataProps = {
+  //     getInternalUserData: {
+  //       ...internalUserAuthState.getInternalUserData,
+  //       appToken: token,
+  //       internalUser: {
+  //         ...internalUserAuthState.getInternalUserData.internalUser,
+  //         _id: tokenData.id,
+  //         accessRole: tokenData.roleId,
+  //       },
+  //     },
+  //   };
+  //   setInternalUserAuthState(updatedInternalUserToken);
+  // };
 
   const setAuthToken = (token: string) => {
     storeTokens(token);
@@ -69,20 +58,12 @@ const AuthProvider: React.FC = ({ children }) => {
     setAppMssgs(msgList);
   };
 
-  const updateUserData = (userData: UserDataProps) => {
-    setAuthState(userData);
-  };
-
-  const updateInternalUserData = (internalUser: InternalUserDataProps) => {
-    setInternalUserAuthState(internalUser);
-  };
-
-  const signOutInternalUser = () => {
-    setInternalUserAuthState(initialAuthStateForInternlaUser);
-
-    // if (typeof window !== "undefined") {
-    //   localStorage.removeItem("poldItUser");
-    // }
+  const updateUserData = (userData: UserDataProps, token: string) => {
+    storeTokens(token);
+    const updatedAuthState: UserDataProps = {
+      getUserData: { ...userData.getUserData, appToken: token },
+    };
+    setAuthState(updatedAuthState);
   };
 
   const signOut = () => {
@@ -96,18 +77,14 @@ const AuthProvider: React.FC = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        internalUserAuthState,
         authState,
         appMssgs,
         searchVal,
         setAuthToken,
-        setAuthTokenForInternalUser,
         updateAppMssgs,
         handleSearch,
         updateUserData,
-        updateInternalUserData,
         signOut,
-        signOutInternalUser,
       }}
     >
       {children}

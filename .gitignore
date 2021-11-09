@@ -4,54 +4,24 @@
 /node_modules
 /.pnp
 .pnp.js
-<<<<<<< HEAD
 /.next
 .env.local
 next-env.d.ts
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 # testing
 /coverage
 
-<<<<<<< HEAD
 # production
 /build
 /admin_app
 
 # misc
 .DS_Store
-=======
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-<<<<<<< HEAD
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-=======
-# vercel
-.vercel
-
-.env
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5

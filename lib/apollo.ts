@@ -26,8 +26,6 @@ let isDev =
     ? true
     : false;
 
-
-
 // const {
 //   NEXT_PUBLIC_WS_API_DEV,
 //   NEXT_PUBLIC_WS_API_PROD,

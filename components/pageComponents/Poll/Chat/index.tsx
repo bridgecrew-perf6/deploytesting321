@@ -7,10 +7,7 @@ import { useAuth } from "../../../authProvider/authProvider";
 import { ChatBody, ChatSideBar } from "./chatComps";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import AppLoading from "../../Other/Loading";
-<<<<<<< HEAD
 import { AnsComp } from "./AnsComp";
-=======
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
 
 const PollChatBox = ({
   pollId,
@@ -82,22 +79,6 @@ const PollChatBox = ({
     >
       <h5 className={`${pollStyles.pollHeaderTxt}`}>POLL CHAT</h5>
       {!showSection && (
-<<<<<<< HEAD
-        <div className="row w-100">
-          <div style={{ maxHeight: "800px" }} className="col-md-6">
-            <AnsComp />
-          </div>
-          <div className="col-md-6">
-            <ChatBody
-              pollId={pollId}
-              appUser={user}
-              pollUsers={chatUsers}
-              data={data!.messagesByPoll}
-              addAnswer={addAnswer}
-              addError={addError}
-            />
-          </div>
-=======
         <div className={`d-flex flex-row w-100 mt-2`}>
           <div style={{maxHeight: '800px'}}>
             <ChatSideBar
@@ -116,7 +97,6 @@ const PollChatBox = ({
             addAnswer={addAnswer}
             addError={addError}
           />
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         </div>
       )}
     </div>

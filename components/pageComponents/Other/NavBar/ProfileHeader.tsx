@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLazyQuery, useQuery } from "@apollo/client";
@@ -21,6 +21,7 @@ import { AppLoadingLite } from "../Loading";
 import { ToolTipCtr } from "../../../layout/customComps";
 import NotificationWindow from "./NotificationWindow";
 import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 const { GET_USER, LOG_OUT, GET_NOTIFICATIONS, INTERNAL_USER_LOGOUT } =
   GraphResolvers.queries;
@@ -33,8 +34,9 @@ const {
 
 export default function ProfileHeader(props: any) {
   const router = useRouter();
-
+  let cookie: any = Cookies.get("polditSession");
   const appContext = useAuth();
+  // console.log(appContext?.authState);
 
   const [notification, toggleNotification] = useState(false);
   const [userNotifications, updateNotifications] = useState<UserNotification[]>(
@@ -42,7 +44,7 @@ export default function ProfileHeader(props: any) {
   );
   const [message, setMessage] = useState(false);
 
-  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
+  // const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
   const { data: notificationData, subscribeToMore } = useQuery(
     GET_NOTIFICATIONS,
     {
@@ -53,15 +55,8 @@ export default function ProfileHeader(props: any) {
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
 
   useEffect(() => {
-    getUser();
-    if (data) {
-      appContext && appContext.updateUserData(data.getUserData);
-    }
-  }, [appContext, data]);
-
-  useEffect(() => {
-    if (data && notificationData && subscribeToMore) {
-      const userId = data?.getUserData?.user._id;
+    if (appContext?.authState && notificationData && subscribeToMore) {
+      const userId = appContext?.authState?.getUserData?.user._id;
       subscribeToMore({
         document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
@@ -77,7 +72,7 @@ export default function ProfileHeader(props: any) {
         },
       });
     }
-  }, [data, notificationData]);
+  }, [appContext?.authState, notificationData]);
 
   const messageIcon = message ? (
     <AiFillMessage size={24} color="#ff4d00" />
@@ -100,7 +95,7 @@ export default function ProfileHeader(props: any) {
     ]);
     appContext && appContext.signOut();
     logout();
-
+    Cookies.remove("polditSession");
     router.push(
       {
         pathname: "/Login",
@@ -111,8 +106,8 @@ export default function ProfileHeader(props: any) {
   };
   const { title } = props;
 
-  if (data && props.title !== "Admin Panel") {
-    const { _id, appid, profilePic } = data.getUserData.user;
+  if (appContext?.authState && props.title !== "Admin Panel") {
+    const { _id, appid, profilePic } = appContext?.authState.getUserData.user;
     const unreadNotifications = notificationData?.notifications.filter(
       (item: UserNotification) => !item.read
     ).length;
@@ -216,7 +211,11 @@ export default function ProfileHeader(props: any) {
     );
   }
 
-  if (error && props.title !== "Admin Panel" && !data) {
+  if (
+    appContext?.authState &&
+    props.title !== "Admin Panel" &&
+    !appContext?.authState
+  ) {
     return (
       <div
         className="form-row justify-content-between"
@@ -264,8 +263,8 @@ export default function ProfileHeader(props: any) {
               className={`${custombtnCreate} ${customBtnOutline}`}
               type="button"
               onClick={() => {
-                Cookies.remove("internalUserPolditSession");
-                router.push("/Admin/Login");
+                Cookies.remove("polditSession");
+                router.push("/Login");
               }}
             >
               Logout

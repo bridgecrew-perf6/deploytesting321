@@ -7,10 +7,12 @@ import { LogoText } from "../../components/layout/branding";
 import { CardForm } from "../../components/layout/CompStyles";
 import { errorHandling } from "../../components/formFuncs/errorFuncs";
 import { AppMssgList, ErrorList } from "../../components/formFuncs/formFuncs";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useAuth } from "../../components/authProvider/authProvider";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
 import { ErrorMssg } from "../../components/appTypes/appType";
+import Cookies from "js-cookie";
+import { isTokkenValidInternalUser } from "lib/externalUserAuth";
 
 const LogIn: NextPage = () => {
   const [loggedIn, toggleLoggedIn] = useState(false);
@@ -22,6 +24,14 @@ const LogIn: NextPage = () => {
     setFormErrors([]);
     toggleLoggedIn(false);
   }, []);
+
+  // useEffect(() => {
+  //   let cookie: any = Cookies.get("polditSession");
+  //   // console.log("Cookie from Login => ", cookie)
+  //   if (isTokkenValidInternalUser(cookie ?? "")) {
+  //     router.push("/");
+  //   }
+  // }, []);
 
   const appContext = useAuth();
   const router = useRouter();
@@ -47,7 +57,9 @@ const LogIn: NextPage = () => {
         const { data } = await login({
           variables: { credentials: JSON.stringify(formObj) },
         });
+        console.log(data);
         appContext?.setAuthToken(data.login);
+        Cookies.set("polditSession", data.login);
         setAppMssgs([]);
         router.push("/");
       } catch (err: any) {

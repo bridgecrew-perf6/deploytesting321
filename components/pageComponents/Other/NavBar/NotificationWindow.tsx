@@ -81,7 +81,7 @@ const NotificationWindow = ({ data }: NotificationWindow) => {
           <div className={"modal-body"}>
             <Scrollbars style={{ width: "100%", height: "95%" }}>
               <div className="mt-2">
-                {data.map((item) => (
+                {data?.map((item) => (
                   <NotificationItem
                     key={item._id}
                     data={item}

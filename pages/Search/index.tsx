@@ -44,11 +44,7 @@ export default function Search() {
 
   //Functions
   const updateBtnItems = (btnName: string, prop: string, val: any) => {
-<<<<<<< HEAD
-    const updatedBtns = btns.map((item) => {
-=======
     const updatedBtns = btns.map((item: any) => {
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
       if (item.btnName === btnName) {
         return { ...item, active: true };
       }
@@ -86,11 +82,7 @@ export default function Search() {
       <div style={{ marginTop: "100px" }}>
         <SearchBtns data={btns} update={updateBtnItems} />
         <div className="d-flex justify-content-center">
-<<<<<<< HEAD
-          <SearchWindow data={btns.find((btn) => btn.active)} />
-=======
           <SearchWindow data={btns.find((btn: any) => btn.active)} />
->>>>>>> 62ea7d89505d835ee4ccb6a4731424ccca8ce4b5
         </div>
       </div>
     </SitePageContainer>

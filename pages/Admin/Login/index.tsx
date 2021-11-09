@@ -46,11 +46,11 @@ const LogIn: NextPage = () => {
     setFormErrors(errors);
     if (errors.length === 0) {
       try {
-        const { data } = await internalUserLogin({
-          variables: { email: formObj.email, password: formObj.password },
-        });
+        // const { data } = await internalUserLogin({
+        //   variables: { email: formObj.email, password: formObj.password },
+        // });
         // console.log(data);
-        appContext?.setAuthTokenForInternalUser(data.internalUserLogin);
+        // appContext?.setAuthTokenForInternalUser(data.internalUserLogin);
         setAppMssgs([]);
         router.push("/Admin");
       } catch (err: any) {

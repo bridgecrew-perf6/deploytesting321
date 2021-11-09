@@ -26,7 +26,7 @@ const index = () => {
   const [getInternalUser, { data, loading }] = useLazyQuery(
     query.GET_SINGLE_INTERNAL_USER
   );
-  let cookie: any = Cookies.get("internalUserPolditSession");
+  let cookie: any = Cookies.get("polditSession");
 
   useEffect(() => {
     if (cookie) {

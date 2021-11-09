@@ -5,8 +5,10 @@ import GraphResolvers from "../lib/apollo/apiGraphStrings";
 import { CustomBtn, PollHistory } from "../components/appTypes/appType";
 import { SitePageContainer } from "../components/layout";
 import { HomeBtnWindow } from "../components/pageComponents/Home";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 import DataWindow from "../components/pageComponents/Home/DataWindow";
-
+import usersInfoBox from "../appStyles/adminStyles/usersInfoBox.module.css";
 import AppLoading, {
   AppLoadingLite,
 } from "../components/pageComponents/Other/Loading";
@@ -36,8 +38,6 @@ const Home = () => {
   const { data: trendingPolls } = useQuery(GET_TRENDING_POLLS, {
     onCompleted: (res) => updateData("Trending Polls", res.trendingPolls),
   });
-
-  // console.log(userId);
 
   const updateBtnItem = (btnName: string, prop: string, val: any) => {
     const updatedItems = homeBtns.map((item) => {
@@ -81,6 +81,33 @@ const Home = () => {
       return trendingPolls.trendingPolls;
     }
   };
+    
+  const appContext = useAuth();
+  let cookie: any = Cookies.get("polditSession");
+  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
+
+  useEffect(() => {
+    if (cookie) {
+      let decoded: any = jwt_decode(cookie);
+      // console.log(decoded);
+      if (decoded?.id) {
+        getUser({
+          variables: {
+            userId: decoded?.id,
+          },
+        });
+      }
+    } else {
+      router.push("/Login");
+    }
+  }, [cookie, data]);
+  // console.log(data, cookie);
+
+    useEffect(() => {
+      if (data) {
+        appContext && appContext.updateUserData(data, cookie);
+      }
+    }, [data]);
 
   useEffect(() => {
     if (
@@ -115,9 +142,10 @@ const Home = () => {
   const pollData = homeBtns.filter((item) => item.active);
 
   return (
-    <SitePageContainer title={`${router.pathname} Home`}>
+    <SitePageContainer
+      title={`${router.pathname} Home`}
+    >
       <HomeBtnWindow btnList={homeBtns} update={updateBtnItem} />
-
       <div
         className="d-flex justify-content-center"
         style={{ marginTop: "170px" }}
@@ -130,6 +158,6 @@ const Home = () => {
       </div>
     </SitePageContainer>
   );
-};
+};;
 
 export default Home;

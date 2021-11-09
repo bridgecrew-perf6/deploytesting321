@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 
 const userQueries = {
   GET_USER: gql`
-    query GetUserData {
-      getUserData {
+    query GetUserData($userId: String!) {
+      getUserData (userId: $userId){
         appToken
         user {
           _id

@@ -39,7 +39,7 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
 
   useEffect(() => {
     appContext?.authState?.getUserData?.appToken !== "" && isFavorite();
-
+    // console.log("data of IS-FAVOURUTE ", data);
     if (data) {
       toggleBtn(data.isFavorite);
     }
