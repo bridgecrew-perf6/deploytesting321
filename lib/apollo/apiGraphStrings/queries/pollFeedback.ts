@@ -23,6 +23,23 @@ const pollFeedBackQueries = {
           dislike
         }
         rank
+        multichoice {
+          _id
+          answerVal
+        }
+      }
+    }
+  `,
+  GET_POLL_CHAT_USERS: gql`
+    query PollChatUsers($pollId: String!) {
+      pollChatUsers(pollId: $pollId) {
+        id
+        appid
+        followers
+        numPolls
+        numAnswers
+        lastChatMssgDate
+        isActive
       }
     }
   `,
