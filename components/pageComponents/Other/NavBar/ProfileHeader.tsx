@@ -23,8 +23,13 @@ import NotificationWindow from "./NotificationWindow";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-const { GET_USER, LOG_OUT, GET_NOTIFICATIONS, INTERNAL_USER_LOGOUT } =
-  GraphResolvers.queries;
+const {
+  GET_USER,
+  LOG_OUT,
+  GET_NOTIFICATIONS,
+  INTERNAL_USER_LOGOUT,
+  GET_APPUSER,
+} = GraphResolvers.queries;
 const {
   customBtn,
   customBtnOutline,
@@ -34,29 +39,41 @@ const {
 
 export default function ProfileHeader(props: any) {
   const router = useRouter();
-  let cookie: any = Cookies.get("polditSession");
-  const appContext = useAuth();
-  // console.log(appContext?.authState);
-
+  const [userId, setUserId] = useState(null);
+  // let userId = Cookies.get("userId");
   const [notification, toggleNotification] = useState(false);
   const [userNotifications, updateNotifications] = useState<UserNotification[]>(
     []
   );
   const [message, setMessage] = useState(false);
+  const appContext = useAuth();
 
-  // const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
+  const [getAppUserData, { data: appUserData }] = useLazyQuery(GET_APPUSER);
+  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
   const { data: notificationData, subscribeToMore } = useQuery(
     GET_NOTIFICATIONS,
-    {
-      onCompleted: (res) => updateNotifications(res.notifications),
-    }
+    { onCompleted: (res) => updateNotifications(res.notifications) }
   );
 
-  const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
+  useEffect(() => {
+    let cookies: any = Cookies.get("userId");
+    setUserId(cookies);
+  }, [userId]);
 
   useEffect(() => {
-    if (appContext?.authState && notificationData && subscribeToMore) {
-      const userId = appContext?.authState?.getUserData?.user._id;
+    if (userId) {
+      getAppUserData({variables: {userId: userId}});
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (appUserData) {
+      appContext?.updateUserData(appUserData);
+    }
+  }, [appUserData]);
+
+  useEffect(() => {
+    if (userId && notificationData && subscribeToMore) {
       subscribeToMore({
         document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
         updateQuery: (prev, { subscriptionData }) => {
@@ -72,7 +89,7 @@ export default function ProfileHeader(props: any) {
         },
       });
     }
-  }, [appContext?.authState, notificationData]);
+  }, [userId, notificationData]);
 
   const messageIcon = message ? (
     <AiFillMessage size={24} color="#ff4d00" />
@@ -93,7 +110,8 @@ export default function ProfileHeader(props: any) {
         msgType: 1,
       },
     ]);
-    appContext && appContext.signOut();
+    Cookies.remove("userId");
+    appContext?.signOut();
     logout();
     Cookies.remove("polditSession");
     router.push(
@@ -104,10 +122,8 @@ export default function ProfileHeader(props: any) {
       "/Login"
     );
   };
-  const { title } = props;
 
-  if (appContext?.authState && props.title !== "Admin Panel") {
-    const { _id, appid, profilePic } = appContext?.authState.getUserData.user;
+  if (userId) {
     const unreadNotifications = notificationData?.notifications.filter(
       (item: UserNotification) => !item.read
     ).length;
@@ -118,8 +134,9 @@ export default function ProfileHeader(props: any) {
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
         style={{
-          width: title !== "Admin Panel" ? "30%" : "22rem",
+          width: "25rem",
           marginLeft: 5,
+          alignItems: "center",
         }}
       >
         <div
@@ -130,7 +147,7 @@ export default function ProfileHeader(props: any) {
         >
           Create New Poll
         </div>
-        {superUserList?.includes(appid) && (
+        {superUserList?.includes(userId) && (
           <>
             <NewTopicBtn />
           </>
@@ -163,9 +180,9 @@ export default function ProfileHeader(props: any) {
         <NotificationWindow data={notificationData?.notifications} />
         <div>
           <ProfileImg
-            profilePic={profilePic}
-            id={_id}
-            appId={appid}
+            profilePic={appUserData?.getAppUserData?.profilePic}
+            id={userId}
+            appId={userId}
             picStyle={{ height: 50, width: 50 }}
             color={"gray"}
           />
@@ -190,8 +207,8 @@ export default function ProfileHeader(props: any) {
             aria-labelledby="siteDropDown"
           >
             <ul className="d-flex flex-column h-100 justify-content-center">
-              <Link href={`/Profile/${appid}`}>
-                <li className="dropdown-item">{`${appid} Profile`}</li>
+              <Link href={`/Profile/${userId}`}>
+                <li className="dropdown-item">{`Profile`}</li>
               </Link>
               <Link href={`/Polls`}>
                 <li className="dropdown-item">All Topics</li>
@@ -211,15 +228,15 @@ export default function ProfileHeader(props: any) {
     );
   }
 
-  if (
-    appContext?.authState &&
-    props.title !== "Admin Panel" &&
-    !appContext?.authState
-  ) {
+  if (!userId) {
     return (
       <div
-        className="form-row justify-content-between"
-        style={{ width: "15%" }}
+        className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
+        style={{
+          width: "25rem",
+          marginLeft: 5,
+          alignItems: "center",
+        }}
       >
         <Link href={"/Login"}>
           <button
@@ -242,81 +259,9 @@ export default function ProfileHeader(props: any) {
   }
 
   return (
-    <div className="d-flex justify-content-center" style={{ width: 300 }}>
-      {props.title === "Admin Panel" ? (
-        <div
-          className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
-          style={{
-            width: title !== "Admin Panel" ? "30%" : "22rem",
-            marginLeft: 5,
-          }}
-        >
-          <React.Fragment>
-            <div
-              className={styles.cursor}
-              onMouseEnter={() => setMessage(true)}
-              onMouseLeave={() => setMessage(false)}
-            >
-              {messageIcon}
-            </div>
-            <button
-              className={`${custombtnCreate} ${customBtnOutline}`}
-              type="button"
-              onClick={() => {
-                Cookies.remove("polditSession");
-                router.push("/Login");
-              }}
-            >
-              Logout
-            </button>
-          </React.Fragment>
-
-          <div>
-            <ProfileImg
-              profilePic={""}
-              id={""}
-              appId={""}
-              picStyle={{ height: 50, width: 50 }}
-              color={"gray"}
-            />
-          </div>
-          <div className="dropdown">
-            <a
-              className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-              type="button"
-              id="siteDropDown"
-              data-toggle="dropdown"
-            >
-              <GiHamburgerMenu
-                size={22}
-                aria-haspopup="true"
-                aria-expanded="false"
-              />
-            </a>
-
-            <div
-              className={`dropdown-menu ${styles.dropDownCtr}`}
-              aria-labelledby="siteDropDown"
-            >
-              <ul className="d-flex flex-column h-100 justify-content-center">
-                <Link href={`/Polls`}>
-                  <li className="dropdown-item">All Topics</li>
-                </Link>
-                <li className="dropdown-item">About</li>
-                <li className="dropdown-item">How it Works</li>
-                <li className="dropdown-item">Suggestions</li>
-                <li className="dropdown-item">Support</li>
-                <li className="dropdown-item">Settings</li>
-                <li className="dropdown-item" onClick={() => handleLogOut()}>
-                  Log Out
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <AppLoadingLite />
-      )}
-    </div>
+    <div
+      className="d-flex  justify-content-center"
+      style={{ width: 300 }}
+    ></div>
   );
 }

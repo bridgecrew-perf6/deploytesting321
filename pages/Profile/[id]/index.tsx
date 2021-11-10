@@ -14,10 +14,14 @@ import {
 import ProfileBody from "../../../components/pageComponents/Profile/ProfileBody";
 import { initializeApollo } from "../../../lib/apollo";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import { useAuth } from "../../../components/authProvider/authProvider";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 const apolloClient = initializeApollo();
 
-const { GET_APPUSER, GET_USERPOLLS, GET_FAVORITES } = GraphResolvers.queries;
+const { GET_APPUSER, GET_USERPOLLS, GET_FAVORITES, GET_USER } =
+  GraphResolvers.queries;
 
 interface Profile {
   userId: string;
@@ -32,12 +36,12 @@ const Profile = ({ userId }: Profile) => {
     { type: "Favorites", active: false, loading: false, data: [] },
     { type: "Activity", active: false, loading: false, data: [] },
   ];
-
   //State
   const [profileItems, updateProfileItems] = useState(profileDataTypes);
-
+  const appContext = useAuth();
+  // console.log(appContext?.authState);
   //Api
-  const [getUserPolls, { data: pollData, loading: pollLoading }] = useLazyQuery(
+  const [pollsByUser, { data: pollData, loading: pollLoading }] = useLazyQuery(
     GET_USERPOLLS,
     {
       onError: (e) => updateProfileType(0, "error", e.message),
@@ -52,11 +56,18 @@ const Profile = ({ userId }: Profile) => {
     }
   );
 
-  const { data } = useQuery(GET_APPUSER, { variables: { userId } });
+  const [getAppUserData, { data }] = useLazyQuery(GET_APPUSER);
+
+  useEffect(() => {
+    if (userId) {
+      console.log(userId, appContext?.authState);
+      getAppUserData({ variables: { userId: userId } });
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (data) {
-      getUserPolls({ variables: { userId: data.getAppUserData._id } });
+      pollsByUser({ variables: { userId: data.getAppUserData._id } });
       getFavorites({ variables: { userId: data.getAppUserData._id } });
 
       const numCount = data.getAppUserData.favorites.length;
@@ -110,7 +121,7 @@ const Profile = ({ userId }: Profile) => {
       return;
     }
 
-    data && getUserPolls({ variables: { userId: data._id } });
+    data && pollsByUser({ variables: { userId: data._id } });
     updateCategories(0);
   };
 

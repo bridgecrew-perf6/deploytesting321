@@ -32,17 +32,6 @@ export default function ProfileImg({
       <IoPersonCircle style={{ ...picStyle, color }} />
     );
 
-  // const routeHandler = () => {
-  //   console.log(id);
-  //   router.push(
-  //     {
-  //       pathname: `/Profile/${appId}`,
-  //       query: { userId: id },
-  //     },
-  //     `/Profile/${appId}`
-  //   );
-  // };
-
   return (
     <Link href={`/Profile/${appId}`}>
       <div

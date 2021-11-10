@@ -11,7 +11,6 @@ export default class MyDocument extends Document {
             type="image/x-icon"
             href="https://res.cloudinary.com/rahmad12/image/upload/v1630082235/PoldIt/App_Imgs/iconified/favicon_qxxxlw.ico"
           />
-
           {/* Global Site Tag (gtag.js) - Google Analytics */}
           <script
             async

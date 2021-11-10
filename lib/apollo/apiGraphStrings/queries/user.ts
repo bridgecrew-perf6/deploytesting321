@@ -51,7 +51,7 @@ const userQueries = {
     }
   `,
   GET_APPUSER: gql`
-    query GetAppUserData($userId: String!) {
+    query GetAppUserData($userId: String) {
       getAppUserData(userId: $userId) {
         _id
         appid

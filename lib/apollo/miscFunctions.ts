@@ -1,20 +1,8 @@
 import { Request, Response } from "express";
-// import { Request } from "express-serve-static-core";
-// import { Response } from "express-serve-static-core";
 import { DocumentNode } from "graphql";
 import { Http2ServerRequest, Http2ServerResponse } from "http2";
 import { initializeApollo, storeTokens } from "../apollo";
-// import { parseCookies } from "../../graphql/middleware/cookie";
-// import Router from "next/router";
-
-// export const sendRefreshToken = (res: Response, token: string) => {
-//   if (res.cookie) {
-//     res.cookie("poldIt_session", token, {
-//       httpOnly: true,
-//       domain: ".poldit.com",
-//     });
-//   }
-// };
+import Cookies from "js-cookie";
 
 export const runGraphQuery = async (
   queryType: string,
@@ -22,6 +10,8 @@ export const runGraphQuery = async (
   req: Request,
   variables = {}
 ) => {
+  let cookie: any = Cookies.get("polditSession");
+  console.log("Cookie from appolo miscFunction is => ", cookie);
   const apolloClient = initializeApollo();
   const appCookie = req.headers?.cookie;
 

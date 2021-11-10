@@ -13,7 +13,7 @@ export interface AppContextInterface {
   setAuthToken: (token: string) => void;
   updateAppMssgs: (msgList: AppMssg[]) => void;
   handleSearch: (val: string) => string | void;
-  updateUserData: (data: UserDataProps, token: string) => void;
+  updateUserData: (data: UserDataProps) => void;
   signOut: () => void;
   
 }
