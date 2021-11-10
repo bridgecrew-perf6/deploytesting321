@@ -67,7 +67,13 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
           </Flex>
           <HStack align="start" spacing="0">
             <Box mt="2px">
-              <Tag fontWeight="bold" color="gray.500" size="sm" mr="2">
+              <Tag
+                fontWeight="bold"
+                color="gray.500"
+                size="sm"
+                mr="2"
+                variant="outline"
+              >
                 {pollData?.topic?.topic}
               </Tag>
               {pollData.subTopics &&

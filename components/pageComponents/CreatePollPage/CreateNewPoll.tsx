@@ -28,7 +28,7 @@ const CreateNewPoll: React.FC<{}> = () => {
   const [selectedTopic, setSelectedTopic] = useState<null | string>(null);
   const [selectedSub, setSelectedSub] = useState<[] | string[]>([]);
   const [subSearch, setSubSearch] = useState<string>("");
-  const [questionType, setQuestionType] = useState<string>("1");
+  const [questionType, setQuestionType] = useState<string>("openEnded");
   const [subTopics, setSubTopics] = useState<[] | string[]>([]);
   const [options, setOptions] = useState<[] | string[]>([]);
   const [optionText, setOptionText] = useState<string>("");
@@ -68,6 +68,7 @@ const CreateNewPoll: React.FC<{}> = () => {
     let filterSub = selectedSub.filter((st) => x !== st);
     setSelectedSub([...filterSub]);
   };
+  console.log("SUBTS", subTopicsData);
   useEffect(() => {
     if (!subTopicLoading && subTopicsData && subTopicsData.subTopicsPerTopic) {
       if (subSearch) {
@@ -106,7 +107,7 @@ const CreateNewPoll: React.FC<{}> = () => {
           <Flex align="center" justify="space-between" wrap="wrap">
             <Box>
               <Text fontSize="xl" fontWeight="bold">
-                Ask a public question
+                Ask a poll question
               </Text>
             </Box>
             <Flex align="center">
@@ -120,9 +121,9 @@ const CreateNewPoll: React.FC<{}> = () => {
                   value={questionType}
                   onChange={(e) => setQuestionType(e.target.value)}
                 >
-                  <option value={1}>Normal</option>
-                  <option value={2}>Yes/No</option>
-                  <option value={3}>With Options</option>
+                  <option value="openEnded">Open-ended</option>
+                  <option value="yesNo">Yes/No</option>
+                  <option value="multiChoice">Multiple Choice</option>
                 </Select>
               </Box>
             </Flex>
@@ -137,7 +138,7 @@ const CreateNewPoll: React.FC<{}> = () => {
           />
         </Box>
         {/* Options*/}
-        {questionType === "3" && (
+        {questionType === "multiChoice" && (
           <Box mt="6">
             {options && options.length ? (
               <VStack mb="4" align="start">
@@ -226,9 +227,12 @@ const CreateNewPoll: React.FC<{}> = () => {
               {topicData.topics.map((t: any) => (
                 <Box px="2" key={t._id} mb="2">
                   <Tag
-                    bg="poldit.100"
-                    color="white"
+                    color={t.topic === selectedTopic ? "white" : "gray.500"}
+                    bg={
+                      t.topic === selectedTopic ? "poldit.100" : "transparent"
+                    }
                     size="lg"
+                    variant={t.topic === selectedTopic ? "solid" : "outline"}
                     onClick={() => {
                       setSelectedSub([]);
                       setSelectedTopic(t.topic);
@@ -278,6 +282,7 @@ const CreateNewPoll: React.FC<{}> = () => {
                   maxW="350px"
                   value={subSearch}
                   onChange={(e) => setSubSearch(e.target.value)}
+                  size="sm"
                 />
               </Box>
               <Box mt="6">
@@ -295,7 +300,11 @@ const CreateNewPoll: React.FC<{}> = () => {
                         <Box
                           key={t._id}
                           mr="4"
-                          borderColor="gray.300"
+                          borderColor={
+                            selectedSub.find((sb) => sb === t.subTopic)
+                              ? "poldit.100"
+                              : "gray.300"
+                          }
                           borderWidth="1px"
                           borderRadius="md"
                           overflow="hidden"

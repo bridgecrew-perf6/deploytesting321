@@ -44,6 +44,7 @@ const BtnImage = dynamic(
 );
 
 const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
+  console.log("ans>>>", answers);
   const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
   const [ansOptions, setAnsOptions] = useState<string>("2");
@@ -141,7 +142,7 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                       fontWeight="bold"
                       align="center"
                     >
-                      Choice your Answer.
+                      Poll Answers
                     </Text>
                   </Box>
                   <RadioGroup
@@ -213,7 +214,7 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                       <option value="newest">Newest</option>
                     </Select>
                     <Text fontSize="sm" color="gray.600">
-                      4 Answers
+                      {answers ? `${answers.length} Answers` : "Answers"}
                     </Text>
                   </Flex>
                   <form style={{ width: "100%" }} onSubmit={onAddAnswer}>
