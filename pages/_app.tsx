@@ -1,8 +1,8 @@
 import WithCustomStyles from "../components/layout/CompStyles";
 import "./global.css";
-import React from "react";
-import AuthProvider from "../components/authProvider/authProvider";
-import { ApolloProvider } from "@apollo/client";
+import React, { useEffect } from "react";
+import AuthProvider, { useAuth } from "../components/authProvider/authProvider";
+import { ApolloProvider, useLazyQuery } from "@apollo/client";
 import { useApollo } from "../lib/apollo";
 import { AppProps } from "next/app";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";

@@ -2,55 +2,27 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { storeTokens } from "../../lib/apollo";
 import {
   AppMssg,
-  InternalUserDataProps,
-  User,
-  UserDataProps,
 } from "../appTypes/appType";
 import { AppContextInterface } from "./authType";
 
 const AuthContext = createContext<AppContextInterface | null>(null);
 
 const AuthProvider: React.FC = ({ children }) => {
-  const initialAuthState: UserDataProps = {
-    getUserData: {
-      appToken: "",
-      user: { _id: "", appid: "", email: "" },
-    },
-  };
 
-  const [authState, setAuthState] = useState(initialAuthState);
+  
+  const [authState, setAuthState] = useState(null);
   const [appMssgs, setAppMssgs] = useState<AppMssg[]>([]); //This may not be needed since you can pass mssgs between pages.  Think of removing
   const [searchVal, updateSearchVal] = useState("");
 
   const handleSearch = (val: string) => {
     updateSearchVal(val);
   };
-
-  // const setAuthTokenForInternalUser = (token: string) => {
-  //   let tokenData: any;
-  //   storeTokens(token);
-  //   tokenData = jwt_decode(token);
-
-  //   const updatedInternalUserToken: InternalUserDataProps = {
-  //     getInternalUserData: {
-  //       ...internalUserAuthState.getInternalUserData,
-  //       appToken: token,
-  //       internalUser: {
-  //         ...internalUserAuthState.getInternalUserData.internalUser,
-  //         _id: tokenData.id,
-  //         accessRole: tokenData.roleId,
-  //       },
-  //     },
-  //   };
-  //   setInternalUserAuthState(updatedInternalUserToken);
-  // };
-
+ 
   const setAuthToken = (token: string) => {
-    storeTokens(token);
-    const updatedAuthState: UserDataProps = {
-      getUserData: { ...authState.getUserData, appToken: token },
-    };
-    setAuthState(updatedAuthState);
+    // const updatedAuthState: any = {
+    //   getUserData: { ...authState?.getUserData },
+    // };
+    // setAuthState(token);
   };
 
   const updateAppMssgs = (msgList: AppMssg[]) => {
@@ -58,16 +30,18 @@ const AuthProvider: React.FC = ({ children }) => {
     setAppMssgs(msgList);
   };
 
-  const updateUserData = (userData: UserDataProps, token: string) => {
-    storeTokens(token);
-    const updatedAuthState: UserDataProps = {
-      getUserData: { ...userData.getUserData, appToken: token },
+  const updateUserData = (userData:any) => {
+    const updatedAuthState: any = {
+      getUserData: { ...userData?.getAppUserData },
     };
     setAuthState(updatedAuthState);
   };
 
   const signOut = () => {
-    setAuthState(initialAuthState);
+    const updatedAuthState: any = {
+      getUserData: null,
+    };
+    setAuthState(updatedAuthState);
 
     if (typeof window !== "undefined") {
       localStorage.removeItem("poldItUser");

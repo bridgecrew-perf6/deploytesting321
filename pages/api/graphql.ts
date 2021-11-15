@@ -1,15 +1,10 @@
 import { ApolloServer } from "apollo-server-micro";
-// import jwt from "jsonwebtoken";
 import connectDb from "../../lib/mongoose";
-import typeDefs from "../../graphql/typeDefs";
-import resolvers from "../../graphql/resolvers";
-import { isAuthenticated } from "../../graphql/middleware";
-import withCookies from "../../graphql/middleware/cookie";
 import { Request, Response } from "express-serve-static-core";
-import dataLoaders from "../../graphql/loaders";
 import { PubSub } from "apollo-server";
 import Cors from "micro-cors";
 import { send } from "micro";
+import Cookies from "js-cookie";
 
 interface MyContext {
   req: Request;
@@ -26,21 +21,17 @@ const pubsub = new PubSub();
 
 const context = async ({ req, res, connection }: MyContext) => {
   const msgHeader = connection ? connection.context : req;
-
   //Put middleware in here
   return {
     req,
     res,
-    isAuth: isAuthenticated(msgHeader),
-    // isAuth: isAuthenticated(req),
-    dataLoaders,
     pubsub,
   };
 };
 
 const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
+  // typeDefs,
+  // resolvers,
   context,
   subscriptions: {
     path: "/api/graphql",
@@ -77,4 +68,5 @@ const graphqlWithSubscriptionHandler = (req: any, res: any, next: any) => {
   return res.socket.server.apolloServer(req, res, next);
 };
 
-export default connectDb(withCookies(graphqlWithSubscriptionHandler));
+// export default connectDb(withCookies(graphqlWithSubscriptionHandler));
+export default connectDb((graphqlWithSubscriptionHandler));

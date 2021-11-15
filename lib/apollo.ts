@@ -13,18 +13,27 @@ import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { useMemo } from "react";
 import { WebSocketLink } from "@apollo/client/link/ws";
-import configs from "../endpoints.config";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 import { getMainDefinition } from "@apollo/client/utilities";
 // import { ApolloLink } from "apollo-link";
 //Test
+let cookie: any = Cookies.get("polditSession");
+
 let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
-let appToken: String | null = null;
-let appCookie: String | null = null;
+let appToken: String | null = cookie ? cookie : null;
+let appCookie: any | null = cookie ? cookie : null;
 let isDev =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? true
     : false;
+
+let decoded: any;
+  if (appCookie) {
+    decoded = jwt_decode(cookie);
+  }
+  Cookies.set("userId", decoded?.id ? decoded?.id : "");
 
 // const {
 //   NEXT_PUBLIC_WS_API_DEV,
@@ -32,15 +41,17 @@ let isDev =
 //   NEXT_PUBLIC_HTTP_API_DEV,
 //   NEXT_PUBLIC_HTTP_API_PROD,
 // } = process.env;
-
+// let cookie: any = Cookies.get("polditSession"); ;
 export const storeTokens = (
   sessionToken: String = "",
   sessionCookie: String = ""
 ) => {
-  appToken = sessionToken;
-  appCookie = sessionCookie;
+  appToken = cookie;
+  appCookie = cookie;
   return;
 };
+// console.log("appCookie is => ", appCookie);
+// console.log("appToken is => ", appToken);
 
 const wsLink = process.browser
   ? new WebSocketLink({
@@ -48,13 +59,15 @@ const wsLink = process.browser
         ? (process.env.NEXT_PUBLIC_WS_API_DEV as string)
         : (process.env.NEXT_PUBLIC_WS_API_PROD as string),
       options: {
-        reconnect: true,
+        reconnect: false,
         // lazy: true,
       },
     })
   : null;
 const httpLink = new HttpLink({
-  uri: isDev ? process.env.NEXT_PUBLIC_HTTP_API_DEV : process.env.NEXT_PUBLIC_HTTP_API_PROD,
+  uri: isDev
+    ? process.env.NEXT_PUBLIC_HTTP_API_DEV
+    : process.env.NEXT_PUBLIC_HTTP_API_PROD,
   credentials: "same-origin",
 });
 
@@ -77,10 +90,6 @@ const errorLink = onError(
     // response && response.errors == null
     if (graphQLErrors) {
       graphQLErrors.map(({ message, locations, path }) => {
-        // if (message === "Not Authenticated.  Please Log In!") {
-        //   response.errors = null;
-        //   //   // console.log(response.errors[0].message);
-        // }
         console.log(
           `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
         );

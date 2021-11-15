@@ -82,32 +82,29 @@ const Home = () => {
     }
   };
     
-  const appContext = useAuth();
-  let cookie: any = Cookies.get("polditSession");
-  const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
 
-  useEffect(() => {
-    if (cookie) {
-      let decoded: any = jwt_decode(cookie);
-      // console.log(decoded);
-      if (decoded?.id) {
-        getUser({
-          variables: {
-            userId: decoded?.id,
-          },
-        });
-      }
-    } else {
-      router.push("/Login");
-    }
-  }, [cookie, data]);
-  // console.log(data, cookie);
+  // useEffect(() => {
+  //   if (cookie) {
+  //     let decoded: any = jwt_decode(cookie);
+  //     console.log(decoded);
+  //     if (decoded?.id) {
+  //       getUser({
+  //         variables: {
+  //           userId: decoded?.id,
+  //         },
+  //       });
+  //     }
+  //   } else {
+  //     router.push("/Login");
+  //   }
+  // }, [cookie, data]);
+  // // console.log(data, cookie);
 
-    useEffect(() => {
-      if (data) {
-        appContext && appContext.updateUserData(data, cookie);
-      }
-    }, [data]);
+  //   useEffect(() => {
+  //     if (data) {
+  //       appContext && appContext.updateUserData(data, cookie);
+  //     }
+  //   }, [data]);
 
   useEffect(() => {
     if (
@@ -134,9 +131,9 @@ const Home = () => {
     activeChats,
     trendingPolls,
     newPollData,
-    homeBtns[0].data.length,
-    homeBtns[1].data.length,
-    homeBtns[2].data.length,
+    homeBtns[0].data?.length,
+    homeBtns[1].data?.length,
+    homeBtns[2].data?.length,
   ]);
 
   const pollData = homeBtns.filter((item) => item.active);
