@@ -43,7 +43,14 @@ const BtnImage = dynamic(
   { ssr: false }
 );
 
-const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
+const AnsBox = ({
+  loading,
+  answers,
+  addAnswer,
+  pollId,
+  pollType,
+  error,
+}: any) => {
   console.log("ans>>>", answers);
   const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
@@ -96,7 +103,7 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
         feedback,
         feedbackVal,
         answerId,
-        pollId: poll,
+        pollId: pollId,
       },
     });
   };
@@ -133,7 +140,7 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
             </Flex>
           ) : (
             <>
-              {true ? (
+              {pollType !== "openEnded" ? (
                 <Box py={6} px={[4, 6]}>
                   <Box mb="4">
                     <Text
@@ -149,11 +156,11 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                     value={ansOptions}
                     onChange={(e) => setAnsOptions(e)}
                   >
-                    {["1", "2", "3", "4", "5"].map((x, id) => (
-                      <Flex pb="3" key={x}>
+                    {answers.map((x: any, id: any) => (
+                      <Flex pb="3" key={x?._id}>
                         <Box bg="white" p="4" borderRadius="lg" minW="400px">
                           <Radio
-                            value={x}
+                            value={x?._id}
                             colorScheme="green"
                             _active={{ outline: "none" }}
                             _focus={{ outline: "none" }}
@@ -161,9 +168,7 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                           >
                             <Box ml="2" cursor="pointer">
                               <Text fontSize="sm" color="gray.600" mb="2">
-                                This is the Long sentence with will probably go
-                                onto the next Line. Will it go to the next line?
-                                what do u think?
+                                {x?.answer}
                               </Text>
                               <Progress
                                 value={(id + 1) * 18}

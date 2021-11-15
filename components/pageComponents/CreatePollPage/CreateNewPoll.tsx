@@ -23,7 +23,10 @@ import { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import { FiTrash } from "react-icons/fi";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import ImgPicker from "../Other/Image/ImgPicker";
+import { addNewPoll } from "lib/apollo/apolloFunctions/mutations";
+import { saveImgtoCloud } from "_components/apis/imgUpload";
 
 const CreateNewPoll: React.FC<{}> = () => {
   interface selectedTopic {
@@ -40,9 +43,12 @@ const CreateNewPoll: React.FC<{}> = () => {
   const [subTopics, setSubTopics] = useState<[] | any[]>([]);
   const [options, setOptions] = useState<[] | string[]>([]);
   const [optionText, setOptionText] = useState<string>("");
+  const [selectedImgs, setSelectImgs] = useState<any>([]);
   const { onOpen, onClose, isOpen } = useDisclosure();
 
+  const { CREATE_POLL } = GraphResolvers.mutations;
   const { GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
+  const [createPoll, { error }] = useMutation(CREATE_POLL);
 
   const {
     data: topicData,
@@ -102,7 +108,7 @@ const CreateNewPoll: React.FC<{}> = () => {
     setOptions([...filterOption]);
   };
 
-  const submitCreatePoll = () => {
+  const submitCreatePoll = async () => {
     let questionField = (
       document.getElementById("pollQuestionField") as HTMLInputElement
     ).value;
@@ -123,7 +129,6 @@ const CreateNewPoll: React.FC<{}> = () => {
       return;
     }
     let selectedSubTopics = selectedSub.map((st) => st._id);
-    console.log("suubub", selectedSubTopics);
     if (!selectedSubTopics || !selectedSubTopics.length) {
       toast({
         title: "SubTopic is required",
@@ -150,7 +155,8 @@ const CreateNewPoll: React.FC<{}> = () => {
     if (questionType === "yesNo") {
       answers = ["Yes", "No"];
     }
-    let imgIds = null;
+    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+
     const pollItem: any = {
       question: questionField,
       pollType: questionType,
@@ -162,6 +168,15 @@ const CreateNewPoll: React.FC<{}> = () => {
       pollItem.answers = answers;
     }
     console.log(pollItem);
+    addNewPoll(createPoll, JSON.stringify(pollItem));
+    if (error) {
+      console.log(error);
+      toast({
+        title: "Error! Failed to create Poll",
+        status: "error",
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -208,9 +223,13 @@ const CreateNewPoll: React.FC<{}> = () => {
             id="pollQuestionField"
           />
         </Box>
+        {/* Imageg picker*/}
+        <Box mt="4">
+          <ImgPicker selectedImgs={selectedImgs} selectImgs={setSelectImgs} />
+        </Box>
         {/* Options*/}
         {questionType === "multiChoice" && (
-          <Box mt="6">
+          <Box mt="2">
             {options && options.length ? (
               <VStack mb="4" align="start">
                 {options.map((o, id) => (
@@ -268,7 +287,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         )}
 
         {/* Topic Header*/}
-        <Box mt="8">
+        <Box mt="4">
           <Flex align="center">
             <Text fontSize="md" fontWeight="bold">
               Select Poll Topic

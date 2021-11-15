@@ -44,7 +44,7 @@ const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
         imageName: fileObj.name.split(".")[0],
         image: fileObj,
         imageUri: fileURL,
-        userId: appContext?.authState.user._id,
+        userId: appContext?.authState.getUserData.user._id,
         imgType: "poll",
       };
     });

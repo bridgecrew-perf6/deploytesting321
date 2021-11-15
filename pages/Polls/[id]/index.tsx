@@ -164,7 +164,8 @@ const Poll = ({ pollId }: Props) => {
                 answers={answerData?.answersByPoll}
                 loading={loading}
                 addAnswer={addAnswer}
-                poll={data.poll._id}
+                pollId={data.poll._id}
+                pollType={data.poll.pollType}
                 error={answerError}
               />
             </Box>
