@@ -12,13 +12,14 @@ import { useAuth } from "../../components/authProvider/authProvider";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
 import { ErrorMssg } from "../../components/appTypes/appType";
 import Cookies from "js-cookie";
-import { isTokkenValidInternalUser } from "lib/externalUserAuth";
+import { isTokkenValid } from "lib/externalUserAuth";
 import jwtDecode from "jwt-decode";
 
 const LogIn: NextPage = () => {
   const [loggedIn, toggleLoggedIn] = useState(false);
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
   const [appMssgs, setAppMssgs] = useState<object[]>([]);
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     handleOtherFormMssgs();
@@ -29,7 +30,7 @@ const LogIn: NextPage = () => {
   useEffect(() => {
     let cookie: any = Cookies.get("polditSession");
     // console.log("Cookie from Login => ", cookie)
-    if (isTokkenValidInternalUser(cookie ?? "")) {
+    if (isTokkenValid(cookie ?? "")) {
       router.push("/");
     }
   }, []);
@@ -38,7 +39,7 @@ const LogIn: NextPage = () => {
   const router = useRouter();
   const { queries, mutations } = GraphResolvers;
   const [login, { loading, error }] = useMutation(mutations.LOGIN, {
-    refetchQueries: [{ query: queries.GET_USER, variables: { userId: "" } }],
+    refetchQueries: [{ query: queries.GET_USER, variables: { userId: userId } }],
   });
 
   const handleOtherFormMssgs = () => {
@@ -61,6 +62,7 @@ const LogIn: NextPage = () => {
         // console.log(data);
         let decoded: any = jwtDecode(data?.login);
         if(decoded?.id) {
+          setUserId(decoded?.id);
           Cookies.set("userId", decoded?.id);
         }
         // appContext?.setAuthToken(data.login);

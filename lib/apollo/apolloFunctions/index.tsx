@@ -10,7 +10,6 @@ import {
   updateNotifications,
 } from "./userMutations";
 
-import { updateInternalUserProfile } from "./internalUserMutations";
 
 export {
   updateUserProfile,
@@ -22,5 +21,4 @@ export {
   addNewChatMssg,
   addNewPoll,
   updateNotifications,
-  updateInternalUserProfile,
 };

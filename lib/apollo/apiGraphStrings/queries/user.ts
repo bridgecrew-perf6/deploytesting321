@@ -23,17 +23,6 @@ const userQueries = {
             favoriteId
             favoriteType
           }
-          # timeOnSite {
-          #   hour
-          #   minutes
-          #   seconds
-          # }
-          # timeSpentOnPoll {
-          #   hours
-          #   minutes
-          #   seconds
-          #   pollCount
-          # }
         }
       }
     }
@@ -81,11 +70,6 @@ const userQueries = {
           favoriteId
           favoriteType
         }
-        # timeOnSite {
-        #   hour
-        #   minutes
-        #   seconds
-        # }
       }
     }
   `,

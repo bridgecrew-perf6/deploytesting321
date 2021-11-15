@@ -1,7 +1,7 @@
 import React from "react";
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
-const AdminButton = (props: any) => {
+const ButtonWithCustomStyles = (props: any) => {
   const { module } = props;
   return (
     <button
@@ -19,4 +19,4 @@ const AdminButton = (props: any) => {
   );
 };
 
-export default AdminButton;
+export default ButtonWithCustomStyles;

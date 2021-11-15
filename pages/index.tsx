@@ -81,30 +81,6 @@ const Home = () => {
       return trendingPolls.trendingPolls;
     }
   };
-    
-
-  // useEffect(() => {
-  //   if (cookie) {
-  //     let decoded: any = jwt_decode(cookie);
-  //     console.log(decoded);
-  //     if (decoded?.id) {
-  //       getUser({
-  //         variables: {
-  //           userId: decoded?.id,
-  //         },
-  //       });
-  //     }
-  //   } else {
-  //     router.push("/Login");
-  //   }
-  // }, [cookie, data]);
-  // // console.log(data, cookie);
-
-  //   useEffect(() => {
-  //     if (data) {
-  //       appContext && appContext.updateUserData(data, cookie);
-  //     }
-  //   }, [data]);
 
   useEffect(() => {
     if (

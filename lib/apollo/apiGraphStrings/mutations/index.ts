@@ -4,7 +4,6 @@ import topicMutations from "./topics";
 import otherMutations from "./other";
 import imgMutations from "./image";
 import pollFeedbackMutations from "./pollFeedBack";
-import internalUserMutations from "./internalUser";
 import privilegeMutations from "./privilegeMutations";
 
 export default {
@@ -14,6 +13,5 @@ export default {
   ...imgMutations,
   ...otherMutations,
   ...pollFeedbackMutations,
-  ...internalUserMutations,
   ...privilegeMutations,
 };

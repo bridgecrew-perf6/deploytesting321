@@ -129,8 +129,7 @@ export const AddSubTopic = ({
         newSubTopic[id] = value;
       }
     }
-
-    const subTopicInputsJSON: string = JSON.stringify(newSubTopic);
+    const subTopicInputsJSON = JSON.stringify(newSubTopic);
 
     try {
       const resp = await createSubTopic({
@@ -149,7 +148,7 @@ export const AddSubTopic = ({
         },
       ]);
       show(false);
-    } catch (err) {
+    } catch (err : any) {
       setErrors([{ message: err.message }]);
     }
   };

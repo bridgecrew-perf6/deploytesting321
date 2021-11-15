@@ -55,15 +55,17 @@ export const storeTokens = (
 
 const wsLink = process.browser
   ? new WebSocketLink({
-      uri: isDev
+      // uri: 'ws://localhost:8080/graphql',
+       uri : isDev
         ? (process.env.NEXT_PUBLIC_WS_API_DEV as string)
         : (process.env.NEXT_PUBLIC_WS_API_PROD as string),
       options: {
-        reconnect: false,
+        reconnect: true,
         // lazy: true,
       },
     })
   : null;
+  
 const httpLink = new HttpLink({
   uri: isDev
     ? process.env.NEXT_PUBLIC_HTTP_API_DEV
@@ -150,7 +152,7 @@ const cacheOptions: InMemoryCacheConfig = {
 
 function createApolloClient() {
   return new ApolloClient({
-    ssrMode: typeof window === "undefined",
+    // ssrMode: typeof window === "undefined",
     link: ApolloLink.from([authLink, errorLink, splitLink]),
     cache: new InMemoryCache(cacheOptions),
   });

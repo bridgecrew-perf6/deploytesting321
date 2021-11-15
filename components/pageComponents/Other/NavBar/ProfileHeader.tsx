@@ -27,7 +27,6 @@ const {
   GET_USER,
   LOG_OUT,
   GET_NOTIFICATIONS,
-  INTERNAL_USER_LOGOUT,
   GET_APPUSER,
 } = GraphResolvers.queries;
 const {
@@ -233,9 +232,9 @@ export default function ProfileHeader(props: any) {
   if (!userId) {
     return (
       <div
-        className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
+        className="d-flex form-row align-items-center justify-content-around pr-2 pl-1"
         style={{
-          width: "25rem",
+          width: "20rem",
           marginLeft: 5,
           alignItems: "center",
         }}
