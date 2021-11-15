@@ -92,7 +92,7 @@ export const UserTagWindow = ({ user, createdDate }: UserTagWindow) => {
       <ProfileImg
         profilePic={user?.profilePic}
         id={user?._id}
-        appId={user?.appid}
+        appId={user?._id}
         picStyle={{ height: 50, width: 50 }}
         color={"gray"}
       />

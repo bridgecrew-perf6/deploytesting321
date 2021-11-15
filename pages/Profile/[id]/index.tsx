@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { ApolloError } from "apollo-server-errors";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { ProfileType, User } from "../../../components/appTypes/appType";
 import { createAppMssgList } from "../../../components/formFuncs/miscFuncs";

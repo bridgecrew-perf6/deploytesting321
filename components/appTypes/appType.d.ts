@@ -99,22 +99,6 @@ export interface validationErrorsAdmin {
   passwordErr: string;
 }
 
-export interface adminUserDataForm {
-  _id: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  homeAddress: string;
-  jobTitle: string;
-  accessRole: {
-    value: string;
-    _id: string;
-  };
-  groups: string;
-  lastSignIn: string;
-  isActive: boolean;
-}
-
 export interface masterCatType {
   _id: string;
   active: boolean;
@@ -136,15 +120,6 @@ export interface subCatType {
   selected: boolean;
   name: string;
   icon: HTMLElement;
-}
-
-export interface adminLeftSidebarType {
-  // userId: string;
-  data: any;
-  loadingChecks: any;
-  setLoadingChecks: Function;
-  mastercategory: any;
-  setmastercategory: Function;
 }
 
 interface Follower {
@@ -458,15 +433,6 @@ interface CategoryItems {
   description: string;
   active: boolean;
   linkedCats?: any;
-}
-
-interface AdminLeftSideBarCategoryItems {
-  _id: string;
-  name: string;
-  categoryOf: string;
-  haveCats: boolean;
-  active: boolean;
-  selected: boolean;
 }
 
 interface PollsWindow {
