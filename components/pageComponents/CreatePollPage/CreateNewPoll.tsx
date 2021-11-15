@@ -15,6 +15,7 @@ import {
   Textarea,
   Tooltip,
   useDisclosure,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
@@ -22,19 +23,32 @@ import { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import { FiTrash } from "react-icons/fi";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import ImgPicker from "../Other/Image/ImgPicker";
+import { addNewPoll } from "lib/apollo/apolloFunctions/mutations";
+import { saveImgtoCloud } from "_components/apis/imgUpload";
 
 const CreateNewPoll: React.FC<{}> = () => {
-  const [selectedTopic, setSelectedTopic] = useState<null | string>(null);
-  const [selectedSub, setSelectedSub] = useState<[] | string[]>([]);
+  interface selectedTopic {
+    _id: string;
+    name: string;
+  }
+  const toast = useToast();
+  const [selectedTopic, setSelectedTopic] = useState<null | selectedTopic>(
+    null
+  );
+  const [selectedSub, setSelectedSub] = useState<[] | selectedTopic[]>([]);
   const [subSearch, setSubSearch] = useState<string>("");
-  const [questionType, setQuestionType] = useState<string>("1");
-  const [subTopics, setSubTopics] = useState<[] | string[]>([]);
+  const [questionType, setQuestionType] = useState<string>("openEnded");
+  const [subTopics, setSubTopics] = useState<[] | any[]>([]);
   const [options, setOptions] = useState<[] | string[]>([]);
   const [optionText, setOptionText] = useState<string>("");
+  const [selectedImgs, setSelectImgs] = useState<any>([]);
   const { onOpen, onClose, isOpen } = useDisclosure();
 
+  const { CREATE_POLL } = GraphResolvers.mutations;
   const { GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
+  const [createPoll, { error }] = useMutation(CREATE_POLL);
 
   const {
     data: topicData,
@@ -48,26 +62,27 @@ const CreateNewPoll: React.FC<{}> = () => {
   ] = useLazyQuery(GET_SUBTOPICS_PER_TOPIC);
 
   useEffect(() => {
-    if (selectedTopic) {
-      getSubTopics({ variables: { topic: selectedTopic } });
+    if (selectedTopic && selectedTopic.name) {
+      getSubTopics({ variables: { topic: selectedTopic.name } });
     }
   }, [selectedTopic]);
 
-  const handleSubTopics = (x: string) => {
-    let findSt = selectedSub.find((st) => x === st);
+  const handleSubTopics = (obj: { _id: string; name: string }) => {
+    let findSt = selectedSub.find((st) => obj._id === st._id);
     if (findSt) {
       return;
     } else if (selectedSub.length >= 3) {
       return;
     } else {
-      setSelectedSub([...selectedSub, x]);
+      setSelectedSub([...selectedSub, obj]);
     }
   };
 
   const removeSubTopic = (x: string) => {
-    let filterSub = selectedSub.filter((st) => x !== st);
+    let filterSub = selectedSub.filter((st) => x !== st._id);
     setSelectedSub([...filterSub]);
   };
+
   useEffect(() => {
     if (!subTopicLoading && subTopicsData && subTopicsData.subTopicsPerTopic) {
       if (subSearch) {
@@ -93,6 +108,77 @@ const CreateNewPoll: React.FC<{}> = () => {
     setOptions([...filterOption]);
   };
 
+  const submitCreatePoll = async () => {
+    let questionField = (
+      document.getElementById("pollQuestionField") as HTMLInputElement
+    ).value;
+    if (!questionField) {
+      toast({
+        title: "Question field cannot be empty",
+        status: "warning",
+        isClosable: true,
+      });
+      return;
+    }
+    if (!selectedTopic || !selectedTopic._id) {
+      toast({
+        title: "Topic is required",
+        status: "warning",
+        isClosable: true,
+      });
+      return;
+    }
+    let selectedSubTopics = selectedSub.map((st) => st._id);
+    if (!selectedSubTopics || !selectedSubTopics.length) {
+      toast({
+        title: "SubTopic is required",
+        status: "warning",
+        isClosable: true,
+      });
+      return;
+    }
+    let answers;
+    if (
+      (questionType === "multiChoice" && options.length < 2) ||
+      options.length > 5
+    ) {
+      toast({
+        title: "Mimimun 2 & maximum 5 options allowed",
+        status: "warning",
+        isClosable: true,
+      });
+      return;
+    }
+    if (questionType === "multiChoice") {
+      answers = options;
+    }
+    if (questionType === "yesNo") {
+      answers = ["Yes", "No"];
+    }
+    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+
+    const pollItem: any = {
+      question: questionField,
+      pollType: questionType,
+      topic: selectedTopic._id,
+      subTopics: selectedSubTopics,
+      pollImages: imgIds && imgIds,
+    };
+    if (questionType !== "openEnded") {
+      pollItem.answers = answers;
+    }
+    console.log(pollItem);
+    addNewPoll(createPoll, JSON.stringify(pollItem));
+    if (error) {
+      console.log(error);
+      toast({
+        title: "Error! Failed to create Poll",
+        status: "error",
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box>
       <Box
@@ -106,7 +192,7 @@ const CreateNewPoll: React.FC<{}> = () => {
           <Flex align="center" justify="space-between" wrap="wrap">
             <Box>
               <Text fontSize="xl" fontWeight="bold">
-                Ask a public question
+                Ask a poll question
               </Text>
             </Box>
             <Flex align="center">
@@ -120,9 +206,9 @@ const CreateNewPoll: React.FC<{}> = () => {
                   value={questionType}
                   onChange={(e) => setQuestionType(e.target.value)}
                 >
-                  <option value={1}>Normal</option>
-                  <option value={2}>Yes/No</option>
-                  <option value={3}>With Options</option>
+                  <option value="openEnded">Open-ended</option>
+                  <option value="yesNo">Yes/No</option>
+                  <option value="multiChoice">Multiple Choice</option>
                 </Select>
               </Box>
             </Flex>
@@ -134,11 +220,16 @@ const CreateNewPoll: React.FC<{}> = () => {
             placeholder="Ask a question..."
             borderColor="gray.300"
             _focus={{ borderColor: "poldit.100" }}
+            id="pollQuestionField"
           />
         </Box>
+        {/* Imageg picker*/}
+        <Box mt="4">
+          <ImgPicker selectedImgs={selectedImgs} selectImgs={setSelectImgs} />
+        </Box>
         {/* Options*/}
-        {questionType === "3" && (
-          <Box mt="6">
+        {questionType === "multiChoice" && (
+          <Box mt="2">
             {options && options.length ? (
               <VStack mb="4" align="start">
                 {options.map((o, id) => (
@@ -196,7 +287,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         )}
 
         {/* Topic Header*/}
-        <Box mt="8">
+        <Box mt="4">
           <Flex align="center">
             <Text fontSize="md" fontWeight="bold">
               Select Poll Topic
@@ -210,7 +301,7 @@ const CreateNewPoll: React.FC<{}> = () => {
                   borderColor="poldit.100"
                   borderWidth="1px"
                 >
-                  <TagLabel>{selectedTopic}</TagLabel>
+                  <TagLabel>{selectedTopic.name}</TagLabel>
                   <TagCloseButton onClick={() => setSelectedTopic(null)} />
                 </Tag>
               </Box>
@@ -226,12 +317,21 @@ const CreateNewPoll: React.FC<{}> = () => {
               {topicData.topics.map((t: any) => (
                 <Box px="2" key={t._id} mb="2">
                   <Tag
-                    bg="poldit.100"
-                    color="white"
+                    color={
+                      t.topic === selectedTopic?.name ? "white" : "gray.500"
+                    }
+                    bg={
+                      t.topic === selectedTopic?.name
+                        ? "poldit.100"
+                        : "transparent"
+                    }
                     size="lg"
+                    variant={
+                      t.topic === selectedTopic?.name ? "solid" : "outline"
+                    }
                     onClick={() => {
                       setSelectedSub([]);
-                      setSelectedTopic(t.topic);
+                      setSelectedTopic({ _id: t._id, name: t.topic });
                     }}
                     cursor="pointer"
                   >
@@ -262,8 +362,10 @@ const CreateNewPoll: React.FC<{}> = () => {
                           borderColor="poldit.100"
                           borderWidth="1px"
                         >
-                          <TagLabel>{t}</TagLabel>
-                          <TagCloseButton onClick={() => removeSubTopic(t)} />
+                          <TagLabel>{t.name}</TagLabel>
+                          <TagCloseButton
+                            onClick={() => removeSubTopic(t._id)}
+                          />
                         </Tag>
                       </Box>
                     ))}
@@ -278,6 +380,7 @@ const CreateNewPoll: React.FC<{}> = () => {
                   maxW="350px"
                   value={subSearch}
                   onChange={(e) => setSubSearch(e.target.value)}
+                  size="sm"
                 />
               </Box>
               <Box mt="6">
@@ -295,13 +398,19 @@ const CreateNewPoll: React.FC<{}> = () => {
                         <Box
                           key={t._id}
                           mr="4"
-                          borderColor="gray.300"
+                          borderColor={
+                            selectedSub.find((sb) => sb.name === t.subTopic)
+                              ? "poldit.100"
+                              : "gray.300"
+                          }
                           borderWidth="1px"
                           borderRadius="md"
                           overflow="hidden"
                           minW="160px"
                           minH="80px"
-                          onClick={() => handleSubTopics(t.subTopic)}
+                          onClick={() =>
+                            handleSubTopics({ _id: t._id, name: t.subTopic })
+                          }
                           cursor="pointer"
                         >
                           <Box
@@ -439,6 +548,7 @@ const CreateNewPoll: React.FC<{}> = () => {
               _focus={{ outline: "none" }}
               size="sm"
               type="submit"
+              onClick={submitCreatePoll}
             >
               Create Poll
             </Button>

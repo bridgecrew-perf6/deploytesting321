@@ -139,19 +139,21 @@ export default function ProfileHeader(props: any) {
           alignItems: "center",
         }}
       >
-        <div
-          className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
-          typeof="button"
-          data-toggle="modal"
-          data-target="#newPollModal"
-        >
-          Create New Poll
-        </div>
-        {superUserList?.includes(userId) && (
+        <Link href="/newPoll">
+          <div
+            className={`${customBtn} ${customBtnOutline} ${customBtnOutlinePrimary} my-2 my-sm-0`}
+            typeof="button"
+            // data-toggle="modal"
+            // data-target="#newPollModal"
+          >
+            Create New Poll
+          </div>
+        </Link>
+        {/* {superUserList?.includes(appid) && (
           <>
             <NewTopicBtn />
           </>
-        )}
+        )} */}
 
         <ToolTipCtr
           mssg="Notifications"

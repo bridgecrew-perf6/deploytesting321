@@ -9,10 +9,8 @@ export const saveImgtoCloud = async (selectedImgs: SelectedImage[]) => {
 const uploadImage = async (imgDetails: SelectedImage) => {
   const { userId, image, imgType, imageName } = imgDetails;
 
-  const {
-    NEXT_PUBLIC_CLOUDINARYAPIKEY,
-    NEXT_PUBLIC_CLOUDINARYNAME,
-  } = process.env;
+  const { NEXT_PUBLIC_CLOUDINARYAPIKEY, NEXT_PUBLIC_CLOUDINARYNAME } =
+    process.env;
 
   const folder = `PoldIt/Users/${userId}/${imgType}`;
 

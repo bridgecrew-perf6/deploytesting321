@@ -7,17 +7,19 @@ import {
   ModalBody,
   Button,
   Textarea,
-  Input,
   Box,
-  IconButton,
 } from "@chakra-ui/react";
-import { AiOutlineCamera } from "react-icons/ai";
+import { useState } from "react";
+import { saveImgtoCloud } from "_components/apis/imgUpload";
+import ImgPicker from "_components/pageComponents/Other/Image/ImgPicker";
 
 export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
-  const updateAnsHandler = (e: any) => {
+  const [selectedImgs, setSelectImgs] = useState<any>([]);
+  const updateAnsHandler = async (e: any) => {
     e.preventDefault();
     let updatedAns = e.target.ansTextarea.value;
-    console.log("updatedAnswer", updatedAns);
+    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+    console.log("updatedAnswer", updatedAns, imgIds);
   };
   return (
     <Modal isOpen={isEditOpen} onClose={onEditClose}>
@@ -32,11 +34,12 @@ export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
                 name="ansTextarea"
                 _focus={{ borderColor: "poldit.100" }}
               />
-              <Box mt="3" ml="1">
-                <label>
-                  <input type="file" style={{ display: "none" }} />
-                  <AiOutlineCamera size="25px" />
-                </label>
+              {/* Imageg picker*/}
+              <Box mt="4">
+                <ImgPicker
+                  selectedImgs={selectedImgs}
+                  selectImgs={setSelectImgs}
+                />
               </Box>
             </Box>
           </ModalBody>

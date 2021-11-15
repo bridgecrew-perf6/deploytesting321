@@ -158,13 +158,14 @@ const Poll = ({ pollId }: Props) => {
               removeError={removeError}
             />
           )}
-          <Flex wrap="wrap" pb={6} bg="white" px={[0, 0, 20, 20, 36]}>
+          <Flex wrap="wrap" pb={6} px={[0, 0, 20, 20, 36]}>
             <Box {...flexObj} p={4}>
               <AnsBox
                 answers={answerData?.answersByPoll}
                 loading={loading}
                 addAnswer={addAnswer}
-                poll={data.poll._id}
+                pollId={data.poll._id}
+                pollType={data.poll.pollType}
                 error={answerError}
               />
             </Box>

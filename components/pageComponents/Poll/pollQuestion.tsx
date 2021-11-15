@@ -35,6 +35,9 @@ import {
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoMdCopy } from "react-icons/io";
+import { useState } from "react";
+import ImgPicker from "../Other/Image/ImgPicker";
+import { saveImgtoCloud } from "_components/apis/imgUpload";
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -42,6 +45,18 @@ interface PollQuestion {
 
 const PollQuestion = ({ pollData }: PollQuestion) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const [selectedImgs, setSelectImgs] = useState<any>([]);
+  const [editQuestion, setEditQuestion] = useState<string>(pollData.question);
+
+  const handleUpdateQuestion = async () => {
+    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+    let editQ = {
+      question: editQuestion,
+      images: imgIds,
+    };
+    console.log("editQ", editQ);
+    onClose();
+  };
   return (
     <Box py="10" px={[4, 4, 24, 24, 40]}>
       <Box
@@ -67,7 +82,13 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
           </Flex>
           <HStack align="start" spacing="0">
             <Box mt="2px">
-              <Tag fontWeight="bold" color="gray.500" size="sm" mr="2">
+              <Tag
+                fontWeight="bold"
+                color="gray.500"
+                size="sm"
+                mr="2"
+                variant="outline"
+              >
                 {pollData?.topic?.topic}
               </Tag>
               {pollData.subTopics &&
@@ -129,7 +150,16 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               <Textarea
                 defaultValue={pollData.question}
                 _focus={{ borderColor: "poldit.100" }}
+                onChange={(e) => setEditQuestion(e.target.value)}
+                value={editQuestion}
               />
+              {/* Imageg picker*/}
+              <Box mt="4">
+                <ImgPicker
+                  selectedImgs={selectedImgs}
+                  selectImgs={setSelectImgs}
+                />
+              </Box>
               <Flex w="100%" justify="flex-end" align="center" mt="4" pr="1">
                 <Button
                   bg="poldit.100"
@@ -137,7 +167,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                   size="sm"
                   border="1px"
                   mr="2"
-                  onClick={onClose}
+                  onClick={handleUpdateQuestion}
                   _hover={{ bg: "poldit.100", color: "white" }}
                   _focus={{ outline: "none" }}
                   _active={{
