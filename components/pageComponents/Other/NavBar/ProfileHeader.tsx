@@ -62,7 +62,7 @@ export default function ProfileHeader(props: any) {
 
   useEffect(() => {
     if (userId) {
-      getAppUserData({variables: {userId: userId}});
+      getAppUserData({ variables: { userId: userId } });
     }
   }, [userId]);
 
