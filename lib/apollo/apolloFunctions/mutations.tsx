@@ -392,27 +392,27 @@ export const addNewChatMssg = async (
   }
 };
 
-export const addNewPoll = async (
-  addNewPollFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: string
-) => {
-  try {
-    addNewPollFunc({
-      variables: { details },
-      update(cache, { data: { createPoll } }) {
-        const { newestPolls }: any = cache.readQuery({
-          query: GET_NEWEST_POLLS,
-        });
+// export const addNewPoll = async (
+//   addNewPollFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   details: string
+// ) => {
+//   try {
+//     addNewPollFunc({
+//       variables: { details },
+//       update(cache, { data: { createPoll } }) {
+//         const { newestPolls }: any = cache.readQuery({
+//           query: GET_NEWEST_POLLS,
+//         });
 
-        cache.writeQuery({
-          query: GET_NEWEST_POLLS,
-          data: { newestPolls: [...newestPolls, createPoll] },
-        });
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//         cache.writeQuery({
+//           query: GET_NEWEST_POLLS,
+//           data: { newestPolls: [...newestPolls, createPoll] },
+//         });
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };

@@ -25,7 +25,7 @@ import { AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import { FiTrash } from "react-icons/fi";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import ImgPicker from "../Other/Image/ImgPicker";
-import { addNewPoll } from "lib/apollo/apolloFunctions/mutations";
+// import { addNewPoll } from "lib/apollo/apolloFunctions/mutations";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
 
 const CreateNewPoll: React.FC<{}> = () => {
@@ -168,7 +168,8 @@ const CreateNewPoll: React.FC<{}> = () => {
       pollItem.answers = answers;
     }
     console.log(pollItem);
-    addNewPoll(createPoll, JSON.stringify(pollItem));
+    createPoll({ variables: { details: JSON.stringify(pollItem) } });
+    // addNewPoll(createPoll, JSON.stringify(pollItem));
     if (error) {
       console.log(error);
       toast({
