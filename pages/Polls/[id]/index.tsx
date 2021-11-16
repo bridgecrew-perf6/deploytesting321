@@ -32,7 +32,8 @@ import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
 
-const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL } = GraphResolvers.queries;
+const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
+  GraphResolvers.queries;
 const apolloClient = initializeApollo();
 
 interface Props {
@@ -59,6 +60,11 @@ const Poll = ({ pollId }: Props) => {
   };
 
   const { data: user } = useQuery(GET_USER_FOR_POLL);
+  const {
+    data: userList,
+    loading: userListLoading,
+    error: userListError,
+  } = useQuery(GET_POLL_CHAT_USERS, { variables: { pollId } });
 
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
@@ -224,7 +230,11 @@ const Poll = ({ pollId }: Props) => {
                       />
                     </TabPanel>
                     <TabPanel p="0">
-                      <UserTab />
+                      <UserTab
+                        userList={userList}
+                        userListLoading={userListLoading}
+                        userListError={userListError}
+                      />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>

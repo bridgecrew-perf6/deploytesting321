@@ -35,6 +35,7 @@ const pollFeedBackQueries = {
       pollChatUsers(pollId: $pollId) {
         id
         appid
+        profilePic
         followers
         numPolls
         numAnswers

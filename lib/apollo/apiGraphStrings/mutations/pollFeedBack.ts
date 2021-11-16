@@ -14,10 +14,13 @@ const pollFeedBackMutations = {
     }
   `,
   UPDATE_ANSWER: gql`
-  mutation UpdateAnswer($details: String!) {
-    updateAnswer(details: $details)
-  }
-`,
+    mutation UpdateAnswer($details: String!) {
+      updateAnswer(details: $details) {
+        _id
+        answer
+      }
+    }
+  `,
   LIKE_DISLIKE_HANDLER: gql`
     mutation HandleLikeDislike(
       $feedback: String!

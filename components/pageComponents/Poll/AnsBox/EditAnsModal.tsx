@@ -11,15 +11,30 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
+import { useMutation } from "@apollo/client";
 import ImgPicker from "_components/pageComponents/Other/Image/ImgPicker";
+import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
+import { updateAnswer } from "lib/apollo/apolloFunctions/mutations";
 
 export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
   const [selectedImgs, setSelectImgs] = useState<any>([]);
+  const { UPDATE_ANSWER } = GraphResolvers.mutations;
+  const [editAnswer, { error }] = useMutation(UPDATE_ANSWER);
+
   const updateAnsHandler = async (e: any) => {
     e.preventDefault();
     let updatedAns = e.target.ansTextarea.value;
-    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
-    console.log("updatedAnswer", updatedAns, imgIds);
+
+    let editA = {
+      _id: ansData._id,
+      answer: updatedAns,
+    };
+
+    console.log("editA", editA);
+    updateAnswer(editAnswer, JSON.stringify(editA));
+    if (error) {
+      console.log("update_error", error);
+    }
   };
   return (
     <Modal isOpen={isEditOpen} onClose={onEditClose}>

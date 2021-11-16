@@ -16,6 +16,7 @@ interface ImgPicker {
 const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
   const appContext = useAuth();
   const [imgError, setImgError] = useState("");
+  console.log("LOGGED_IN", appContext?.authState?.getUserData);
 
   const updateSelectedImgList = (img: SelectedImage) => {
     const updatedImgList = selectedImgs.filter(
@@ -44,7 +45,7 @@ const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
         imageName: fileObj.name.split(".")[0],
         image: fileObj,
         imageUri: fileURL,
-        userId: appContext?.authState.getUserData.user._id,
+        userId: appContext?.authState.getUserData._id,
         imgType: "poll",
       };
     });
