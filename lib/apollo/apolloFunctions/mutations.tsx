@@ -280,7 +280,7 @@ export const updateAnswer = async (
       variables: { details },
       update(cache, { data: { updateAnswer } }) {
         cache.writeFragment({
-          id: `Answer:${updateAnswer._id}`,
+          id: `Answer:${answerObj._id}`,
           fragment: gql`
             fragment UpdateAnswer on AnswersByPoll {
               answer

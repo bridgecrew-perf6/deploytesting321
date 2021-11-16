@@ -21,6 +21,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { AiOutlineHeart } from "react-icons/ai";
+import { useMutation } from "@apollo/client";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import TimeAgo from "react-timeago";
 import {
@@ -38,6 +39,8 @@ import { IoMdCopy } from "react-icons/io";
 import { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
+import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import { updatePoll } from "lib/apollo/apolloFunctions/mutations";
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -47,14 +50,21 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [selectedImgs, setSelectImgs] = useState<any>([]);
   const [editQuestion, setEditQuestion] = useState<string>(pollData.question);
+  const { UPDATE_POLL } = GraphResolvers.mutations;
+
+  const [editPoll, { error }] = useMutation(UPDATE_POLL);
 
   const handleUpdateQuestion = async () => {
     const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
     let editQ = {
+      _id: pollData._id,
       question: editQuestion,
-      images: imgIds,
     };
     console.log("editQ", editQ);
+    updatePoll(editPoll, JSON.stringify(editQ));
+    if (error) {
+      console.log("update_error", error);
+    }
     onClose();
   };
   return (

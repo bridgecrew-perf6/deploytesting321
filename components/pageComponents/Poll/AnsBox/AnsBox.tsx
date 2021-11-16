@@ -36,6 +36,7 @@ import Pagination from "react-js-pagination";
 import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
 import "../../../../appStyles/pagination.module.css";
 import { EditAnsModal } from "./EditAnsModal";
+import Link from "next/link";
 const BtnImage = dynamic(
   () => {
     return import("./ImageModal");
@@ -51,7 +52,6 @@ const AnsBox = ({
   pollType,
   error,
 }: any) => {
-  console.log("ans>>>", answers);
   const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
   const [ansOptions, setAnsOptions] = useState<string>("2");
@@ -156,30 +156,27 @@ const AnsBox = ({
                     value={ansOptions}
                     onChange={(e) => setAnsOptions(e)}
                   >
-                    {answers.map((x: any, id: any) => (
-                      <Flex pb="3" key={x?._id}>
-                        <Box bg="white" p="4" borderRadius="lg" minW="400px">
-                          <Radio
-                            value={x?._id}
-                            colorScheme="green"
-                            _active={{ outline: "none" }}
-                            _focus={{ outline: "none" }}
-                            borderColor="gray.400"
-                          >
-                            <Box ml="2" cursor="pointer">
-                              <Text fontSize="sm" color="gray.600" mb="2">
-                                {x?.answer}
-                              </Text>
-                              <Progress
-                                value={(id + 1) * 18}
-                                colorScheme="green"
-                                size="sm"
-                                borderRadius="sm"
-                              />
-                            </Box>
-                          </Radio>
+                    {answers[0]?.multichoice?.map((x: any) => (
+                      <Radio
+                        value={x?._id}
+                        key={x?._id}
+                        colorScheme="green"
+                        _active={{ outline: "none" }}
+                        _focus={{ outline: "none" }}
+                        borderColor="gray.400"
+                        w="100%"
+                        bg="white"
+                        p="4"
+                        borderRadius="lg"
+                        cursor="pointer"
+                        mb="3"
+                      >
+                        <Box ml="2">
+                          <Text fontSize="sm" color="gray.600">
+                            {x?.answerVal}
+                          </Text>
                         </Box>
-                      </Flex>
+                      </Radio>
                     ))}
                   </RadioGroup>
                   <Box mt="2" ml="2">
@@ -377,9 +374,11 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
           borderColor="#d2d2d7"
           mt="2px"
         >
-          <Text color="gray.700" fontSize="sm">
-            {data.creator?.appid}
-          </Text>
+          <Link href={`/Profile/${data?.creator?._id}`}>
+            <Text color="gray.700" fontSize="sm" cursor="pointer">
+              {data.creator?.appid}
+            </Text>
+          </Link>
           <Text color="gray.700" fontSize="sm">
             <TimeAgo date={data?.creationDate} live={false} />
           </Text>

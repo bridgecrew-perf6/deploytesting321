@@ -152,9 +152,6 @@ const CreateNewPoll: React.FC<{}> = () => {
     if (questionType === "multiChoice") {
       answers = options;
     }
-    if (questionType === "yesNo") {
-      answers = ["Yes", "No"];
-    }
     const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
 
     const pollItem: any = {
@@ -171,9 +168,9 @@ const CreateNewPoll: React.FC<{}> = () => {
     createPoll({ variables: { details: JSON.stringify(pollItem) } });
     // addNewPoll(createPoll, JSON.stringify(pollItem));
     if (error) {
-      console.log(error);
+      console.log(error.message);
       toast({
-        title: "Error! Failed to create Poll",
+        title: error.message,
         status: "error",
         isClosable: true,
       });
@@ -208,7 +205,6 @@ const CreateNewPoll: React.FC<{}> = () => {
                   onChange={(e) => setQuestionType(e.target.value)}
                 >
                   <option value="openEnded">Open-ended</option>
-                  <option value="yesNo">Yes/No</option>
                   <option value="multiChoice">Multiple Choice</option>
                 </Select>
               </Box>

@@ -21,6 +21,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { addNewChatMssg } from "../../../../lib/apollo/apolloFunctions/mutations";
 import { BiErrorCircle } from "react-icons/bi";
 import { BsFlagFill } from "react-icons/bs";
+import Link from "next/link";
 
 const ChatTab = ({ pollId, user, addAnswer }: any) => {
   const [userAnswer, setUserAnswer] = useState("");
@@ -146,12 +147,14 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
                   mt="2"
                 >
                   <Tooltip label="user name" hasArrow placement="top-start">
-                    <Avatar
-                      name="xav dave"
-                      src={d?.creator?.profilePic}
-                      size="sm"
-                      cursor="pointer"
-                    />
+                    <Link href={`/Profile/${d?.creator?._id}`}>
+                      <Avatar
+                        name="xav dave"
+                        src={d?.creator?.profilePic}
+                        size="sm"
+                        cursor="pointer"
+                      />
+                    </Link>
                   </Tooltip>
                   <Box
                     position="absolute"
@@ -207,7 +210,7 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
                 </Flex>
               </Flex>
             ) : (
-              <Flex key={d.id} my="2" direction="column" alignItems="flex-end">
+              <Flex key={d._id} my="2" direction="column" alignItems="flex-end">
                 <Box
                   bg="gray.700"
                   maxW="70%"
