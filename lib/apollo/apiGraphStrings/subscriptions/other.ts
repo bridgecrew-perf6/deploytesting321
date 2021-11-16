@@ -29,7 +29,7 @@ const otherSubscriptions = {
           _id
           appid
         }
-        answerImages
+        answerImage
         creationDate
         likes {
           userId
@@ -52,7 +52,7 @@ const otherSubscriptions = {
           _id
           appid
         }
-        answerImages
+        answerImage
         creationDate
         likes {
           userId

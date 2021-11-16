@@ -43,6 +43,7 @@ interface Props {
 const Poll = ({ pollId }: Props) => {
   //States
   const [error, updateError] = useState<string[]>([]);
+  const [refreshedPollId, updatedPollId] = useState("");
 
   //Graph API Requests
   const { data } = useQuery(GET_POLL, {
@@ -78,6 +79,12 @@ const Poll = ({ pollId }: Props) => {
   });
 
   // //Component Mounted
+
+  // useEffect(() => {
+  //   if (router && router.query && router.query.id) {
+  //     updatedPollId(router.query.id as string);
+  //   }
+  // }, [router]);
 
   useEffect(() => {
     updateViewCount(addView, pollId);
@@ -134,16 +141,23 @@ const Poll = ({ pollId }: Props) => {
     updateError(udpatedErrorList);
   };
 
-  const addAnswer = async (answer: string, answerImages: SelectedImage[]) => {
-    const imgIds: string[] | undefined = await saveImgtoCloud(answerImages);
+  const addAnswer = async (answer: string, answerImage: SelectedImage) => {
+    let imgId: string | null = null;
 
-    const answerObj = {
+    const answerObj: any = {
       answer,
       poll: data.poll._id,
-      answerImages: imgIds && imgIds,
+      // answerImage: imgId && imgId,
     };
 
-    addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
+    if (answerImage) {
+      imgId = await saveImgtoCloud(answerImage);
+      answerObj["answerImage"] = imgId;
+    }
+
+    addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
+
+    // addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
 
   if (data) {

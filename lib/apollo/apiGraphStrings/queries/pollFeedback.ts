@@ -10,7 +10,7 @@ const pollFeedBackQueries = {
           _id
           appid
         }
-        answerImages
+        answerImage
         creationDate
         likes {
           _id

@@ -1,9 +1,15 @@
 import { SelectedImage } from "../appTypes/appType";
 
-export const saveImgtoCloud = async (selectedImgs: SelectedImage[]) => {
-  if (selectedImgs) {
-    return Promise.all(selectedImgs.map((item) => uploadImage(item)));
+export const saveImgtoCloud = async (
+  selectedImg: SelectedImage | SelectedImage[]
+) => {
+  if (typeof selectedImg !== "string") {
+    return Promise.all(
+      (selectedImg as SelectedImage[]).map((item) => uploadImage(item))
+    );
   }
+
+  return await uploadImage(selectedImg);
 };
 
 const uploadImage = async (imgDetails: SelectedImage) => {

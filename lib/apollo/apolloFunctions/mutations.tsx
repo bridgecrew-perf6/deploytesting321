@@ -23,6 +23,7 @@ const {
   GET_POLL,
   GET_FAVORITES,
   GET_APPUSER,
+  GET_ANSWERS_BY_POLL,
   GET_POLLS_ALL,
   GET_USERPOLLS,
   SHOW_VIEWS,
@@ -236,6 +237,7 @@ export const addNewAnswer = async (
     addAnswerFunc({
       variables: { details },
       update(cache, { data: { createAnswer } }) {
+        console.log("created Answer:", createAnswer);
         const poll: any = cache.readQuery({
           query: GET_POLL,
           variables: { pollId },
@@ -257,6 +259,62 @@ export const addNewAnswer = async (
               return [...cachedAnswers, newAnswerRef];
             },
           },
+        });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updateAnswer = async (
+  updateAnswerFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: string
+) => {
+  const answerObj = JSON.parse(details);
+
+  try {
+    await updateAnswerFunc({
+      variables: { details },
+      update(cache, { data: { updateAnswer } }) {
+        cache.writeFragment({
+          id: `Answer:${updateAnswer._id}`,
+          fragment: gql`
+            fragment UpdateAnswer on AnswersByPoll {
+              answer
+            }
+          `,
+          data: { answer: answerObj.answer },
+        });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updatePoll = async (
+  updatePollFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: string
+) => {
+  const pollObj = JSON.parse(details);
+
+  try {
+    await updatePollFunc({
+      variables: { details },
+      update(cache, { data: { updatePoll } }) {
+        cache.writeFragment({
+          id: `PollQuestion:${updatePoll._id}`,
+          fragment: gql`
+            fragment UpdatePoll on Poll {
+              question
+            }
+          `,
+          data: { answer: pollObj.question },
         });
       },
     });

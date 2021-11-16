@@ -6,6 +6,10 @@ const pollFeedBackMutations = {
       createAnswer(details: $details) {
         _id
         answer
+        multichoice {
+          _id
+          answerVal
+        }
       }
     }
   `,

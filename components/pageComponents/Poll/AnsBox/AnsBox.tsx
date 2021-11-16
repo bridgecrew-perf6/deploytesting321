@@ -114,7 +114,7 @@ const AnsBox = ({
     if (!ansText) {
       return;
     }
-    addAnswer(ansText, []);
+    addAnswer(ansText, "");
     let inputValue = document.getElementById("answerInput") as HTMLInputElement;
     inputValue.value = "";
   };

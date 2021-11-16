@@ -27,7 +27,7 @@ const pollSubscriptions = {
           _id
           appid
         }
-        answerImages
+        answerImage
         creationDate
         likes {
           userId
@@ -50,7 +50,7 @@ const pollSubscriptions = {
           _id
           appid
         }
-        answerImages
+        answerImage
         creationDate
         likes {
           userId
