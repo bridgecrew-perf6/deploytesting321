@@ -3,14 +3,7 @@ import { gql } from "@apollo/client";
 const pollFeedBackMutations = {
   CREATE_ANSWER: gql`
     mutation CreateAnswer($details: String!) {
-      createAnswer(details: $details) {
-        _id
-        answer
-        multichoice {
-          _id
-          answerVal
-        }
-      }
+      createAnswer(details: $details)
     }
   `,
   UPDATE_ANSWER: gql`

@@ -226,46 +226,46 @@ export const updateViewCount = async (
   }
 };
 
-export const addNewAnswer = async (
-  addAnswerFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: string,
-  pollId: string
-) => {
-  try {
-    addAnswerFunc({
-      variables: { details },
-      update(cache, { data: { createAnswer } }) {
-        console.log("created Answer:", createAnswer);
-        const poll: any = cache.readQuery({
-          query: GET_POLL,
-          variables: { pollId },
-        });
+// export const addNewAnswer = async (
+//   addAnswerFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   details: string,
+//   pollId: string
+// ) => {
+//   try {
+//     addAnswerFunc({
+//       variables: { details },
+//       update(cache, { data: { createAnswer } }) {
+//         console.log("created Answer:", createAnswer);
+//         const poll: any = cache.readQuery({
+//           query: GET_POLL,
+//           variables: { pollId },
+//         });
 
-        cache.modify({
-          id: cache.identify(poll.poll),
-          fields: {
-            answers(cachedAnswers = [], { readField }) {
-              const newAnswerRef = cache.writeFragment({
-                data: createAnswer,
-                fragment: gql`
-                  fragment CreateAnswer on Answers {
-                    _id
-                  }
-                `,
-              });
+//         cache.modify({
+//           id: cache.identify(poll.poll),
+//           fields: {
+//             answers(cachedAnswers = [], { readField }) {
+//               const newAnswerRef = cache.writeFragment({
+//                 data: createAnswer,
+//                 fragment: gql`
+//                   fragment CreateAnswer on Answers {
+//                     _id
+//                   }
+//                 `,
+//               });
 
-              return [...cachedAnswers, newAnswerRef];
-            },
-          },
-        });
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//               return [...cachedAnswers, newAnswerRef];
+//             },
+//           },
+//         });
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
 export const updateAnswer = async (
   updateAnswerFunc: (
@@ -307,14 +307,23 @@ export const updatePoll = async (
     await updatePollFunc({
       variables: { details },
       update(cache, { data: { updatePoll } }) {
-        cache.writeFragment({
-          id: `PollQuestion:${updatePoll._id}`,
-          fragment: gql`
-            fragment UpdatePoll on Poll {
-              question
+        cache.writeQuery({
+          query: gql`
+            query Poll($pollId: String!) {
+              poll(pollId: $pollId) {
+                _id
+                __typename
+                question
+              }
             }
           `,
-          data: { answer: pollObj.question },
+          data: {
+            poll: {
+              _id: pollObj._id,
+              __typename: "PollQuestion",
+              question: pollObj.question,
+            },
+          },
         });
       },
     });

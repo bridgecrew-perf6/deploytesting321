@@ -102,8 +102,9 @@ const Poll = ({ pollId }: Props) => {
         document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
         variables: { pollId },
         updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData) return prev;
+          if (!subscriptionData.data) return prev;
           const newAnswerItem = subscriptionData.data.newAnswer;
+          console.log("new Answer: ", newAnswerItem);
           const answerMatchIdx: number = prev?.answersByPoll.findIndex(
             (item: Answer) => item._id === newAnswerItem._id
           );
@@ -153,13 +154,14 @@ const Poll = ({ pollId }: Props) => {
     const answerObj: any = {
       answer,
       poll: data.poll._id,
+      multichoice: [],
       // answerImage: imgId && imgId,
     };
 
     if (answerImage) {
       imgId = await saveImgtoCloud(answerImage);
       answerObj["answerImage"] = imgId;
-    }
+    } else answerObj["answerImage"] = "";
 
     addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
 

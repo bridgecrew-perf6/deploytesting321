@@ -28,12 +28,18 @@ const pollSubscriptions = {
           appid
         }
         answerImage
+        multichoice {
+          _id
+          answerVal
+        }
         creationDate
         likes {
+          _id
           userId
           like
         }
         dislikes {
+          _id
           userId
           dislike
         }
@@ -49,6 +55,10 @@ const pollSubscriptions = {
         creator {
           _id
           appid
+        }
+        multichoice {
+          _id
+          answerVal
         }
         answerImage
         creationDate
