@@ -10,7 +10,7 @@ import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/userMutat
 import { useAuth } from "../../../authProvider/authProvider";
 import { dateToString } from "../../../globalFuncs";
 
-const { ADD_FAVORITE, REMOVE_FAVORITE } = GraphResolvers.mutations;
+const { HANDLE_FAVORITE } = GraphResolvers.mutations;
 const { IS_FAVORITE } = GraphResolvers.queries;
 
 interface TagWindow {
@@ -31,8 +31,8 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
   );
 
   //api
-  const [addFavorite] = useMutation(ADD_FAVORITE);
-  const [removeFavorite] = useMutation(REMOVE_FAVORITE);
+  const [handleFavorite] = useMutation(HANDLE_FAVORITE);
+  // const [removeFavorite] = useMutation(REMOVE_FAVORITE);
   const [isFavorite, { loading, error, data }] = useLazyQuery(IS_FAVORITE, {
     variables: { favType: "Poll", favId: pollId },
   });
@@ -47,11 +47,11 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
 
   const handleFavoriteBtn = () => {
     if (!btnState) {
-      handleFavorite(addFavorite, "Poll", pollId);
+      // handleFavorite(addFavorite, "Poll", pollId);
       toggleBtn(true);
       return;
     }
-    handleFavorite(removeFavorite, "Poll", pollId);
+    // handleFavorite(removeFavorite, "Poll", pollId);
     toggleBtn(false);
   };
 

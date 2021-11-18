@@ -39,37 +39,37 @@ const pollFeedBackMutations = {
       }
     }
   `,
-  ADD_FAVORITE: gql`
-    mutation AddFavorite($favoriteType: String!, $favoriteId: String!) {
-      addFavorite(favoriteType: $favoriteType, favoriteId: $favoriteId) {
-        _id
-        favoriteId
-        favoriteType
-      }
-    }
-  `,
-  REMOVE_FAVORITE: gql`
-    mutation RemoveFavorite($favoriteType: String!, $favoriteId: String!) {
-      removeFavorite(favoriteType: $favoriteType, favoriteId: $favoriteId) {
-        _id
-        favoriteId
-        favoriteType
-      }
-    }
-  `,
   HANDLE_FAVORITE: gql`
-    mutation HandleFavorites(
-      $remove: Boolean!
+    mutation HandleFavorite(
+      $isFav: Boolean!
       $favoriteType: String!
       $favoriteId: String!
     ) {
-      handleFavorites(
-        remove: $remove
+      handleFavorite(
+        isFav: $isFav
         favoriteType: $favoriteType
         favoriteId: $favoriteId
       )
     }
   `,
+  // ADD_FAVORITE: gql`
+  //   mutation AddFavorite($favoriteType: String!, $favoriteId: String!) {
+  //     addFavorite(favoriteType: $favoriteType, favoriteId: $favoriteId) {
+  //       _id
+  //       favoriteId
+  //       favoriteType
+  //     }
+  //   }
+  // `,
+  // REMOVE_FAVORITE: gql`
+  //   mutation RemoveFavorite($favoriteType: String!, $favoriteId: String!) {
+  //     removeFavorite(favoriteType: $favoriteType, favoriteId: $favoriteId) {
+  //       _id
+  //       favoriteId
+  //       favoriteType
+  //     }
+  //   }
+  // `,
 };
 
 export default pollFeedBackMutations;

@@ -139,56 +139,19 @@ export const handleFavorite = async (
   favoriteFunc: (
     options?: MutationFunctionOptions<any, OperationVariables> | undefined
   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  isFav: boolean,
   favoriteType: string,
   favoriteId: string
 ) => {
   try {
     await favoriteFunc({
-      variables: { favoriteType, favoriteId },
+      variables: { isFav, favoriteType, favoriteId },
       update(cache, { data }) {
-        const user: any = cache.readQuery({
-          query: GET_USER,
-        });
-
-        const isFav: { isFavorite: boolean | null } | null = cache.readQuery({
+        cache.writeQuery({
           query: IS_FAVORITE,
           variables: { favType: favoriteType, favId: favoriteId },
+          data: { isFavorite: isFav },
         });
-
-        isFav &&
-          cache.writeQuery({
-            query: IS_FAVORITE,
-            variables: { favType: favoriteType, favId: favoriteId },
-            data: { isFavorite: !isFav.isFavorite },
-          });
-
-        cache.modify({
-          id: cache.identify(user?.getUserData.user),
-          fields: {
-            favorites(pastFavsRef = [], { readField }) {
-              if (data.addFavorite) {
-                const newFavRef = cache.writeFragment({
-                  data: data.addFavorite,
-                  fragment: gql`
-                    fragment AddFavorite on Favorites {
-                      _id
-                      favoriteId
-                      favoriteType
-                    }
-                  `,
-                });
-
-                return [...pastFavsRef, newFavRef];
-              }
-
-              // return pastFavsRef.filter(
-              //   (itemRef: StoreObject | Reference | undefined) =>
-              //     data.removeFavorite._id !== readField("_id", itemRef)
-              // );
-            },
-          },
-        });
-        // data && data.removeFavorite && cache.evict(data.removeFavorite._id);
       },
     });
   } catch (err) {

@@ -20,8 +20,7 @@ import {
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
-import { AiOutlineHeart } from "react-icons/ai";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import TimeAgo from "react-timeago";
 import {
@@ -36,11 +35,13 @@ import {
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoMdCopy } from "react-icons/io";
-import { useState } from "react";
+import React, { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { updatePoll } from "lib/apollo/apolloFunctions/mutations";
+
+import Favorite from "../Poll/PollCtrs/favorite";
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -49,10 +50,15 @@ interface PollQuestion {
 const PollQuestion = ({ pollData }: PollQuestion) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [selectedImgs, setSelectImgs] = useState<any>([]);
+
   const [editQuestion, setEditQuestion] = useState<string>(pollData.question);
-  const { UPDATE_POLL } = GraphResolvers.mutations;
+  const { UPDATE_POLL, HANDLE_FAVORITE } = GraphResolvers.mutations;
+  const { LAST_ACTIVITY, IS_FAVORITE } = GraphResolvers.queries;
 
   const [editPoll, { error }] = useMutation(UPDATE_POLL);
+  const { data } = useQuery(LAST_ACTIVITY, {
+    variables: { pollId: pollData._id },
+  });
 
   const handleUpdateQuestion = async () => {
     const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
@@ -67,6 +73,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
     }
     onClose();
   };
+
   return (
     <Box py="10" px={[4, 4, 24, 24, 40]}>
       <Box
@@ -203,18 +210,11 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         <Flex justifyContent="flex-end" alignItems="center" mr="2" pb="1">
           <Box mr="2">
             <Text fontSize="xs" color="gray.400">
-              Last activity: 2 days ago
+              {`Last activity: `}
+              <TimeAgo date={data?.lastActivity} live={false} />
             </Text>
           </Box>
-          <IconButton
-            aria-label="heart"
-            icon={<AiOutlineHeart size="22px" />}
-            bg="none"
-            _hover={{ bg: "none" }}
-            _focus={{ outline: "none" }}
-            size="sm"
-          />
-
+          <Favorite favId={pollData._id} favType="Poll" />
           <Popover placement="top">
             <PopoverTrigger>
               <IconButton

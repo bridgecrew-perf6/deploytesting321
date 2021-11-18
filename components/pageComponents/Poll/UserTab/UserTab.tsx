@@ -43,7 +43,7 @@ export const UserTab = ({ userList, userListLoading, userListError }: any) => {
   }
   return (
     <Box bg="white" overflowX="hidden">
-      <Scrollbars style={{ height: "600px" }}>
+      <Scrollbars style={{ height: "845px" }}>
         {userList?.pollChatUsers &&
           userList?.pollChatUsers.map((x: any) => (
             <UserListItem key={x.id} user={x} />
@@ -56,7 +56,7 @@ export const UserTab = ({ userList, userListLoading, userListError }: any) => {
 const UserListItem = ({ user }: { user: any }) => {
   return (
     <Box bg="#f2f2f2" my="2" mx={[1, 1, 3]} borderRadius="lg">
-      <Flex py="4" px={[1, 1, 4]} align="center" justify="space-around">
+      <Flex py="4" px={[1, 1, 4]} align="center" justify="space-between">
         <Flex align="center">
           <Tooltip hasArrow placement="top" label="Follow">
             <IconButton

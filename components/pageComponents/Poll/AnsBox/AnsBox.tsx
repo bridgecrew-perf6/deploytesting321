@@ -198,6 +198,7 @@ const AnsBox = ({
                 <>
                   <Flex
                     alignItems="center"
+                    bg="white"
                     justifyContent="space-between"
                     py={4}
                     px={[4, 6]}
@@ -221,7 +222,7 @@ const AnsBox = ({
                   </Flex>
                   <form style={{ width: "100%" }} onSubmit={onAddAnswer}>
                     <Flex
-                      bg="#f2f2f2"
+                      bg="white"
                       px="6"
                       py="4"
                       justify="center"
@@ -291,20 +292,30 @@ const AnsBox = ({
                       </Flex>
                     </Flex>
                   </form>
-                  <Scrollbars style={{ height: "640px" }}>
-                    {ansState &&
-                      ansState.map((c: any) => (
-                        <Box key={c._id} px={6}>
-                          <CardContent
-                            data={c}
-                            likes={c?.likes?.length}
-                            dislikes={c?.dislikes?.length}
-                            likeHandler={likeHandler}
-                          />
-                        </Box>
-                      ))}
-                  </Scrollbars>
-                  <Box pt="4" pb="3">
+                  <Box bg="white" p="1px">
+                    <Box bg="#f2f2f2" m="8px" rounded="10px">
+                      <Scrollbars style={{ height: "640px" }}>
+                        {ansState &&
+                          ansState.map((c: any) => (
+                            <Box key={c._id} px={6}>
+                              <CardContent
+                                data={c}
+                                likes={c?.likes?.length}
+                                dislikes={c?.dislikes?.length}
+                                likeHandler={likeHandler}
+                              />
+                            </Box>
+                          ))}
+                      </Scrollbars>
+                    </Box>
+                  </Box>
+                  <Box
+                    pt="4"
+                    pb="3"
+                    bg="white"
+                    borderTop="1px"
+                    borderColor="#d2d2d7"
+                  >
                     <Flex align="center" justify="center">
                       <Pagination
                         activePage={page}

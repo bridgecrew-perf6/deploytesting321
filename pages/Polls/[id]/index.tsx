@@ -13,10 +13,7 @@ import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
 import { saveImgtoCloud } from "../../../components/apis/imgUpload";
-import {
-  addNewAnswer,
-  updateViewCount,
-} from "../../../lib/apollo/apolloFunctions/mutations";
+import { updateViewCount } from "../../../lib/apollo/apolloFunctions/mutations";
 import AnsBox from "../../../components/pageComponents/Poll/AnsBox/AnsBox";
 import {
   Box,
@@ -199,7 +196,7 @@ const Poll = ({ pollId }: Props) => {
                 boxShadow="0 1px 10px -1px rgba(0,0,0,.2)"
               >
                 <Tabs isFitted>
-                  <TabList mx={[0, 0, 6]}>
+                  <TabList>
                     <Tab
                       _focus={{ outline: "none" }}
                       fontWeight="bold"
@@ -224,14 +221,14 @@ const Poll = ({ pollId }: Props) => {
                     </Tab>
                   </TabList>
                   <TabPanels>
-                    <TabPanel p="0">
+                    <TabPanel bg="white" p="1px" height="846px">
                       <ChatTab
                         pollId={data.poll._id}
                         user={user && user?.getUserDataForPoll}
                         addAnswer={addAnswer}
                       />
                     </TabPanel>
-                    <TabPanel p="0">
+                    <TabPanel bg="white" p="1px" height="846px">
                       <UserTab
                         userList={userList}
                         userListLoading={userListLoading}
