@@ -43,6 +43,13 @@ import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { updatePoll } from "lib/apollo/apolloFunctions/mutations";
 
 import Favorite from "../Poll/PollCtrs/favorite";
+import dynamic from "next/dynamic";
+const BtnImage = dynamic(
+  () => {
+    return import("./AnsBox/ImageModal");
+  },
+  { ssr: false }
+);
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -183,9 +190,18 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         </Flex>
         <Box py="6" pl={[4, 6, 8]} mr={[6, 6, 8, 10, 16]}>
           {!isOpen ? (
-            <Text fontSize={["sm", "sm", "md"]}>
-              {pollData?.question && pollData.question}
-            </Text>
+            <Box>
+              <Text fontSize={["sm", "sm", "md"]}>
+                {pollData?.question && pollData.question}
+              </Text>
+              <Flex mt="4">
+                {[1, 2, 3].map((x) => (
+                  <Box key={x} maxW="100px" mr="4">
+                    <BtnImage src="https://wallpaperaccess.com/full/215112.jpg" />
+                  </Box>
+                ))}
+              </Flex>
+            </Box>
           ) : (
             <Box>
               <Textarea
