@@ -1,17 +1,8 @@
 import { ISubTopic, User } from "../../../appTypes/appType";
 import TimeAgo from "react-timeago";
-import { useEffect, useState } from "react";
-import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
-import styles from "../../../../appStyles/appStyles.module.css";
+import React, { useEffect, useState } from "react";
 import ProfileImg from "../../Profile/profileImg";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/userMutations";
-import { useAuth } from "../../../authProvider/authProvider";
-import { dateToString } from "../../../globalFuncs";
-
-const { HANDLE_FAVORITE } = GraphResolvers.mutations;
-const { IS_FAVORITE } = GraphResolvers.queries;
+import Favorite from "../../Poll/PollCtrs/favorite";
 
 interface TagWindow {
   pollId: string;
@@ -20,49 +11,9 @@ interface TagWindow {
 }
 
 export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
-  const appContext = useAuth();
-
-  const [btnState, toggleBtn] = useState(false);
-
-  const likeIcon = btnState ? (
-    <AiTwotoneHeart size={25} color="red" />
-  ) : (
-    <AiOutlineHeart size={25} />
-  );
-
-  //api
-  const [handleFavorite] = useMutation(HANDLE_FAVORITE);
-  // const [removeFavorite] = useMutation(REMOVE_FAVORITE);
-  const [isFavorite, { loading, error, data }] = useLazyQuery(IS_FAVORITE, {
-    variables: { favType: "Poll", favId: pollId },
-  });
-
-  useEffect(() => {
-    appContext?.authState?.getUserData?.appToken !== "" && isFavorite();
-    // console.log("data of IS-FAVOURUTE ", data);
-    if (data) {
-      toggleBtn(data.isFavorite);
-    }
-  }, [data, btnState]);
-
-  const handleFavoriteBtn = () => {
-    if (!btnState) {
-      // handleFavorite(addFavorite, "Poll", pollId);
-      toggleBtn(true);
-      return;
-    }
-    // handleFavorite(removeFavorite, "Poll", pollId);
-    toggleBtn(false);
-  };
-
   return (
     <div className="d-flex align-items-center justify-content-between">
-      <div
-        className={`pr-5 ${styles.cursor}`}
-        onClick={() => handleFavoriteBtn()}
-      >
-        {likeIcon}
-      </div>
+      <Favorite favId={pollId} favType="Poll" />
       <div className="pr-2" style={{ fontWeight: 700, fontSize: 18 }}>
         {topic}
       </div>
