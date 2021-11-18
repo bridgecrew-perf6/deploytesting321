@@ -309,41 +309,43 @@ const AnsBox = ({
                       </Scrollbars>
                     </Box>
                   </Box>
-                  <Box
-                    pt="4"
-                    pb="3"
-                    bg="white"
-                    borderTop="1px"
-                    borderColor="#d2d2d7"
-                  >
-                    <Flex align="center" justify="center">
-                      <Pagination
-                        activePage={page}
-                        prevPageText="Prev"
-                        nextPageText="Next"
-                        itemsCountPerPage={Number(noOfAns)}
-                        totalItemsCount={answers && answers.length}
-                        pageRangeDisplayed={5}
-                        onChange={(e: any) => setPage(e)}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                      />
-                    </Flex>
-                    <Box align="center" mt="2">
-                      <Select
-                        border="1px"
-                        borderColor="#d2d2d7"
-                        size="sm"
-                        maxW="80px"
-                        value={noOfAns}
-                        onChange={(val) => setNoOfAns(val.target.value)}
-                      >
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                      </Select>
+                  {answers.length ? (
+                    <Box
+                      pt="4"
+                      pb="3"
+                      bg="white"
+                      borderTop="1px"
+                      borderColor="#d2d2d7"
+                    >
+                      <Flex align="center" justify="center">
+                        <Pagination
+                          activePage={page}
+                          prevPageText="Prev"
+                          nextPageText="Next"
+                          itemsCountPerPage={Number(noOfAns)}
+                          totalItemsCount={answers && answers.length}
+                          pageRangeDisplayed={5}
+                          onChange={(e: any) => setPage(e)}
+                          itemClass="page-item"
+                          linkClass="page-link"
+                        />
+                      </Flex>
+                      <Box align="center" mt="2">
+                        <Select
+                          border="1px"
+                          borderColor="#d2d2d7"
+                          size="sm"
+                          maxW="80px"
+                          value={noOfAns}
+                          onChange={(val) => setNoOfAns(val.target.value)}
+                        >
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="15">15</option>
+                        </Select>
+                      </Box>
                     </Box>
-                  </Box>
+                  ) : null}
                 </>
               )}
             </>

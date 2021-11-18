@@ -134,16 +134,11 @@ export const NewPollHelp: React.FC<{}> = () => {
             </h2>
             <AccordionPanel pb={4} bg="white">
               <Text fontSize="sm" color="gray.600">
-                <Text fontSize="sm" color="gray.600">
-                  The community is here to help you with specific coding,
-                  algorithm, or language problems.
-                </Text>
-                <Text fontSize="sm" color="gray.600" mt="2">
-                  Visit the help center
-                </Text>
+                The community is here to help you with specific coding,
+                algorithm, or language problems.
               </Text>
               <Text fontSize="sm" color="gray.600" mt="2">
-                Avoid asking opinion-based questions.
+                Visit the help center
               </Text>
             </AccordionPanel>
           </AccordionItem>

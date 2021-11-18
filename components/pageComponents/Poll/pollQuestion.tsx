@@ -19,6 +19,7 @@ import {
   Text,
   Textarea,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@apollo/client";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -48,6 +49,7 @@ interface PollQuestion {
 }
 
 const PollQuestion = ({ pollData }: PollQuestion) => {
+  const toast = useToast();
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [selectedImgs, setSelectImgs] = useState<any>([]);
 
@@ -67,11 +69,33 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
       question: editQuestion,
     };
     console.log("editQ", editQ);
-    updatePoll(editPoll, JSON.stringify(editQ));
-    if (error) {
-      console.log("update_error", error);
+    try {
+      await updatePoll(editPoll, JSON.stringify(editQ));
+      toast({
+        title: "Poll updated successfully",
+        status: "success",
+        isClosable: true,
+      });
+      onClose();
+    } catch (err) {
+      if (
+        err.message ===
+        "Content contains inappropriate language.  Please update and resubmit."
+      ) {
+        toast({
+          title:
+            "Content contains inappropriate language.  Please update and resubmit.",
+          status: "error",
+          isClosable: true,
+        });
+        return;
+      }
+      toast({
+        title: "Error! Cannot create Poll",
+        status: "error",
+        isClosable: true,
+      });
     }
-    onClose();
   };
 
   return (
@@ -165,7 +189,6 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
           ) : (
             <Box>
               <Textarea
-                defaultValue={pollData.question}
                 _focus={{ borderColor: "poldit.100" }}
                 onChange={(e) => setEditQuestion(e.target.value)}
                 value={editQuestion}

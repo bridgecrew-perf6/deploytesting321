@@ -16,7 +16,6 @@ interface ImgPicker {
 const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
   const appContext = useAuth();
   const [imgError, setImgError] = useState("");
-  console.log("LOGGED_IN", appContext?.authState?.getUserData);
 
   const updateSelectedImgList = (img: SelectedImage) => {
     const updatedImgList = selectedImgs.filter(

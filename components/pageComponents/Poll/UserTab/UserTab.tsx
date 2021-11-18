@@ -14,10 +14,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiErrorCircle } from "react-icons/bi";
 import { BsChat } from "react-icons/bs";
 
-const picUrl =
-  "http://res.cloudinary.com/rahmad12/image/upload/v1624323417/PoldIt/Users/607a4e285e6edca820460bef/profile/profilePic.jpg";
 export const UserTab = ({ userList, userListLoading, userListError }: any) => {
-  console.log("userlist", userList, userListError);
   if (userListLoading) {
     return (
       <Box>
@@ -90,7 +87,12 @@ const UserListItem = ({ user }: { user: any }) => {
             ></Box>
           </Box>
           <Box>
-            <Text color="gray.600" fontSize={["sm", "sm", "md"]}>
+            <Text
+              color="gray.600"
+              fontSize={["sm", "sm", "md"]}
+              maxW="80px"
+              isTruncated
+            >
               {user?.appid}
             </Text>
           </Box>

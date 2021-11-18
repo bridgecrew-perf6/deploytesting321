@@ -27,8 +27,10 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import ImgPicker from "../Other/Image/ImgPicker";
 // import { addNewPoll } from "lib/apollo/apolloFunctions/mutations";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
+import { useRouter } from "next/router";
 
 const CreateNewPoll: React.FC<{}> = () => {
+  const router = useRouter();
   interface selectedTopic {
     _id: string;
     name: string;
@@ -107,7 +109,6 @@ const CreateNewPoll: React.FC<{}> = () => {
     const filterOption = options.filter((x) => x !== o);
     setOptions([...filterOption]);
   };
-
   const submitCreatePoll = async () => {
     let questionField = (
       document.getElementById("pollQuestionField") as HTMLInputElement
@@ -164,13 +165,29 @@ const CreateNewPoll: React.FC<{}> = () => {
     if (questionType !== "openEnded") {
       pollItem.answers = answers;
     }
-    console.log(pollItem);
-    createPoll({ variables: { details: JSON.stringify(pollItem) } });
-    // addNewPoll(createPoll, JSON.stringify(pollItem));
-    if (error) {
-      console.log(error.message);
+    try {
+      await createPoll({ variables: { details: JSON.stringify(pollItem) } });
       toast({
-        title: error.message,
+        title: "Poll created successfully",
+        status: "success",
+        isClosable: true,
+      });
+      router.push("/");
+    } catch (err) {
+      if (
+        err.message ===
+        "Content contains inappropriate language.  Please update and resubmit."
+      ) {
+        toast({
+          title:
+            "Content contains inappropriate language.  Please update and resubmit.",
+          status: "error",
+          isClosable: true,
+        });
+        return;
+      }
+      toast({
+        title: "Error! Cannot create Poll",
         status: "error",
         isClosable: true,
       });
