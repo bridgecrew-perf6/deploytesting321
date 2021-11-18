@@ -8,6 +8,7 @@ import {
   Button,
   Textarea,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
@@ -17,6 +18,7 @@ import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { updateAnswer } from "lib/apollo/apolloFunctions/mutations";
 
 export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
+  const toast = useToast();
   const [selectedImgs, setSelectImgs] = useState<any>([]);
   const { UPDATE_ANSWER } = GraphResolvers.mutations;
   const [editAnswer, { error }] = useMutation(UPDATE_ANSWER);
@@ -37,7 +39,25 @@ export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
       await updateAnswer(editAnswer, JSON.stringify(editA));
       onEditClose();
     } catch (err) {
-      console.log("update_error", err);
+      if (
+        err.message ===
+        "Content contains inappropriate language.  Please update and resubmit."
+      ) {
+        toast({
+          title:
+            "Content contains inappropriate language.  Please update and resubmit.",
+          status: "error",
+          isClosable: true,
+          duration: 3000,
+        });
+        return;
+      }
+      toast({
+        title: "Error! Cannot update Answer",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
     }
   };
   return (

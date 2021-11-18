@@ -118,7 +118,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         title: "Question field cannot be empty",
         status: "warning",
         isClosable: true,
-        duration: 2000,
+        duration: 3000,
       });
       return;
     }
@@ -127,7 +127,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         title: "Topic is required",
         status: "warning",
         isClosable: true,
-        duration: 2000,
+        duration: 3000,
       });
       return;
     }
@@ -137,7 +137,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         title: "SubTopic is required",
         status: "warning",
         isClosable: true,
-        duration: 2000,
+        duration: 3000,
       });
       return;
     }
@@ -150,7 +150,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         title: "Mimimun 2 & maximum 5 options allowed",
         status: "warning",
         isClosable: true,
-        duration: 2000,
+        duration: 3000,
       });
       return;
     }
@@ -175,7 +175,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         title: "Poll created successfully",
         status: "success",
         isClosable: true,
-        duration: 2000,
+        duration: 3000,
       });
       router.push("/");
     } catch (err) {
@@ -188,7 +188,7 @@ const CreateNewPoll: React.FC<{}> = () => {
             "Content contains inappropriate language.  Please update and resubmit.",
           status: "error",
           isClosable: true,
-          duration: 2000,
+          duration: 3000,
         });
         return;
       }
@@ -201,7 +201,7 @@ const CreateNewPoll: React.FC<{}> = () => {
             "Question already exists.  Please create a different question.",
           status: "error",
           isClosable: true,
-          duration: 2000,
+          duration: 3000,
         });
         return;
       }
@@ -209,7 +209,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         title: "Error! Cannot create Poll",
         status: "error",
         isClosable: true,
-        duration: 2000,
+        duration: 3000,
       });
     }
   };

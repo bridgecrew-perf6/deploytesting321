@@ -452,14 +452,16 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
             </Box>
           </Collapse>
         )}
-        <Text
-          onClick={showFullAns}
-          fontSize="xs"
-          cursor="pointer"
-          color="blue.400"
-        >
-          {isOpen ? "Hide" : "Show"} more
-        </Text>
+        {data?.answer.length > 160 && (
+          <Text
+            onClick={showFullAns}
+            fontSize="xs"
+            cursor="pointer"
+            color="blue.400"
+          >
+            {isOpen ? "Hide" : "Show"} more
+          </Text>
+        )}
       </Box>
       <Flex justifyContent="space-between" alignItems="center" px="3">
         <Flex justifyContent="flex-start" alignItems="center">
