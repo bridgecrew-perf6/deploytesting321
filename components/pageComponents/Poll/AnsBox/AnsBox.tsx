@@ -358,6 +358,7 @@ const AnsBox = ({
 
 const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
   const { isOpen, onToggle } = useDisclosure();
+  const [showShortAns, setShowShortAns] = useState<boolean>(true);
   const {
     isOpen: lbOpen,
     onOpen: onLbOpen,
@@ -368,6 +369,11 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
     onOpen: onEditOpen,
     onClose: onEditClose,
   } = useDisclosure();
+
+  const showFullAns = () => {
+    setShowShortAns(!showShortAns);
+    onToggle();
+  };
 
   return (
     <Box
@@ -423,30 +429,19 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
               >
                 Report
               </MenuItem>
-              <MenuItem
-                _focus={{ outline: "none" }}
-                _hover={{ bg: "gray.200" }}
-              >
-                Setting
-              </MenuItem>
             </MenuList>
           </Menu>
         </Box>
       </Flex>
       <Box pt={5} pb={1} px={5}>
-        <Text fontSize={["sm", "sm", "sm"]}>{data?.answer}</Text>
-        <Text
-          onClick={onToggle}
-          fontSize="xs"
-          cursor="pointer"
-          color="blue.400"
-        >
-          {isOpen ? "Hide" : "Show"} more
+        <Text fontSize="sm" noOfLines={showShortAns ? 2 : 0}>
+          {data?.answer}
         </Text>
-        <Collapse in={isOpen} animateOpacity>
-          <Box p="4" textAlign="center" cursor="pointer">
-            <BtnImage src="https://wallpaperaccess.com/full/215112.jpg" />
-            {/*
+        {false && (
+          <Collapse in={isOpen} animateOpacity>
+            <Box p="4" textAlign="center" cursor="pointer">
+              <BtnImage src="https://wallpaperaccess.com/full/215112.jpg" />
+              {/*
 			  <ReactPlayer
 			  url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
 			  height="260px"
@@ -454,8 +449,17 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
 			  controls={true}
 			  />
 			  */}
-          </Box>
-        </Collapse>
+            </Box>
+          </Collapse>
+        )}
+        <Text
+          onClick={showFullAns}
+          fontSize="xs"
+          cursor="pointer"
+          color="blue.400"
+        >
+          {isOpen ? "Hide" : "Show"} more
+        </Text>
       </Box>
       <Flex justifyContent="space-between" alignItems="center" px="3">
         <Flex justifyContent="flex-start" alignItems="center">

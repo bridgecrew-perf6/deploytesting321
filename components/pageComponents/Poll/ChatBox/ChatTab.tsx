@@ -122,6 +122,7 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
       </Flex>
     );
   }
+  console.log("Data", data);
   return (
     <>
       <Box m="8px" bg="#f2f2f2" rounded="10px">

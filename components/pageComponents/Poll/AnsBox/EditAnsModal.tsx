@@ -24,16 +24,20 @@ export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
   const updateAnsHandler = async (e: any) => {
     e.preventDefault();
     let updatedAns = e.target.ansTextarea.value;
+    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
 
     let editA = {
       _id: ansData._id,
       answer: updatedAns,
+      images: imgIds,
     };
 
     console.log("editA", editA);
-    updateAnswer(editAnswer, JSON.stringify(editA));
-    if (error) {
-      console.log("update_error", error);
+    try {
+      await updateAnswer(editAnswer, JSON.stringify(editA));
+      onEditClose();
+    } catch (err) {
+      console.log("update_error", err);
     }
   };
   return (

@@ -82,6 +82,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         title: "Poll updated successfully",
         status: "success",
         isClosable: true,
+        duration: 2000,
       });
       onClose();
     } catch (err) {
@@ -94,6 +95,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
             "Content contains inappropriate language.  Please update and resubmit.",
           status: "error",
           isClosable: true,
+          duration: 2000,
         });
         return;
       }
@@ -101,6 +103,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         title: "Error! Cannot create Poll",
         status: "error",
         isClosable: true,
+        duration: 2000,
       });
     }
   };
