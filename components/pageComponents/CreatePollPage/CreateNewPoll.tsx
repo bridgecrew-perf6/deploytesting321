@@ -48,9 +48,11 @@ const CreateNewPoll: React.FC<{}> = () => {
   const [selectedImgs, setSelectImgs] = useState<any>([]);
   const { onOpen, onClose, isOpen } = useDisclosure();
 
-  const { CREATE_POLL } = GraphResolvers.mutations;
+  const { CREATE_POLL, CREATE_SUBTOPIC } = GraphResolvers.mutations;
   const { GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
   const [createPoll, { error }] = useMutation(CREATE_POLL);
+  const [createSubTopic, { loading: createSubTopicLoading }] =
+    useMutation(CREATE_SUBTOPIC);
 
   const {
     data: topicData,
@@ -211,6 +213,37 @@ const CreateNewPoll: React.FC<{}> = () => {
         isClosable: true,
         duration: 3000,
       });
+    }
+  };
+
+  const createSubTopicHandler = async (e: any) => {
+    e.preventDefault();
+    let newSubTopicName = (
+      document.getElementById("newSubTopicName") as HTMLInputElement
+    ).value;
+    let newSubTopicDis = (
+      document.getElementById("newSubTopicDis") as HTMLInputElement
+    ).value;
+    if (!newSubTopicName) {
+      toast({
+        title: "Sub topic name cannot be empty",
+        status: "warning",
+        isClosable: true,
+        duration: 3000,
+      });
+      return;
+    }
+    let data = {
+      topic: selectedTopic?._id,
+      subTopic: newSubTopicName,
+      description: newSubTopicDis,
+    };
+    try {
+      await createSubTopic({
+        variables: { subTopicInfo: JSON.stringify(data) },
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -521,6 +554,7 @@ const CreateNewPoll: React.FC<{}> = () => {
                     placeholder="SubTopics name"
                     borderColor="gray.300"
                     _focus={{ borderColor: "poldit.100" }}
+                    id="newSubTopicName"
                     maxW="350px"
                     name="name"
                   />
@@ -531,6 +565,7 @@ const CreateNewPoll: React.FC<{}> = () => {
                     type="text"
                     placeholder="SubTopics description"
                     borderColor="gray.300"
+                    id="newSubTopicDis"
                     _focus={{ borderColor: "poldit.100" }}
                     maxW="350px"
                     name="description"
@@ -547,6 +582,8 @@ const CreateNewPoll: React.FC<{}> = () => {
                     _focus={{ outline: "none" }}
                     size="sm"
                     type="submit"
+                    onClick={createSubTopicHandler}
+                    isLoading={createSubTopicLoading}
                   >
                     Add
                   </Button>

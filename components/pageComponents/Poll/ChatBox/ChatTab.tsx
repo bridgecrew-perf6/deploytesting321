@@ -33,23 +33,21 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
   );
 
   useEffect(() => {
-    if (data) {
-      subscribeToMore({
-        document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
-        variables: { pollId },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData) return prev;
-          const newChatItem = subscriptionData.data.newMessage;
-          return Object.assign({}, prev, {
-            messageFeedByPoll: {
-              ...prev.messageFeedByPoll,
-              messages: [...prev.messageFeedByPoll.messages, newChatItem],
-            },
-          });
-        },
-      });
-    }
-  }, [data]);
+    subscribeToMore({
+      document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
+      variables: { pollId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData) return prev;
+        const newChatItem = subscriptionData.data.newMessage;
+        return Object.assign({}, prev, {
+          messageFeedByPoll: {
+            ...prev.messageFeedByPoll,
+            messages: [...prev.messageFeedByPoll.messages, newChatItem],
+          },
+        });
+      },
+    });
+  }, []);
 
   const [addChatMssg] = useMutation(
     GraphResolvers.mutations.CREATE_CHAT_MESSAGE,
