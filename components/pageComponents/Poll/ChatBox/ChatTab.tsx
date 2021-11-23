@@ -22,7 +22,7 @@ import { BiErrorCircle } from "react-icons/bi";
 import { BsFlagFill } from "react-icons/bs";
 import Link from "next/link";
 
-const ChatTab = ({ pollId, user, addAnswer }: any) => {
+const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   const [userAnswer, setUserAnswer] = useState("");
   const { loading, error, data, subscribeToMore, fetchMore } = useQuery(
     GraphResolvers.queries.GET_POLL_CHAT_PAGES,
@@ -120,6 +120,7 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
       </Flex>
     );
   }
+
   return (
     <>
       <Box m="8px" bg="#f2f2f2" rounded="10px">
@@ -165,15 +166,17 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
                           />
                         </Tooltip>
                       </Link>
-                      <Box
-                        position="absolute"
-                        w="8px"
-                        h="8px"
-                        borderRadius="50%"
-                        bg="green.300"
-                        top="0"
-                        right="3px"
-                      ></Box>
+                      {d.isActive && (
+                        <Box
+                          position="absolute"
+                          w="8px"
+                          h="8px"
+                          borderRadius="50%"
+                          bg="green.300"
+                          top="0"
+                          right="3px"
+                        ></Box>
+                      )}
                     </Flex>
                     <Flex direction="column" maxW="70%">
                       <Box
@@ -265,21 +268,23 @@ const ChatTab = ({ pollId, user, addAnswer }: any) => {
               onChange={(e) => setUserAnswer(e.target.value)}
               _focus={{ borderColor: "orange.400" }}
             />
-            <InputRightElement
-              children={
-                <Tooltip label="Submit as answer" hasArrow placement="top">
-                  <Text
-                    fontWeight="extrabold"
-                    fontSize="xl"
-                    color="gray.700"
-                    cursor="pointer"
-                    onClick={() => onSend(true)}
-                  >
-                    A
-                  </Text>
-                </Tooltip>
-              }
-            />
+            {pollType === "openEnded" && (
+              <InputRightElement
+                children={
+                  <Tooltip label="Submit as answer" hasArrow placement="top">
+                    <Text
+                      fontWeight="extrabold"
+                      fontSize="xl"
+                      color="gray.700"
+                      cursor="pointer"
+                      onClick={() => onSend(true)}
+                    >
+                      A
+                    </Text>
+                  </Tooltip>
+                }
+              />
+            )}
           </InputGroup>
           <Button
             ml="1"

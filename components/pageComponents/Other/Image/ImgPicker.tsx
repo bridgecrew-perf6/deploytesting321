@@ -7,6 +7,7 @@ import { IoIosClose } from "react-icons/io";
 import { useAuth } from "../../../authProvider/authProvider";
 import { ErrorMssgCtr } from "../../Home/newPollComps";
 import { ToolTipCtr } from "../../../layout/customComps";
+import { useToast } from "@chakra-ui/react";
 
 interface ImgPicker {
   selectedImgs: SelectedImage[];
@@ -15,6 +16,7 @@ interface ImgPicker {
 
 const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
   const appContext = useAuth();
+  const toast = useToast();
   const [imgError, setImgError] = useState("");
 
   const updateSelectedImgList = (img: SelectedImage) => {
@@ -32,9 +34,13 @@ const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
     const imgDiff = fileObjList.length + selectedImgs.length;
 
     if (imgDiff > 3) {
-      setImgError(
-        "You can only select up to 3 images.  Please either remove an image or choose again."
-      );
+      toast({
+        title:
+          "You can only select up to 3 images.  Please either remove an image or choose again.",
+        status: "warning",
+        isClosable: true,
+        duration: 3000,
+      });
       return;
     }
 

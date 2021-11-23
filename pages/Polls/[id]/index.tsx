@@ -221,6 +221,7 @@ const Poll = ({ pollId }: Props) => {
                         pollId={data.poll._id}
                         user={user && user?.getUserDataForPoll}
                         addAnswer={addAnswer}
+                        pollType={data?.poll?.pollType}
                       />
                     </TabPanel>
                     <TabPanel bg="white" p="1px" height="846px">

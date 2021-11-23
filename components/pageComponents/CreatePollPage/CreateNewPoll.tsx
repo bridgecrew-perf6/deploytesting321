@@ -40,6 +40,7 @@ const CreateNewPoll: React.FC<{}> = () => {
   const [selectedTopic, setSelectedTopic] = useState<null | selectedTopic>(
     null
   );
+  const [questionField, setQuestionField] = useState<string>("");
   const [selectedSub, setSelectedSub] = useState<[] | selectedTopic[]>([]);
   const [subSearch, setSubSearch] = useState<string>("");
   const [questionType, setQuestionType] = useState<string>("openEnded");
@@ -103,7 +104,25 @@ const CreateNewPoll: React.FC<{}> = () => {
 
   const handleOptions = () => {
     if (!optionText) return;
-    if (options.length >= 5) return;
+    if (options.length >= 5) {
+      toast({
+        title: "You can only have upto 5 options",
+        status: "warning",
+        isClosable: true,
+        duration: 3000,
+      });
+      return;
+    }
+    const findOpt = options.find((x) => x === optionText);
+    if (findOpt) {
+      toast({
+        title: "You cannot have same option twice",
+        status: "warning",
+        isClosable: true,
+        duration: 3000,
+      });
+      return;
+    }
     setOptions([...options, optionText]);
     setOptionText("");
   };
@@ -113,9 +132,6 @@ const CreateNewPoll: React.FC<{}> = () => {
     setOptions([...filterOption]);
   };
   const submitCreatePoll = async () => {
-    let questionField = (
-      document.getElementById("pollQuestionField") as HTMLInputElement
-    ).value;
     if (!questionField) {
       toast({
         title: "Question field cannot be empty",
@@ -285,12 +301,19 @@ const CreateNewPoll: React.FC<{}> = () => {
           </Flex>
         </Box>
         {/* Question field*/}
-        <Box mt="6">
+        <Flex justify="flex-end" mt="6">
+          <Text color="gray.500" fontSize="sm" mr="1">
+            {questionField.length}/500
+          </Text>
+        </Flex>
+        <Box mt="0">
           <Textarea
             placeholder="Ask a question..."
             borderColor="gray.300"
+            maxLength={500}
             _focus={{ borderColor: "poldit.100" }}
-            id="pollQuestionField"
+            onChange={(e) => setQuestionField(e.target.value)}
+            value={questionField}
           />
         </Box>
         {/* Imageg picker*/}
@@ -331,16 +354,22 @@ const CreateNewPoll: React.FC<{}> = () => {
             <Text fontSize="md" fontWeight="bold" pb="20px" mt="10px">
               Add Poll Answers
             </Text>
-            <Input
-              type="text"
-              placeholder="Enter Option"
-              borderColor="gray.300"
-              _focus={{ borderColor: "poldit.100" }}
-              size="sm"
-              maxW="350px"
-              value={optionText}
-              onChange={(e) => setOptionText(e.target.value)}
-            />
+            <Flex align="center">
+              <Input
+                type="text"
+                placeholder="Enter Option"
+                borderColor="gray.300"
+                _focus={{ borderColor: "poldit.100" }}
+                size="sm"
+                maxLength={200}
+                maxW="350px"
+                value={optionText}
+                onChange={(e) => setOptionText(e.target.value)}
+              />
+              <Text color="gray.500" fontSize="sm" ml="4">
+                {optionText.length}/200
+              </Text>
+            </Flex>
             <Box mt="4">
               <Button
                 borderColor="green.500"

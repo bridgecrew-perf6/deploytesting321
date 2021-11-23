@@ -79,6 +79,7 @@ const pollFeedBackQueries = {
         messages {
           _id
           message
+          isActive
           creator {
             _id
             appid

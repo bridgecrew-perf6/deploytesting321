@@ -44,6 +44,7 @@ import { updatePoll } from "lib/apollo/apolloFunctions/mutations";
 
 import Favorite from "../Poll/PollCtrs/favorite";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 const BtnImage = dynamic(
   () => {
     return import("./AnsBox/ImageModal");
@@ -70,12 +71,12 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
   });
 
   const handleUpdateQuestion = async () => {
-    // const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
     let editQ = {
       _id: pollData._id,
       question: editQuestion,
+      pollImages: imgIds,
     };
-    console.log("editQ", editQ);
     try {
       await updatePoll(editPoll, JSON.stringify(editQ));
       toast({
@@ -117,11 +118,14 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
       >
         <Flex justifyContent="space-between" pl="5" pt="4" pr="1">
           <Flex>
-            <Avatar
-              name="xav dave"
-              src={pollData?.creator?.profilePic}
-              border="none"
-            />
+            <Link href={`/Profile/${pollData?.creator?._id}`}>
+              <Avatar
+                name="xav dave"
+                src={pollData?.creator?.profilePic}
+                border="none"
+                cursor="pointer"
+              />
+            </Link>
             <Flex direction="column" justifyContent="center" pl="4">
               <Text fontSize="xs" color="gray.500">
                 by {pollData?.creator?.appid}
