@@ -26,22 +26,29 @@ export const EditAnsModal = ({
   const toast = useToast();
   const [selectedImgs, setSelectImgs] = useState<any>([]);
   const { UPDATE_ANSWER } = GraphResolvers.mutations;
-  const [editAnswer, { error }] = useMutation(UPDATE_ANSWER);
+  const [editAnswer, { loading: editAnswerLoading }] =
+    useMutation(UPDATE_ANSWER);
 
   const updateAnsHandler = async (e: any) => {
     e.preventDefault();
     let updatedAns = e.target.ansTextarea.value;
-    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+    // const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
 
     let editA = {
       _id: ansData._id,
       answer: updatedAns,
-      images: imgIds,
+      answerImage: null,
       poll: pollId,
     };
 
     try {
       await updateAnswer(editAnswer, JSON.stringify(editA));
+      toast({
+        title: "Answer updated successfully",
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
       onEditClose();
     } catch (err) {
       if (
@@ -99,9 +106,10 @@ export const EditAnsModal = ({
               borderWidth="1px"
               size="sm"
               _hover={{ color: "poldit.100", bg: "white" }}
-              _focus={{ outline: "none", bg: "white" }}
+              _focus={{ outline: "none", bg: "white", color: "poldit.100" }}
               _active={{ color: "poldit.100", bg: "white" }}
               type="submit"
+              isLoading={editAnswerLoading}
             >
               Update
             </Button>

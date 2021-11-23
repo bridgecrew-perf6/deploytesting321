@@ -64,13 +64,13 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
   const { UPDATE_POLL, HANDLE_FAVORITE } = GraphResolvers.mutations;
   const { LAST_ACTIVITY, IS_FAVORITE } = GraphResolvers.queries;
 
-  const [editPoll, { error }] = useMutation(UPDATE_POLL);
+  const [editPoll, { loading: editLoading }] = useMutation(UPDATE_POLL);
   const { data } = useQuery(LAST_ACTIVITY, {
     variables: { pollId: pollData._id },
   });
 
   const handleUpdateQuestion = async () => {
-    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+    // const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
     let editQ = {
       _id: pollData._id,
       question: editQuestion,
@@ -197,10 +197,10 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               <Text fontSize={["sm", "sm", "md"]}>
                 {pollData?.question && pollData.question}
               </Text>
-              <Flex mt="4">
-                {[1, 2, 3].map((x) => (
-                  <Box key={x} maxW="100px" mr="4">
-                    <BtnImage src="https://wallpaperaccess.com/full/215112.jpg" />
+              <Flex mt="4" align="center">
+                {pollData?.pollImages?.map((x, id) => (
+                  <Box key={id} maxW="100px" mr="4" border="1px solid #d3d3d3">
+                    <BtnImage src={x} />
                   </Box>
                 ))}
               </Flex>
@@ -229,6 +229,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                   onClick={handleUpdateQuestion}
                   _hover={{ bg: "poldit.100", color: "white" }}
                   _focus={{ outline: "none" }}
+                  isLoading={editLoading}
                   _active={{
                     bg: "white",
                     color: "poldit.100",

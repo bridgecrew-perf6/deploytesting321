@@ -1,4 +1,3 @@
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import {
   Box,
@@ -15,7 +14,6 @@ import {
   MenuList,
   MenuItem,
   RadioGroup,
-  Progress,
   Radio,
   Button,
 } from "@chakra-ui/react";
@@ -33,7 +31,6 @@ import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation } from "@apollo/client";
 import Pagination from "react-js-pagination";
 // import ReactPlayer from "react-player/lazy";
-import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
 import "../../../../appStyles/pagination.module.css";
 import { EditAnsModal } from "./EditAnsModal";
 import Link from "next/link";
@@ -361,11 +358,6 @@ const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
   const { isOpen, onToggle } = useDisclosure();
   const [showShortAns, setShowShortAns] = useState<boolean>(true);
   const {
-    isOpen: lbOpen,
-    onOpen: onLbOpen,
-    onClose: onLbClose,
-  } = useDisclosure();
-  const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
     onClose: onEditClose,
@@ -506,11 +498,6 @@ const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
           </Text>
         </Box>
       </Flex>
-      <LightBoxImage
-        url="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
-        lbOpen={lbOpen}
-        onLbClose={onLbClose}
-      />
       <EditAnsModal
         isEditOpen={isEditOpen}
         onEditClose={onEditClose}

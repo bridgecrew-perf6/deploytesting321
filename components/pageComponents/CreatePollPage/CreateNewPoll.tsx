@@ -51,7 +51,7 @@ const CreateNewPoll: React.FC<{}> = () => {
 
   const { CREATE_POLL, CREATE_SUBTOPIC } = GraphResolvers.mutations;
   const { GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
-  const [createPoll, { error }] = useMutation(CREATE_POLL);
+  const [createPoll, { loading: createPollLoading }] = useMutation(CREATE_POLL);
   const [createSubTopic, { loading: createSubTopicLoading }] =
     useMutation(CREATE_SUBTOPIC);
 
@@ -626,6 +626,7 @@ const CreateNewPoll: React.FC<{}> = () => {
               size="sm"
               type="submit"
               onClick={submitCreatePoll}
+              isLoading={createPollLoading}
             >
               Create Poll
             </Button>

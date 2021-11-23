@@ -10,7 +10,7 @@ import {
 } from "../../../components/appTypes/appType";
 import { SitePageContainer } from "../../../components/layout";
 import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
 import { saveImgtoCloud } from "../../../components/apis/imgUpload";
 import { updateViewCount } from "../../../lib/apollo/apolloFunctions/mutations";
@@ -23,9 +23,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
 } from "@chakra-ui/react";
-import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
 
@@ -41,7 +39,6 @@ interface Props {
 const Poll = ({ pollId }: Props) => {
   //States
   const [error, updateError] = useState<string[]>([]);
-  const [refreshedPollId, updatedPollId] = useState("");
 
   //Graph API Requests
   const { data } = useQuery(GET_POLL, {
@@ -94,37 +91,35 @@ const Poll = ({ pollId }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (answerData && subscribeToMore) {
-      subscribeToMore({
-        document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
-        variables: { pollId },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData.data) return prev;
-          const newAnswerItem = subscriptionData.data.newAnswer;
-          console.log("new Answer: ", newAnswerItem);
-          const answerMatchIdx: number = prev?.answersByPoll.findIndex(
-            (item: Answer) => item._id === newAnswerItem._id
+    subscribeToMore({
+      document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
+      variables: { pollId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const newAnswerItem = subscriptionData.data.newAnswer;
+        console.log("new Answer: ", newAnswerItem);
+        const answerMatchIdx: number = prev?.answersByPoll.findIndex(
+          (item: Answer) => item._id === newAnswerItem._id
+        );
+        if (answerMatchIdx > -1) {
+          //Answer already exists.  This is for likes and dislikes count update without adding new answer
+          const updatedAnswersByPoll = prev.answersByPoll.map(
+            (item: Answer, idx: number) => {
+              if (idx === answerMatchIdx) {
+                return newAnswerItem;
+              } else return item;
+            }
           );
-          if (answerMatchIdx > -1) {
-            //Answer already exists.  This is for likes and dislikes count update without adding new answer
-            const updatedAnswersByPoll = prev.answersByPoll.map(
-              (item: Answer, idx: number) => {
-                if (idx === answerMatchIdx) {
-                  return newAnswerItem;
-                } else return item;
-              }
-            );
-            return Object.assign({}, prev, {
-              answersByPoll: updatedAnswersByPoll,
-            });
-          }
           return Object.assign({}, prev, {
-            answersByPoll: [...prev.answersByPoll, newAnswerItem],
+            answersByPoll: updatedAnswersByPoll,
           });
-        },
-      });
-    }
-  }, [data, answerData]);
+        }
+        return Object.assign({}, prev, {
+          answersByPoll: [...prev.answersByPoll, newAnswerItem],
+        });
+      },
+    });
+  }, []);
 
   // //Functions
 
