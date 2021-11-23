@@ -30,10 +30,10 @@ let isDev =
     : false;
 
 let decoded: any;
-  if (appCookie) {
-    decoded = jwt_decode(cookie);
-  }
-  Cookies.set("userId", decoded?.id ? decoded?.id : "");
+if (appCookie) {
+  decoded = jwt_decode(cookie);
+}
+Cookies.set("userId", decoded?.id ? decoded?.id : "");
 
 // const {
 //   NEXT_PUBLIC_WS_API_DEV,
@@ -56,7 +56,7 @@ export const storeTokens = (
 const wsLink = process.browser
   ? new WebSocketLink({
       // uri: 'ws://localhost:8080/graphql',
-       uri : isDev
+      uri: isDev
         ? (process.env.NEXT_PUBLIC_WS_API_DEV as string)
         : (process.env.NEXT_PUBLIC_WS_API_PROD as string),
       options: {
@@ -65,7 +65,7 @@ const wsLink = process.browser
       },
     })
   : null;
-  
+
 const httpLink = new HttpLink({
   uri: isDev
     ? process.env.NEXT_PUBLIC_HTTP_API_DEV
@@ -119,6 +119,9 @@ const cacheOptions: InMemoryCacheConfig = {
           merge: false,
         },
         answersByPoll: {
+          merge: false,
+        },
+        subTopicsPerTopic: {
           merge: false,
         },
       },

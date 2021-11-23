@@ -17,7 +17,12 @@ import ImgPicker from "_components/pageComponents/Other/Image/ImgPicker";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { updateAnswer } from "lib/apollo/apolloFunctions/mutations";
 
-export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
+export const EditAnsModal = ({
+  isEditOpen,
+  onEditClose,
+  ansData,
+  pollId,
+}: any) => {
   const toast = useToast();
   const [selectedImgs, setSelectImgs] = useState<any>([]);
   const { UPDATE_ANSWER } = GraphResolvers.mutations;
@@ -32,9 +37,9 @@ export const EditAnsModal = ({ isEditOpen, onEditClose, ansData }: any) => {
       _id: ansData._id,
       answer: updatedAns,
       images: imgIds,
+      poll: pollId,
     };
 
-    console.log("editA", editA);
     try {
       await updateAnswer(editAnswer, JSON.stringify(editA));
       onEditClose();

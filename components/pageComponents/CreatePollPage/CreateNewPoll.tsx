@@ -28,6 +28,7 @@ import ImgPicker from "../Other/Image/ImgPicker";
 // import { addNewPoll } from "lib/apollo/apolloFunctions/mutations";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
 import { useRouter } from "next/router";
+import { addNewSubTopic } from "lib/apollo/apolloFunctions/mutations";
 
 const CreateNewPoll: React.FC<{}> = () => {
   const router = useRouter();
@@ -235,13 +236,15 @@ const CreateNewPoll: React.FC<{}> = () => {
     }
     let data = {
       topic: selectedTopic?._id,
+      topicVal: selectedTopic?.name,
       subTopic: newSubTopicName,
       description: newSubTopicDis,
     };
     try {
-      await createSubTopic({
-        variables: { subTopicInfo: JSON.stringify(data) },
-      });
+      await addNewSubTopic(createSubTopic, JSON.stringify(data));
+      // await createSubTopic({
+      //   variables: { subTopicInfo: JSON.stringify(data) },
+      // });
     } catch (err) {
       console.log(err);
     }
@@ -325,6 +328,9 @@ const CreateNewPoll: React.FC<{}> = () => {
                 ))}
               </VStack>
             ) : null}
+            <Text fontSize="md" fontWeight="bold" pb="20px" mt="10px">
+              Add Poll Answers
+            </Text>
             <Input
               type="text"
               placeholder="Enter Option"
@@ -354,7 +360,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         )}
 
         {/* Topic Header*/}
-        <Box mt="4">
+        <Box mt="6">
           <Flex align="center">
             <Text fontSize="md" fontWeight="bold">
               Select Poll Topic

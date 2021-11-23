@@ -29,7 +29,47 @@ const {
   SHOW_VIEWS,
   GET_ACTIVE_CHATS,
   GET_NEWEST_POLLS,
+  GET_SUBTOPICS_PER_TOPIC,
 } = GraphResolvers.queries;
+
+export const addNewSubTopic = async (
+  addSubTopicFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  subTopicInfo: string
+) => {
+  const subTopicObj = JSON.parse(subTopicInfo);
+
+  try {
+    addSubTopicFunc({
+      variables: { subTopicInfo },
+      update(cache, { data: { createSubTopic } }) {
+        cache.writeQuery({
+          query: gql`
+            query SubTopicsPerTopic($topic: String!) {
+              subTopicsPerTopic(topic: $topic) {
+                _id
+                __typename
+                subTopic
+              }
+            }
+          `,
+          data: {
+            subTopicsPerTopic: {
+              ...createSubTopic,
+              subTopic: subTopicObj.subTopic,
+            },
+          },
+          variables: {
+            topic: subTopicObj.topicVal,
+          },
+        });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
 
 export const updateUserProfile = async (
   updateFunc: (

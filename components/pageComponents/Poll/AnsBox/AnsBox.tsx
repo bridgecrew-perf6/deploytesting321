@@ -303,6 +303,7 @@ const AnsBox = ({
                                 likes={c?.likes?.length}
                                 dislikes={c?.dislikes?.length}
                                 likeHandler={likeHandler}
+                                pollId={pollId}
                               />
                             </Box>
                           ))}
@@ -356,7 +357,7 @@ const AnsBox = ({
   );
 };
 
-const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
+const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
   const { isOpen, onToggle } = useDisclosure();
   const [showShortAns, setShowShortAns] = useState<boolean>(true);
   const {
@@ -514,6 +515,7 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
         isEditOpen={isEditOpen}
         onEditClose={onEditClose}
         ansData={data}
+        pollId={pollId}
       />
     </Box>
   );
