@@ -39,7 +39,9 @@ const LogIn: NextPage = () => {
   const router = useRouter();
   const { queries, mutations } = GraphResolvers;
   const [login, { loading, error }] = useMutation(mutations.LOGIN, {
-    refetchQueries: [{ query: queries.GET_USER, variables: { userId: userId } }],
+    refetchQueries: [
+      { query: queries.GET_USER, variables: { userId: userId } },
+    ],
   });
 
   const handleOtherFormMssgs = () => {
@@ -61,12 +63,16 @@ const LogIn: NextPage = () => {
         });
         // console.log(data);
         let decoded: any = jwtDecode(data?.login);
-        if(decoded?.id) {
+        if (decoded?.id) {
           setUserId(decoded?.id);
-          Cookies.set("userId", decoded?.id);
+          Cookies.set("userId", decoded?.id, {
+            expires: 7,
+          });
         }
         // appContext?.setAuthToken(data.login);
-        Cookies.set("polditSession", data.login);
+        Cookies.set("polditSession", data.login, {
+          expires: 7,
+        });
         setAppMssgs([]);
         router.push("/");
       } catch (err: any) {
