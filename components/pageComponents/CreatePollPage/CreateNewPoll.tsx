@@ -113,7 +113,9 @@ const CreateNewPoll: React.FC<{}> = () => {
       });
       return;
     }
-    const findOpt = options.find((x) => x === optionText);
+    const findOpt = options.find(
+      (x) => x.toLowerCase() === optionText.toLowerCase()
+    );
     if (findOpt) {
       toast({
         title: "You cannot have same option twice",
@@ -166,7 +168,7 @@ const CreateNewPoll: React.FC<{}> = () => {
       options.length > 5
     ) {
       toast({
-        title: "Mimimun 2 & maximum 5 options allowed",
+        title: "Minimum 2 & maximum 5 answer options allowed",
         status: "warning",
         isClosable: true,
         duration: 3000,

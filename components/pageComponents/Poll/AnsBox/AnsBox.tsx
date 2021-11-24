@@ -17,6 +17,7 @@ import {
   Radio,
   Button,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import TimeAgo from "react-timeago";
@@ -52,9 +53,10 @@ const AnsBox = ({
   pollType,
   error,
 }: any) => {
+  const toast = useToast();
   const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
-  const [ansOptions, setAnsOptions] = useState<string>("2");
+  const [myVote, setMyVote] = useState<string>("");
   const [ansState, setAnsState] = useState<any[]>([]);
   const [orgAns, setOrgAns] = useState<any[] | null>(null);
   const [page, setPage] = useState(1);
@@ -67,6 +69,15 @@ const AnsBox = ({
   );
 
   const auth = useAuth();
+  useEffect(() => {
+    const userId = auth?.authState?.getUserData?._id;
+    if (pollType !== "openEnded" && userId) {
+      const yourVote = answers[0]?.multichoiceVotes.find(
+        (a: any) => userId === a.userId
+      );
+      setMyVote(yourVote?.vote);
+    }
+  }, [answers, auth]);
 
   useEffect(() => {
     if (answers) {
@@ -114,11 +125,25 @@ const AnsBox = ({
     });
   };
 
-  const multiChoiceHandler = (id: string, answerId: string) => {
+  const multiChoiceHandler = async (id: string, answerId: string) => {
     const userId = auth?.authState?.getUserData?._id;
     const details = JSON.stringify({ id, answerId, userId });
-
-    handleMultiChoice({ variables: { details } });
+    try {
+      await handleMultiChoice({ variables: { details } });
+      toast({
+        title: "Answer submitted successfully",
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } catch (err: any) {
+      toast({
+        title: "Failed! Cannot submit answer",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
   };
 
   const onAddAnswer = (e: any) => {
@@ -171,8 +196,9 @@ const AnsBox = ({
                         data={x}
                         key={x._id}
                         id={id}
-                        answerId={answers[0]?._id}
+                        answers={answers[0]}
                         choose={multiChoiceHandler}
+                        myVote={myVote}
                       />
                     ))}
                     {/* <Box mb="4" >
@@ -311,20 +337,28 @@ const AnsBox = ({
                   </form>
                   <Box bg="white" p="1px">
                     <Box bg="#f2f2f2" m="8px" rounded="10px">
-                      <Scrollbars style={{ height: "640px" }}>
-                        {ansState &&
-                          ansState.map((c: any) => (
-                            <Box key={c._id} px={6}>
-                              <CardContent
-                                data={c}
-                                likes={c?.likes?.length}
-                                dislikes={c?.dislikes?.length}
-                                likeHandler={likeHandler}
-                                pollId={pollId}
-                              />
-                            </Box>
-                          ))}
-                      </Scrollbars>
+                      {!ansState.length ? (
+                        <Flex h="640px" justify="center" align="center">
+                          <Text color="gray.500" fontSize="sm">
+                            Add the first answer!
+                          </Text>
+                        </Flex>
+                      ) : (
+                        <Scrollbars style={{ height: "640px" }}>
+                          {ansState &&
+                            ansState.map((c: any) => (
+                              <Box key={c._id} px={6}>
+                                <CardContent
+                                  data={c}
+                                  likes={c?.likes?.length}
+                                  dislikes={c?.dislikes?.length}
+                                  likeHandler={likeHandler}
+                                  pollId={pollId}
+                                />
+                              </Box>
+                            ))}
+                        </Scrollbars>
+                      )}
                     </Box>
                   </Box>
                   {answers.length ? (

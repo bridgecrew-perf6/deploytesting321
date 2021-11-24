@@ -27,6 +27,11 @@ const pollFeedBackQueries = {
           _id
           answerVal
         }
+        multichoiceVotes {
+          _id
+          userId
+          vote
+        }
       }
     }
   `,
