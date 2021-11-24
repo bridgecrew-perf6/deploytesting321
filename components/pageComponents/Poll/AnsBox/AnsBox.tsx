@@ -25,7 +25,7 @@ import { FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 import { BiWinkSmile } from "react-icons/bi";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import { BiErrorCircle } from "react-icons/bi";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
@@ -35,6 +35,8 @@ import Pagination from "react-js-pagination";
 import "../../../../appStyles/pagination.module.css";
 import { EditAnsModal } from "./EditAnsModal";
 import Link from "next/link";
+import MultiChoiceCard from "./MultiChoiceCard";
+import { useAuth } from "_components/authProvider/authProvider";
 const BtnImage = dynamic(
   () => {
     return import("./ImageModal");
@@ -59,6 +61,12 @@ const AnsBox = ({
   const [handleLikes_disLikes] = useMutation(
     GraphResolvers.mutations.LIKE_DISLIKE_HANDLER
   );
+
+  const [handleMultiChoice] = useMutation(
+    GraphResolvers.mutations.MULTI_CHOICE_HANDLER
+  );
+
+  const auth = useAuth();
 
   useEffect(() => {
     if (answers) {
@@ -106,6 +114,13 @@ const AnsBox = ({
     });
   };
 
+  const multiChoiceHandler = (id: string, answerId: string) => {
+    const userId = auth?.authState?.getUserData?._id;
+    const details = JSON.stringify({ id, answerId, userId });
+
+    handleMultiChoice({ variables: { details } });
+  };
+
   const onAddAnswer = (e: any) => {
     e.preventDefault();
     let ansText = e.target.answerInput?.value;
@@ -131,7 +146,7 @@ const AnsBox = ({
           </Flex>
         </Box>
       ) : (
-        <Box bg="#f2f2f2">
+        <Box bg="white" p="10px">
           {loading ? (
             <Flex h="640px" justify="center" align="center">
               <Spinner size="xl" />
@@ -139,8 +154,8 @@ const AnsBox = ({
           ) : (
             <>
               {pollType !== "openEnded" ? (
-                <Box py={6} px={[4, 6]}>
-                  <Box mb="4">
+                <Box>
+                  <Flex h="60px" align="end" justify="center" pb="10px">
                     <Text
                       fontSize="md"
                       color="gray.800"
@@ -149,16 +164,36 @@ const AnsBox = ({
                     >
                       Select your favorite answer
                     </Text>
-                  </Box>
-                  <RadioGroup
-                    value={ansOptions}
-                    onChange={(e) => setAnsOptions(e)}
-                  >
+                  </Flex>
+                  <Box py={6} px={[4, 6]} bg="#f2f2f2" rounded="6px">
                     {answers[0]?.multichoice?.map((x: any, id: number) => (
-                      <MultiChoiceCard data={x} key={x._id} id={id} />
+                      <MultiChoiceCard
+                        data={x}
+                        key={x._id}
+                        id={id}
+                        answerId={answers[0]?._id}
+                        choose={multiChoiceHandler}
+                      />
                     ))}
-                  </RadioGroup>
-                  {/*
+                    {/* <Box mb="4" >
+                    <Text
+                      fontSize="md"
+                      color="gray.800"
+                      fontWeight="bold"
+                      align="center"
+                    >
+                      Select your favorite answer
+                    </Text>
+                  </Box> */}
+                    {/* <RadioGroup
+                      value={ansOptions}
+                      onChange={(e) => setAnsOptions(e)}
+                    >
+                      {answers[0]?.multichoice?.map((x: any, id: number) => (
+                        <MultiChoiceCard data={x} key={x._id} id={id} />
+                      ))}
+                    </RadioGroup> */}
+                    {/*
 					  <Box mt="6" ml="2">
 					  <Flex justify="center" align="center">
 					  <Button
@@ -174,6 +209,7 @@ const AnsBox = ({
 					  </Flex>
 					  </Box>
 				  */}
+                  </Box>
                 </Box>
               ) : (
                 <>
@@ -338,39 +374,59 @@ const AnsBox = ({
   );
 };
 
-const MultiChoiceCard = ({ data, id }: any) => {
-  return (
-    <Box bg="white" mb="4" borderRadius="md" pb="1">
-      <Radio
-        value={data?._id}
-        colorScheme="green"
-        _active={{ outline: "none" }}
-        _focus={{ outline: "none" }}
-        mb="2"
-        w="100%"
-        px="4"
-        pt="8"
-        pb="2"
-      >
-        <Box>
-          <Text fontSize="sm" color="gray.600">
-            {data?.answerVal}
-          </Text>
-        </Box>
-      </Radio>
-      <Flex justify="space-between" mx="5" py="1" borderTop="1px solid #d3d3d3">
-        <Tooltip label="Number of times selected" placement="top">
-          <Text fontSize="xs" color="gray.500">
-            2{id} votes
-          </Text>
-        </Tooltip>
-        <Text fontSize="xs" color="gray.500">
-          Rank {id + 1} of 4
-        </Text>
-      </Flex>
-    </Box>
-  );
-};
+// const MultiChoiceCard = ({ data, id }: any) => {
+//   return (
+//     <Box bg="white" mb="4" borderRadius="md">
+//       <Text fontSize="sm" color="gray.600">
+//         {data?.answerVal}
+//       </Text>
+//       <Flex justify="space-between" mx="5" py="1" borderTop="1px solid #d3d3d3" mt="10px">
+//         <Tooltip label="Number of times selected" placement="top">
+//           <Text fontSize="xs" color="gray.500">
+//             2{id} votes
+//           </Text>
+//         </Tooltip>
+//         <Text fontSize="xs" color="gray.500">
+//           Rank {id + 1} of 4
+//         </Text>
+//       </Flex>
+//     </Box>
+//   );
+// };
+
+// const MultiChoiceCard = ({ data, id }: any) => {
+//   return (
+//     <Box bg="white" mb="4" borderRadius="md" pb="1">
+//       <Radio
+//         value={data?._id}
+//         colorScheme="green"
+//         _active={{ outline: "none" }}
+//         _focus={{ outline: "none" }}
+//         mb="2"
+//         w="100%"
+//         px="4"
+//         pt="8"
+//         pb="2"
+//       >
+//         <Box>
+//           <Text fontSize="sm" color="gray.600">
+//             {data?.answerVal}
+//           </Text>
+//         </Box>
+//       </Radio>
+//       <Flex justify="space-between" mx="5" py="1" borderTop="1px solid #d3d3d3">
+//         <Tooltip label="Number of times selected" placement="top">
+//           <Text fontSize="xs" color="gray.500">
+//             2{id} votes
+//           </Text>
+//         </Tooltip>
+//         <Text fontSize="xs" color="gray.500">
+//           Rank {id + 1} of 4
+//         </Text>
+//       </Flex>
+//     </Box>
+//   );
+// };
 
 const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
   const { isOpen, onToggle } = useDisclosure();

@@ -26,6 +26,7 @@ import {
 } from "@chakra-ui/react";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
+import { addNewAnswer } from "lib/apollo/apolloFunctions";
 
 const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
   GraphResolvers.queries;
@@ -155,9 +156,9 @@ const Poll = ({ pollId }: Props) => {
       answerObj["answerImage"] = imgId;
     } else answerObj["answerImage"] = "";
 
-    addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
+    // addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
 
-    // addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
+    addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
 
   if (data) {

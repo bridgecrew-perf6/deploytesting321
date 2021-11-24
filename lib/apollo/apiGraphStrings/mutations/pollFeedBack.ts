@@ -32,10 +32,16 @@ const pollFeedBackMutations = {
       }
     }
   `,
+  MULTI_CHOICE_HANDLER: gql`
+    mutation HandleMultiChoice($details: String!) {
+      handleMultiChoice(details: $details)
+    }
+  `,
   CREATE_CHAT_MESSAGE: gql`
     mutation CreateMessage($details: String!) {
       createMessage(details: $details) {
         _id
+        isActive
       }
     }
   `,

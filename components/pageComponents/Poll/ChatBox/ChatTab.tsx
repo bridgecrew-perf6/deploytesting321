@@ -66,6 +66,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       message: userAnswer,
       poll: pollId,
       isAnswer,
+      isActive: true,
     });
     addNewChatMssg(addChatMssg, details, pollId);
     if (isAnswer && addAnswer) {

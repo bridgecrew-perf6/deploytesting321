@@ -86,7 +86,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         duration: 3000,
       });
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       if (
         err.message ===
         "Content contains inappropriate language.  Please update and resubmit."

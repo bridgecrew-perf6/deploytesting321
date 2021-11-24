@@ -7,6 +7,7 @@ const pollSubscriptions = {
         _id
         message
         creationDate
+        isActive
         creator {
           _id
           appid
