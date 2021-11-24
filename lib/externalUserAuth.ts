@@ -15,7 +15,7 @@ export const isTokkenValid = (tokken: string) => {
     hasValidToken = false;
   }
 
-  console.log(hasValidToken);
+  // console.log(hasValidToken);
 
   return hasValidToken;
 };

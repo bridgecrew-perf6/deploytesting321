@@ -9,6 +9,8 @@ import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { handleFavorite } from "../../../../lib/apollo/apolloFunctions/userMutations";
 import { useAuth } from "../../../authProvider/authProvider";
 import { dateToString } from "../../../globalFuncs";
+import Cookies from "js-cookie";
+import { isTokkenValid } from "../../../../lib/externalUserAuth";
 
 const { ADD_FAVORITE, REMOVE_FAVORITE } = GraphResolvers.mutations;
 const { IS_FAVORITE } = GraphResolvers.queries;
@@ -18,6 +20,11 @@ interface TagWindow {
   topic: string;
   subTopics: ISubTopic[];
 }
+
+// const isLoggedIn = () => {
+//   let cookie: any = Cookies.get("polditSession");
+//   return isTokkenValid(cookie ?? "");
+// };
 
 export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
   const appContext = useAuth();
@@ -36,6 +43,7 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
   const [isFavorite, { loading, error, data }] = useLazyQuery(IS_FAVORITE, {
     variables: { favType: "Poll", favId: pollId },
   });
+  const [isLoggedIn, setIsLoggedIn] = useState<Boolean>();
 
   useEffect(() => {
     appContext?.authState?.getUserData?.appToken !== "" && isFavorite();
@@ -44,6 +52,11 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
       toggleBtn(data.isFavorite);
     }
   }, [data, btnState]);
+
+  useEffect(() => {
+    let cookie: any = Cookies.get("polditSession");
+    setIsLoggedIn(isTokkenValid(cookie ?? ""));
+  });
 
   const handleFavoriteBtn = () => {
     if (!btnState) {
@@ -57,12 +70,14 @@ export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
 
   return (
     <div className="d-flex align-items-center justify-content-between">
-      <div
-        className={`pr-5 ${styles.cursor}`}
-        onClick={() => handleFavoriteBtn()}
-      >
-        {likeIcon}
-      </div>
+      {isLoggedIn && (
+        <div
+          className={`pr-5 ${styles.cursor}`}
+          onClick={() => handleFavoriteBtn()}
+        >
+          {likeIcon}
+        </div>
+      )}
       <div className="pr-2" style={{ fontWeight: 700, fontSize: 18 }}>
         {topic}
       </div>
