@@ -1,4 +1,4 @@
-import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   Box,
   Flex,
@@ -14,9 +14,10 @@ import {
   MenuList,
   MenuItem,
   RadioGroup,
-  Progress,
   Radio,
   Button,
+  Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import TimeAgo from "react-timeago";
@@ -25,27 +26,58 @@ import { FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 import { BiWinkSmile } from "react-icons/bi";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import { BiErrorCircle } from "react-icons/bi";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation } from "@apollo/client";
 import Pagination from "react-js-pagination";
-import ReactPlayer from "react-player/lazy";
-import { LightBoxImage } from "../../Other/LightBox/LightBoxImage";
+// import ReactPlayer from "react-player/lazy";
 import "../../../../appStyles/pagination.module.css";
 import { EditAnsModal } from "./EditAnsModal";
+import Link from "next/link";
+import MultiChoiceCard from "./MultiChoiceCard";
+import { useAuth } from "_components/authProvider/authProvider";
+const BtnImage = dynamic(
+  () => {
+    return import("./ImageModal");
+  },
+  { ssr: false }
+);
 
-const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
+const AnsBox = ({
+  loading,
+  answers,
+  addAnswer,
+  pollId,
+  pollType,
+  error,
+}: any) => {
+  const toast = useToast();
   const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
-  const [ansOptions, setAnsOptions] = useState<string>("2");
+  const [myVote, setMyVote] = useState<string>("");
   const [ansState, setAnsState] = useState<any[]>([]);
   const [orgAns, setOrgAns] = useState<any[] | null>(null);
   const [page, setPage] = useState(1);
   const [handleLikes_disLikes] = useMutation(
     GraphResolvers.mutations.LIKE_DISLIKE_HANDLER
   );
+
+  const [handleMultiChoice] = useMutation(
+    GraphResolvers.mutations.MULTI_CHOICE_HANDLER
+  );
+
+  const auth = useAuth();
+  useEffect(() => {
+    const userId = auth?.authState?.getUserData?._id;
+    if (pollType !== "openEnded" && userId) {
+      const yourVote = answers[0]?.multichoiceVotes.find(
+        (a: any) => userId === a.userId
+      );
+      setMyVote(yourVote?.vote);
+    }
+  }, [answers, auth]);
 
   useEffect(() => {
     if (answers) {
@@ -88,9 +120,30 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
         feedback,
         feedbackVal,
         answerId,
-        pollId: poll,
+        pollId: pollId,
       },
     });
+  };
+
+  const multiChoiceHandler = async (id: string, answerId: string) => {
+    const userId = auth?.authState?.getUserData?._id;
+    const details = JSON.stringify({ id, answerId, userId });
+    try {
+      await handleMultiChoice({ variables: { details } });
+      toast({
+        title: "Answer submitted successfully",
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } catch (err: any) {
+      toast({
+        title: "Failed! Cannot submit answer",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
   };
 
   const onAddAnswer = (e: any) => {
@@ -99,7 +152,7 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
     if (!ansText) {
       return;
     }
-    addAnswer(ansText, []);
+    addAnswer(ansText, "");
     let inputValue = document.getElementById("answerInput") as HTMLInputElement;
     inputValue.value = "";
   };
@@ -118,76 +171,77 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
           </Flex>
         </Box>
       ) : (
-        <Box bg="#f2f2f2">
+        <Box bg="white" p="10px">
           {loading ? (
             <Flex h="640px" justify="center" align="center">
               <Spinner size="xl" />
             </Flex>
           ) : (
             <>
-              {true ? (
-                <Box py={6} px={[4, 6]}>
-                  <Box mb="4">
+              {pollType !== "openEnded" ? (
+                <Box>
+                  <Flex h="60px" align="end" justify="center" pb="10px">
                     <Text
-                      fontSize="lg"
+                      fontSize="md"
                       color="gray.800"
                       fontWeight="bold"
                       align="center"
                     >
-                      Choice your Answer.
+                      Select your favorite answer
                     </Text>
-                  </Box>
-                  <RadioGroup
-                    value={ansOptions}
-                    onChange={(e) => setAnsOptions(e)}
-                  >
-                    {["1", "2", "3", "4", "5"].map((x, id) => (
-                      <Flex pb="3" key={x}>
-                        <Box bg="white" p="4" borderRadius="lg" minW="400px">
-                          <Radio
-                            value={x}
-                            colorScheme="green"
-                            _active={{ outline: "none" }}
-                            _focus={{ outline: "none" }}
-                            borderColor="gray.400"
-                          >
-                            <Box ml="2" cursor="pointer">
-                              <Text fontSize="sm" color="gray.600" mb="2">
-                                This is the Long sentence with will probably go
-                                onto the next Line. Will it go to the next line?
-                                what do u think?
-                              </Text>
-                              <Progress
-                                value={(id + 1) * 18}
-                                colorScheme="green"
-                                size="sm"
-                                borderRadius="sm"
-                              />
-                            </Box>
-                          </Radio>
-                        </Box>
-                      </Flex>
+                  </Flex>
+                  <Box py={6} px={[4, 6]} bg="#f2f2f2" rounded="6px">
+                    {answers[0]?.multichoice?.map((x: any, id: number) => (
+                      <MultiChoiceCard
+                        data={x}
+                        key={x._id}
+                        id={id}
+                        answers={answers[0]}
+                        choose={multiChoiceHandler}
+                        myVote={myVote}
+                      />
                     ))}
-                  </RadioGroup>
-                  <Box mt="2" ml="2">
-                    <Flex justify="center" align="center">
-                      <Button
-                        bg="green.500"
-                        color="white"
-                        size="sm"
-                        _active={{ outline: "none", bg: "green.400" }}
-                        _focus={{ outline: "none" }}
-                        _hover={{ bg: "green.500", color: "white" }}
-                      >
-                        Submit Answer
-                      </Button>
-                    </Flex>
+                    {/* <Box mb="4" >
+                    <Text
+                      fontSize="md"
+                      color="gray.800"
+                      fontWeight="bold"
+                      align="center"
+                    >
+                      Select your favorite answer
+                    </Text>
+                  </Box> */}
+                    {/* <RadioGroup
+                      value={ansOptions}
+                      onChange={(e) => setAnsOptions(e)}
+                    >
+                      {answers[0]?.multichoice?.map((x: any, id: number) => (
+                        <MultiChoiceCard data={x} key={x._id} id={id} />
+                      ))}
+                    </RadioGroup> */}
+                    {/*
+					  <Box mt="6" ml="2">
+					  <Flex justify="center" align="center">
+					  <Button
+					  bg="green.500"
+					  color="white"
+					  size="sm"
+					  _active={{ outline: "none", bg: "green.400" }}
+					  _focus={{ outline: "none" }}
+					  _hover={{ bg: "green.500", color: "white" }}
+					  >
+					  Submit Answer
+					  </Button>
+					  </Flex>
+					  </Box>
+				  */}
                   </Box>
                 </Box>
               ) : (
                 <>
                   <Flex
                     alignItems="center"
+                    bg="white"
                     justifyContent="space-between"
                     py={4}
                     px={[4, 6]}
@@ -206,12 +260,12 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                       <option value="newest">Newest</option>
                     </Select>
                     <Text fontSize="sm" color="gray.600">
-                      4 Answers
+                      {answers ? `${answers.length} Answers` : "Answers"}
                     </Text>
                   </Flex>
                   <form style={{ width: "100%" }} onSubmit={onAddAnswer}>
                     <Flex
-                      bg="#f2f2f2"
+                      bg="white"
                       px="6"
                       py="4"
                       justify="center"
@@ -281,48 +335,69 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
                       </Flex>
                     </Flex>
                   </form>
-                  <Scrollbars style={{ height: "640px" }}>
-                    {ansState &&
-                      ansState.map((c: any) => (
-                        <Box key={c._id} px={6}>
-                          <CardContent
-                            data={c}
-                            likes={c?.likes?.length}
-                            dislikes={c?.dislikes?.length}
-                            likeHandler={likeHandler}
-                          />
-                        </Box>
-                      ))}
-                  </Scrollbars>
-                  <Box pt="4" pb="3">
-                    <Flex align="center" justify="center">
-                      <Pagination
-                        activePage={page}
-                        prevPageText="Prev"
-                        nextPageText="Next"
-                        itemsCountPerPage={Number(noOfAns)}
-                        totalItemsCount={answers && answers.length}
-                        pageRangeDisplayed={5}
-                        onChange={(e: any) => setPage(e)}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                      />
-                    </Flex>
-                    <Box align="center" mt="2">
-                      <Select
-                        border="1px"
-                        borderColor="#d2d2d7"
-                        size="sm"
-                        maxW="80px"
-                        value={noOfAns}
-                        onChange={(val) => setNoOfAns(val.target.value)}
-                      >
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                      </Select>
+                  <Box bg="white" p="1px">
+                    <Box bg="#f2f2f2" m="8px" rounded="10px">
+                      {!ansState.length ? (
+                        <Flex h="640px" justify="center" align="center">
+                          <Text color="gray.500" fontSize="sm">
+                            Add the first answer!
+                          </Text>
+                        </Flex>
+                      ) : (
+                        <Scrollbars style={{ height: "640px" }}>
+                          {ansState &&
+                            ansState.map((c: any) => (
+                              <Box key={c._id} px={6}>
+                                <CardContent
+                                  data={c}
+                                  likes={c?.likes?.length}
+                                  dislikes={c?.dislikes?.length}
+                                  likeHandler={likeHandler}
+                                  pollId={pollId}
+                                />
+                              </Box>
+                            ))}
+                        </Scrollbars>
+                      )}
                     </Box>
                   </Box>
+                  {answers.length ? (
+                    <Box
+                      pt="4"
+                      pb="3"
+                      bg="white"
+                      borderTop="1px"
+                      borderColor="#d2d2d7"
+                    >
+                      <Flex align="center" justify="center">
+                        <Pagination
+                          activePage={page}
+                          prevPageText="Prev"
+                          nextPageText="Next"
+                          itemsCountPerPage={Number(noOfAns)}
+                          totalItemsCount={answers && answers.length}
+                          pageRangeDisplayed={5}
+                          onChange={(e: any) => setPage(e)}
+                          itemClass="page-item"
+                          linkClass="page-link"
+                        />
+                      </Flex>
+                      <Box align="center" mt="2">
+                        <Select
+                          border="1px"
+                          borderColor="#d2d2d7"
+                          size="sm"
+                          maxW="80px"
+                          value={noOfAns}
+                          onChange={(val) => setNoOfAns(val.target.value)}
+                        >
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="15">15</option>
+                        </Select>
+                      </Box>
+                    </Box>
+                  ) : null}
                 </>
               )}
             </>
@@ -333,18 +408,73 @@ const AnsBox = ({ loading, answers, addAnswer, poll, error }: any) => {
   );
 };
 
-const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
+// const MultiChoiceCard = ({ data, id }: any) => {
+//   return (
+//     <Box bg="white" mb="4" borderRadius="md">
+//       <Text fontSize="sm" color="gray.600">
+//         {data?.answerVal}
+//       </Text>
+//       <Flex justify="space-between" mx="5" py="1" borderTop="1px solid #d3d3d3" mt="10px">
+//         <Tooltip label="Number of times selected" placement="top">
+//           <Text fontSize="xs" color="gray.500">
+//             2{id} votes
+//           </Text>
+//         </Tooltip>
+//         <Text fontSize="xs" color="gray.500">
+//           Rank {id + 1} of 4
+//         </Text>
+//       </Flex>
+//     </Box>
+//   );
+// };
+
+// const MultiChoiceCard = ({ data, id }: any) => {
+//   return (
+//     <Box bg="white" mb="4" borderRadius="md" pb="1">
+//       <Radio
+//         value={data?._id}
+//         colorScheme="green"
+//         _active={{ outline: "none" }}
+//         _focus={{ outline: "none" }}
+//         mb="2"
+//         w="100%"
+//         px="4"
+//         pt="8"
+//         pb="2"
+//       >
+//         <Box>
+//           <Text fontSize="sm" color="gray.600">
+//             {data?.answerVal}
+//           </Text>
+//         </Box>
+//       </Radio>
+//       <Flex justify="space-between" mx="5" py="1" borderTop="1px solid #d3d3d3">
+//         <Tooltip label="Number of times selected" placement="top">
+//           <Text fontSize="xs" color="gray.500">
+//             2{id} votes
+//           </Text>
+//         </Tooltip>
+//         <Text fontSize="xs" color="gray.500">
+//           Rank {id + 1} of 4
+//         </Text>
+//       </Flex>
+//     </Box>
+//   );
+// };
+
+const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
   const { isOpen, onToggle } = useDisclosure();
-  const {
-    isOpen: lbOpen,
-    onOpen: onLbOpen,
-    onClose: onLbClose,
-  } = useDisclosure();
+  const [showShortAns, setShowShortAns] = useState<boolean>(true);
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
     onClose: onEditClose,
   } = useDisclosure();
+
+  const showFullAns = () => {
+    setShowShortAns(!showShortAns);
+    onToggle();
+  };
 
   return (
     <Box
@@ -364,9 +494,11 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
           borderColor="#d2d2d7"
           mt="2px"
         >
-          <Text color="gray.700" fontSize="sm">
-            {data.creator?.appid}
-          </Text>
+          <Link href={`/Profile/${data?.creator?._id}`}>
+            <Text color="gray.700" fontSize="sm" cursor="pointer">
+              {data.creator?.appid}
+            </Text>
+          </Link>
           <Text color="gray.700" fontSize="sm">
             <TimeAgo date={data?.creationDate} live={false} />
           </Text>
@@ -398,35 +530,19 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
               >
                 Report
               </MenuItem>
-              <MenuItem
-                _focus={{ outline: "none" }}
-                _hover={{ bg: "gray.200" }}
-              >
-                Setting
-              </MenuItem>
             </MenuList>
           </Menu>
         </Box>
       </Flex>
       <Box pt={5} pb={1} px={5}>
-        <Text fontSize={["sm", "sm", "sm"]}>{data?.answer}</Text>
-        <Text
-          onClick={onToggle}
-          fontSize="xs"
-          cursor="pointer"
-          color="blue.400"
-        >
-          {isOpen ? "Hide" : "Show"} more
+        <Text fontSize="sm" noOfLines={showShortAns ? 2 : 0}>
+          {data?.answer}
         </Text>
-        <Collapse in={isOpen} animateOpacity>
-          <Box p="4" textAlign="center" cursor="pointer" onClick={onLbOpen}>
-            <Image
-              src="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
-              width={500}
-              height={500}
-              loading="lazy"
-            />
-            {/*
+        {false && (
+          <Collapse in={isOpen} animateOpacity>
+            <Box p="4" textAlign="center" cursor="pointer">
+              <BtnImage src="https://wallpaperaccess.com/full/215112.jpg" />
+              {/*
 			  <ReactPlayer
 			  url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
 			  height="260px"
@@ -434,8 +550,19 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
 			  controls={true}
 			  />
 			  */}
-          </Box>
-        </Collapse>
+            </Box>
+          </Collapse>
+        )}
+        {data?.answer.length > 160 && (
+          <Text
+            onClick={showFullAns}
+            fontSize="xs"
+            cursor="pointer"
+            color="blue.400"
+          >
+            {isOpen ? "Hide" : "Show"} more
+          </Text>
+        )}
       </Box>
       <Flex justifyContent="space-between" alignItems="center" px="3">
         <Flex justifyContent="flex-start" alignItems="center">
@@ -479,15 +606,11 @@ const CardContent = ({ data, likes, dislikes, likeHandler }: any) => {
           </Text>
         </Box>
       </Flex>
-      <LightBoxImage
-        url="https://raw.githubusercontent.com/kufii/CodeSnap/master/examples/material_operator-mono.png"
-        lbOpen={lbOpen}
-        onLbClose={onLbClose}
-      />
       <EditAnsModal
         isEditOpen={isEditOpen}
         onEditClose={onEditClose}
         ansData={data}
+        pollId={pollId}
       />
     </Box>
   );

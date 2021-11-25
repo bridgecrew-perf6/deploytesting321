@@ -23,12 +23,53 @@ const {
   GET_POLL,
   GET_FAVORITES,
   GET_APPUSER,
+  GET_ANSWERS_BY_POLL,
   GET_POLLS_ALL,
   GET_USERPOLLS,
   SHOW_VIEWS,
   GET_ACTIVE_CHATS,
   GET_NEWEST_POLLS,
+  GET_SUBTOPICS_PER_TOPIC,
 } = GraphResolvers.queries;
+
+export const addNewSubTopic = async (
+  addSubTopicFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  subTopicInfo: string
+) => {
+  const subTopicObj = JSON.parse(subTopicInfo);
+
+  try {
+    addSubTopicFunc({
+      variables: { subTopicInfo },
+      update(cache, { data: { createSubTopic } }) {
+        cache.writeQuery({
+          query: gql`
+            query SubTopicsPerTopic($topic: String!) {
+              subTopicsPerTopic(topic: $topic) {
+                _id
+                __typename
+                subTopic
+              }
+            }
+          `,
+          data: {
+            subTopicsPerTopic: {
+              ...createSubTopic,
+              subTopic: subTopicObj.subTopic,
+            },
+          },
+          variables: {
+            topic: subTopicObj.topicVal,
+          },
+        });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
 
 export const updateUserProfile = async (
   updateFunc: (
@@ -138,56 +179,19 @@ export const handleFavorite = async (
   favoriteFunc: (
     options?: MutationFunctionOptions<any, OperationVariables> | undefined
   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  isFav: boolean,
   favoriteType: string,
   favoriteId: string
 ) => {
   try {
     await favoriteFunc({
-      variables: { favoriteType, favoriteId },
+      variables: { isFav, favoriteType, favoriteId },
       update(cache, { data }) {
-        const user: any = cache.readQuery({
-          query: GET_USER,
-        });
-
-        const isFav: { isFavorite: boolean | null } | null = cache.readQuery({
+        cache.writeQuery({
           query: IS_FAVORITE,
           variables: { favType: favoriteType, favId: favoriteId },
+          data: { isFavorite: isFav },
         });
-
-        isFav &&
-          cache.writeQuery({
-            query: IS_FAVORITE,
-            variables: { favType: favoriteType, favId: favoriteId },
-            data: { isFavorite: !isFav.isFavorite },
-          });
-
-        cache.modify({
-          id: cache.identify(user?.getUserData.user),
-          fields: {
-            favorites(pastFavsRef = [], { readField }) {
-              if (data.addFavorite) {
-                const newFavRef = cache.writeFragment({
-                  data: data.addFavorite,
-                  fragment: gql`
-                    fragment AddFavorite on Favorites {
-                      _id
-                      favoriteId
-                      favoriteType
-                    }
-                  `,
-                });
-
-                return [...pastFavsRef, newFavRef];
-              }
-
-              // return pastFavsRef.filter(
-              //   (itemRef: StoreObject | Reference | undefined) =>
-              //     data.removeFavorite._id !== readField("_id", itemRef)
-              // );
-            },
-          },
-        });
-        // data && data.removeFavorite && cache.evict(data.removeFavorite._id);
       },
     });
   } catch (err) {
@@ -225,36 +229,102 @@ export const updateViewCount = async (
   }
 };
 
-export const addNewAnswer = async (
-  addAnswerFunc: (
+// export const addNewAnswer = async (
+//   addAnswerFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   details: string,
+//   pollId: string
+// ) => {
+//   try {
+//     addAnswerFunc({
+//       variables: { details },
+//       update(cache, { data: { createAnswer } }) {
+//         console.log("created Answer:", createAnswer);
+//         const poll: any = cache.readQuery({
+//           query: GET_POLL,
+//           variables: { pollId },
+//         });
+
+//         cache.modify({
+//           id: cache.identify(poll.poll),
+//           fields: {
+//             answers(cachedAnswers = [], { readField }) {
+//               const newAnswerRef = cache.writeFragment({
+//                 data: createAnswer,
+//                 fragment: gql`
+//                   fragment CreateAnswer on Answers {
+//                     _id
+//                   }
+//                 `,
+//               });
+
+//               return [...cachedAnswers, newAnswerRef];
+//             },
+//           },
+//         });
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };
+
+export const updateAnswer = async (
+  updateAnswerFunc: (
     options?: MutationFunctionOptions<any, OperationVariables> | undefined
   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: string,
-  pollId: string
+  details: string
 ) => {
+  const answerObj = JSON.parse(details);
+
   try {
-    addAnswerFunc({
+    await updateAnswerFunc({
       variables: { details },
-      update(cache, { data: { createAnswer } }) {
-        const poll: any = cache.readQuery({
-          query: GET_POLL,
-          variables: { pollId },
+      update(cache, { data: { updateAnswer } }) {
+        cache.writeFragment({
+          id: `Answer:${answerObj._id}`,
+          fragment: gql`
+            fragment UpdateAnswer on AnswersByPoll {
+              answer
+            }
+          `,
+          data: { answer: answerObj.answer },
         });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
 
-        cache.modify({
-          id: cache.identify(poll.poll),
-          fields: {
-            answers(cachedAnswers = [], { readField }) {
-              const newAnswerRef = cache.writeFragment({
-                data: createAnswer,
-                fragment: gql`
-                  fragment CreateAnswer on Answers {
-                    _id
-                  }
-                `,
-              });
+export const updatePoll = async (
+  updatePollFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: string
+) => {
+  const pollObj = JSON.parse(details);
 
-              return [...cachedAnswers, newAnswerRef];
+  try {
+    await updatePollFunc({
+      variables: { details },
+      update(cache, { data: { updatePoll } }) {
+        cache.writeQuery({
+          query: gql`
+            query Poll($pollId: String!) {
+              poll(pollId: $pollId) {
+                _id
+                __typename
+                question
+              }
+            }
+          `,
+          data: {
+            poll: {
+              _id: pollObj._id,
+              __typename: "PollQuestion",
+              question: pollObj.question,
             },
           },
         });
@@ -334,27 +404,27 @@ export const addNewChatMssg = async (
   }
 };
 
-export const addNewPoll = async (
-  addNewPollFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: string
-) => {
-  try {
-    addNewPollFunc({
-      variables: { details },
-      update(cache, { data: { createPoll } }) {
-        const { newestPolls }: any = cache.readQuery({
-          query: GET_NEWEST_POLLS,
-        });
+// export const addNewPoll = async (
+//   addNewPollFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   details: string
+// ) => {
+//   try {
+//     addNewPollFunc({
+//       variables: { details },
+//       update(cache, { data: { createPoll } }) {
+//         const { newestPolls }: any = cache.readQuery({
+//           query: GET_NEWEST_POLLS,
+//         });
 
-        cache.writeQuery({
-          query: GET_NEWEST_POLLS,
-          data: { newestPolls: [...newestPolls, createPoll] },
-        });
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//         cache.writeQuery({
+//           query: GET_NEWEST_POLLS,
+//           data: { newestPolls: [...newestPolls, createPoll] },
+//         });
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };

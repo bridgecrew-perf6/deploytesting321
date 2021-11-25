@@ -5,7 +5,9 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  ListItem,
   Text,
+  UnorderedList,
 } from "@chakra-ui/react";
 
 export const NewPollHelp: React.FC<{}> = () => {
@@ -25,42 +27,56 @@ export const NewPollHelp: React.FC<{}> = () => {
               >
                 <Box flex="1" textAlign="left">
                   <Text fontSize="md" color="gray.500">
-                    Draft your question
+                    Question type
                   </Text>
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4} bg="white" px="0">
-              <Box px="4">
-                <Text fontSize="sm" color="gray.600">
-                  The community is here to help you with specific coding,
-                  algorithm, or language problems.
-                </Text>
-                <Text fontSize="sm" color="gray.600" my="2">
-                  Avoid asking opinion-based questions.
-                </Text>
+              <Box px="4" pt="2" pb="4">
+                <UnorderedList>
+                  <ListItem color="gray.600" fontSize="sm">
+                    Open ended: Users will answer your question with their own
+                    answers.
+                  </ListItem>
+                  <ListItem color="gray.600" fontSize="sm" mt="2">
+                    Multiple choice: you will add 2-5 answers for people to
+                    choose from.
+                  </ListItem>
+                </UnorderedList>
               </Box>
               <Accordion allowToggle defaultIndex={0} allowMultiple={true}>
                 <AccordionItem>
                   <h2>
                     <AccordionButton bg="#f8f9f9" _focus={{ outline: "none" }}>
                       <Box flex="1" textAlign="left">
-                        <Text fontSize="sm" fontWeight="bold" color="gray.600">
-                          Summarize the problem
+                        <Text fontSize="sm" fontWeight="bold">
+                          Ask a Poll Question
                         </Text>
                       </Box>
                       <AccordionIcon />
                     </AccordionButton>
                   </h2>
                   <AccordionPanel pb={4} bg="white">
-                    <Text fontSize="sm" color="gray.600">
-                      The community is here to help you with specific coding,
-                      algorithm, or language problems.
-                    </Text>
-                    <Text fontSize="sm" color="gray.600" mt="2">
-                      Avoid asking opinion-based questions.
-                    </Text>
+                    <Box>
+                      <UnorderedList>
+                        <ListItem color="gray.600" fontSize="sm">
+                          Keep your question short and clear!
+                        </ListItem>
+                        <ListItem color="gray.600" fontSize="sm" mt="2">
+                          Check to see if your question has been asked yet by
+                          searching. If it has, check out the answers and reopen
+                          the chat if you’d like to discuss.
+                        </ListItem>
+                        <ListItem color="gray.600" fontSize="sm" mt="2">
+                          Be cool! No hate speech, threats, harassment, or
+                          questions relating to politics, religion, or anything
+                          that could lead to violence, terrorism, or other bad
+                          things.
+                        </ListItem>
+                      </UnorderedList>
+                    </Box>
                   </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem>
@@ -68,7 +84,7 @@ export const NewPollHelp: React.FC<{}> = () => {
                     <AccordionButton bg="#f8f9f9" _focus={{ outline: "none" }}>
                       <Box flex="1" textAlign="left">
                         <Text fontSize="sm" fontWeight="bold" color="gray.600">
-                          Describe what you’ve tried
+                          Poll Topics and Subtopics
                         </Text>
                       </Box>
                       <AccordionIcon />
@@ -76,32 +92,10 @@ export const NewPollHelp: React.FC<{}> = () => {
                   </h2>
                   <AccordionPanel pb={4} bg="white">
                     <Text fontSize="sm" color="gray.600">
-                      The community is here to help you with specific coding,
-                      algorithm, or language problems.
-                    </Text>
-                    <Text fontSize="sm" color="gray.600" mt="2">
-                      Avoid asking opinion-based questions.
-                    </Text>
-                  </AccordionPanel>
-                </AccordionItem>
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton bg="#f8f9f9" _focus={{ outline: "none" }}>
-                      <Box flex="1" textAlign="left">
-                        <Text fontSize="sm" fontWeight="bold" color="gray.600">
-                          Show some code
-                        </Text>
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4} bg="white">
-                    <Text fontSize="sm" color="gray.600">
-                      The community is here to help you with specific coding,
-                      algorithm, or language problems.
-                    </Text>
-                    <Text fontSize="sm" color="gray.600" mt="2">
-                      Avoid asking opinion-based questions.
+                      Once you select a main topic, it’s associated subtopics
+                      will appear. You will need to select 1 topic and 1-3
+                      subtopic(s) for your poll. If you don’t see a relevant
+                      subtopic you may create a new one!
                     </Text>
                   </AccordionPanel>
                 </AccordionItem>
@@ -134,16 +128,17 @@ export const NewPollHelp: React.FC<{}> = () => {
             </h2>
             <AccordionPanel pb={4} bg="white">
               <Text fontSize="sm" color="gray.600">
-                <Text fontSize="sm" color="gray.600">
-                  The community is here to help you with specific coding,
-                  algorithm, or language problems.
-                </Text>
-                <Text fontSize="sm" color="gray.600" mt="2">
-                  Visit the help center
-                </Text>
+                The community is here to help you with specific coding,
+                algorithm, or language problems.
               </Text>
-              <Text fontSize="sm" color="gray.600" mt="2">
-                Avoid asking opinion-based questions.
+              <Text
+                fontSize="sm"
+                color="blue.300"
+                mt="2"
+                cursor="pointer"
+                _hover={{ textDecoration: "underline" }}
+              >
+                Visit the help center
               </Text>
             </AccordionPanel>
           </AccordionItem>

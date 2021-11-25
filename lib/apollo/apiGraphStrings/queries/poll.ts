@@ -45,8 +45,10 @@ const pollQueries = {
           subTopic
         }
         pollImages
+        pollType
         answers {
           _id
+          
         }
         creationDate
         creator {

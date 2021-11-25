@@ -1,18 +1,21 @@
 import { SelectedImage } from "../appTypes/appType";
 
-export const saveImgtoCloud = async (selectedImgs: SelectedImage[]) => {
-  if (selectedImgs) {
-    return Promise.all(selectedImgs.map((item) => uploadImage(item)));
+export const saveImgtoCloud = async (
+  selectedImg: SelectedImage | SelectedImage[]
+) => {
+  if (typeof selectedImg !== "string") {
+    return Promise.all(
+      (selectedImg as SelectedImage[]).map((item) => uploadImage(item))
+    );
   }
+
+  return await uploadImage(selectedImg);
 };
 
 const uploadImage = async (imgDetails: SelectedImage) => {
   const { userId, image, imgType, imageName } = imgDetails;
-
-  const {
-    NEXT_PUBLIC_CLOUDINARYAPIKEY,
-    NEXT_PUBLIC_CLOUDINARYNAME,
-  } = process.env;
+  const NEXT_PUBLIC_CLOUDINARYAPIKEY = process.env.NEXT_PUBLIC_CLOUDINARYAPIKEY;
+  const NEXT_PUBLIC_CLOUDINARYNAME = process.env.NEXT_PUBLIC_CLOUDINARYNAME;
 
   const folder = `PoldIt/Users/${userId}/${imgType}`;
 

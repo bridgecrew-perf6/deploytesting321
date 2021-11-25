@@ -19,8 +19,9 @@ import {
   Text,
   Textarea,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
-import { AiOutlineHeart } from "react-icons/ai";
+import { useMutation, useQuery } from "@apollo/client";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import TimeAgo from "react-timeago";
 import {
@@ -35,13 +36,79 @@ import {
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoMdCopy } from "react-icons/io";
+import React, { useState } from "react";
+import ImgPicker from "../Other/Image/ImgPicker";
+import { saveImgtoCloud } from "_components/apis/imgUpload";
+import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import { updatePoll } from "lib/apollo/apolloFunctions/mutations";
+
+import Favorite from "../Poll/PollCtrs/favorite";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+const BtnImage = dynamic(
+  () => {
+    return import("./AnsBox/ImageModal");
+  },
+  { ssr: false }
+);
 
 interface PollQuestion {
   pollData: PollHistory;
 }
 
 const PollQuestion = ({ pollData }: PollQuestion) => {
+  const toast = useToast();
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const [selectedImgs, setSelectImgs] = useState<any>([]);
+
+  const [editQuestion, setEditQuestion] = useState<string>(pollData.question);
+  const { UPDATE_POLL, HANDLE_FAVORITE } = GraphResolvers.mutations;
+  const { LAST_ACTIVITY, IS_FAVORITE } = GraphResolvers.queries;
+
+  const [editPoll, { loading: editLoading }] = useMutation(UPDATE_POLL);
+  const { data } = useQuery(LAST_ACTIVITY, {
+    variables: { pollId: pollData._id },
+  });
+
+  const handleUpdateQuestion = async () => {
+    const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+    let editQ = {
+      _id: pollData._id,
+      question: editQuestion,
+      pollImages: imgIds,
+    };
+    try {
+      await updatePoll(editPoll, JSON.stringify(editQ));
+      toast({
+        title: "Poll updated successfully",
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+      onClose();
+    } catch (err: any) {
+      if (
+        err.message ===
+        "Content contains inappropriate language.  Please update and resubmit."
+      ) {
+        toast({
+          title:
+            "Content contains inappropriate language.  Please update and resubmit.",
+          status: "error",
+          isClosable: true,
+          duration: 3000,
+        });
+        return;
+      }
+      toast({
+        title: "Error! Cannot create Poll",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    }
+  };
+
   return (
     <Box py="10" px={[4, 4, 24, 24, 40]}>
       <Box
@@ -51,11 +118,14 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
       >
         <Flex justifyContent="space-between" pl="5" pt="4" pr="1">
           <Flex>
-            <Avatar
-              name="xav dave"
-              src={pollData?.creator?.profilePic}
-              border="none"
-            />
+            <Link href={`/Profile/${pollData?.creator?._id}`}>
+              <Avatar
+                name="xav dave"
+                src={pollData?.creator?.profilePic}
+                border="none"
+                cursor="pointer"
+              />
+            </Link>
             <Flex direction="column" justifyContent="center" pl="4">
               <Text fontSize="xs" color="gray.500">
                 by {pollData?.creator?.appid}
@@ -67,7 +137,13 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
           </Flex>
           <HStack align="start" spacing="0">
             <Box mt="2px">
-              <Tag fontWeight="bold" color="gray.500" size="sm" mr="2">
+              <Tag
+                fontWeight="bold"
+                color="gray.500"
+                size="sm"
+                mr="2"
+                variant="outline"
+              >
                 {pollData?.topic?.topic}
               </Tag>
               {pollData.subTopics &&
@@ -121,15 +197,32 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         </Flex>
         <Box py="6" pl={[4, 6, 8]} mr={[6, 6, 8, 10, 16]}>
           {!isOpen ? (
-            <Text fontSize={["sm", "sm", "md"]}>
-              {pollData?.question && pollData.question}
-            </Text>
+            <Box>
+              <Text fontSize={["sm", "sm", "md"]}>
+                {pollData?.question && pollData.question}
+              </Text>
+              <Flex mt="4" align="center">
+                {pollData?.pollImages?.map((x, id) => (
+                  <Box key={id} maxW="100px" mr="4" border="1px solid #d3d3d3">
+                    <BtnImage src={x} />
+                  </Box>
+                ))}
+              </Flex>
+            </Box>
           ) : (
             <Box>
               <Textarea
-                defaultValue={pollData.question}
                 _focus={{ borderColor: "poldit.100" }}
+                onChange={(e) => setEditQuestion(e.target.value)}
+                value={editQuestion}
               />
+              {/* Imageg picker*/}
+              <Box mt="4">
+                <ImgPicker
+                  selectedImgs={selectedImgs}
+                  selectImgs={setSelectImgs}
+                />
+              </Box>
               <Flex w="100%" justify="flex-end" align="center" mt="4" pr="1">
                 <Button
                   bg="poldit.100"
@@ -137,9 +230,10 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                   size="sm"
                   border="1px"
                   mr="2"
-                  onClick={onClose}
+                  onClick={handleUpdateQuestion}
                   _hover={{ bg: "poldit.100", color: "white" }}
                   _focus={{ outline: "none" }}
+                  isLoading={editLoading}
                   _active={{
                     bg: "white",
                     color: "poldit.100",
@@ -163,18 +257,11 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         <Flex justifyContent="flex-end" alignItems="center" mr="2" pb="1">
           <Box mr="2">
             <Text fontSize="xs" color="gray.400">
-              Last activity: 2 days ago
+              {`Last activity: `}
+              <TimeAgo date={data?.lastActivity} live={false} />
             </Text>
           </Box>
-          <IconButton
-            aria-label="heart"
-            icon={<AiOutlineHeart size="22px" />}
-            bg="none"
-            _hover={{ bg: "none" }}
-            _focus={{ outline: "none" }}
-            size="sm"
-          />
-
+          <Favorite favId={pollData._id} favType="Poll" />
           <Popover placement="top">
             <PopoverTrigger>
               <IconButton

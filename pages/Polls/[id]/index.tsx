@@ -10,13 +10,10 @@ import {
 } from "../../../components/appTypes/appType";
 import { SitePageContainer } from "../../../components/layout";
 import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
 import { saveImgtoCloud } from "../../../components/apis/imgUpload";
-import {
-  addNewAnswer,
-  updateViewCount,
-} from "../../../lib/apollo/apolloFunctions/mutations";
+import { updateViewCount } from "../../../lib/apollo/apolloFunctions/mutations";
 import AnsBox from "../../../components/pageComponents/Poll/AnsBox/AnsBox";
 import {
   Box,
@@ -26,13 +23,13 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
 } from "@chakra-ui/react";
-import PollAnswers from "../../../components/pageComponents/Poll/pollAnswers";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
+import { addNewAnswer } from "lib/apollo/apolloFunctions";
 
-const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL } = GraphResolvers.queries;
+const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
+  GraphResolvers.queries;
 const apolloClient = initializeApollo();
 
 interface Props {
@@ -58,6 +55,11 @@ const Poll = ({ pollId }: Props) => {
   };
 
   const { data: user } = useQuery(GET_USER_FOR_POLL);
+  const {
+    data: userList,
+    loading: userListLoading,
+    error: userListError,
+  } = useQuery(GET_POLL_CHAT_USERS, { variables: { pollId } });
 
   const [addAnswerToPolls] = useMutation(
     GraphResolvers.mutations.CREATE_ANSWER,
@@ -79,41 +81,46 @@ const Poll = ({ pollId }: Props) => {
 
   // //Component Mounted
 
+  // useEffect(() => {
+  //   if (router && router.query && router.query.id) {
+  //     updatedPollId(router.query.id as string);
+  //   }
+  // }, [router]);
+
   useEffect(() => {
     updateViewCount(addView, pollId);
   }, []);
 
   useEffect(() => {
-    if (answerData && subscribeToMore) {
-      subscribeToMore({
-        document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
-        variables: { pollId },
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData) return prev;
-          const newAnswerItem = subscriptionData.data.newAnswer;
-          const answerMatchIdx: number = prev?.answersByPoll.findIndex(
-            (item: Answer) => item._id === newAnswerItem._id
+    subscribeToMore({
+      document: GraphResolvers.subscriptions.ANSWER_SUBSCRIPTION,
+      variables: { pollId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const newAnswerItem = subscriptionData.data.newAnswer;
+        console.log("new Answer: ", newAnswerItem);
+        const answerMatchIdx: number = prev?.answersByPoll.findIndex(
+          (item: Answer) => item._id === newAnswerItem._id
+        );
+        if (answerMatchIdx > -1) {
+          //Answer already exists.  This is for likes and dislikes count update without adding new answer
+          const updatedAnswersByPoll = prev.answersByPoll.map(
+            (item: Answer, idx: number) => {
+              if (idx === answerMatchIdx) {
+                return newAnswerItem;
+              } else return item;
+            }
           );
-          if (answerMatchIdx > -1) {
-            //Answer already exists.  This is for likes and dislikes count update without adding new answer
-            const updatedAnswersByPoll = prev.answersByPoll.map(
-              (item: Answer, idx: number) => {
-                if (idx === answerMatchIdx) {
-                  return newAnswerItem;
-                } else return item;
-              }
-            );
-            return Object.assign({}, prev, {
-              answersByPoll: updatedAnswersByPoll,
-            });
-          }
           return Object.assign({}, prev, {
-            answersByPoll: [...prev.answersByPoll, newAnswerItem],
+            answersByPoll: updatedAnswersByPoll,
           });
-        },
-      });
-    }
-  }, [data, answerData]);
+        }
+        return Object.assign({}, prev, {
+          answersByPoll: [...prev.answersByPoll, newAnswerItem],
+        });
+      },
+    });
+  }, []);
 
   // //Functions
 
@@ -134,14 +141,22 @@ const Poll = ({ pollId }: Props) => {
     updateError(udpatedErrorList);
   };
 
-  const addAnswer = async (answer: string, answerImages: SelectedImage[]) => {
-    const imgIds: string[] | undefined = await saveImgtoCloud(answerImages);
+  const addAnswer = async (answer: string, answerImage: SelectedImage) => {
+    let imgId: string | null = null;
 
-    const answerObj = {
+    const answerObj: any = {
       answer,
       poll: data.poll._id,
-      answerImages: imgIds && imgIds,
+      multichoice: [],
+      // answerImage: imgId && imgId,
     };
+
+    if (answerImage) {
+      imgId = await saveImgtoCloud(answerImage);
+      answerObj["answerImage"] = imgId;
+    } else answerObj["answerImage"] = "";
+
+    // addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
 
     addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
   };
@@ -158,13 +173,14 @@ const Poll = ({ pollId }: Props) => {
               removeError={removeError}
             />
           )}
-          <Flex wrap="wrap" pb={6} bg="white" px={[0, 0, 20, 20, 36]}>
+          <Flex wrap="wrap" pb={6} px={[0, 0, 20, 20, 36]}>
             <Box {...flexObj} p={4}>
               <AnsBox
                 answers={answerData?.answersByPoll}
                 loading={loading}
                 addAnswer={addAnswer}
-                poll={data.poll._id}
+                pollId={data.poll._id}
+                pollType={data.poll.pollType}
                 error={answerError}
               />
             </Box>
@@ -176,7 +192,7 @@ const Poll = ({ pollId }: Props) => {
                 boxShadow="0 1px 10px -1px rgba(0,0,0,.2)"
               >
                 <Tabs isFitted>
-                  <TabList mx={[0, 0, 6]}>
+                  <TabList>
                     <Tab
                       _focus={{ outline: "none" }}
                       fontWeight="bold"
@@ -201,15 +217,20 @@ const Poll = ({ pollId }: Props) => {
                     </Tab>
                   </TabList>
                   <TabPanels>
-                    <TabPanel p="0">
+                    <TabPanel bg="white" p="1px" height="846px">
                       <ChatTab
                         pollId={data.poll._id}
                         user={user && user?.getUserDataForPoll}
                         addAnswer={addAnswer}
+                        pollType={data?.poll?.pollType}
                       />
                     </TabPanel>
-                    <TabPanel p="0">
-                      <UserTab />
+                    <TabPanel bg="white" p="1px" height="846px">
+                      <UserTab
+                        userList={userList}
+                        userListLoading={userListLoading}
+                        userListError={userListError}
+                      />
                     </TabPanel>
                   </TabPanels>
                 </Tabs>

@@ -10,7 +10,7 @@ const pollFeedBackQueries = {
           _id
           appid
         }
-        answerImages
+        answerImage
         creationDate
         likes {
           _id
@@ -23,6 +23,29 @@ const pollFeedBackQueries = {
           dislike
         }
         rank
+        multichoice {
+          _id
+          answerVal
+        }
+        multichoiceVotes {
+          _id
+          userId
+          vote
+        }
+      }
+    }
+  `,
+  GET_POLL_CHAT_USERS: gql`
+    query PollChatUsers($pollId: String!) {
+      pollChatUsers(pollId: $pollId) {
+        id
+        appid
+        profilePic
+        followers
+        numPolls
+        numAnswers
+        lastChatMssgDate
+        isActive
       }
     }
   `,
@@ -61,6 +84,7 @@ const pollFeedBackQueries = {
         messages {
           _id
           message
+          isActive
           creator {
             _id
             appid

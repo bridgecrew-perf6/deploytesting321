@@ -7,6 +7,7 @@ const pollSubscriptions = {
         _id
         message
         creationDate
+        isActive
         creator {
           _id
           appid
@@ -27,13 +28,19 @@ const pollSubscriptions = {
           _id
           appid
         }
-        answerImages
+        answerImage
+        multichoice {
+          _id
+          answerVal
+        }
         creationDate
         likes {
+          _id
           userId
           like
         }
         dislikes {
+          _id
           userId
           dislike
         }
@@ -50,7 +57,11 @@ const pollSubscriptions = {
           _id
           appid
         }
-        answerImages
+        multichoice {
+          _id
+          answerVal
+        }
+        answerImage
         creationDate
         likes {
           userId
