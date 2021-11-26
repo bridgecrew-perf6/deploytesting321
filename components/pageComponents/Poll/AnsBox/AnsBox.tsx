@@ -560,7 +560,7 @@ const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
             cursor="pointer"
             color="blue.400"
           >
-            {isOpen ? "Hide" : "Show"} more
+            {isOpen ? "Show less" : "Show more"}
           </Text>
         )}
       </Box>

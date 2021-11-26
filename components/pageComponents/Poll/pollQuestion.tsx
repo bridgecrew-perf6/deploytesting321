@@ -6,6 +6,7 @@ import {
   Flex,
   HStack,
   IconButton,
+  Image,
   Menu,
   MenuButton,
   MenuItem,
@@ -36,6 +37,7 @@ import {
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoMdCopy } from "react-icons/io";
+import { AiOutlineClose } from "react-icons/ai";
 import React, { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
@@ -72,12 +74,14 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
 
   const handleUpdateQuestion = async () => {
     const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
+    let collectiveImages;
     let editQ = {
       _id: pollData._id,
       question: editQuestion,
       pollImages: imgIds,
     };
     try {
+      console.log("editQ", editQ);
       await updatePoll(editPoll, JSON.stringify(editQ));
       toast({
         title: "Poll updated successfully",
@@ -107,6 +111,10 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
         duration: 3000,
       });
     }
+  };
+
+  const delImages = (e: string) => {
+    console.log("e", e);
   };
 
   return (
@@ -203,9 +211,18 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               </Text>
               <Flex mt="4" align="center">
                 {pollData?.pollImages?.map((x, id) => (
-                  <Box key={id} maxW="100px" mr="4" border="1px solid #d3d3d3">
+                  <Flex
+                    key={id}
+                    w="100px"
+                    h="100px"
+                    mr="4"
+                    align="center"
+                    justify="center"
+                    borderWidth="1px"
+                    borderColor="gray.300"
+                  >
                     <BtnImage src={x} />
-                  </Box>
+                  </Flex>
                 ))}
               </Flex>
             </Box>
@@ -223,6 +240,37 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                   selectImgs={setSelectImgs}
                 />
               </Box>
+              <Flex mt="4" align="center">
+                {pollData?.pollImages?.map((x, id) => (
+                  <Flex
+                    mr="4"
+                    position="relative"
+                    h="100px"
+                    w="100px"
+                    align="center"
+                    justify="center"
+                    key={id}
+                    borderWidth="1px"
+                    borderColor="gray.300"
+                  >
+                    <Image src={x} w="100%" />
+                    <IconButton
+                      aria-label="del-images"
+                      color="red.400"
+                      icon={<AiOutlineClose size="15" />}
+                      size="xs"
+                      position="absolute"
+                      top="0"
+                      right="0"
+                      bg="gray.600"
+                      onClick={() => delImages(x)}
+                      _focus={{ outline: "none" }}
+                      _hover={{ bg: "gray.600" }}
+                      _active={{ bg: "gray.500" }}
+                    />
+                  </Flex>
+                ))}
+              </Flex>
               <Flex w="100%" justify="flex-end" align="center" mt="4" pr="1">
                 <Button
                   bg="poldit.100"

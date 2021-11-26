@@ -23,6 +23,7 @@ import { BsFlagFill } from "react-icons/bs";
 import Link from "next/link";
 
 const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
+  const scrollRef = useRef();
   const [userAnswer, setUserAnswer] = useState("");
   const { loading, error, data, subscribeToMore, fetchMore } = useQuery(
     GraphResolvers.queries.GET_POLL_CHAT_PAGES,
@@ -54,9 +55,8 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
     { onError: (e) => console.log(e) }
   );
 
-  const scrollRef = useRef();
-
-  const onSend = (isAnswer: boolean = false) => {
+  const onSend = (e: any, isAnswer: boolean = false) => {
+    e.preventDefault();
     //If isAnswer is true, use Add New Answer mutation along with chat message mutation so it updates the Answer Window above.  Client way is easier than backend way which is repetitive code
     if (!userAnswer) {
       return;
@@ -70,7 +70,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
     });
     addNewChatMssg(addChatMssg, details, pollId);
     if (isAnswer && addAnswer) {
-      addAnswer(userAnswer, []);
+      addAnswer(userAnswer, "");
     }
     setUserAnswer("");
   };
@@ -257,47 +257,50 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       </Box>
 
       <Box borderTop="1px" borderColor="#d2d2d7" pt="15px">
-        <Flex py="4" px={[4, 3]} bg="white">
-          <InputGroup>
-            <Input
-              name="msg"
-              type="text"
-              borderRadius="6px 0 0 6px"
-              placeholder="Type message here..."
-              id="msg"
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              _focus={{ borderColor: "orange.400" }}
-            />
-            {pollType === "openEnded" && (
-              <InputRightElement
-                children={
-                  <Tooltip label="Submit as answer" hasArrow placement="top">
-                    <Text
-                      fontWeight="extrabold"
-                      fontSize="xl"
-                      color="gray.700"
-                      cursor="pointer"
-                      onClick={() => onSend(true)}
-                    >
-                      A
-                    </Text>
-                  </Tooltip>
-                }
+        <form>
+          <Flex py="4" px={[4, 3]} bg="white">
+            <InputGroup>
+              <Input
+                name="msg"
+                type="text"
+                borderRadius="6px 0 0 6px"
+                placeholder="Type message here..."
+                id="msg"
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                _focus={{ borderColor: "orange.400" }}
               />
-            )}
-          </InputGroup>
-          <Button
-            ml="1"
-            bg="gray.700"
-            borderRadius="0 6px 6px 0"
-            _focus={{ outline: "none" }}
-            _hover={{ bg: "gray.800" }}
-            onClick={() => onSend(false)}
-          >
-            <RiSendPlaneFill color="white" size="20px" />
-          </Button>
-        </Flex>
+              {pollType === "openEnded" && (
+                <InputRightElement
+                  children={
+                    <Tooltip label="Submit as answer" hasArrow placement="top">
+                      <Text
+                        fontWeight="extrabold"
+                        fontSize="xl"
+                        color="gray.700"
+                        cursor="pointer"
+                        onClick={(e) => onSend(e, true)}
+                      >
+                        A
+                      </Text>
+                    </Tooltip>
+                  }
+                />
+              )}
+            </InputGroup>
+            <Button
+              ml="1"
+              bg="gray.700"
+              borderRadius="0 6px 6px 0"
+              _focus={{ outline: "none" }}
+              _hover={{ bg: "gray.800" }}
+              onClick={(e) => onSend(e, false)}
+              type="submit"
+            >
+              <RiSendPlaneFill color="white" size="20px" />
+            </Button>
+          </Flex>
+        </form>
       </Box>
     </>
   );
