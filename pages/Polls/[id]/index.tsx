@@ -27,24 +27,24 @@ import {
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
 import { addNewAnswer } from "lib/apollo/apolloFunctions";
-
+import { useRouter } from "next/router";
 const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
   GraphResolvers.queries;
-const apolloClient = initializeApollo();
 
 interface Props {
   pollId: string;
   // data: { poll: PollHistory };
 }
 
-const Poll = ({ pollId }: Props) => {
+//{ pollId }: Props
+
+const Poll = () => {
+  const router = useRouter();
   //States
   const [error, updateError] = useState<string[]>([]);
 
-  //Graph API Requests
-  const { data } = useQuery(GET_POLL, {
-    variables: { pollId },
-  });
+  const pollId = router.query.id;
+
   const flexObj = {
     flex: {
       base: "0 0 100%",
@@ -54,21 +54,15 @@ const Poll = ({ pollId }: Props) => {
     justifyContent: "center",
   };
 
-  const { data: user } = useQuery(GET_USER_FOR_POLL);
+  const { data } = useQuery(GET_POLL, {
+    variables: { pollId },
+  });
+
   const {
     data: userList,
     loading: userListLoading,
     error: userListError,
   } = useQuery(GET_POLL_CHAT_USERS, { variables: { pollId } });
-
-  const [addAnswerToPolls] = useMutation(
-    GraphResolvers.mutations.CREATE_ANSWER,
-    {
-      onError: (e) => addError(e.message),
-    }
-  );
-
-  const [addView] = useMutation(GraphResolvers.mutations.ADD_VIEW);
 
   const {
     data: answerData,
@@ -78,6 +72,17 @@ const Poll = ({ pollId }: Props) => {
   } = useQuery(GraphResolvers.queries.GET_ANSWERS_BY_POLL, {
     variables: { pollId },
   });
+
+  const { data: user } = useQuery(GET_USER_FOR_POLL);
+
+  const [addAnswerToPolls] = useMutation(
+    GraphResolvers.mutations.CREATE_ANSWER,
+    {
+      onError: (e) => addError(e.message),
+    }
+  );
+
+  const [addView] = useMutation(GraphResolvers.mutations.ADD_VIEW);
 
   // //Component Mounted
 
@@ -142,23 +147,30 @@ const Poll = ({ pollId }: Props) => {
   };
 
   const addAnswer = async (answer: string, answerImage: SelectedImage) => {
-    let imgId: string | null = null;
+    if (data) {
+      let imgId: string | null = null;
 
-    const answerObj: any = {
-      answer,
-      poll: data.poll._id,
-      multichoice: [],
-      // answerImage: imgId && imgId,
-    };
+      const answerObj: any = {
+        answer,
+        poll: data?.poll?._id,
+        multichoice: [],
+        // answerImage: imgId && imgId,
+      };
 
-    if (answerImage) {
-      imgId = await saveImgtoCloud(answerImage);
-      answerObj["answerImage"] = imgId;
-    } else answerObj["answerImage"] = "";
+      if (answerImage) {
+        imgId = await saveImgtoCloud(answerImage);
+        answerObj["answerImage"] = imgId;
+      } else answerObj["answerImage"] = "";
 
-    // addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
+      // addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
 
-    addNewAnswer(addAnswerToPolls, JSON.stringify(answerObj), data.poll._id);
+      data?.poll &&
+        addNewAnswer(
+          addAnswerToPolls,
+          JSON.stringify(answerObj),
+          data?.poll?._id
+        );
+    }
   };
 
   if (data) {
@@ -238,21 +250,21 @@ const Poll = ({ pollId }: Props) => {
             </Box>
           </Flex>
           {/*
-			  <div className="position-relative mb-2">
-			  <MaxMinBtn
-			  btnState={chatSection}
-			  toggleBtn={toggleSection}
-			  btnCat="chat"
-			  />
-			  <PollChat
-			  pollId={data.poll._id}
-			  addAnswer={addAnswer}
-			  addError={addError}
-			  showSection={chatSection}
-			  user={user && user?.getUserDataForPoll}
-			  />
-			  </div>
-		  */}
+    <div className="position-relative mb-2">
+    <MaxMinBtn
+    btnState={chatSection}
+    toggleBtn={toggleSection}
+    btnCat="chat"
+    />
+    <PollChat
+    pollId={data.poll._id}
+    addAnswer={addAnswer}
+    addError={addError}
+    showSection={chatSection}
+    user={user && user?.getUserDataForPoll}
+    />
+    </div>
+  */}
         </div>
       </SitePageContainer>
     );
@@ -262,25 +274,3 @@ const Poll = ({ pollId }: Props) => {
 };
 
 export default Poll;
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  return {
-    props: {
-      pollId: params?.id,
-    },
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await apolloClient.query({
-    query: GET_POLLS_ALL,
-  });
-
-  const ids: string[] = res.data.polls.map((poll: PollHistory) => poll._id);
-  const paths = ids.map((id) => ({ params: { id } }));
-
-  return {
-    paths,
-    fallback: true,
-  };
-};
