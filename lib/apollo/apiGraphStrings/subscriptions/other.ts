@@ -7,6 +7,7 @@ const otherSubscriptions = {
         _id
         message
         creationDate
+        read
         notificationType
         notificationId
         contentOwner {
