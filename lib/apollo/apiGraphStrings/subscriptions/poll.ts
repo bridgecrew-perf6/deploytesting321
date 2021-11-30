@@ -33,6 +33,11 @@ const pollSubscriptions = {
           _id
           answerVal
         }
+        multichoiceVotes {
+          _id
+          userId
+          vote
+        }
         creationDate
         likes {
           _id

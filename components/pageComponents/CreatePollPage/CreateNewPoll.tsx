@@ -19,7 +19,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { AiOutlineMinusSquare, AiOutlinePlusSquare } from "react-icons/ai";
 import { FiTrash } from "react-icons/fi";
@@ -29,6 +29,8 @@ import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
 import { useRouter } from "next/router";
 import { addNewSubTopic } from "lib/apollo/apolloFunctions/mutations";
+import Link from "next/link";
+import { CancelPopup, ClearAllPopUp } from "../Other/Modal/Popup";
 
 const CreateNewPoll: React.FC<{}> = () => {
   const router = useRouter();
@@ -49,6 +51,8 @@ const CreateNewPoll: React.FC<{}> = () => {
   const [optionText, setOptionText] = useState<string>("");
   const [selectedImgs, setSelectImgs] = useState<any>([]);
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clrBtn, toggleClearBtn] = useState(false);
 
   const { CREATE_POLL, CREATE_SUBTOPIC } = GraphResolvers.mutations;
   const { GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
@@ -65,7 +69,9 @@ const CreateNewPoll: React.FC<{}> = () => {
   const [
     getSubTopics,
     { data: subTopicsData, loading: subTopicLoading, error: subTopicError },
-  ] = useLazyQuery(GET_SUBTOPICS_PER_TOPIC);
+  ] = useLazyQuery(GET_SUBTOPICS_PER_TOPIC, {
+    onCompleted: (e) => console.log(e),
+  });
 
   useEffect(() => {
     if (selectedTopic && selectedTopic.name) {
@@ -266,6 +272,15 @@ const CreateNewPoll: React.FC<{}> = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const clearNewPoll = () => {
+    setQuestionType("openEnded");
+    setQuestionField("");
+    setSelectedTopic(null);
+    setSelectedSub([]);
+    setSelectImgs([]);
+    setOptions([]);
   };
 
   return (
@@ -646,8 +661,15 @@ const CreateNewPoll: React.FC<{}> = () => {
         {/* Submit Poll*/}
         <Box mt="6">
           <Flex justify="flex-end" align="center">
+            <ClearAllPopUp
+              isOpen={clrBtn}
+              toggle={toggleClearBtn}
+              clear={clearNewPoll}
+            />
             <Button
               borderColor="poldit.100"
+              mr="15px"
+              ml="15px"
               borderWidth="1px"
               bg="poldit.100"
               color="white"
@@ -661,6 +683,11 @@ const CreateNewPoll: React.FC<{}> = () => {
             >
               Create Poll
             </Button>
+            <CancelPopup
+              isOpen={isModalOpen}
+              toggle={setIsModalOpen}
+              clear={clearNewPoll}
+            />
           </Flex>
         </Box>
       </Box>

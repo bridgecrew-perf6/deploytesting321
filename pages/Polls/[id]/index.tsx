@@ -103,7 +103,6 @@ const Poll = () => {
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
         const newAnswerItem = subscriptionData.data.newAnswer;
-        console.log("new Answer: ", newAnswerItem);
         const answerMatchIdx: number = prev?.answersByPoll.findIndex(
           (item: Answer) => item._id === newAnswerItem._id
         );
