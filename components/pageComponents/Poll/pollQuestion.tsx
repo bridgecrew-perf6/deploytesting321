@@ -42,7 +42,10 @@ import React, { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import { updatePoll } from "lib/apollo/apolloFunctions/mutations";
+import {
+  removeImgFromPoll,
+  updatePoll,
+} from "lib/apollo/apolloFunctions/mutations";
 
 import Favorite from "../Poll/PollCtrs/favorite";
 import dynamic from "next/dynamic";
@@ -64,13 +67,16 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
   const [selectedImgs, setSelectImgs] = useState<any>([]);
 
   const [editQuestion, setEditQuestion] = useState<string>(pollData.question);
-  const { UPDATE_POLL, HANDLE_FAVORITE } = GraphResolvers.mutations;
+  const { UPDATE_POLL, HANDLE_FAVORITE, REMOVE_IMAGE } =
+    GraphResolvers.mutations;
   const { LAST_ACTIVITY, IS_FAVORITE } = GraphResolvers.queries;
 
   const [editPoll, { loading: editLoading }] = useMutation(UPDATE_POLL);
   const { data } = useQuery(LAST_ACTIVITY, {
     variables: { pollId: pollData._id },
   });
+
+  const [removeImg] = useMutation(REMOVE_IMAGE);
 
   const handleUpdateQuestion = async () => {
     const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
@@ -113,8 +119,10 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
     }
   };
 
-  const delImages = (e: string) => {
-    console.log("e", e);
+  const delImages = (img: string, pollId: string) => {
+    const details = JSON.stringify({ _id: pollId, pollImage: img });
+
+    removeImgFromPoll(removeImg, details);
   };
 
   return (
@@ -263,7 +271,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                       top="0"
                       right="0"
                       bg="gray.600"
-                      onClick={() => delImages(x)}
+                      onClick={() => delImages(x, pollData._id)}
                       _focus={{ outline: "none" }}
                       _hover={{ bg: "gray.600" }}
                       _active={{ bg: "gray.500" }}

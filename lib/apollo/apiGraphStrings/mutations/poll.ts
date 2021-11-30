@@ -10,10 +10,15 @@ const pollMutations = {
     }
   `,
   UPDATE_POLL: gql`
-  mutation UpdatePoll($details: String!) {
-    updatePoll(details: $details)
-  }
-`,
+    mutation UpdatePoll($details: String!) {
+      updatePoll(details: $details)
+    }
+  `,
+  REMOVE_IMAGE: gql`
+    mutation RemoveImageFromPoll($details: String!) {
+      removeImageFromPoll(details: $details)
+    }
+  `,
   ADD_VIEW: gql`
     mutation AddView($pollId: String!) {
       addView(pollId: $pollId)

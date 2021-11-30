@@ -298,6 +298,52 @@ export const updateAnswer = async (
   }
 };
 
+export const removeImgFromPoll = async (
+  removeImgFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: string
+) => {
+  const pollObj = JSON.parse(details);
+
+  try {
+    await removeImgFunc({
+      variables: { details },
+      update(cache, { data }) {
+        const pollData: any = cache.readQuery({
+          query: GET_POLL,
+          variables: { pollId: pollObj._id },
+        });
+
+        const filteredPollImgs = pollData.poll.pollImages.filter(
+          (img: string) => img !== pollObj.pollImage
+        );
+
+        cache.writeQuery({
+          query: gql`
+            query Poll($pollId: String!) {
+              poll(pollId: $pollId) {
+                _id
+                __typename
+                pollImages
+              }
+            }
+          `,
+          data: {
+            poll: {
+              _id: pollObj._id,
+              __typename: "PollQuestion",
+              pollImages: filteredPollImgs,
+            },
+          },
+        });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const updatePoll = async (
   updatePollFunc: (
     options?: MutationFunctionOptions<any, OperationVariables> | undefined
@@ -310,6 +356,16 @@ export const updatePoll = async (
     await updatePollFunc({
       variables: { details },
       update(cache, { data: { updatePoll } }) {
+        const pollData: any = cache.readQuery({
+          query: GET_POLL,
+          variables: { pollId: pollObj._id },
+        });
+
+        const pollImages =
+          pollObj.pollImages.length > 0
+            ? pollObj.pollImages
+            : pollData.poll.pollImages;
+
         cache.writeQuery({
           query: gql`
             query Poll($pollId: String!) {
@@ -317,6 +373,7 @@ export const updatePoll = async (
                 _id
                 __typename
                 question
+                pollImages
               }
             }
           `,
@@ -325,6 +382,7 @@ export const updatePoll = async (
               _id: pollObj._id,
               __typename: "PollQuestion",
               question: pollObj.question,
+              pollImages,
             },
           },
         });
