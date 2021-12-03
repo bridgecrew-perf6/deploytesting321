@@ -54,7 +54,7 @@ const Poll = ({ pollId }: Props) => {
     justifyContent: "center",
   };
 
-  const { data: user } = useQuery(GET_USER_FOR_POLL);
+  const { data: user, error: errUser } = useQuery(GET_USER_FOR_POLL);
   const {
     data: userList,
     loading: userListLoading,

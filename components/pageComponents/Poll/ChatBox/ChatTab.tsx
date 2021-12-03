@@ -144,7 +144,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
               </Flex>
             ) : (
               data?.messageFeedByPoll?.messages.map((d: any) =>
-                user._id !== d?.creator?._id ? (
+                !user || user._id !== d?.creator?._id ? (
                   <Flex key={d._id} my="2" justifyContent="flex-start">
                     <Flex
                       alignItems="flex-start"

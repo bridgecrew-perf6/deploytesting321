@@ -23,12 +23,8 @@ import NotificationWindow from "./NotificationWindow";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-const {
-  GET_USER,
-  LOG_OUT,
-  GET_NOTIFICATIONS,
-  GET_APPUSER,
-} = GraphResolvers.queries;
+const { GET_USER, LOG_OUT, GET_NOTIFICATIONS, GET_APPUSER } =
+  GraphResolvers.queries;
 const {
   customBtn,
   customBtnOutline,
@@ -49,10 +45,13 @@ export default function ProfileHeader(props: any) {
 
   const [getAppUserData, { data: appUserData }] = useLazyQuery(GET_APPUSER);
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
-  const { data: notificationData, subscribeToMore } = useQuery(
-    GET_NOTIFICATIONS,
-    { onCompleted: (res) => updateNotifications(res.notifications) }
-  );
+  const {
+    data: notificationData,
+    subscribeToMore,
+    error: notificationError,
+  } = useQuery(GET_NOTIFICATIONS, {
+    onCompleted: (res) => updateNotifications(res.notifications),
+  });
 
   useEffect(() => {
     let cookies: any = Cookies.get("userId");
@@ -178,7 +177,10 @@ export default function ProfileHeader(props: any) {
             )}
           </div>
         </ToolTipCtr>
-        <NotificationWindow data={notificationData?.notifications} />
+        {!notificationError && (
+          <NotificationWindow data={notificationData?.notifications} />
+        )}
+        {/* <NotificationWindow data={notificationData?.notifications} /> */}
         <div>
           <ProfileImg
             profilePic={appUserData?.getAppUserData?.profilePic}

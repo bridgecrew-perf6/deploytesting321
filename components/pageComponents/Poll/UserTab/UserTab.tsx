@@ -13,8 +13,13 @@ import { Scrollbars } from "react-custom-scrollbars-2";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { BiErrorCircle } from "react-icons/bi";
 import { BsChat } from "react-icons/bs";
+import { ChatUser } from "_components/appTypes/appType";
 
 export const UserTab = ({ userList, userListLoading, userListError }: any) => {
+  const handleFollow = () => {
+    console.log("follow");
+  };
+
   if (userListLoading) {
     return (
       <Box>
@@ -43,14 +48,19 @@ export const UserTab = ({ userList, userListLoading, userListError }: any) => {
       <Scrollbars style={{ height: "845px" }}>
         {userList?.pollChatUsers &&
           userList?.pollChatUsers.map((x: any) => (
-            <UserListItem key={x.id} user={x} />
+            <UserListItem key={x.id} user={x} handleFollow={handleFollow} />
           ))}
       </Scrollbars>
     </Box>
   );
 };
 
-const UserListItem = ({ user }: { user: any }) => {
+interface UserListItem {
+  user: ChatUser;
+  handleFollow: () => void;
+}
+
+const UserListItem = ({ user, handleFollow }: UserListItem) => {
   return (
     <Box bg="#f2f2f2" my="2" mx={[1, 1, 3]} borderRadius="lg">
       <Flex py="4" px={[1, 1, 4]} align="center" justify="space-between">
@@ -58,6 +68,7 @@ const UserListItem = ({ user }: { user: any }) => {
           <Tooltip hasArrow placement="top" label="Follow">
             <IconButton
               icon={<AiOutlinePlusCircle size="23px" />}
+              onClick={handleFollow}
               aria-label="thumbsup"
               variant="ghost"
               _focus={{ outline: "none" }}

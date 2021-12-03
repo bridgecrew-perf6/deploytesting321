@@ -385,6 +385,17 @@ interface ChatMessage {
   chatImages?: string[];
 }
 
+interface ChatUser {
+  id: string
+  appid: string
+  followers: number
+  numPolls: number
+  profilePic?: string
+  numAnswers: number
+  lastChatMssgDate: string
+  isActive: Boolean
+}
+
 interface SliderSettings {
   className?: string;
   centerMode?: boolean;
