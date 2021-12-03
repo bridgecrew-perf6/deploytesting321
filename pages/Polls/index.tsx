@@ -45,12 +45,14 @@ const PollsHome = () => {
 
   const [getPollsByTopic] = useLazyQuery(GET_POLLS_BY_TOPIC, {
     fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     onCompleted: (res) => updatePollData(res.pollsByTopic),
     onError: (err) => setErrorMssg("Content Not Available for this Topic"),
   });
 
   const [getPollsBySubTopic] = useLazyQuery(GET_POLLS_BY_SUBTOPIC, {
     fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
     onCompleted: (res) => updatePollData(res.pollsBySubTopic),
     onError: (err) => setErrorMssg("Content Not Available for this Sub-Topic"),
   });
@@ -59,6 +61,7 @@ const PollsHome = () => {
     GET_SUBTOPICS_PER_TOPIC,
     {
       fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
       onCompleted: (res) => {
         res.subTopicsPerTopic.length > 0
           ? prepDataList(res.subTopicsPerTopic, "Sub-Topic")
@@ -77,6 +80,7 @@ const PollsHome = () => {
 
   //Functions
   const loadPollData = (catType: string, catId: string | string[]) => {
+    console.log("Poll by topic id is ->", catId, catType);
     if (catType === "topic") {
       getPollsByTopic({ variables: { topic: catId } });
 

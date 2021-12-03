@@ -10,6 +10,11 @@ interface TagWindow {
   subTopics: ISubTopic[];
 }
 
+// const isLoggedIn = () => {
+//   let cookie: any = Cookies.get("polditSession");
+//   return isTokkenValid(cookie ?? "");
+// };
+
 export const TagWindow = ({ pollId, topic, subTopics }: TagWindow) => {
   return (
     <div className="d-flex align-items-center justify-content-between">

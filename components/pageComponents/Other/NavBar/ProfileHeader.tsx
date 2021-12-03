@@ -35,6 +35,8 @@ const {
 export default function ProfileHeader(props: any) {
   const router = useRouter();
   const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [navLoading, setNavLoading] = useState(true);
   // let userId = Cookies.get("userId");
   const [notification, toggleNotification] = useState(false);
   const [userNotifications, updateNotifications] = useState<UserNotification[]>(
@@ -56,6 +58,7 @@ export default function ProfileHeader(props: any) {
   useEffect(() => {
     let cookies: any = Cookies.get("userId");
     setUserId(cookies);
+    setNavLoading(false);
   }, [userId]);
 
   useEffect(() => {
@@ -67,6 +70,7 @@ export default function ProfileHeader(props: any) {
   useEffect(() => {
     if (appUserData) {
       appContext?.updateUserData(appUserData);
+      setLoading(false);
     }
   }, [appUserData]);
 
@@ -121,14 +125,14 @@ export default function ProfileHeader(props: any) {
     );
   };
 
-  if (userId) {
+  if (userId && !navLoading) {
     const unreadNotifications = notificationData?.notifications.filter(
       (item: UserNotification) => !item.read
     ).length;
 
     const superUserList = process.env.NEXT_PUBLIC_SUPERUSERS?.split("_");
 
-    return (
+    return !loading ? (
       <div
         className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
         style={{
@@ -148,10 +152,10 @@ export default function ProfileHeader(props: any) {
           </div>
         </Link>
         {/* {superUserList?.includes(appid) && (
-          <>
-            <NewTopicBtn />
-          </>
-        )} */}
+        <>
+          <NewTopicBtn />
+        </>
+      )} */}
 
         <ToolTipCtr
           mssg="Notifications"
@@ -228,10 +232,21 @@ export default function ProfileHeader(props: any) {
           </div>
         </div>
       </div>
+    ) : (
+      <div
+        className="d-flex form-row align-items-center justify-content-between pr-2 pl-1"
+        style={{
+          width: "25rem",
+          marginLeft: 5,
+          alignItems: "center",
+        }}
+      >
+        <AppLoadingLite />
+      </div>
     );
   }
 
-  if (!userId) {
+  if (!userId && !navLoading) {
     return (
       <div
         className="d-flex form-row align-items-center justify-content-around pr-2 pl-1"

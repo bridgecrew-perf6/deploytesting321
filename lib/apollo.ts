@@ -102,11 +102,12 @@ const errorLink = onError(
 );
 
 const authLink = setContext((request, previousContext) => {
+  let myAuthCookie = Cookies.get("polditSession");
   return {
     headers: {
       ...previousContext.headers,
-      cookie: appCookie ? appCookie : "",
-      authorization: appToken ? `Bearer ${appToken}` : "",
+      cookie: myAuthCookie ? myAuthCookie : "",
+      authorization: myAuthCookie ? `Bearer ${myAuthCookie}` : "",
     },
   };
 });

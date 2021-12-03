@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { useCallback } from "react";
 import {
   Box,
   Flex,
@@ -60,6 +61,7 @@ const AnsBox = ({
   const [ansState, setAnsState] = useState<any[]>([]);
   const [orgAns, setOrgAns] = useState<any[] | null>(null);
   const [page, setPage] = useState(1);
+
   const [handleLikes_disLikes] = useMutation(
     GraphResolvers.mutations.LIKE_DISLIKE_HANDLER
   );
@@ -69,6 +71,7 @@ const AnsBox = ({
   );
 
   const auth = useAuth();
+
   useEffect(() => {
     const userId = auth?.authState?.getUserData?._id;
     if (pollType !== "openEnded" && userId) {
@@ -130,6 +133,7 @@ const AnsBox = ({
     const details = JSON.stringify({ id, answerId, userId });
     try {
       await handleMultiChoice({ variables: { details } });
+
       toast({
         title: "Answer submitted successfully",
         status: "success",

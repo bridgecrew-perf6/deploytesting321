@@ -203,7 +203,7 @@ export const updateViewCount = async (
   addViewFunc: (
     options?: MutationFunctionOptions<any, OperationVariables> | undefined
   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  pollId: string
+  pollId: string | any
 ) => {
   try {
     await addViewFunc({
@@ -214,14 +214,16 @@ export const updateViewCount = async (
           variables: { pollId },
         });
 
-        cache.modify({
-          id: cache.identify(poll.poll),
-          fields: {
-            views(cachedData = 0, { readField }) {
-              return (cachedData += 1);
+        if (poll && poll.poll) {
+          cache.modify({
+            id: cache.identify(poll.poll),
+            fields: {
+              views(cachedData = 0, { readField }) {
+                return (cachedData += 1);
+              },
             },
-          },
-        });
+          });
+        }
       },
     });
   } catch (err) {
@@ -486,3 +488,33 @@ export const addNewChatMssg = async (
 //     throw err;
 //   }
 // };
+
+//////////////////
+const addAllPolesToCache = async (
+  addChatMssgFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: string,
+  pollId: string
+) => {
+  try {
+    addChatMssgFunc({
+      variables: { details },
+      update(cache, { data: { createMessage } }) {
+        const poll: any = cache.readQuery({
+          query: GET_POLL,
+          variables: { pollId },
+        });
+
+        // cache.writeQuery({
+        //   query: GET_ACTIVE_CHATS,
+        //   data: {
+        //     activeChats: activeChatsUpdated,
+        //   },
+        // });
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};

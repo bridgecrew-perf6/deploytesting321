@@ -9,6 +9,10 @@ import Link from "next/link";
 import { ChatMessage, PollHistory } from "../../appTypes/appType";
 import { getButtonIcon } from "./siteIconCtrs/pollIconFuncs";
 import { numCountDisplay } from "../../formFuncs/miscFuncs";
+import { useRouter } from "next/router";
+import AppLoading, {
+  AppLoadingLite,
+} from "../../../components/pageComponents/Other/Loading";
 
 const { customBtn, customBtnOutline, customBtnOutlinePrimary } = btnStyles;
 
@@ -100,18 +104,29 @@ const PollViews = ({ views }: { views: number }) => {
 };
 
 export const PollBtn = ({ pollId }: { pollId: string }) => {
+  const [loading, setLoading] = useState<Boolean>(false);
   return (
-    <Link href={`/Polls/${pollId}`}>
-      <div>
-        <ToolTipCtr
-          mssg="Go To Poll"
-          position="top"
-          style={{ bottom: "40px", left: "50%" }}
-        >
-          <CustomBtn fontSize={13}>Poll</CustomBtn>
-        </ToolTipCtr>
-      </div>
-    </Link>
+    <div
+      onClick={() => {
+        setLoading(true);
+      }}
+    >
+      {!loading ? (
+        <Link href={`/Polls/${pollId}`}>
+          <div>
+            <ToolTipCtr
+              mssg="Go To Poll"
+              position="top"
+              style={{ bottom: "40px", left: "50%" }}
+            >
+              <CustomBtn fontSize={13}>Poll</CustomBtn>
+            </ToolTipCtr>
+          </div>
+        </Link>
+      ) : (
+        <AppLoadingLite />
+      )}
+    </div>
   );
 };
 
