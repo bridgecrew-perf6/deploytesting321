@@ -75,9 +75,9 @@ const AnsBox = ({
   useEffect(() => {
     const userId = auth?.authState?.getUserData?._id;
     if (pollType !== "openEnded" && userId) {
-      const yourVote = answers[0]?.multichoiceVotes.find(
-        (a: any) => userId === a.userId
-      );
+      const yourVote =
+        answers?.length > 0 &&
+        answers[0]?.multichoiceVotes.find((a: any) => userId === a.userId);
       setMyVote(yourVote?.vote);
     }
   }, [answers, auth]);
@@ -195,16 +195,17 @@ const AnsBox = ({
                     </Text>
                   </Flex>
                   <Box py={6} px={[4, 6]} bg="#f2f2f2" rounded="6px">
-                    {answers[0]?.multichoice?.map((x: any, id: number) => (
-                      <MultiChoiceCard
-                        data={x}
-                        key={x._id}
-                        id={id}
-                        answers={answers[0]}
-                        choose={multiChoiceHandler}
-                        myVote={myVote}
-                      />
-                    ))}
+                    {answers?.length > 0 &&
+                      answers[0]?.multichoice?.map((x: any, id: number) => (
+                        <MultiChoiceCard
+                          data={x}
+                          key={x._id}
+                          id={id}
+                          answers={answers[0]}
+                          choose={multiChoiceHandler}
+                          myVote={myVote}
+                        />
+                      ))}
                     {/* <Box mb="4" >
                     <Text
                       fontSize="md"
