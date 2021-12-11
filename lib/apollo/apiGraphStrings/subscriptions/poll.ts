@@ -29,6 +29,7 @@ const pollSubscriptions = {
           appid
         }
         answerImage
+        isEditable
         multichoice {
           _id
           answerVal

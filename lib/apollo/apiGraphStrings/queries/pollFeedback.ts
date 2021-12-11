@@ -12,6 +12,7 @@ const pollFeedBackQueries = {
         }
         answerImage
         creationDate
+        isEditable
         likes {
           _id
           userId
@@ -46,6 +47,7 @@ const pollFeedBackQueries = {
         numAnswers
         lastChatMssgDate
         isActive
+        isFollowed
       }
     }
   `,

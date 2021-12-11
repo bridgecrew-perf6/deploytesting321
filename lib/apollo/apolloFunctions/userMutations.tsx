@@ -228,45 +228,45 @@ export const updateViewCount = async (
   }
 };
 
-export const addNewAnswer = async (
-  addAnswerFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: string,
-  pollId: string
-) => {
-  try {
-    addAnswerFunc({
-      variables: { details },
-      update(cache, { data: { createAnswer } }) {
-        const poll: any = cache.readQuery({
-          query: GET_POLL,
-          variables: { pollId },
-        });
+// export const addNewAnswer = async (
+//   addAnswerFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   details: string,
+//   pollId: string
+// ) => {
+//   try {
+//     addAnswerFunc({
+//       variables: { details },
+//       update(cache, { data: { createAnswer } }) {
+//         const poll: any = cache.readQuery({
+//           query: GET_POLL,
+//           variables: { pollId },
+//         });
 
-        cache.modify({
-          id: cache.identify(poll.poll),
-          fields: {
-            answers(cachedAnswers = [], { readField }) {
-              const newAnswerRef = cache.writeFragment({
-                data: createAnswer,
-                fragment: gql`
-                  fragment CreateAnswer on Answers {
-                    _id
-                  }
-                `,
-              });
+//         cache.modify({
+//           id: cache.identify(poll.poll),
+//           fields: {
+//             answers(cachedAnswers = [], { readField }) {
+//               const newAnswerRef = cache.writeFragment({
+//                 data: createAnswer,
+//                 fragment: gql`
+//                   fragment CreateAnswer on Answers {
+//                     _id
+//                   }
+//                 `,
+//               });
 
-              return [...cachedAnswers, newAnswerRef];
-            },
-          },
-        });
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//               return [...cachedAnswers, newAnswerRef];
+//             },
+//           },
+//         });
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
 export const addNewChatMssg = async (
   addChatMssgFunc: (

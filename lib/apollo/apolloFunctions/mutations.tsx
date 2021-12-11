@@ -101,79 +101,79 @@ export const updateUserProfile = async (
   }
 };
 
-export const addFollow = async (
-  followFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  userId: string
-) => {
-  try {
-    await followFunc({
-      variables: { userId },
-      update(cache, { data: { addFollow } }) {
-        const user: any = cache.readQuery({
-          query: GET_USER,
-        });
+// export const addFollow = async (
+//   followFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   userId: string
+// ) => {
+//   try {
+//     await followFunc({
+//       variables: { userId },
+//       update(cache, { data: { addFollow } }) {
+//         const user: any = cache.readQuery({
+//           query: GET_USER,
+//         });
 
-        cache.modify({
-          id: cache.identify(user?.getUserData.user),
-          fields: {
-            following(cachedData = [], { readField }) {
-              const newFollowRef = cache.writeFragment({
-                data: addFollow,
-                fragment: gql`
-                  fragment AddFollow on Following {
-                    _id
-                    appId
-                    profilePic
-                  }
-                `,
-              });
+//         cache.modify({
+//           id: cache.identify(user?.getUserData.user),
+//           fields: {
+//             following(cachedData = [], { readField }) {
+//               const newFollowRef = cache.writeFragment({
+//                 data: addFollow,
+//                 fragment: gql`
+//                   fragment AddFollow on Following {
+//                     _id
+//                     appId
+//                     profilePic
+//                   }
+//                 `,
+//               });
 
-              return [...cachedData, newFollowRef];
-            },
-          },
-        });
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//               return [...cachedData, newFollowRef];
+//             },
+//           },
+//         });
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
-export const removeFollow = async (
-  followFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  userId: string
-) => {
-  try {
-    await followFunc({
-      variables: { userId },
-      update(cache, { data: { removeFollow } }) {
-        const user: any = cache.readQuery({
-          query: GET_USER,
-        });
+// export const removeFollow = async (
+//   followFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   userId: string
+// ) => {
+//   try {
+//     await followFunc({
+//       variables: { userId },
+//       update(cache, { data: { removeFollow } }) {
+//         const user: any = cache.readQuery({
+//           query: GET_USER,
+//         });
 
-        cache.modify({
-          id: user?.getUserData._id,
-          fields: {
-            following(cachedData, { readField }) {
-              return cachedData.filter(
-                (itemRef: StoreObject | Reference | undefined) =>
-                  removeFollow._id !== readField("_id", itemRef)
-              );
-            },
-          },
-        });
+//         cache.modify({
+//           id: user?.getUserData._id,
+//           fields: {
+//             following(cachedData, { readField }) {
+//               return cachedData.filter(
+//                 (itemRef: StoreObject | Reference | undefined) =>
+//                   removeFollow._id !== readField("_id", itemRef)
+//               );
+//             },
+//           },
+//         });
 
-        cache.evict(removeFollow._id);
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//         cache.evict(removeFollow._id);
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
 export const handleFavorite = async (
   favoriteFunc: (
@@ -279,6 +279,8 @@ export const updateAnswer = async (
   details: string
 ) => {
   const answerObj = JSON.parse(details);
+  console.log("details: ", details);
+  console.log("answerObj: ", answerObj);
 
   try {
     await updateAnswerFunc({
@@ -289,9 +291,13 @@ export const updateAnswer = async (
           fragment: gql`
             fragment UpdateAnswer on AnswersByPoll {
               answer
+              answerImage
             }
           `,
-          data: { answer: answerObj.answer },
+          data: {
+            answer: answerObj.answer,
+            answerImage: answerObj.answerImage,
+          },
         });
       },
     });
@@ -457,6 +463,34 @@ export const addNewChatMssg = async (
             },
           });
         }
+      },
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const followHandler = async (
+  handleFollowFunc: (
+    options?: MutationFunctionOptions<any, OperationVariables> | undefined
+  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+  details: string
+) => {
+  const chatUser = JSON.parse(details);
+
+  try {
+    handleFollowFunc({
+      variables: { details },
+      update(cache, { data }) {
+        cache.modify({
+          id: cache.identify(chatUser),
+          fields: {
+            isFollowed(cachedData = false, { readField }) {
+              console.log("cachedData: ", cachedData);
+              return !cachedData;
+            },
+          },
+        });
       },
     });
   } catch (err) {

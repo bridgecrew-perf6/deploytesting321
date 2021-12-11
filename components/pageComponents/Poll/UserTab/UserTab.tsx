@@ -7,17 +7,46 @@ import {
   Spinner,
   Text,
   Tooltip,
+  Spacer,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { useMutation, useQuery, ApolloError } from "@apollo/client";
 import { Scrollbars } from "react-custom-scrollbars-2";
-import { AiOutlinePlusCircle } from "react-icons/ai";
+import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
+import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 import { BiErrorCircle } from "react-icons/bi";
 import { BsChat } from "react-icons/bs";
 import { ChatUser } from "_components/appTypes/appType";
+import { followHandler } from "lib/apollo/apolloFunctions/mutations";
+import { useEffect } from "react";
 
-export const UserTab = ({ userList, userListLoading, userListError }: any) => {
-  const handleFollow = () => {
-    console.log("follow");
+interface UserTab {
+  appUser: string;
+  pollId: string | string[] | undefined;
+  userList: { pollChatUsers: ChatUser[] };
+  userListLoading: boolean;
+  userListError: ApolloError | undefined;
+}
+
+export const UserTab = ({
+  appUser,
+  pollId,
+  userList,
+  userListLoading,
+  userListError,
+}: UserTab) => {
+  const [toggleFollow] = useMutation(GraphResolvers.mutations.HANDLE_FOLLOW);
+
+  // useEffect(() => {
+  //   subscribe({
+  //     document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
+  //     variables: { pollId },
+  //     updateQuery: () => {},
+  //   });
+  // }, []);
+
+  const handleFollow = (user: ChatUser) => {
+    followHandler(toggleFollow, JSON.stringify(user));
   };
 
   if (userListLoading) {
@@ -48,7 +77,12 @@ export const UserTab = ({ userList, userListLoading, userListError }: any) => {
       <Scrollbars style={{ height: "845px" }}>
         {userList?.pollChatUsers &&
           userList?.pollChatUsers.map((x: any) => (
-            <UserListItem key={x.id} user={x} handleFollow={handleFollow} />
+            <UserListItem
+              key={x.id}
+              user={x}
+              handleFollow={handleFollow}
+              appUser={appUser}
+            />
           ))}
       </Scrollbars>
     </Box>
@@ -57,27 +91,44 @@ export const UserTab = ({ userList, userListLoading, userListError }: any) => {
 
 interface UserListItem {
   user: ChatUser;
-  handleFollow: () => void;
+  handleFollow: (user: ChatUser) => void;
+  appUser: string;
 }
 
-const UserListItem = ({ user, handleFollow }: UserListItem) => {
+const UserListItem = ({ user, handleFollow, appUser }: UserListItem) => {
+  const isAppUser = appUser === user.id;
+
   return (
     <Box bg="#f2f2f2" my="2" mx={[1, 1, 3]} borderRadius="lg">
       <Flex py="4" px={[1, 1, 4]} align="center" justify="space-between">
         <Flex align="center">
-          <Tooltip hasArrow placement="top" label="Follow">
-            <IconButton
-              icon={<AiOutlinePlusCircle size="23px" />}
-              onClick={handleFollow}
-              aria-label="thumbsup"
-              variant="ghost"
-              _focus={{ outline: "none" }}
-              _hover={{ bg: "none" }}
-              _active={{ bg: "none" }}
-              size="sm"
-              color="gray.800"
-            />
-          </Tooltip>
+          {!isAppUser ? (
+            <Tooltip
+              hasArrow
+              placement="top"
+              label={!user.isFollowed ? "Follow" : "Unfollow"}
+            >
+              <IconButton
+                icon={
+                  !user.isFollowed ? (
+                    <AiOutlinePlusCircle size="23px" />
+                  ) : (
+                    <AiOutlineMinusCircle size="23px" />
+                  )
+                }
+                onClick={() => handleFollow(user)}
+                aria-label="thumbsup"
+                variant="ghost"
+                _focus={{ outline: "none" }}
+                _hover={{ bg: "none" }}
+                _active={{ bg: "none" }}
+                size="sm"
+                color="gray.800"
+              />
+            </Tooltip>
+          ) : (
+            <Box mr="32px" />
+          )}
           <Box mx="3" position="relative">
             <Link href={`/Profile/${user.id}`}>
               <Avatar

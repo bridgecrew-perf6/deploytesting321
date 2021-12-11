@@ -1,5 +1,3 @@
-import dynamic from "next/dynamic";
-import { useCallback } from "react";
 import {
   Box,
   Flex,
@@ -9,15 +7,10 @@ import {
   IconButton,
   Spinner,
   useDisclosure,
-  Collapse,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  RadioGroup,
-  Radio,
-  Button,
-  Tooltip,
   useToast,
 } from "@chakra-ui/react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
@@ -31,7 +24,7 @@ import React, { useEffect, useState } from "react";
 import { AiFillCamera } from "react-icons/ai";
 import { BiErrorCircle } from "react-icons/bi";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-import { useMutation } from "@apollo/client";
+import { useMutation, ApolloError } from "@apollo/client";
 import Pagination from "react-js-pagination";
 // import ReactPlayer from "react-player/lazy";
 import "../../../../appStyles/pagination.module.css";
@@ -39,12 +32,17 @@ import { EditAnsModal } from "./EditAnsModal";
 import Link from "next/link";
 import MultiChoiceCard from "./MultiChoiceCard";
 import { useAuth } from "_components/authProvider/authProvider";
-const BtnImage = dynamic(
-  () => {
-    return import("./ImageModal");
-  },
-  { ssr: false }
-);
+import { Answer, SelectedImage } from "_components/appTypes/appType";
+import CollapseContent from "./CollapseContent";
+
+interface AnsBox {
+  loading: boolean;
+  answers: Answer[];
+  addAnswer: (answer: string, answerImage: SelectedImage | string) => void;
+  pollId: string;
+  pollType: string;
+  error: ApolloError | undefined;
+}
 
 const AnsBox = ({
   loading,
@@ -53,11 +51,11 @@ const AnsBox = ({
   pollId,
   pollType,
   error,
-}: any) => {
+}: AnsBox) => {
   const toast = useToast();
   const [sortBy, setSortBy] = useState<string>("rank");
   const [noOfAns, setNoOfAns] = useState<string>("5");
-  const [myVote, setMyVote] = useState<string>("");
+  const [myVote, setMyVote] = useState<string | undefined>("");
   const [ansState, setAnsState] = useState<any[]>([]);
   const [orgAns, setOrgAns] = useState<any[] | null>(null);
   const [page, setPage] = useState(1);
@@ -74,7 +72,7 @@ const AnsBox = ({
 
   useEffect(() => {
     const userId = auth?.authState?.getUserData?._id;
-    if (pollType !== "openEnded" && userId) {
+    if (pollType !== "openEnded" && userId && answers[0].multichoiceVotes) {
       const yourVote = answers[0]?.multichoiceVotes.find(
         (a: any) => userId === a.userId
       );
@@ -86,7 +84,7 @@ const AnsBox = ({
     if (answers) {
       let sortArray = [...answers];
       if (sortBy === "rank") {
-        sortArray.sort((a, b) => a.rank - b.rank);
+        sortArray.sort((a: any, b: any) => a.rank - b.rank);
       }
       if (sortBy === "mostLiked") {
         sortArray.sort((a, b) => b.likes.length - a.likes.length);
@@ -466,19 +464,30 @@ const AnsBox = ({
 //   );
 // };
 
-const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
-  const { isOpen, onToggle } = useDisclosure();
-  const [showShortAns, setShowShortAns] = useState<boolean>(true);
+interface CardContent {
+  data: Answer;
+  likes: number;
+  dislikes: number;
+  likeHandler: (
+    feedback: string,
+    feedbackVal: boolean,
+    answerId: string
+  ) => void;
+  pollId: string;
+}
+
+const CardContent = ({
+  data,
+  likes,
+  dislikes,
+  likeHandler,
+  pollId,
+}: CardContent) => {
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
     onClose: onEditClose,
   } = useDisclosure();
-
-  const showFullAns = () => {
-    setShowShortAns(!showShortAns);
-    onToggle();
-  };
 
   return (
     <Box
@@ -521,13 +530,15 @@ const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
               color="gray.500"
             />
             <MenuList>
-              <MenuItem
-                _focus={{ outline: "none" }}
-                _hover={{ bg: "gray.200" }}
-                onClick={onEditOpen}
-              >
-                Edit
-              </MenuItem>
+              {data.isEditable && (
+                <MenuItem
+                  _focus={{ outline: "none" }}
+                  _hover={{ bg: "gray.200" }}
+                  onClick={onEditOpen}
+                >
+                  Edit
+                </MenuItem>
+              )}
               <MenuItem
                 _focus={{ outline: "none" }}
                 _hover={{ bg: "gray.200" }}
@@ -538,36 +549,12 @@ const CardContent = ({ data, likes, dislikes, likeHandler, pollId }: any) => {
           </Menu>
         </Box>
       </Flex>
-      <Box pt={5} pb={1} px={5}>
-        <Text fontSize="sm" noOfLines={showShortAns ? 2 : 0}>
-          {data?.answer}
-        </Text>
-        {false && (
-          <Collapse in={isOpen} animateOpacity>
-            <Box p="4" textAlign="center" cursor="pointer">
-              <BtnImage src="https://wallpaperaccess.com/full/215112.jpg" />
-              {/*
-			  <ReactPlayer
-			  url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
-			  height="260px"
-			  width="100%"
-			  controls={true}
-			  />
-			  */}
-            </Box>
-          </Collapse>
-        )}
-        {data?.answer.length > 160 && (
-          <Text
-            onClick={showFullAns}
-            fontSize="xs"
-            cursor="pointer"
-            color="blue.400"
-          >
-            {isOpen ? "Show less" : "Show more"}
-          </Text>
-        )}
-      </Box>
+
+      <CollapseContent
+        answer={data?.answer}
+        image={data?.answerImage as string}
+      />
+
       <Flex justifyContent="space-between" alignItems="center" px="3">
         <Flex justifyContent="flex-start" alignItems="center">
           <Flex justifyContent="center" alignItems="center" mr={3}>

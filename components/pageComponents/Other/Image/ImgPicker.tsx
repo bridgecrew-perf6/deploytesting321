@@ -12,9 +12,10 @@ import { useToast } from "@chakra-ui/react";
 interface ImgPicker {
   selectedImgs: SelectedImage[];
   selectImgs: (imgList: SelectedImage[]) => void;
+  imageLimit: number;
 }
 
-const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
+const ImgPicker = ({ selectedImgs, selectImgs, imageLimit }: ImgPicker) => {
   const appContext = useAuth();
   const toast = useToast();
   const [imgError, setImgError] = useState("");
@@ -33,10 +34,14 @@ const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
     const fileObjList: File[] = Array.from(e.target?.files);
     const imgDiff = fileObjList.length + selectedImgs.length;
 
-    if (imgDiff > 3) {
+    if (imgDiff > imageLimit) {
+      const errMssg =
+        imageLimit > 1
+          ? `You can only select up to ${imageLimit} images.  Please either remove an image or choose again.`
+          : "You can only select one image.";
+
       toast({
-        title:
-          "You can only select up to 3 images.  Please either remove an image or choose again.",
+        title: errMssg,
         status: "warning",
         isClosable: true,
         duration: 3000,
@@ -71,7 +76,9 @@ const ImgPicker = ({ selectedImgs, selectImgs }: ImgPicker) => {
           </div>
         )}
         {selectedImgs.length > 0 && (
-          <div style={{ fontSize: 14 }}>{`${selectedImgs.length}/3`}</div>
+          <div
+            style={{ fontSize: 14 }}
+          >{`${selectedImgs.length}/${imageLimit}`}</div>
         )}
       </div>
       {selectedImgs.length > 0 && (

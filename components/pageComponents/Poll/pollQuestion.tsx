@@ -80,14 +80,12 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
 
   const handleUpdateQuestion = async () => {
     const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
-    let collectiveImages;
     let editQ = {
       _id: pollData._id,
       question: editQuestion,
       pollImages: imgIds,
     };
     try {
-      console.log("editQ", editQ);
       await updatePoll(editPoll, JSON.stringify(editQ));
       toast({
         title: "Poll updated successfully",
@@ -188,13 +186,15 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                 color="gray.500"
               />
               <MenuList>
-                <MenuItem
-                  _focus={{ outline: "none" }}
-                  _hover={{ bg: "gray.200" }}
-                  onClick={onOpen}
-                >
-                  Edit
-                </MenuItem>
+                {pollData.isEditable && (
+                  <MenuItem
+                    _focus={{ outline: "none" }}
+                    _hover={{ bg: "gray.200" }}
+                    onClick={onOpen}
+                  >
+                    Edit
+                  </MenuItem>
+                )}
                 <MenuItem
                   _focus={{ outline: "none" }}
                   _hover={{ bg: "gray.200" }}
@@ -246,6 +246,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
                 <ImgPicker
                   selectedImgs={selectedImgs}
                   selectImgs={setSelectImgs}
+                  imageLimit={3}
                 />
               </Box>
               <Flex mt="4" align="center">

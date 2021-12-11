@@ -205,7 +205,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         duration: 3000,
       });
       router.push("/");
-    } catch (err) {
+    } catch (err: any) {
       if (
         err.message ===
         "Content contains inappropriate language.  Please update and resubmit."
@@ -335,7 +335,11 @@ const CreateNewPoll: React.FC<{}> = () => {
         </Box>
         {/* Imageg picker*/}
         <Box mt="4">
-          <ImgPicker selectedImgs={selectedImgs} selectImgs={setSelectImgs} />
+          <ImgPicker
+            selectedImgs={selectedImgs}
+            selectImgs={setSelectImgs}
+            imageLimit={3}
+          />
         </Box>
         {/* Options*/}
         {questionType === "multiChoice" && (

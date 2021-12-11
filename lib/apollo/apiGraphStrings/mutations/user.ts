@@ -32,6 +32,11 @@ const userMutations = {
       }
     }
   `,
+  HANDLE_FOLLOW: gql`
+    mutation HandleFollow($details: String!) {
+      handleFollow(details: $details)
+    }
+  `,
   // UPDATE_TIME_ON_SITE: gql`
   //   mutation updateTimeOnSite($userId: String!, $seconds: Int!) {
   //     updateTimeOnSite(userId: $userId, seconds: $seconds) {

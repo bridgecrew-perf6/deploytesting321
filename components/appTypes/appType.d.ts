@@ -167,11 +167,14 @@ interface Answer {
   poll: PollHistory;
   comments?: Comment[];
   creator?: User;
-  answerImages?: string[];
+  answerImage?: string;
   creationDate: string;
   likes: { userId: string; like: boolean }[];
   dislikes: { userId: string; dislike: boolean }[];
   rank?: string | number;
+  multichoice?: { _id: string; answerVal: string }[];
+  multichoiceVotes?: { _id: string; userId: string; vote: string }[];
+  isEditable: boolean;
 }
 
 interface PollHistory {
@@ -186,6 +189,7 @@ interface PollHistory {
   pollImages: string[];
   views?: number;
   chatMssgs?: ChatMessage[];
+  isEditable: boolean;
 }
 
 export interface UserDataProps {
@@ -386,14 +390,15 @@ interface ChatMessage {
 }
 
 interface ChatUser {
-  id: string
-  appid: string
-  followers: number
-  numPolls: number
-  profilePic?: string
-  numAnswers: number
-  lastChatMssgDate: string
-  isActive: Boolean
+  id: string;
+  appid: string;
+  followers: number;
+  numPolls: number;
+  profilePic?: string;
+  numAnswers: number;
+  lastChatMssgDate: string;
+  isActive: Boolean;
+  isFollowed: Boolean;
 }
 
 interface SliderSettings {

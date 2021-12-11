@@ -36,6 +36,7 @@ const pollQueries = {
       poll(pollId: $pollId) {
         _id
         question
+        isEditable
         topic {
           _id
           topic

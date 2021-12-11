@@ -28,18 +28,13 @@ import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
 import { addNewAnswer } from "lib/apollo/apolloFunctions";
 import { useRouter } from "next/router";
+import { useAuth } from "_components/authProvider/authProvider";
 const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
   GraphResolvers.queries;
 
-interface Props {
-  pollId: string;
-  // data: { poll: PollHistory };
-}
-
-//{ pollId }: Props
-
 const Poll = () => {
   const router = useRouter();
+  const auth = useAuth();
   //States
   const [error, updateError] = useState<string[]>([]);
 
@@ -62,7 +57,10 @@ const Poll = () => {
     data: userList,
     loading: userListLoading,
     error: userListError,
-  } = useQuery(GET_POLL_CHAT_USERS, { variables: { pollId } });
+    subscribeToMore: subscribeToChats,
+  } = useQuery(GET_POLL_CHAT_USERS, {
+    variables: { pollId },
+  });
 
   const {
     data: answerData,
@@ -85,12 +83,6 @@ const Poll = () => {
   const [addView] = useMutation(GraphResolvers.mutations.ADD_VIEW);
 
   // //Component Mounted
-
-  // useEffect(() => {
-  //   if (router && router.query && router.query.id) {
-  //     updatedPollId(router.query.id as string);
-  //   }
-  // }, [router]);
 
   useEffect(() => {
     updateViewCount(addView, pollId);
@@ -145,7 +137,10 @@ const Poll = () => {
     updateError(udpatedErrorList);
   };
 
-  const addAnswer = async (answer: string, answerImage: SelectedImage) => {
+  const addAnswer = async (
+    answer: string,
+    answerImage: SelectedImage | string
+  ) => {
     if (data) {
       let imgId: string | null = null;
 
@@ -156,19 +151,19 @@ const Poll = () => {
         // answerImage: imgId && imgId,
       };
 
-      if (answerImage) {
+      if (answerImage && typeof answerImage !== "string") {
         imgId = await saveImgtoCloud(answerImage);
         answerObj["answerImage"] = imgId;
       } else answerObj["answerImage"] = "";
 
-      // addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
+      addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
 
-      data?.poll &&
-        addNewAnswer(
-          addAnswerToPolls,
-          JSON.stringify(answerObj),
-          data?.poll?._id
-        );
+      //   data?.poll &&
+      //     addNewAnswer(
+      //       addAnswerToPolls,
+      //       JSON.stringify(answerObj),
+      //       data?.poll?._id
+      //     );
     }
   };
 
@@ -236,11 +231,14 @@ const Poll = () => {
                         pollType={data?.poll?.pollType}
                       />
                     </TabPanel>
-                    <TabPanel bg="white" p="1px" height="846px">
+                    <TabPanel bg="white" p="1px" height="868px">
                       <UserTab
+                        appUser={auth?.authState?.getUserData._id}
+                        pollId={pollId}
                         userList={userList}
                         userListLoading={userListLoading}
                         userListError={userListError}
+                        // subscribe={subscribeToChats}
                       />
                     </TabPanel>
                   </TabPanels>
@@ -248,22 +246,6 @@ const Poll = () => {
               </Box>
             </Box>
           </Flex>
-          {/*
-    <div className="position-relative mb-2">
-    <MaxMinBtn
-    btnState={chatSection}
-    toggleBtn={toggleSection}
-    btnCat="chat"
-    />
-    <PollChat
-    pollId={data.poll._id}
-    addAnswer={addAnswer}
-    addError={addError}
-    showSection={chatSection}
-    user={user && user?.getUserDataForPoll}
-    />
-    </div>
-  */}
         </div>
       </SitePageContainer>
     );
@@ -273,3 +255,7 @@ const Poll = () => {
 };
 
 export default Poll;
+
+export async function getServerSideProps(ctx: any) {
+  return { props: {} };
+}
