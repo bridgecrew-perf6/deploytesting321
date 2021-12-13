@@ -11,6 +11,7 @@ const pollFeedBackMutations = {
       updateAnswer(details: $details) {
         _id
         answer
+        answerImage
       }
     }
   `,

@@ -107,13 +107,22 @@ const Poll = () => {
               } else return item;
             }
           );
+
+          if (newAnswerItem.poll._id === pollId) {
+            return Object.assign({}, prev, {
+              answersByPoll: updatedAnswersByPoll,
+            });
+          }
+
+          return prev;
+        }
+
+        if (newAnswerItem.poll._id === pollId) {
           return Object.assign({}, prev, {
-            answersByPoll: updatedAnswersByPoll,
+            answersByPoll: [...prev.answersByPoll, newAnswerItem],
           });
         }
-        return Object.assign({}, prev, {
-          answersByPoll: [...prev.answersByPoll, newAnswerItem],
-        });
+        return prev;
       },
     });
   }, []);

@@ -47,12 +47,12 @@ export const EditAnsModal = ({
   const [selectedImgs, setSelectImgs] = useState<any>([]);
   const [showImg, toggleShowImg] = useState(true);
   const { UPDATE_ANSWER } = GraphResolvers.mutations;
-  const [editAnswer, { loading: editAnswerLoading }] =
+  const [editAnswer, { loading: editAnswerLoading, error }] =
     useMutation(UPDATE_ANSWER);
 
   const updateAnsHandler = async (e: any) => {
     e.preventDefault();
-    let updatedAns = e.target.ansTextarea.value;
+    let updatedAns = e.target.ansTextarea.value.trim();
     const imgIds: string[] | undefined = await saveImgtoCloud(selectedImgs);
 
     let editA = {
@@ -86,7 +86,7 @@ export const EditAnsModal = ({
         return;
       }
       toast({
-        title: "Error! Cannot update Answer",
+        title: error?.message,
         status: "error",
         isClosable: true,
         duration: 3000,

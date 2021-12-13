@@ -279,13 +279,12 @@ export const updateAnswer = async (
   details: string
 ) => {
   const answerObj = JSON.parse(details);
-  console.log("details: ", details);
-  console.log("answerObj: ", answerObj);
 
   try {
     await updateAnswerFunc({
       variables: { details },
       update(cache, { data: { updateAnswer } }) {
+
         cache.writeFragment({
           id: `Answer:${answerObj._id}`,
           fragment: gql`

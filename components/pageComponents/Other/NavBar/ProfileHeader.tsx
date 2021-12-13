@@ -75,23 +75,21 @@ export default function ProfileHeader(props: any) {
   }, [appUserData]);
 
   useEffect(() => {
-    if (userId && notificationData && subscribeToMore) {
-      subscribeToMore({
-        document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
-        updateQuery: (prev, { subscriptionData }) => {
-          if (!subscriptionData) return prev;
-          const newItem = subscriptionData.data.newNotification;
+    subscribeToMore({
+      document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData) return prev;
+        const newItem = subscriptionData.data.newNotification;
 
-          if (newItem.user._id !== userId) {
-            return Object.assign({}, prev, {
-              notifications: [...prev.notifications, newItem],
-            });
-          }
-          return prev;
-        },
-      });
-    }
-  }, [userId, notificationData]);
+        if (newItem.user._id !== userId) {
+          return Object.assign({}, prev, {
+            notifications: [newItem, ...prev.notifications],
+          });
+        }
+        return prev;
+      },
+    });
+  }, []);
 
   const messageIcon = message ? (
     <AiFillMessage size={24} color="#ff4d00" />

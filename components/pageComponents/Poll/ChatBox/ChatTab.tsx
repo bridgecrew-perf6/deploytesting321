@@ -40,12 +40,17 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData) return prev;
         const newChatItem = subscriptionData.data.newMessage;
-        return Object.assign({}, prev, {
-          messageFeedByPoll: {
-            ...prev.messageFeedByPoll,
-            messages: [...prev.messageFeedByPoll.messages, newChatItem],
-          },
-        });
+
+        if (newChatItem.poll._id === pollId) {
+          return Object.assign({}, prev, {
+            messageFeedByPoll: {
+              ...prev.messageFeedByPoll,
+              messages: [...prev.messageFeedByPoll.messages, newChatItem],
+            },
+          });
+        }
+
+        return prev;
       },
     });
   }, []);
