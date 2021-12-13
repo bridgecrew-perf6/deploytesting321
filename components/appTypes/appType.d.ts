@@ -298,6 +298,7 @@ interface CategoryItems {
 interface IProps {
   title: string;
   children?: React.ReactNode;
+  customStyle?: any;
 }
 
 interface NavProps {
@@ -386,14 +387,14 @@ interface ChatMessage {
 }
 
 interface ChatUser {
-  id: string
-  appid: string
-  followers: number
-  numPolls: number
-  profilePic?: string
-  numAnswers: number
-  lastChatMssgDate: string
-  isActive: Boolean
+  id: string;
+  appid: string;
+  followers: number;
+  numPolls: number;
+  profilePic?: string;
+  numAnswers: number;
+  lastChatMssgDate: string;
+  isActive: Boolean;
 }
 
 interface SliderSettings {

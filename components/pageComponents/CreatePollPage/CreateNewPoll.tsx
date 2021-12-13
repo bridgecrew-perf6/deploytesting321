@@ -205,7 +205,7 @@ const CreateNewPoll: React.FC<{}> = () => {
         duration: 3000,
       });
       router.push("/");
-    } catch (err) {
+    } catch (err: any) {
       if (
         err.message ===
         "Content contains inappropriate language.  Please update and resubmit."

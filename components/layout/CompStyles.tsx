@@ -60,10 +60,14 @@ export const CardForm: React.FC<CardFormProps> = (props) => {
 
 export const PageForm: React.FC<IProps> = (props) => {
   const pageTitle = `PoldIt ${props.title.replace("/", "")}`;
+
   return (
     <div
       className={`${styles.appbg_other}`}
-      style={{ height: "100vh", overflow: "auto" }}
+      style={{
+        ...{ height: "100vh", overflow: "auto" },
+        ...props.customStyle,
+      }}
     >
       <Head>
         <title>{pageTitle}</title>
