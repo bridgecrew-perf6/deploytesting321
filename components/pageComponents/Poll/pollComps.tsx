@@ -51,7 +51,7 @@ export const AddAnswer = ({ addAnswer, addError, toggleWindow }: AddAnswer) => {
         />
       </div>
       <div className="mt-3">
-        <ImgPicker selectedImgs={selectedImgs} selectImgs={selectImgs} />
+        <ImgPicker selectedImgs={selectedImgs} selectImgs={selectImgs} imageLimit={1} />
       </div>
       <div className="d-flex flex-row-reverse">
         <div>

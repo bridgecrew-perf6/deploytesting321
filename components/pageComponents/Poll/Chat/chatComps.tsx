@@ -17,11 +17,11 @@ import ProfileImg from "../../Profile/profileImg";
 import { filterSearchVals } from "../../../formFuncs/miscFuncs";
 import Link from "next/link";
 import { IconType } from "react-icons/lib";
-import {
-  addFollow,
-  addNewChatMssg,
-  removeFollow,
-} from "../../../../lib/apollo/apolloFunctions/mutations";
+// import {
+//   addFollow,
+//   addNewChatMssg,
+//   removeFollow,
+// } from "../../../../lib/apollo/apolloFunctions/mutations";
 import { ToolTipCtr } from "../../../layout/customComps";
 
 const { chatSideBar, chatMessage, userMessage, chatSearch, chatInput } =
@@ -99,7 +99,7 @@ export const ChatUser = ({ user, following, selfId }: ChatSideBarUser) => {
       followIcon = (
         <FiPlusSquare
           style={{ height: 20, width: 20, color: "green" }}
-          onClick={() => addFollow(follow, user.appid)}
+          // onClick={() => addFollow(follow, user.appid)}
         />
       );
     }
@@ -108,7 +108,7 @@ export const ChatUser = ({ user, following, selfId }: ChatSideBarUser) => {
       followIcon = (
         <FiMinusSquare
           style={{ height: 20, width: 20, color: "red" }}
-          onClick={() => removeFollow(unfollow, user.appid)}
+          // onClick={() => removeFollow(unfollow, user.appid)}
         />
       );
     }
@@ -242,7 +242,7 @@ const ChatInput = ({ pollId, addAnswer, addError }: IPollChatBox) => {
       isAnswer,
     });
 
-    addNewChatMssg(addChatMssg, details, pollId);
+    // addNewChatMssg(addChatMssg, details, pollId);
     updateInput("");
 
     if (isAnswer && addAnswer && addError) {

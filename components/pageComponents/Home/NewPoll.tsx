@@ -210,7 +210,7 @@ export default function NewPoll() {
                   onChange={countCharacters}
                 ></textarea>
               </div>
-              <ImgPicker selectedImgs={selectedImgs} selectImgs={selectImgs} />
+              <ImgPicker selectedImgs={selectedImgs} selectImgs={selectImgs} imageLimit={3} />
               <div className="form-group mb-5 mt-3 d-flex flex-column justify-content-between">
                 <div className="d-flex mb-1 justify-content-between">
                   <label

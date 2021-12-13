@@ -11,7 +11,7 @@ import EditProfile from "./EditProfile";
 import Badge from "./Badge";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { Reference, StoreObject, useMutation } from "@apollo/client";
-import { removeFollow } from "../../../lib/apollo/apolloFunctions/mutations";
+// import { removeFollow } from "../../../lib/apollo/apolloFunctions/mutations";
 import Link from "next/link";
 
 const {
@@ -180,7 +180,7 @@ const ProfileMetrics = ({ data }: ProfileData) => {
   }, [data]);
 
   const handleFollow = (userId: string) => {
-    removeFollow(unfollow, userId);
+    // removeFollow(unfollow, userId);
   };
 
   const updateMetrics = (idx: number, prop: string, val: any) => {

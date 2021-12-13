@@ -26,7 +26,7 @@ import {
 } from "@chakra-ui/react";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
-import { addNewAnswer } from "lib/apollo/apolloFunctions";
+// import { addNewAnswer } from "lib/apollo/apolloFunctions";
 import { useRouter } from "next/router";
 import { useAuth } from "_components/authProvider/authProvider";
 const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
