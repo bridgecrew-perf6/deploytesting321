@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { adminUserDataForm } from "_components/index";
 import usersInfoBox from "../../../../appStyles/adminStyles/usersInfoBox.module.css";
 
 const SelectMenuActive: React.FC<{
@@ -9,7 +8,7 @@ const SelectMenuActive: React.FC<{
     label: string;
   }[];
   selectedValue: boolean;
-  userDataForm: adminUserDataForm;
+  userDataForm: any;
   setUserDataForm: Function;
 }> = (props) => {
   const { activeOptions, selectedValue, userDataForm, setUserDataForm } = props;

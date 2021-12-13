@@ -49,7 +49,6 @@ const pollQueries = {
         pollType
         answers {
           _id
-          
         }
         creationDate
         creator {
@@ -90,6 +89,36 @@ const pollQueries = {
   GET_NEWEST_POLLS: gql`
     query NewestPolls {
       newestPolls {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
+  NEWEST_POLLS_WITH_PAGINATION: gql`
+    query NewestPollsWithPagination($offset: Int, $limit: Int) {
+      newestPollsWithPagination(offset: $offset, limit: $limit) {
         _id
         question
         topic {
@@ -207,9 +236,70 @@ const pollQueries = {
       }
     }
   `,
+
+  ACTIVECHAT_WITH_PAGINATION: gql`
+    query ActiveChatsWithPagination($offset: Int, $limit: Int) {
+      activeChatsWithPagination(offset: $offset, limit: $limit) {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
   GET_TRENDING_POLLS: gql`
     query TrendingPolls {
       trendingPolls {
+        _id
+        question
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        pollImages
+        answers {
+          _id
+        }
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+        chatMssgs {
+          _id
+        }
+      }
+    }
+  `,
+  TRENDING_POLLS_WITH_PAGINATION: gql`
+    query TrendingPollsWithPagination($offset: Int, $limit: Int) {
+      trendingPollsWithPagination(offset: $offset, limit: $limit) {
         _id
         question
         topic {

@@ -302,6 +302,7 @@ interface CategoryItems {
 interface IProps {
   title: string;
   children?: React.ReactNode;
+  customStyle?: any;
 }
 
 interface NavProps {

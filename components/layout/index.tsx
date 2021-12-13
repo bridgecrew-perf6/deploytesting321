@@ -7,9 +7,8 @@ import { PageForm } from "./CompStyles";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
 
 export const SitePageContainer: React.FC<IProps> = (props: any) => {
-
   return (
-    <PageForm title={props.title}>
+    <PageForm title={props.title} customStyle={props.customStyle || {}}>
       <NewPoll />
       <AddTopic />
       <NavBar title={props.title} />

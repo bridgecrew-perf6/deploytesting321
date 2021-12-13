@@ -13,34 +13,195 @@ import AppLoading, {
   AppLoadingLite,
 } from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-const { GET_NEWEST_POLLS, GET_ACTIVE_CHATS, GET_TRENDING_POLLS, GET_USER } =
-  GraphResolvers.queries;
+const {
+  NEWEST_POLLS_WITH_PAGINATION,
+  ACTIVECHAT_WITH_PAGINATION,
+  TRENDING_POLLS_WITH_PAGINATION,
+  GET_USER,
+} = GraphResolvers.queries;
+
+interface HomeBtns extends CustomBtn {
+  currentOffset: number;
+  hasMoreItems: boolean;
+}
+
+const btnItems: HomeBtns[] = [
+  {
+    active: true,
+    btnName: "Active Chats",
+    data: [],
+    currentOffset: 0,
+    hasMoreItems: true,
+  },
+  {
+    active: false,
+    btnName: "Trending Polls",
+    data: [],
+    currentOffset: 0,
+    hasMoreItems: true,
+  },
+  {
+    active: false,
+    btnName: "Newest Polls",
+    data: [],
+    currentOffset: 0,
+    hasMoreItems: true,
+  },
+];
 
 const Home = () => {
+  //-----------------------------------------------------------------------------------------
+  //Hooks
   const router = useRouter();
   const auth = useAuth();
 
-  const btnItems: CustomBtn[] = [
-    { active: true, btnName: "Active Chats", data: [] },
-    { active: false, btnName: "Trending Polls", data: [] },
-    { active: false, btnName: "Newest Polls", data: [] },
-  ];
+  //-----------------------------------------------------------------------------------------
+  //States
+  const [itemsToBeLoadedPerFetch, setItemsToBeLoadedPerFetch] =
+    useState<number>(5);
+  const [homeBtns, setUpdateHomeBtns] = useState<HomeBtns[]>(btnItems);
 
-  const [homeBtns, updateHomeBtns] = useState<CustomBtn[]>(btnItems);
+  //-----------------------------------------------------------------------------------------
+  //Use Effects
+  useEffect(() => {
+    setUpdateHomeBtns(btnItems);
+    if (!activeChatsLoading) {
+      homeBtns[0].data = activeChats.activeChatsWithPagination;
+      homeBtns[1].data = trendingPolls.trendingPollsWithPagination;
+      homeBtns[2].data = newPollData.newestPollsWithPagination;
+    }
+    homeBtns.forEach((btn) => {
+      btn.currentOffset = 0;
+      btn.hasMoreItems = true;
+    });
+  }, []);
 
-  const { data: newPollData } = useQuery(GET_NEWEST_POLLS, {
-    onCompleted: (res) => updateData("Newest Polls", res.newestPolls),
+  //-----------------------------------------------------------------------------------------
+  // Queries
+  const {
+    data: newPollData,
+    loading: newPollsLoading,
+    fetchMore: newPollsFetchMore,
+  } = useQuery(NEWEST_POLLS_WITH_PAGINATION, {
+    onCompleted: (res) => {
+      // console.log(res);
+      return updateData("Newest Polls", res.newestPollsWithPagination);
+    },
+    variables: {
+      offset: 0,
+      limit: itemsToBeLoadedPerFetch,
+    },
   });
-  const { data: activeChats } = useQuery(GET_ACTIVE_CHATS, {
-    onCompleted: (res) => updateData("Active Chats", res.activeChats),
+
+  const {
+    data: activeChats,
+    loading: activeChatsLoading,
+    fetchMore: activeChatsFetchmore,
+  } = useQuery(ACTIVECHAT_WITH_PAGINATION, {
+    onCompleted: (res) => {
+      // console.log(res);
+      updateData("Active Chats", res.activeChatsWithPagination);
+    },
+    variables: {
+      offset: 0,
+      limit: itemsToBeLoadedPerFetch,
+    },
   });
-  const { data: trendingPolls } = useQuery(GET_TRENDING_POLLS, {
-    onCompleted: (res) => updateData("Trending Polls", res.trendingPolls),
+
+  const {
+    data: trendingPolls,
+    loading: trendingPollsLoading,
+    fetchMore: trendingPollsFetchMore,
+  } = useQuery(TRENDING_POLLS_WITH_PAGINATION, {
+    onCompleted: (res) => {
+      // console.log(res);
+      updateData("Trending Polls", res.trendingPollsWithPagination);
+    },
+    variables: {
+      offset: 0,
+      limit: itemsToBeLoadedPerFetch,
+    },
   });
+
+  //-----------------------------------------------------------------------------------------
+  // Functions
+  const getMoreDataFor = async (btnType: string, offset: number) => {
+    if (btnType === "Active Chats") {
+      const { data } = await activeChatsFetchmore({
+        variables: {
+          offset,
+          limit: itemsToBeLoadedPerFetch,
+        },
+      });
+      return data;
+    } else if (btnType === "Trending Polls") {
+      const { data } = await trendingPollsFetchMore({
+        variables: {
+          offset,
+          limit: itemsToBeLoadedPerFetch,
+        },
+      });
+      return data;
+    } else if (btnType === "Newest Polls") {
+      const { data } = await newPollsFetchMore({
+        variables: {
+          offset,
+          limit: itemsToBeLoadedPerFetch,
+        },
+      });
+      return data;
+    }
+    const selectedBtn = homeBtns.find((item) => {
+      return item.btnName === btnType;
+    });
+
+    return selectedBtn?.data;
+  };
+
+  const fetchAndUpdateData = async (
+    currentHomeBtns: any[],
+    btnType: string
+  ) => {
+    const updatedHomeBtns = await Promise.all(
+      currentHomeBtns.map(async (item) => {
+        if (item.btnName === btnType) {
+          item.currentOffset += itemsToBeLoadedPerFetch;
+
+          const snapshot = await getMoreDataFor(
+            item.btnName,
+            item.currentOffset || 0
+          );
+
+          if (!snapshot) {
+            console.log("Sorry snapshot is ->", snapshot);
+            return [];
+          }
+
+          const newData = snapshot[Object.keys(snapshot)[0]];
+
+          item.data = [...item.data, ...newData];
+
+          if (newData.length < itemsToBeLoadedPerFetch) {
+            item.hasMoreItems = false;
+          }
+        }
+        return item;
+      })
+    );
+
+    // console.log("Got Data ->", updatedHomeBtns);
+    // if (updatedHomeBtns.length > 0) {
+    //   setUpdateHomeBtns(updatedHomeBtns);
+    // }
+    setUpdateHomeBtns(updatedHomeBtns);
+  };
 
   const updateBtnItem = (btnName: string, prop: string, val: any) => {
+    // console.log("Updated Buttons Called -->");
     const updatedItems = homeBtns.map((item) => {
+      // console.log(btnName, item.btnName);
       if (item.btnName === btnName && prop === "active") {
         const data = pollHandler(item.btnName);
 
@@ -54,7 +215,7 @@ const Home = () => {
       }
     });
 
-    updateHomeBtns(updatedItems);
+    setUpdateHomeBtns(updatedItems);
   };
 
   const updateData = (btnType: string, data: PollHistory[]) => {
@@ -65,72 +226,68 @@ const Home = () => {
       return item;
     });
 
-    updateHomeBtns(updatedHomeBtns);
+    setUpdateHomeBtns(updatedHomeBtns);
   };
 
   const pollHandler = (sortType: string) => {
-    if (sortType === "Newest Polls" && newPollData) {
-      return newPollData.newestPolls;
-    }
+    // console.log("Poll handler called");
+    const newData = homeBtns.find((item) => {
+      return item.btnName === sortType;
+    });
 
-    if (sortType === "Active Chats" && activeChats) {
-      return activeChats.activeChats;
-    }
-
-    if (sortType === "Trending Polls" && trendingPolls) {
-      return trendingPolls.trendingPolls;
-    }
+    return newData?.data || [];
   };
 
-  useEffect(() => {
-    if (
-      activeChats &&
-      homeBtns[0].data.length !== activeChats.activeChats.length
-    ) {
-      updateData("Active Chats", activeChats.activeChats);
-    }
-
-    if (
-      trendingPolls &&
-      homeBtns[1].data.length !== trendingPolls.trendingPolls.length
-    ) {
-      updateData("Trending Polls", trendingPolls.trendingPolls);
-    }
-
-    if (
-      newPollData &&
-      homeBtns[2].data.length !== newPollData.newestPolls.length
-    ) {
-      updateData("Newest Polls", newPollData.newestPolls);
-    }
-  }, [
-    activeChats,
-    trendingPolls,
-    newPollData,
-    homeBtns[0].data?.length,
-    homeBtns[1].data?.length,
-    homeBtns[2].data?.length,
-  ]);
-
+  // Selectin which button is active
   const pollData = homeBtns.filter((item) => item.active);
 
+  //-----------------------------------------------------------------------------------------
+  // Returning the jsx
   return (
     <SitePageContainer
       title={`${router.pathname} Home`}
+      customStyle={{ height: "auto" }}
     >
       <HomeBtnWindow btnList={homeBtns} update={updateBtnItem} />
-      <div
-        className="d-flex justify-content-center"
-        style={{ marginTop: "170px" }}
-      >
-        {pollData[0].data.length > 0 ? (
-          <DataWindow data={pollData[0].data} />
-        ) : (
+
+      {pollData[0] && pollData[0].data ? (
+        <>
+          <div
+            className="d-flex justify-content-center"
+            style={{ marginTop: "170px" }}
+          >
+            <InfiniteScroll
+              style={{ overflow: "hidden" }}
+              dataLength={pollData[0].data.length}
+              next={() => {
+                fetchAndUpdateData(homeBtns, pollData[0].btnName);
+              }}
+              hasMore={pollData[0].hasMoreItems}
+              loader={
+                <>
+                  {/* {console.log(pollData)} */}
+                  <AppLoadingLite />
+                </>
+              }
+              scrollThreshold={-1}
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>Thats all thankyou !</b>
+                </p>
+              }
+            >
+              <DataWindow data={pollData[0].data} />
+            </InfiniteScroll>
+          </div>
+          <div style={{ marginTop: "20px" }}>&nbsp;</div>
+        </>
+      ) : (
+        <>
           <AppLoadingLite />
-        )}
-      </div>
+        </>
+      )}
     </SitePageContainer>
   );
-};;
+};
 
 export default Home;
