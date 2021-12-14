@@ -1,25 +1,22 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
 import { CustomBtn, PollHistory } from "../components/appTypes/appType";
-import { SitePageContainer } from "../components/layout";
-import { HomeBtnWindow } from "../components/pageComponents/Home";
-import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
 import DataWindow from "../components/pageComponents/Home/DataWindow";
-import usersInfoBox from "../appStyles/adminStyles/usersInfoBox.module.css";
 import AppLoading, {
   AppLoadingLite,
 } from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Flex } from "@chakra-ui/layout";
+import { Spinner } from "@chakra-ui/spinner";
+import Layout from "_components/layout/Layout";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
   ACTIVECHAT_WITH_PAGINATION,
   TRENDING_POLLS_WITH_PAGINATION,
-  GET_USER,
 } = GraphResolvers.queries;
 
 interface HomeBtns extends CustomBtn {
@@ -244,20 +241,15 @@ const Home = () => {
   //-----------------------------------------------------------------------------------------
   // Returning the jsx
   return (
-    <SitePageContainer
-      title={`${router.pathname} Home`}
-      customStyle={{ height: "auto" }}
-    >
-      <HomeBtnWindow btnList={homeBtns} update={updateBtnItem} />
+    <Layout pageTitle={`Home`}>
+      {/*
+		<HomeBtnWindow btnList={homeBtns} update={updateBtnItem} />
+	*/}
 
       {pollData[0] && pollData[0].data ? (
         <>
-          <div
-            className="d-flex justify-content-center"
-            style={{ marginTop: "170px" }}
-          >
+          <div style={{ marginTop: "20px" }}>
             <InfiniteScroll
-              style={{ overflow: "hidden" }}
               dataLength={pollData[0].data.length}
               next={() => {
                 fetchAndUpdateData(homeBtns, pollData[0].btnName);
@@ -282,11 +274,11 @@ const Home = () => {
           <div style={{ marginTop: "20px" }}>&nbsp;</div>
         </>
       ) : (
-        <>
-          <AppLoadingLite />
-        </>
+        <Flex h="100vh" justify="center" align="center">
+          <Spinner size="lg" color="poldit.100" />
+        </Flex>
       )}
-    </SitePageContainer>
+    </Layout>
   );
 };
 

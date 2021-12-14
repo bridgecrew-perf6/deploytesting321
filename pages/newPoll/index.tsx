@@ -1,11 +1,11 @@
 import { Box, Container, Flex, Text } from "@chakra-ui/react";
-import { SitePageContainer } from "_components/layout";
+import Layout from "_components/layout/Layout";
 import CreateNewPoll from "_components/pageComponents/CreatePollPage/CreateNewPoll";
 import { NewPollHelp } from "_components/pageComponents/CreatePollPage/NewPollHelp";
 
 const NewPoll: React.FC<{}> = () => {
   return (
-    <SitePageContainer title={`newPoll`}>
+    <Layout pageTitle={`New Poll`}>
       <Box my="50px">
         <Container maxW="container.xl" aria-label="container">
           <Flex wrap="wrap-reverse" pt="12">
@@ -26,7 +26,7 @@ const NewPoll: React.FC<{}> = () => {
           </Flex>
         </Container>
       </Box>
-    </SitePageContainer>
+    </Layout>
   );
 };
 
