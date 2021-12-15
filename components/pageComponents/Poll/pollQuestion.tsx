@@ -122,6 +122,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
 
     removeImgFromPoll(removeImg, details);
   };
+  console.log("polldata", pollData);
 
   return (
     <Box py="10" px={[4, 4, 24, 24, 40]}>

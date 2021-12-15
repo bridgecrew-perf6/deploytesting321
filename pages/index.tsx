@@ -9,7 +9,7 @@ import AppLoading, {
 } from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Flex } from "@chakra-ui/layout";
+import { Box, Flex } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
 
@@ -247,32 +247,9 @@ const Home = () => {
 	*/}
 
       {pollData[0] && pollData[0].data ? (
-        <>
-          <div style={{ marginTop: "20px" }}>
-            <InfiniteScroll
-              dataLength={pollData[0].data.length}
-              next={() => {
-                fetchAndUpdateData(homeBtns, pollData[0].btnName);
-              }}
-              hasMore={pollData[0].hasMoreItems}
-              loader={
-                <>
-                  {/* {console.log(pollData)} */}
-                  <AppLoadingLite />
-                </>
-              }
-              scrollThreshold={-1}
-              endMessage={
-                <p style={{ textAlign: "center" }}>
-                  <b>Thats all thankyou !</b>
-                </p>
-              }
-            >
-              <DataWindow data={pollData[0].data} />
-            </InfiniteScroll>
-          </div>
-          <div style={{ marginTop: "20px" }}>&nbsp;</div>
-        </>
+        <Box pt="6">
+          <DataWindow data={pollData[0].data} />
+        </Box>
       ) : (
         <Flex h="100vh" justify="center" align="center">
           <Spinner size="lg" color="poldit.100" />
