@@ -20,7 +20,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { useAuth } from "../../../authProvider/authProvider";
 import { IoIosClose, IoIosNotifications } from "react-icons/io";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
@@ -29,10 +29,10 @@ import { NavLinks, NavType } from "./data";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
-import Scrollbars from "react-custom-scrollbars-2";
 import { useRouter } from "next/router";
+import NotificationContainer from "./NotifiyDropdown";
 
-const { LOG_OUT, GET_NOTIFICATIONS, GET_APPUSER } = GraphResolvers.queries;
+const { LOG_OUT, GET_APPUSER } = GraphResolvers.queries;
 
 const MyNavbar: React.FC = () => {
   const router = useRouter();
@@ -298,65 +298,9 @@ const MyNavbar: React.FC = () => {
         )}
       </Collapse>
       <Collapse in={notifyToggle} animateOpacity>
-        <NotificationContainer />
+        <NotificationContainer userId={userId} />
       </Collapse>
     </Box>
-  );
-};
-
-const NotificationContainer = () => {
-  return (
-    <Flex justifyContent="flex-end" zIndex="999">
-      <Box
-        bg="#f2f2f2"
-        mr={[0, 0, 10]}
-        px="1"
-        borderRadius="lg"
-        maxW="400px"
-        w="100%"
-        boxShadow={{
-          base: "0 8px 10px -1px rgba(0,0,0,.1)",
-          md: "0 1px 10px -1px rgba(0,0,0,.2)",
-        }}
-        h="700px"
-      >
-        <Scrollbars style={{ height: "100%", overflowX: "hidden" }}>
-          <Box>
-            <Box mt="4" mb="1" ml="4">
-              <Text fontWeight="bold" fontSize="lg">
-                Notifcations
-              </Text>
-            </Box>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((id: number) => (
-              <Box
-                py="3"
-                key={id}
-                mx="3"
-                cursor="pointer"
-                px="4"
-                borderRadius="lg"
-                _hover={{ bg: "gray.300" }}
-              >
-                <Flex alignItems="center">
-                  <Box>
-                    <Avatar name="xav dave" src="https://bit.ly/kent-c-dodds" />
-                  </Box>
-                  <Flex direction="column" ml="4">
-                    <Text fontSize="sm">
-                      This big container has the big sentence. Someone Answered
-                      your question.
-                    </Text>
-                    <Text fontSize={["xs", "xs", "xs"]} color="gray.500">
-                      2 days ago
-                    </Text>
-                  </Flex>
-                </Flex>
-              </Box>
-            ))}
-          </Box>
-        </Scrollbars>
-      </Box>
-    </Flex>
   );
 };
 
