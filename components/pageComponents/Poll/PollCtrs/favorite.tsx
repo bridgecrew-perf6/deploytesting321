@@ -26,15 +26,18 @@ const favorite = ({ favId, favType }: Favorite) => {
   }, [data]);
 
   const favoriteHandler = () => {
+    toggleBtn((prevState) => {
+      return !prevState;
+    });
     if (data && data.isFavorite) {
       handleFavorite(updateFavorite, false, favType, favId);
-      toggleBtn(false);
+      // toggleBtn(false);
       return;
     }
 
     if (data && !data.isFavorite) {
       handleFavorite(updateFavorite, true, favType, favId);
-      toggleBtn(true);
+      // toggleBtn(true);
     }
   };
 

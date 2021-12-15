@@ -30,7 +30,7 @@ export default class MyDocument extends Document {
             }}
           />
         </Head>
-        <body>
+        <body style={{ overflowY: "auto" }}>
           <Main />
           <NextScript />
         </body>
