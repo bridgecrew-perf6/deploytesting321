@@ -53,7 +53,7 @@ const favorite = ({ favId, favType }: Favorite) => {
         bg="none"
         _hover={{ bg: "none" }}
         _focus={{ outline: "none" }}
-        size="sm"
+        size="xs"
       />
     </>
   );

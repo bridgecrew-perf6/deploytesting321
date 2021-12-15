@@ -41,7 +41,6 @@ interface DataWindow {
 }
 
 const DataWindow = ({ data }: DataWindow) => {
-  console.log("data", data);
   return (
     <Box py="6" px={[4, 4, 24, 24, 40]}>
       <Flex wrap="wrap-reverse">
@@ -99,7 +98,7 @@ const PollCard = ({ data }: ListItem) => {
               {data.question}
             </Text>
           </Link>
-          {data?.pollImages.length && (
+          {data?.pollImages.length ? (
             <Flex mt="4">
               {data?.pollImages.map((x, id) => (
                 <Box
@@ -120,7 +119,7 @@ const PollCard = ({ data }: ListItem) => {
                 </Box>
               ))}
             </Flex>
-          )}
+          ) : null}
         </Box>
         <PollCardFooter data={data} />
       </Box>
