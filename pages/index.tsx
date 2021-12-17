@@ -12,6 +12,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Box, Flex } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
+import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
@@ -248,10 +249,45 @@ const Home = () => {
 
       {pollData[0] && pollData[0].data ? (
         <Box pt="6">
-          <DataWindow data={pollData[0].data} />
+          <Box py="6" px={[4, 4, 24, 24, 40]}>
+            <Flex wrap="wrap-reverse">
+              <Box
+                flex={{ base: "0 0 100%", lg: "0 0 70%" }}
+                maxW={{ base: "100%", lg: "70%" }}
+              >
+                <InfiniteScroll
+                  style={{ overflow: "hidden" }}
+                  dataLength={pollData[0].data.length}
+                  next={() => {
+                    fetchAndUpdateData(homeBtns, pollData[0].btnName);
+                  }}
+                  hasMore={pollData[0].hasMoreItems}
+                  loader={
+                    <Flex justify="center" align="center">
+                      <Spinner size="lg" color="poldit.100" />
+                    </Flex>
+                  }
+                  scrollThreshold={-1}
+                  endMessage={
+                    <p style={{ textAlign: "center" }}>
+                      <b>Thats all thankyou !</b>
+                    </p>
+                  }
+                >
+                  <DataWindow data={pollData[0].data} />
+                </InfiniteScroll>
+              </Box>
+              <Box
+                flex={{ base: "0 0 100%", lg: "0 0 30%" }}
+                maxW={{ base: "100%", lg: "30%" }}
+              >
+                <PollSideBar />
+              </Box>
+            </Flex>
+          </Box>
         </Box>
       ) : (
-        <Flex h="100vh" justify="center" align="center">
+        <Flex h="calc(100vh - 60px)" justify="center" align="center">
           <Spinner size="lg" color="poldit.100" />
         </Flex>
       )}
