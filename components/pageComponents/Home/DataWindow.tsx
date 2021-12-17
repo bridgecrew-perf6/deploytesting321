@@ -42,7 +42,7 @@ interface DataWindow {
 
 const DataWindow = ({ data }: DataWindow) => {
   return (
-    <Box py="6" px={[4, 4, 24, 24, 40]}>
+    <Box py="6" px={[4, 4, 24, 24, 40]} bg="#f2f2f2">
       <Flex wrap="wrap-reverse">
         <Box
           flex={{ base: "0 0 100%", lg: "0 0 70%" }}
