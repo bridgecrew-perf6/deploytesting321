@@ -32,7 +32,6 @@ import { TagWindow, UserTagWindow } from "../Other/Tags/Tags";
 import { AiOutlineHeart, AiOutlineEye, AiOutlineMessage } from "react-icons/ai";
 import { BiShareAlt, BiMessage, BiSelectMultiple } from "react-icons/bi";
 import { RiFilePaper2Line } from "react-icons/ri";
-import { PollSideBar } from "./PollSidebar";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
@@ -42,23 +41,10 @@ interface DataWindow {
 
 const DataWindow = ({ data }: DataWindow) => {
   return (
-    <Box py="6" px={[4, 4, 24, 24, 40]}>
-      <Flex wrap="wrap-reverse">
-        <Box
-          flex={{ base: "0 0 100%", lg: "0 0 70%" }}
-          maxW={{ base: "100%", lg: "70%" }}
-        >
-          {data?.map((item) => (
-            <PollCard data={item} key={item._id} />
-          ))}
-        </Box>
-        <Box
-          flex={{ base: "0 0 100%", lg: "0 0 30%" }}
-          maxW={{ base: "100%", lg: "30%" }}
-        >
-          <PollSideBar />
-        </Box>
-      </Flex>
+    <Box px="2" pt="2">
+      {data?.map((item) => (
+        <PollCard data={item} key={item._id} />
+      ))}
     </Box>
   );
 };
