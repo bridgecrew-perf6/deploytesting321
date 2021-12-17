@@ -37,7 +37,7 @@ import {
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoMdCopy } from "react-icons/io";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
 import React, { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
@@ -128,111 +128,43 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
       <Box
         bg="white"
         boxShadow="0 1px 10px -1px rgba(0,0,0,.2)"
-        borderRadius="md"
+        borderRadius="lg"
+        pl="6"
+        pr="2"
+        pt="4"
+        pb="4"
       >
-        <Flex justifyContent="space-between" pl="5" pt="4" pr="1">
-          <Flex>
-            <Link href={`/Profile/${pollData?.creator?._id}`}>
-              <Avatar
-                name="xav dave"
-                src={pollData?.creator?.profilePic}
-                border="none"
-                cursor="pointer"
-              />
-            </Link>
-            <Flex direction="column" justifyContent="center" pl="4">
-              <Text fontSize="xs" color="gray.500">
-                by {pollData?.creator?.appid}
-              </Text>
-              <Text fontSize="xs" color="gray.500">
-                <TimeAgo date={pollData?.creationDate} live={false} />
-              </Text>
-            </Flex>
-          </Flex>
-          <HStack align="start" spacing="0">
-            <Box mt="2px">
-              <Tag
-                fontWeight="bold"
-                color="gray.500"
-                size="sm"
-                mr="2"
-                variant="outline"
-              >
-                {pollData?.topic?.topic}
-              </Tag>
-              {pollData.subTopics &&
-                pollData.subTopics.map((st) => (
-                  <Tag
-                    fontWeight="bold"
-                    color="gray.500"
-                    size="sm"
-                    key={st._id}
-                    mr="2"
-                  >
-                    {st.subTopic}
-                  </Tag>
-                ))}
-            </Box>
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                aria-label="dotMenu"
-                icon={<BiDotsVerticalRounded size="20px" />}
-                variant="ghost"
-                _focus={{ outline: "none" }}
-                _hover={{ bg: "none" }}
-                _active={{ bg: "none" }}
-                size="xs"
-                color="gray.500"
-              />
-              <MenuList>
-                {pollData.isEditable && (
-                  <MenuItem
-                    _focus={{ outline: "none" }}
-                    _hover={{ bg: "gray.200" }}
-                    onClick={onOpen}
-                  >
-                    Edit
-                  </MenuItem>
-                )}
-                <MenuItem
-                  _focus={{ outline: "none" }}
-                  _hover={{ bg: "gray.200" }}
-                >
-                  Report
-                </MenuItem>
-                <MenuItem
-                  _focus={{ outline: "none" }}
-                  _hover={{ bg: "gray.200" }}
-                >
-                  Setting
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </HStack>
-        </Flex>
-        <Box py="6" pl={[4, 6, 8]} mr={[6, 6, 8, 10, 16]}>
+        <PollCardHeader
+          creator={pollData?.creator}
+          creationDate={pollData?.creationDate}
+          onOpen={onOpen}
+          isEditable={pollData?.isEditable}
+          pollId={pollData?._id}
+        />
+        <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
           {!isOpen ? (
             <Box>
               <Text fontSize={["sm", "sm", "md"]}>
                 {pollData?.question && pollData.question}
               </Text>
-              <Flex mt="4" align="center">
-                {pollData?.pollImages?.map((x, id) => (
-                  <Flex
-                    key={id}
-                    w="100px"
-                    h="100px"
-                    mr="4"
-                    align="center"
-                    justify="center"
-                    borderWidth="1px"
-                    borderColor="gray.300"
-                  >
-                    <BtnImage src={x} />
-                  </Flex>
-                ))}
-              </Flex>
+              {pollData?.pollImages.length ? (
+                <Flex mt="4" align="center">
+                  {pollData?.pollImages?.map((x, id) => (
+                    <Flex
+                      key={id}
+                      w="100px"
+                      h="100px"
+                      mr="4"
+                      align="center"
+                      justify="center"
+                      borderWidth="1px"
+                      borderColor="gray.300"
+                    >
+                      <BtnImage src={x} />
+                    </Flex>
+                  ))}
+                </Flex>
+              ) : null}
             </Box>
           ) : (
             <Box>
@@ -311,59 +243,144 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
             </Box>
           )}
         </Box>
-        <Flex justifyContent="flex-end" alignItems="center" mr="2" pb="1">
-          <Box mr="2">
-            <Text fontSize="xs" color="gray.400">
-              {`Last activity: `}
-              <TimeAgo date={data?.lastActivity} live={false} />
-            </Text>
-          </Box>
-          <Favorite favId={pollData._id} favType="Poll" />
-          <Popover placement="top">
-            <PopoverTrigger>
-              <IconButton
-                aria-label="heart"
-                icon={<BiShareAlt size="22px" />}
-                bg="none"
-                _hover={{ bg: "none" }}
-                _focus={{ outline: "none" }}
-                size="sm"
-              />
-            </PopoverTrigger>
-            <PopoverContent
-              _focus={{ outline: "none" }}
-              w="100%"
-              borderRadius="lg"
-            >
-              <PopoverArrow />
-              <PopoverBody>
-                <Flex justify="flex-start" align="center" px="2" py="2">
-                  <FacebookShareButton url="https://poldit.vercel.app/">
-                    <FacebookIcon round={true} size="24px" />
-                  </FacebookShareButton>
-                  <Flex mx="4">
-                    <TwitterShareButton url="https://poldit.vercel.app/">
-                      <TwitterIcon round={true} size="24px" />
-                    </TwitterShareButton>
-                  </Flex>
-                  <LinkedinShareButton url="https://chakra-ui.com">
-                    <LinkedinIcon round={true} size="24px" />
-                  </LinkedinShareButton>
-                  <Flex ml="2">
-                    <CopyToClipboard
-                      text={"I'm in your clipboard Now!!!"}
-                      onCopy={() => console.log("COPIED")}
-                    >
-                      <IoMdCopy size="24px" style={{ cursor: "pointer" }} />
-                    </CopyToClipboard>
-                  </Flex>
-                </Flex>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        </Flex>
+        <PollCardFooter
+          lastActivity={data?.lastActivity}
+          topic={pollData?.topic}
+          subTopics={pollData?.subTopics}
+        />
       </Box>
     </Box>
+  );
+};
+const PollCardHeader = ({
+  creator,
+  creationDate,
+  pollId,
+  isEditable,
+  onOpen,
+}: any) => {
+  return (
+    <Flex justify="space-between">
+      <Flex>
+        <Link href={`/Profile/${creator?._id}`}>
+          <Avatar
+            name="Poll Dit"
+            src={creator?.profilePic}
+            border="none"
+            cursor="pointer"
+          />
+        </Link>
+        <Flex direction="column" justify="center" pl="4">
+          <Text fontSize="xs" color="gray.500">
+            by {creator?.appid}
+          </Text>
+          <Text fontSize="xs" color="gray.500">
+            <TimeAgo date={creationDate} live={false} />
+          </Text>
+        </Flex>
+      </Flex>
+      <HStack align="start" mt="1" pr="2">
+        <Favorite favId={pollId} favType="Poll" />
+        <Popover placement="top">
+          <PopoverTrigger>
+            <IconButton
+              aria-label="heart"
+              icon={<BiShareAlt size="22px" />}
+              bg="none"
+              _hover={{ bg: "none" }}
+              _focus={{ outline: "none" }}
+              size="xs"
+            />
+          </PopoverTrigger>
+          <PopoverContent
+            _focus={{ outline: "none" }}
+            w="100%"
+            borderRadius="lg"
+          >
+            <PopoverArrow />
+            <PopoverBody>
+              <Flex justify="flex-start" align="center" px="4" py="2">
+                <FacebookShareButton url="https://chakra-ui.com">
+                  <FacebookIcon round={true} size="24px" />
+                </FacebookShareButton>
+                <Flex mx="4">
+                  <TwitterShareButton url="https://chakra-ui.com">
+                    <TwitterIcon round={true} size="24px" />
+                  </TwitterShareButton>
+                </Flex>
+                <LinkedinShareButton url="https://chakra-ui.com">
+                  <LinkedinIcon round={true} size="24px" />
+                </LinkedinShareButton>
+              </Flex>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            aria-label="dotMenu"
+            icon={<BiDotsVerticalRounded size="20px" />}
+            variant="ghost"
+            _focus={{ outline: "none" }}
+            _hover={{ bg: "none" }}
+            _active={{ bg: "none" }}
+            size="xs"
+            color="gray.500"
+          />
+          <MenuList>
+            {isEditable && (
+              <MenuItem
+                _focus={{ outline: "none" }}
+                _hover={{ bg: "gray.200" }}
+                onClick={onOpen}
+              >
+                Edit
+              </MenuItem>
+            )}
+            <MenuItem _focus={{ outline: "none" }} _hover={{ bg: "gray.200" }}>
+              Report
+            </MenuItem>
+            <MenuItem _focus={{ outline: "none" }} _hover={{ bg: "gray.200" }}>
+              Setting
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </HStack>
+    </Flex>
+  );
+};
+const PollCardFooter = ({ topic, subTopics, lastActivity }: any) => {
+  return (
+    <Flex justify="space-between" wrap="wrap" gridRowGap="2" ml={[0, 0, 1]}>
+      <Flex wrap="wrap" gridGap="2">
+        <Tag
+          fontWeight="bold"
+          color="gray.100"
+          size="sm"
+          borderRadius="full"
+          bg="gray.400"
+        >
+          {topic?.topic}
+        </Tag>
+        {subTopics.map((st: any) => (
+          <Tag
+            fontWeight="bold"
+            color="gray.500"
+            size="sm"
+            borderRadius="full"
+            key={st._id}
+          >
+            {st.subTopic}
+          </Tag>
+        ))}
+      </Flex>
+      <Box mr="2">
+        <Text fontSize="xs" color="gray.400">
+          {`Last activity: `}
+          <TimeAgo date={lastActivity} live={false} />
+        </Text>
+      </Box>
+    </Flex>
   );
 };
 
