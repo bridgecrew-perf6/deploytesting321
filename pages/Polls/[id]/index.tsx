@@ -29,6 +29,7 @@ import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab
 // import { addNewAnswer } from "lib/apollo/apolloFunctions";
 import { useRouter } from "next/router";
 import { useAuth } from "_components/authProvider/authProvider";
+import Layout from "_components/layout/Layout";
 const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
   GraphResolvers.queries;
 
@@ -178,8 +179,8 @@ const Poll = () => {
 
   if (data) {
     return (
-      <SitePageContainer title={`Poll`}>
-        <div style={{ marginTop: "100px" }}>
+      <Layout pageTitle={`Poll`}>
+        <div style={{ marginTop: "20px" }}>
           <PollQuestion pollData={data.poll} />
           {error && (
             <ErrorToast
@@ -256,7 +257,7 @@ const Poll = () => {
             </Box>
           </Flex>
         </div>
-      </SitePageContainer>
+      </Layout>
     );
   }
 

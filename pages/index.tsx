@@ -1,25 +1,23 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
 import { CustomBtn, PollHistory } from "../components/appTypes/appType";
-import { SitePageContainer } from "../components/layout";
-import { HomeBtnWindow } from "../components/pageComponents/Home";
-import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
 import DataWindow from "../components/pageComponents/Home/DataWindow";
-import usersInfoBox from "../appStyles/adminStyles/usersInfoBox.module.css";
 import AppLoading, {
   AppLoadingLite,
 } from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Box, Flex } from "@chakra-ui/layout";
+import { Spinner } from "@chakra-ui/spinner";
+import Layout from "_components/layout/Layout";
+import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
   ACTIVECHAT_WITH_PAGINATION,
   TRENDING_POLLS_WITH_PAGINATION,
-  GET_USER,
 } = GraphResolvers.queries;
 
 interface HomeBtns extends CustomBtn {
@@ -244,49 +242,56 @@ const Home = () => {
   //-----------------------------------------------------------------------------------------
   // Returning the jsx
   return (
-    <SitePageContainer
-      title={`${router.pathname} Home`}
-      customStyle={{ height: "auto" }}
-    >
-      <HomeBtnWindow btnList={homeBtns} update={updateBtnItem} />
+    <Layout pageTitle={`Home`}>
+      {/*
+		<HomeBtnWindow btnList={homeBtns} update={updateBtnItem} />
+	*/}
 
       {pollData[0] && pollData[0].data ? (
-        <>
-          <div
-            className="d-flex justify-content-center"
-            style={{ marginTop: "170px" }}
-          >
-            <InfiniteScroll
-              style={{ overflow: "hidden" }}
-              dataLength={pollData[0].data.length}
-              next={() => {
-                fetchAndUpdateData(homeBtns, pollData[0].btnName);
-              }}
-              hasMore={pollData[0].hasMoreItems}
-              loader={
-                <>
-                  {/* {console.log(pollData)} */}
-                  <AppLoadingLite />
-                </>
-              }
-              scrollThreshold={-1}
-              endMessage={
-                <p style={{ textAlign: "center" }}>
-                  <b>Thats all thankyou !</b>
-                </p>
-              }
-            >
-              <DataWindow data={pollData[0].data} />
-            </InfiniteScroll>
-          </div>
-          <div style={{ marginTop: "20px" }}>&nbsp;</div>
-        </>
+        <Box pt="6">
+          <Box py="6" px={[4, 4, 24, 24, 40]}>
+            <Flex wrap="wrap-reverse">
+              <Box
+                flex={{ base: "0 0 100%", lg: "0 0 70%" }}
+                maxW={{ base: "100%", lg: "70%" }}
+              >
+                <InfiniteScroll
+                  style={{ overflow: "hidden" }}
+                  dataLength={pollData[0].data.length}
+                  next={() => {
+                    fetchAndUpdateData(homeBtns, pollData[0].btnName);
+                  }}
+                  hasMore={pollData[0].hasMoreItems}
+                  loader={
+                    <Flex justify="center" align="center">
+                      <Spinner size="lg" color="poldit.100" />
+                    </Flex>
+                  }
+                  scrollThreshold={-1}
+                  endMessage={
+                    <p style={{ textAlign: "center" }}>
+                      <b>Thats all thankyou !</b>
+                    </p>
+                  }
+                >
+                  <DataWindow data={pollData[0].data} />
+                </InfiniteScroll>
+              </Box>
+              <Box
+                flex={{ base: "0 0 100%", lg: "0 0 30%" }}
+                maxW={{ base: "100%", lg: "30%" }}
+              >
+                <PollSideBar />
+              </Box>
+            </Flex>
+          </Box>
+        </Box>
       ) : (
-        <>
-          <AppLoadingLite />
-        </>
+        <Flex h="calc(100vh - 60px)" justify="center" align="center">
+          <Spinner size="lg" color="poldit.100" />
+        </Flex>
       )}
-    </SitePageContainer>
+    </Layout>
   );
 };
 

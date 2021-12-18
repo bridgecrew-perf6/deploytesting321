@@ -65,16 +65,13 @@ export const PageForm: React.FC<IProps> = (props) => {
     <div
       className={`${styles.appbg_other}`}
       style={{
-        ...{ height: "100vh", overflow: "auto" },
         ...props.customStyle,
       }}
     >
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <div className={`d-flex-row flex-fill ${styles.appbg_other}`}>
-        {props.children}
-      </div>
+      <div className={`${styles.appbg_other}`}>{props.children}</div>
     </div>
   );
 };
