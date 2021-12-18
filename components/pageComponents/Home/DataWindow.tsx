@@ -51,6 +51,20 @@ const ListItem = ({ data }: ListItem) => {
   return (
     <div className={`card m-2 ${dataItem}`} key={data._id}>
       <div className="">
+        <h2
+          style={{
+            textAlign: "center",
+            padding: "10px 5px",
+            fontWeight: "bold",
+          }}
+        >
+          {" "}
+          {data.pollType === "openEnded"
+            ? "Open Ended Poll"
+            : data.pollType === "multiChoice"
+            ? "Multichoice Poll"
+            : "Unknown Type"}{" "}
+        </h2>
         <div className="d-flex flex-row justify-content-between w-100 border-bottom p-2">
           <TagWindow
             pollId={data._id}

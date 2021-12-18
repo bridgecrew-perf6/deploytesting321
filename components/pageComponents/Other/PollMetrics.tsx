@@ -25,7 +25,7 @@ interface PollMetrics {
 export default function PollMetrics({ data }: PollMetrics) {
   const [shareBtnState, toggleShare] = useState(false);
 
-  const { answers, creationDate, _id, views, chatMssgs } = data;
+  const { chatMssgsCount, creationDate, _id, views, answerCount } = data;
 
   return (
     <div className="d-flex justify-content-between position-relative">
@@ -34,8 +34,8 @@ export default function PollMetrics({ data }: PollMetrics) {
         style={{ width: "25%" }}
       >
         <PollViews views={views ? views : 0} />
-        <ChatBtn chats={chatMssgs ? chatMssgs.length : 0} />
-        <AnswerCtr numAnswers={answers ? answers.length : 0} />
+        <ChatBtn chats={chatMssgsCount ? chatMssgsCount : 0} />
+        <AnswerCtr numAnswers={answerCount ? answerCount : 0} />
       </div>
       <div className="position-absolute" style={{ left: "50%", bottom: "1px" }}>
         <PollBtn pollId={_id} />

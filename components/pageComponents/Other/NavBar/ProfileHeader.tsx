@@ -74,22 +74,22 @@ export default function ProfileHeader(props: any) {
     }
   }, [appUserData]);
 
-  useEffect(() => {
-    subscribeToMore({
-      document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData) return prev;
-        const newItem = subscriptionData.data.newNotification;
+  // useEffect(() => {
+  //   subscribeToMore({
+  //     document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       if (!subscriptionData) return prev;
+  //       const newItem = subscriptionData.data.newNotification;
 
-        if (newItem.user._id !== userId) {
-          return Object.assign({}, prev, {
-            notifications: [newItem, ...prev.notifications],
-          });
-        }
-        return prev;
-      },
-    });
-  }, []);
+  //       if (newItem.user._id !== userId) {
+  //         return Object.assign({}, prev, {
+  //           notifications: [newItem, ...prev.notifications],
+  //         });
+  //       }
+  //       return prev;
+  //     },
+  //   });
+  // }, []);
 
   const messageIcon = message ? (
     <AiFillMessage size={24} color="#ff4d00" />
@@ -179,8 +179,9 @@ export default function ProfileHeader(props: any) {
             )}
           </div>
         </ToolTipCtr>
-        {!notificationError && (
-          <NotificationWindow data={notificationData?.notifications} />
+        {!notificationError && userId && (
+          <NotificationWindow userId={userId} />
+          // <NotificationWindow data={notificationData?.notifications} />
         )}
         {/* <NotificationWindow data={notificationData?.notifications} /> */}
         <div>

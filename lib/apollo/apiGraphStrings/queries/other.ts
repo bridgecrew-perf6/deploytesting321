@@ -32,6 +32,26 @@ const otherQueries = {
       }
     }
   `,
+  GET_NOTIFICATIONS_WITH_PAGINATION: gql`
+    query NotificationsWithPagination($offset: Int, $limit: Int) {
+      notificationsWithPagination(offset: $offset, limit: $limit) {
+        _id
+        message
+        creationDate
+        read
+        notificationType
+        notificationId
+        contentOwner {
+          _id
+        }
+        user {
+          _id
+          appid
+          profilePic
+        }
+      }
+    }
+  `,
   SEARCH_ALL: gql`
     query SearchAll($searchVal: String, $page: Int, $limit: Int) {
       searchAll(searchVal: $searchVal, page: $page, limit: $limit) {

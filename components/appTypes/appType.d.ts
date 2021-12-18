@@ -188,8 +188,14 @@ interface PollHistory {
   answers: Answer[];
   pollImages: string[];
   views?: number;
+  answerCount?: number;
+  chatMssgsCount?: number;
   chatMssgs?: ChatMessage[];
   isEditable: boolean;
+  pollType?: String;
+  lastActivity?: String;
+  isFavorite?: boolean;
+  isMultipleChoice?: boolean;
 }
 
 export interface UserDataProps {

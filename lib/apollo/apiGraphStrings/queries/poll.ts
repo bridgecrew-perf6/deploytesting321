@@ -120,9 +120,11 @@ const pollQueries = {
     query NewestPollsWithPagination($offset: Int, $limit: Int) {
       newestPollsWithPagination(offset: $offset, limit: $limit) {
         _id
+        pollType
         question
+        answerCount
+        chatMssgsCount
         topic {
-          _id
           topic
         }
         subTopics {
@@ -130,9 +132,6 @@ const pollQueries = {
           subTopic
         }
         pollImages
-        answers {
-          _id
-        }
         creationDate
         creator {
           _id
@@ -140,9 +139,6 @@ const pollQueries = {
           profilePic
         }
         views
-        chatMssgs {
-          _id
-        }
       }
     }
   `,
@@ -241,9 +237,11 @@ const pollQueries = {
     query ActiveChatsWithPagination($offset: Int, $limit: Int) {
       activeChatsWithPagination(offset: $offset, limit: $limit) {
         _id
+        pollType
         question
+        answerCount
+        chatMssgsCount
         topic {
-          _id
           topic
         }
         subTopics {
@@ -251,9 +249,6 @@ const pollQueries = {
           subTopic
         }
         pollImages
-        answers {
-          _id
-        }
         creationDate
         creator {
           _id
@@ -261,9 +256,6 @@ const pollQueries = {
           profilePic
         }
         views
-        chatMssgs {
-          _id
-        }
       }
     }
   `,
@@ -301,9 +293,11 @@ const pollQueries = {
     query TrendingPollsWithPagination($offset: Int, $limit: Int) {
       trendingPollsWithPagination(offset: $offset, limit: $limit) {
         _id
+        pollType
         question
+        answerCount
+        chatMssgsCount
         topic {
-          _id
           topic
         }
         subTopics {
@@ -311,9 +305,6 @@ const pollQueries = {
           subTopic
         }
         pollImages
-        answers {
-          _id
-        }
         creationDate
         creator {
           _id
@@ -321,9 +312,6 @@ const pollQueries = {
           profilePic
         }
         views
-        chatMssgs {
-          _id
-        }
       }
     }
   `,
