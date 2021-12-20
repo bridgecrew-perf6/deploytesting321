@@ -253,7 +253,8 @@ const PollCardFooter = ({ data }: ListItem) => {
             </Text>
           </Flex>
         </Tooltip>
-        {data.pollImages?.length ? (
+
+        {!data?.isMultipleChoice ? (
           <Tooltip label="Open Ended Poll" placement="top" hasArrow>
             <IconButton
               aria-label="heart"

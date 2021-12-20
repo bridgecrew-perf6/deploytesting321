@@ -123,6 +123,7 @@ const pollQueries = {
         pollType
         question
         answerCount
+        isMultipleChoice
         chatMssgsCount
         topic {
           topic
@@ -241,6 +242,7 @@ const pollQueries = {
         question
         answerCount
         chatMssgsCount
+        isMultipleChoice
         topic {
           topic
         }
@@ -296,6 +298,7 @@ const pollQueries = {
         pollType
         question
         answerCount
+        isMultipleChoice
         chatMssgsCount
         topic {
           topic
