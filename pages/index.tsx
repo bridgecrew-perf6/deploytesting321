@@ -62,31 +62,12 @@ const Home = () => {
   const [homeBtns, setUpdateHomeBtns] = useState<HomeBtns[]>(btnItems);
 
   //-----------------------------------------------------------------------------------------
-  //Use Effects
-  useEffect(() => {
-    setUpdateHomeBtns(btnItems);
-    if (!activeChatsLoading) {
-      homeBtns[0].data = activeChats.activeChatsWithPagination;
-      homeBtns[1].data = trendingPolls.trendingPollsWithPagination;
-      homeBtns[2].data = newPollData.newestPollsWithPagination;
-    }
-    homeBtns.forEach((btn) => {
-      btn.currentOffset = 0;
-      btn.hasMoreItems = true;
-    });
-  }, []);
-
-  //-----------------------------------------------------------------------------------------
   // Queries
   const {
     data: newPollData,
     loading: newPollsLoading,
     fetchMore: newPollsFetchMore,
   } = useQuery(NEWEST_POLLS_WITH_PAGINATION, {
-    onCompleted: (res) => {
-      // console.log(res);
-      return updateData("Newest Polls", res.newestPollsWithPagination);
-    },
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
@@ -98,10 +79,6 @@ const Home = () => {
     loading: activeChatsLoading,
     fetchMore: activeChatsFetchmore,
   } = useQuery(ACTIVECHAT_WITH_PAGINATION, {
-    onCompleted: (res) => {
-      // console.log(res);
-      updateData("Active Chats", res.activeChatsWithPagination);
-    },
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
@@ -113,10 +90,6 @@ const Home = () => {
     loading: trendingPollsLoading,
     fetchMore: trendingPollsFetchMore,
   } = useQuery(TRENDING_POLLS_WITH_PAGINATION, {
-    onCompleted: (res) => {
-      // console.log(res);
-      updateData("Trending Polls", res.trendingPollsWithPagination);
-    },
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
@@ -216,6 +189,19 @@ const Home = () => {
     setUpdateHomeBtns(updatedItems);
   };
 
+  const updateBtnItemsNew = (btnName: string) => {
+    setUpdateHomeBtns((prevHomeBtns) => {
+      return prevHomeBtns.map((btn) => {
+        if (btn.btnName === btnName) {
+          btn.active = true;
+        } else {
+          btn.active = false;
+        }
+        return btn;
+      });
+    });
+  };
+
   const updateData = (btnType: string, data: PollHistory[]) => {
     const updatedHomeBtns = homeBtns.map((item) => {
       if (item.btnName === btnType) {
@@ -223,7 +209,6 @@ const Home = () => {
       }
       return item;
     });
-
     setUpdateHomeBtns(updatedHomeBtns);
   };
 
@@ -235,6 +220,44 @@ const Home = () => {
 
     return newData?.data || [];
   };
+
+  //-----------------------------------------------------------------------------------------
+  //Use Effects
+  useEffect(() => {
+    if (!activeChatsLoading) {
+      setUpdateHomeBtns((prevHomeBtns) => {
+        const btns = prevHomeBtns;
+        btns[0].data = activeChats.activeChatsWithPagination;
+        btns[0].currentOffset = itemsToBeLoadedPerFetch;
+        btns[0].hasMoreItems = true;
+        return btns;
+      });
+    }
+  }, [activeChats]);
+
+  useEffect(() => {
+    if (!trendingPollsLoading) {
+      setUpdateHomeBtns((prevHomeBtns) => {
+        const btns = prevHomeBtns;
+        btns[1].data = trendingPolls.trendingPollsWithPagination;
+        btns[1].currentOffset = itemsToBeLoadedPerFetch;
+        btns[1].hasMoreItems = true;
+        return btns;
+      });
+    }
+  }, [trendingPolls]);
+
+  useEffect(() => {
+    if (!newPollsLoading) {
+      setUpdateHomeBtns((prevHomeBtns) => {
+        const btns = prevHomeBtns;
+        btns[2].data = newPollData.newestPollsWithPagination;
+        btns[2].currentOffset = itemsToBeLoadedPerFetch;
+        btns[2].hasMoreItems = true;
+        return btns;
+      });
+    }
+  }, [newPollData]);
 
   // Selectin which button is active
   const pollData = homeBtns.filter((item) => item.active);
@@ -281,7 +304,13 @@ const Home = () => {
                 flex={{ base: "0 0 100%", lg: "0 0 30%" }}
                 maxW={{ base: "100%", lg: "30%" }}
               >
-                <PollSideBar />
+                <PollSideBar
+                  activeBtn={(() => {
+                    const activeBtn = homeBtns.find((btn) => btn.active);
+                    return activeBtn?.btnName;
+                  })()}
+                  update={updateBtnItemsNew}
+                />
               </Box>
             </Flex>
           </Box>

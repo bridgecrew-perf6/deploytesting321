@@ -35,7 +35,7 @@ import { RiFilePaper2Line } from "react-icons/ri";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
-interface DataWindow {
+export interface DataWindow {
   data: PollHistory[];
 }
 
