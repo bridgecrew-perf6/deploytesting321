@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -29,9 +29,17 @@ import TimeAgo from "react-timeago";
 import { PollHistory } from "../../appTypes/appType";
 import PollMetrics from "../Other/PollMetrics";
 import { TagWindow, UserTagWindow } from "../Other/Tags/Tags";
-import { AiOutlineHeart, AiOutlineEye, AiOutlineMessage } from "react-icons/ai";
+import {
+  AiOutlineHeart,
+  AiOutlineEye,
+  AiTwotoneHeart,
+  AiOutlineMessage,
+} from "react-icons/ai";
 import { BiShareAlt, BiMessage, BiSelectMultiple } from "react-icons/bi";
 import { RiFilePaper2Line } from "react-icons/ri";
+import { useMutation, useQuery } from "@apollo/client";
+import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import { handleFavorite } from "lib/apollo/apolloFunctions/mutations";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
@@ -71,6 +79,7 @@ const PollCard = ({ data }: ListItem) => {
           creator={data?.creator}
           creationDate={data?.creationDate}
           pollId={data?._id}
+          isFavorite={data?.isFavorite}
         />
         <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
           <Link href={`/Polls/${data?._id}`}>
@@ -113,7 +122,41 @@ const PollCard = ({ data }: ListItem) => {
   );
 };
 
-const PollCardHeader = ({ creator, creationDate, pollId }: any) => {
+const PollCardHeader = ({ creator, creationDate, pollId, isFavorite }: any) => {
+  const [favorite, setFavorite] = useState<boolean>();
+
+  // Use Effects
+  useEffect(() => {
+    setFavorite(isFavorite);
+  }, []);
+
+  // Mutations ---------------------------------------------------------
+  const [updateFavorite] = useMutation(
+    GraphResolvers.mutations.HANDLE_FAVORITE
+  );
+  // Mutaions End ------------------------------------------------------
+
+  // Functions ---------------------------------------------------------
+  const favoriteHandler = (pollId: string) => {
+    if (favorite !== undefined) {
+      const favType = "Poll";
+
+      handleFavorite(updateFavorite, !favorite, favType, pollId)
+        .then(() => {
+          // console.log("Process completed now fav is -->", !favorite);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+
+      setFavorite((prevState) => {
+        return !prevState;
+      });
+    }
+  };
+
+  // Functions End -----------------------------------------------------
+
   return (
     <Flex justify="space-between">
       <Flex>
@@ -137,12 +180,18 @@ const PollCardHeader = ({ creator, creationDate, pollId }: any) => {
       <HStack align="start" mt="1" pr="2">
         <IconButton
           aria-label="heart"
-          icon={<AiOutlineHeart size="22px" />}
+          icon={
+            favorite ? (
+              <AiTwotoneHeart size="22px" color="red" />
+            ) : (
+              <AiOutlineHeart size="22px" />
+            )
+          }
           bg="none"
           _hover={{ bg: "none" }}
           _focus={{ outline: "none" }}
           size="xs"
-          onClick={() => console.log(pollId)}
+          onClick={() => favoriteHandler(pollId)}
         />
         <Popover placement="top">
           <PopoverTrigger>

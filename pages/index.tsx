@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
@@ -61,39 +61,49 @@ const Home = () => {
     useState<number>(5);
   const [homeBtns, setUpdateHomeBtns] = useState<HomeBtns[]>(btnItems);
 
+  const [pollData, setPollData] = useState<any[]>([]);
+
+  // setPollData(homeBtns.filter((item) => item.active));
+
   //-----------------------------------------------------------------------------------------
   // Queries
   const {
     data: newPollData,
     loading: newPollsLoading,
     fetchMore: newPollsFetchMore,
+    refetch: newPollsRefetch,
   } = useQuery(NEWEST_POLLS_WITH_PAGINATION, {
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
     },
+    fetchPolicy: "network-only",
   });
 
   const {
     data: activeChats,
     loading: activeChatsLoading,
     fetchMore: activeChatsFetchmore,
+    refetch: activeChatsRefetch,
   } = useQuery(ACTIVECHAT_WITH_PAGINATION, {
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
     },
+    fetchPolicy: "network-only",
   });
 
   const {
     data: trendingPolls,
     loading: trendingPollsLoading,
     fetchMore: trendingPollsFetchMore,
+    refetch: trendingPollsRefetch,
   } = useQuery(TRENDING_POLLS_WITH_PAGINATION, {
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
     },
+    fetchPolicy: "network-only",
   });
 
   //-----------------------------------------------------------------------------------------
@@ -124,6 +134,7 @@ const Home = () => {
       });
       return data;
     }
+
     const selectedBtn = homeBtns.find((item) => {
       return item.btnName === btnType;
     });
@@ -162,10 +173,6 @@ const Home = () => {
       })
     );
 
-    // console.log("Got Data ->", updatedHomeBtns);
-    // if (updatedHomeBtns.length > 0) {
-    //   setUpdateHomeBtns(updatedHomeBtns);
-    // }
     setUpdateHomeBtns(updatedHomeBtns);
   };
 
@@ -200,6 +207,9 @@ const Home = () => {
         return btn;
       });
     });
+    const activeBtns = homeBtns.filter((btn) => btn.active);
+
+    setPollData(activeBtns);
   };
 
   const updateData = (btnType: string, data: PollHistory[]) => {
@@ -232,8 +242,11 @@ const Home = () => {
         btns[0].hasMoreItems = true;
         return btns;
       });
+
+      const activeBtns = homeBtns.filter((btn) => btn.active);
+      setPollData(activeBtns);
     }
-  }, [activeChats]);
+  }, [activeChatsLoading]);
 
   useEffect(() => {
     if (!trendingPollsLoading) {
@@ -258,9 +271,6 @@ const Home = () => {
       });
     }
   }, [newPollData]);
-
-  // Selectin which button is active
-  const pollData = homeBtns.filter((item) => item.active);
 
   //-----------------------------------------------------------------------------------------
   // Returning the jsx

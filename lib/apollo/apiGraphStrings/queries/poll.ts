@@ -124,6 +124,7 @@ const pollQueries = {
         question
         answerCount
         isMultipleChoice
+        isFavorite
         chatMssgsCount
         topic {
           topic
@@ -243,6 +244,7 @@ const pollQueries = {
         answerCount
         chatMssgsCount
         isMultipleChoice
+        isFavorite
         topic {
           topic
         }
@@ -299,6 +301,7 @@ const pollQueries = {
         question
         answerCount
         isMultipleChoice
+        isFavorite
         chatMssgsCount
         topic {
           topic
