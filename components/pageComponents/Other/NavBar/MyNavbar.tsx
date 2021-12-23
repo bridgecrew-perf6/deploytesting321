@@ -93,7 +93,7 @@ const MyNavbar: React.FC = () => {
   };
 
   return (
-    <Box position="absolute" top={0} left={0} w="100%" zIndex="999">
+    <Box position="fixed" top={0} left={0} w="100%" zIndex="999">
       <Flex
         bg="white"
         h="60px"
@@ -201,21 +201,23 @@ const MyNavbar: React.FC = () => {
                     />
                     <MenuList px="2">
                       {NavLinks.map((l: NavType) => (
-                        <MenuItem
-                          borderRadius="lg"
-                          _hover={{
-                            bg: "orange.300",
-                            color: "white",
-                            outline: "none",
-                          }}
-                          _focus={{
-                            outline: "none",
-                          }}
-                          key={l.id}
-                          fontSize="sm"
-                        >
-                          {l.link}
-                        </MenuItem>
+                        <Link href={`${l.url}/userId`}>
+                          <MenuItem
+                            borderRadius="lg"
+                            _hover={{
+                              bg: "orange.300",
+                              color: "white",
+                              outline: "none",
+                            }}
+                            _focus={{
+                              outline: "none",
+                            }}
+                            key={l.id}
+                            fontSize="sm"
+                          >
+                            {l.link}
+                          </MenuItem>
+                        </Link>
                       ))}
                       <MenuItem
                         borderRadius="lg"

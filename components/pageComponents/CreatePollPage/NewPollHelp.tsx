@@ -26,7 +26,7 @@ export const NewPollHelp: React.FC<{}> = () => {
                 _hover={{ bg: "#f8f9f9" }}
               >
                 <Box flex="1" textAlign="left">
-                  <Text fontSize="md" color="gray.500">
+                  <Text fontSize="md" fontWeight="bold">
                     Question type
                   </Text>
                 </Box>
@@ -51,7 +51,7 @@ export const NewPollHelp: React.FC<{}> = () => {
                   <h2>
                     <AccordionButton bg="#f8f9f9" _focus={{ outline: "none" }}>
                       <Box flex="1" textAlign="left">
-                        <Text fontSize="sm" fontWeight="bold">
+                        <Text fontSize="sm" fontWeight="bold" color="gray.600">
                           Ask a Poll Question
                         </Text>
                       </Box>
@@ -100,46 +100,6 @@ export const NewPollHelp: React.FC<{}> = () => {
                   </AccordionPanel>
                 </AccordionItem>
               </Accordion>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-      </Box>
-      <Box
-        border="1px solid #d6d9dc"
-        boxShadow="0 1px 2px hsla(0,0%,0%,0.05),0 1px 4px hsla(0,0%,0%,0.05),0 2px 8px hsla(0,0%,0%,0.05)"
-        mt="4"
-        display={{ base: "none", lg: "block" }}
-      >
-        <Accordion allowToggle>
-          <AccordionItem>
-            <h2>
-              <AccordionButton
-                bg="#f8f9f9"
-                _focus={{ outline: "none" }}
-                _hover={{ bg: "#f8f9f9" }}
-              >
-                <Box flex="1" textAlign="left">
-                  <Text fontSize="md" color="gray.500">
-                    More helpful links
-                  </Text>
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4} bg="white">
-              <Text fontSize="sm" color="gray.600">
-                The community is here to help you with specific coding,
-                algorithm, or language problems.
-              </Text>
-              <Text
-                fontSize="sm"
-                color="blue.300"
-                mt="2"
-                cursor="pointer"
-                _hover={{ textDecoration: "underline" }}
-              >
-                Visit the help center
-              </Text>
             </AccordionPanel>
           </AccordionItem>
         </Accordion>
