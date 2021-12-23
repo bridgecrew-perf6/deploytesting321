@@ -220,7 +220,7 @@ const MyNavbar: React.FC = () => {
                     />
                     <MenuList px="2">
                       {NavLinks.map((l: NavType) => (
-                        <Link href={`${l.url}/userId`}>
+                        <Link href={`${l.url}/userId`} key={l.id}>
                           <MenuItem
                             borderRadius="lg"
                             _hover={{

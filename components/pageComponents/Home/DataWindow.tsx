@@ -151,20 +151,20 @@ const PollCard = ({ data, handleFav, srch }: ListItem) => {
             </Text>
           </Link>
           {data?.pollImages.length ? (
-            <Flex mt="4" align="center">
+            <Flex mt="4">
               {data?.pollImages.map((x, id) => (
-                <Flex
+                <Box
                   key={id}
                   w="100px"
                   h="100px"
-                  mr="4"
-                  align="center"
-                  justify="center"
+                  mr="2"
+                  borderRadius="md"
+                  overflow="hidden"
                   borderWidth="1px"
                   borderColor="gray.300"
                 >
                   <BtnImage src={x} />
-                </Flex>
+                </Box>
               ))}
             </Flex>
           ) : null}

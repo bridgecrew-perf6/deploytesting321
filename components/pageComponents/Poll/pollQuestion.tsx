@@ -161,18 +161,18 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               {pollData?.pollImages.length ? (
                 <Flex mt="4" align="center">
                   {pollData?.pollImages?.map((x, id) => (
-                    <Flex
+                    <Box
                       key={id}
                       w="100px"
                       h="100px"
-                      mr="4"
-                      align="center"
-                      justify="center"
+                      mr="2"
+                      borderRadius="md"
+                      overflow="hidden"
                       borderWidth="1px"
                       borderColor="gray.300"
                     >
                       <BtnImage src={x} />
-                    </Flex>
+                    </Box>
                   ))}
                 </Flex>
               ) : null}
