@@ -1,12 +1,12 @@
 import { Box, Flex, Text, useRadio, useRadioGroup } from "@chakra-ui/react";
 
-export const PollSideBar = (props: {}) => {
+export const PollSideBar = ({ activeBtn, update }: any) => {
   const options = ["Active Chats", "Trending Polls", "Newest Polls"];
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "framework",
-    defaultValue: "Active Chats",
-    onChange: (e) => console.log(e),
+    defaultValue: activeBtn || "Active Chats",
+    onChange: (e) => update(e),
   });
 
   const group = getRootProps();

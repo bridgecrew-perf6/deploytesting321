@@ -6,6 +6,11 @@ const userMutations = {
       login(credentials: $credentials)
     }
   `,
+  VERIFY_USER_EMAIL: gql`
+    mutation VerifyUserEmail($tokken: String!) {
+      verifyUserEmail(tokken: $tokken)
+    }
+  `,
   CREATE_USER: gql`
     mutation CreateNewUser($formInputs: String!) {
       createNewUser(formInputs: $formInputs) {

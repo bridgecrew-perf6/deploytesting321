@@ -46,7 +46,7 @@ import { useRouter } from "next/router";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
-interface DataWindow {
+export interface DataWindow {
   data: PollHistory[];
   btn?: string;
   update?: (btnType: string, data: PollHistory[]) => void;

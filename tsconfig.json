@@ -22,6 +22,11 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/EmailVerification/sbc.examp"
+  ],
   "exclude": ["node_modules"]
 }

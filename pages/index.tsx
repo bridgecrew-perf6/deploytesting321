@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
@@ -61,20 +61,9 @@ const Home = () => {
     useState<number>(6);
   const [homeBtns, setUpdateHomeBtns] = useState<HomeBtns[]>(btnItems);
 
-  //-----------------------------------------------------------------------------------------
-  //Use Effects
-  useEffect(() => {
-    setUpdateHomeBtns(btnItems);
-    if (!activeChatsLoading) {
-      homeBtns[0].data = activeChats.activeChatsWithPagination;
-      homeBtns[1].data = trendingPolls.trendingPollsWithPagination;
-      homeBtns[2].data = newPollData.newestPollsWithPagination;
-    }
-    homeBtns.forEach((btn) => {
-      btn.currentOffset = 0;
-      btn.hasMoreItems = true;
-    });
-  }, []);
+  const [pollData, setPollData] = useState<any[]>([]);
+
+  // setPollData(homeBtns.filter((item) => item.active));
 
   //-----------------------------------------------------------------------------------------
   // Queries
@@ -82,45 +71,39 @@ const Home = () => {
     data: newPollData,
     loading: newPollsLoading,
     fetchMore: newPollsFetchMore,
+    refetch: newPollsRefetch,
   } = useQuery(NEWEST_POLLS_WITH_PAGINATION, {
-    onCompleted: (res) => {
-      // console.log(res);
-      return updateData("Newest Polls", res.newestPollsWithPagination);
-    },
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
     },
+    fetchPolicy: "network-only",
   });
 
   const {
     data: activeChats,
     loading: activeChatsLoading,
     fetchMore: activeChatsFetchmore,
+    refetch: activeChatsRefetch,
   } = useQuery(ACTIVECHAT_WITH_PAGINATION, {
-    onCompleted: (res) => {
-      // console.log(res);
-      updateData("Active Chats", res.activeChatsWithPagination);
-    },
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
     },
+    fetchPolicy: "network-only",
   });
 
   const {
     data: trendingPolls,
     loading: trendingPollsLoading,
     fetchMore: trendingPollsFetchMore,
+    refetch: trendingPollsRefetch,
   } = useQuery(TRENDING_POLLS_WITH_PAGINATION, {
-    onCompleted: (res) => {
-      // console.log(res);
-      updateData("Trending Polls", res.trendingPollsWithPagination);
-    },
     variables: {
       offset: 0,
       limit: itemsToBeLoadedPerFetch,
     },
+    fetchPolicy: "network-only",
   });
 
   //-----------------------------------------------------------------------------------------
@@ -151,6 +134,7 @@ const Home = () => {
       });
       return data;
     }
+
     const selectedBtn = homeBtns.find((item) => {
       return item.btnName === btnType;
     });
@@ -189,10 +173,6 @@ const Home = () => {
       })
     );
 
-    // console.log("Got Data ->", updatedHomeBtns);
-    // if (updatedHomeBtns.length > 0) {
-    //   setUpdateHomeBtns(updatedHomeBtns);
-    // }
     setUpdateHomeBtns(updatedHomeBtns);
   };
 
@@ -216,6 +196,22 @@ const Home = () => {
     setUpdateHomeBtns(updatedItems);
   };
 
+  const updateBtnItemsNew = (btnName: string) => {
+    setUpdateHomeBtns((prevHomeBtns) => {
+      return prevHomeBtns.map((btn) => {
+        if (btn.btnName === btnName) {
+          btn.active = true;
+        } else {
+          btn.active = false;
+        }
+        return btn;
+      });
+    });
+    const activeBtns = homeBtns.filter((btn) => btn.active);
+
+    setPollData(activeBtns);
+  };
+
   const updateData = (btnType: string, data: PollHistory[]) => {
     const updatedHomeBtns = homeBtns.map((item) => {
       if (item.btnName === btnType) {
@@ -223,7 +219,6 @@ const Home = () => {
       }
       return item;
     });
-
     setUpdateHomeBtns(updatedHomeBtns);
   };
 
@@ -236,8 +231,46 @@ const Home = () => {
     return newData?.data || [];
   };
 
-  // Selectin which button is active
-  const pollData = homeBtns.filter((item) => item.active);
+  //-----------------------------------------------------------------------------------------
+  //Use Effects
+  useEffect(() => {
+    if (!activeChatsLoading) {
+      setUpdateHomeBtns((prevHomeBtns) => {
+        const btns = prevHomeBtns;
+        btns[0].data = activeChats.activeChatsWithPagination;
+        btns[0].currentOffset = itemsToBeLoadedPerFetch;
+        btns[0].hasMoreItems = true;
+        return btns;
+      });
+
+      const activeBtns = homeBtns.filter((btn) => btn.active);
+      setPollData(activeBtns);
+    }
+  }, [activeChatsLoading]);
+
+  useEffect(() => {
+    if (!trendingPollsLoading) {
+      setUpdateHomeBtns((prevHomeBtns) => {
+        const btns = prevHomeBtns;
+        btns[1].data = trendingPolls.trendingPollsWithPagination;
+        btns[1].currentOffset = itemsToBeLoadedPerFetch;
+        btns[1].hasMoreItems = true;
+        return btns;
+      });
+    }
+  }, [trendingPolls]);
+
+  useEffect(() => {
+    if (!newPollsLoading) {
+      setUpdateHomeBtns((prevHomeBtns) => {
+        const btns = prevHomeBtns;
+        btns[2].data = newPollData.newestPollsWithPagination;
+        btns[2].currentOffset = itemsToBeLoadedPerFetch;
+        btns[2].hasMoreItems = true;
+        return btns;
+      });
+    }
+  }, [newPollData]);
 
   //-----------------------------------------------------------------------------------------
   // Returning the jsx
@@ -286,7 +319,13 @@ const Home = () => {
                 flex={{ base: "0 0 100%", lg: "0 0 30%" }}
                 maxW={{ base: "100%", lg: "30%" }}
               >
-                <PollSideBar />
+                <PollSideBar
+                  activeBtn={(() => {
+                    const activeBtn = homeBtns.find((btn) => btn.active);
+                    return activeBtn?.btnName;
+                  })()}
+                  update={updateBtnItemsNew}
+                />
               </Box>
             </Flex>
           </Box>

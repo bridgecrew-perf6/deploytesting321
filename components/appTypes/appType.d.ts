@@ -177,7 +177,7 @@ interface Answer {
   isEditable: boolean;
 }
 
-interface PollHistory {
+export interface PollHistory {
   _id: string;
   __typename?: string;
   question: string;
@@ -467,7 +467,7 @@ interface PollsWindow {
   select: (activeId: string, catType: string, topic?: string) => void;
 }
 
-interface CustomBtn {
+export interface CustomBtn {
   active: boolean;
   btnName: string;
   data: any[];
