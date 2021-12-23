@@ -151,7 +151,7 @@ const PollCard = ({ data, handleFav, srch }: ListItem) => {
             </Text>
           </Link>
           {data?.pollImages.length ? (
-            <Flex mt="4">
+            <Flex mt="4" align="center">
               {data?.pollImages.map((x, id) => (
                 <Flex
                   key={id}
@@ -205,31 +205,33 @@ const PollCardHeader = ({
         </Flex>
       </Flex>
       <HStack align="start" mt="1" pr="2">
-        <Popover placement="top" trigger="hover">
-          <PopoverTrigger>
-            <IconButton
-              aria-label="last_activity"
-              icon={<AiOutlineHistory size="22px" />}
-              bg="none"
-              size="xs"
-              _hover={{ bg: "none" }}
-              _focus={{ outline: "none" }}
-            />
-          </PopoverTrigger>
-          <Portal>
-            <PopoverContent _focus={{ outline: "none" }} w="100%" bg="black">
-              <PopoverArrow bg="black" />
-              <PopoverBody>
-                <Flex justify="flex-start" align="center">
-                  <Text fontSize="sm" color="white" fontWeight={"semibold"}>
-                    {"Last activity was"}{" "}
-                    <TimeAgo date={lasActivity} live={false} />
-                  </Text>
-                </Flex>
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
-        </Popover>
+        {lasActivity && (
+          <Popover placement="top" trigger="hover">
+            <PopoverTrigger>
+              <IconButton
+                aria-label="last_activity"
+                icon={<AiOutlineHistory size="22px" />}
+                bg="none"
+                size="xs"
+                _hover={{ bg: "none" }}
+                _focus={{ outline: "none" }}
+              />
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent _focus={{ outline: "none" }} w="100%" bg="black">
+                <PopoverArrow bg="black" />
+                <PopoverBody>
+                  <Flex justify="flex-start" align="center">
+                    <Text fontSize="sm" color="white" fontWeight={"semibold"}>
+                      {"Last activity was"}{" "}
+                      <TimeAgo date={lasActivity} live={false} />
+                    </Text>
+                  </Flex>
+                </PopoverBody>
+              </PopoverContent>
+            </Portal>
+          </Popover>
+        )}
         {!isMyPoll && (
           <IconButton
             aria-label="heart"

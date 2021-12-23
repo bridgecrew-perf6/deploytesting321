@@ -176,25 +176,25 @@ const Home = () => {
     setUpdateHomeBtns(updatedHomeBtns);
   };
 
-  const updateBtnItem = (btnName: string, prop: string, val: any) => {
-    // console.log("Updated Buttons Called -->");
-    const updatedItems = homeBtns.map((item) => {
-      // console.log(btnName, item.btnName);
-      if (item.btnName === btnName && prop === "active") {
-        const data = pollHandler(item.btnName);
+  // const updateBtnItem = (btnName: string, prop: string, val: any) => {
+  //   // console.log("Updated Buttons Called -->");
+  //   const updatedItems = homeBtns.map((item) => {
+  //     // console.log(btnName, item.btnName);
+  //     if (item.btnName === btnName && prop === "active") {
+  //       const data = pollHandler(item.btnName);
 
-        return { ...item, active: true, data };
-      } else if (item.btnName !== btnName && prop === "active") {
-        return { ...item, active: false };
-      } else if (item.btnName === btnName && prop !== "active") {
-        return { ...item, [prop as keyof CustomBtn]: val };
-      } else {
-        return item;
-      }
-    });
+  //       return { ...item, active: true, data };
+  //     } else if (item.btnName !== btnName && prop === "active") {
+  //       return { ...item, active: false };
+  //     } else if (item.btnName === btnName && prop !== "active") {
+  //       return { ...item, [prop as keyof CustomBtn]: val };
+  //     } else {
+  //       return item;
+  //     }
+  //   });
 
-    setUpdateHomeBtns(updatedItems);
-  };
+  //   setUpdateHomeBtns(updatedItems);
+  // };
 
   const updateBtnItemsNew = (btnName: string) => {
     setUpdateHomeBtns((prevHomeBtns) => {
@@ -222,14 +222,14 @@ const Home = () => {
     setUpdateHomeBtns(updatedHomeBtns);
   };
 
-  const pollHandler = (sortType: string) => {
-    // console.log("Poll handler called");
-    const newData = homeBtns.find((item) => {
-      return item.btnName === sortType;
-    });
+  // const pollHandler = (sortType: string) => {
+  //   // console.log("Poll handler called");
+  //   const newData = homeBtns.find((item) => {
+  //     return item.btnName === sortType;
+  //   });
 
-    return newData?.data || [];
-  };
+  //   return newData?.data || [];
+  // };
 
   //-----------------------------------------------------------------------------------------
   //Use Effects
