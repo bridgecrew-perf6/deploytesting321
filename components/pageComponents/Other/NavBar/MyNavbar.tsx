@@ -92,6 +92,24 @@ const MyNavbar: React.FC = () => {
     router.push("/Login");
   };
 
+  const goToSearch = (
+    e:
+      | React.KeyboardEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { key } = e as React.KeyboardEvent<HTMLInputElement>;
+    const { target } = e as React.ChangeEvent<HTMLInputElement>;
+
+    if (key === "Enter" && target.value.length > 0) {
+      e.preventDefault();
+
+      router.push(
+        { pathname: "/Search", query: { searchVal: target.value } },
+        "/Search"
+      );
+    }
+  };
+
   return (
     <Box position="absolute" top={0} left={0} w="100%" zIndex="999">
       <Flex
@@ -129,6 +147,7 @@ const MyNavbar: React.FC = () => {
               placeholder="Search..."
               color="gray.600"
               borderColor="gray.300"
+              onKeyDown={goToSearch}
             />
           </InputGroup>
         </Flex>

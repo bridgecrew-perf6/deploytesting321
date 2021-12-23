@@ -175,7 +175,7 @@ const AnsBox = ({
       ) : (
         <Box bg="white" p="10px">
           {loading ? (
-            <Flex h="640px" justify="center" align="center">
+            <Flex justify="center" align="center">
               <Spinner size="xl" />
             </Flex>
           ) : (

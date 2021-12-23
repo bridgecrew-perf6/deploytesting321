@@ -10,7 +10,8 @@ const Layout = ({ pageTitle, children }: any) => {
         <title>{pageTitle}</title>
       </Head>
       <MyNavbar />
-      <Box minH="calc(100vh - 60px)" pt="60px">
+      <Box minH="100vh" pt="60px" bg="#f4f4f4">
+      {/* <Box minH="calc(100vh - 60px)" pt="60px" bg="gray"> */}
         <main>{children}</main>
       </Box>
     </>

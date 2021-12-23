@@ -9,7 +9,7 @@ import AppLoading, {
 } from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Box, Flex } from "@chakra-ui/layout";
+import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
 import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
@@ -58,7 +58,7 @@ const Home = () => {
   //-----------------------------------------------------------------------------------------
   //States
   const [itemsToBeLoadedPerFetch, setItemsToBeLoadedPerFetch] =
-    useState<number>(5);
+    useState<number>(6);
   const [homeBtns, setUpdateHomeBtns] = useState<HomeBtns[]>(btnItems);
 
   //-----------------------------------------------------------------------------------------
@@ -269,12 +269,17 @@ const Home = () => {
                   }
                   scrollThreshold={-1}
                   endMessage={
-                    <p style={{ textAlign: "center" }}>
-                      <b>Thats all thankyou !</b>
-                    </p>
+                    <Text fontSize="md" align={"center"} color="gray.400">
+                      This is the end of the line! More questions mean more
+                      polls so get cracking!
+                    </Text>
                   }
                 >
-                  <DataWindow data={pollData[0].data} />
+                  <DataWindow
+                    data={pollData[0].data}
+                    btn={pollData[0].btnName}
+                    update={updateData}
+                  />
                 </InfiniteScroll>
               </Box>
               <Box

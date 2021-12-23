@@ -106,7 +106,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
           variables: {
             cursor: data?.messageFeedByPoll.cursor,
           },
-          updateQuery: updateQuery,
+          // updateQuery: updateQuery,
         });
       } else {
         console.log("no more data :-)");
@@ -116,7 +116,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   };
   if (error) {
     return (
-      <Flex h="745px" justify="center" align="center">
+      <Flex maxH="745px" minH="745px" justify="center" align="center">
         <Flex justify="center" direction="column" align="center">
           <BiErrorCircle color="#718096" size="26px" />
           <Text color="gray.500" mt="2" fontSize="sm">
@@ -129,7 +129,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
 
   return (
     <>
-      <Box m="8px" bg="#f2f2f2" rounded="10px">
+      <Box m="8px" bg="#f2f2f2" rounded="10px" maxH="745px" minH="745px">
         <Scrollbars
           style={{ height: "723px" }}
           ref={scrollRef as any}

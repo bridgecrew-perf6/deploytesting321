@@ -196,6 +196,7 @@ interface PollHistory {
   lastActivity?: String;
   isFavorite?: boolean;
   isMultipleChoice?: boolean;
+  isMyPoll?: boolean;
 }
 
 export interface UserDataProps {
@@ -337,7 +338,7 @@ interface ITopic {
   _id: string;
   topic: string;
   description: string;
-  creator: User;
+  creator?: User;
   subTopics?: ISubTopic[];
   active?: Boolean;
   pollCount?: number;
@@ -348,7 +349,7 @@ interface ISubTopic {
   subTopic: string;
   description: string;
   topic: ITopic;
-  creator: User;
+  creator?: User;
   active?: Boolean;
   pollCount?: number;
 }
