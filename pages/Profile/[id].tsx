@@ -15,6 +15,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import { IoMdSettings } from "react-icons/io";
 import { MdGppGood } from "react-icons/md";
@@ -137,18 +138,20 @@ const ProfileHeader = () => {
           <Text fontSize="2xl" fontWeight="bold">
             aunjaffery
           </Text>
-          <IconButton
-            aria-label="profile-setting"
-            icon={<IoMdSettings size="22" />}
-            size="xs"
-            ml="2"
-            mt="1"
-            color="gray.700"
-            bg="none"
-            _focus={{ outline: "none", bg: "none" }}
-            _hover={{ bg: "none" }}
-            _active={{ bg: "none" }}
-          />
+          <Link href={`/EditProfile/1231`}>
+            <IconButton
+              aria-label="profile-setting"
+              icon={<IoMdSettings size="22" />}
+              size="xs"
+              ml="2"
+              mt="1"
+              color="gray.700"
+              bg="none"
+              _focus={{ outline: "none", bg: "none" }}
+              _hover={{ bg: "none" }}
+              _active={{ bg: "none" }}
+            />
+          </Link>
         </Flex>
         <Flex gridGap="1" mb="1" ml="0">
           <Tooltip hasArrow placement="top" label="Badge">
