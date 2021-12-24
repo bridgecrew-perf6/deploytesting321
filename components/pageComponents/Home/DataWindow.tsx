@@ -41,8 +41,8 @@ import {
 import { BiShareAlt, BiMessage, BiSelectMultiple } from "react-icons/bi";
 import { RiFilePaper2Line } from "react-icons/ri";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
@@ -51,13 +51,6 @@ export interface DataWindow {
   btn?: string;
   update?: (btnType: string, data: PollHistory[]) => void;
 }
-
-const BtnImage = dynamic(
-  () => {
-    return import("../Poll/AnsBox/ImageModal");
-  },
-  { ssr: false }
-);
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -152,20 +145,29 @@ const PollCard = ({ data, handleFav, srch }: ListItem) => {
           </Link>
           {data?.pollImages.length ? (
             <Flex mt="4">
-              {data?.pollImages.map((x, id) => (
-                <Box
-                  key={id}
-                  w="100px"
-                  h="100px"
-                  mr="2"
-                  borderRadius="md"
-                  overflow="hidden"
-                  borderWidth="1px"
-                  borderColor="gray.300"
-                >
-                  <BtnImage src={x} />
-                </Box>
-              ))}
+              <PhotoProvider>
+                {data?.pollImages.map((x, id) => (
+                  <PhotoConsumer src={x} key={id}>
+                    <Box
+                      key={id}
+                      w="100px"
+                      h="100px"
+                      mr="2"
+                      borderRadius="md"
+                      overflow="hidden"
+                    >
+                      <Image
+                        src={x}
+                        objectFit="cover"
+                        objectPosition="center center"
+                        cursor="pointer"
+                        h="100%"
+                        w="100%"
+                      />
+                    </Box>
+                  </PhotoConsumer>
+                ))}
+              </PhotoProvider>
             </Flex>
           ) : null}
         </Box>

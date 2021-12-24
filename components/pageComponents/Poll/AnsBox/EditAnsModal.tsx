@@ -23,13 +23,6 @@ import dynamic from "next/dynamic";
 import { Answer } from "_components/appTypes/appType";
 import { AiOutlineClose } from "react-icons/ai";
 
-const BtnImage = dynamic(
-  () => {
-    return import("./ImageModal");
-  },
-  { ssr: false }
-);
-
 interface EditAnsModal {
   isEditOpen: boolean;
   onEditClose: () => void;

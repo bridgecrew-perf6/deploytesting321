@@ -25,6 +25,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@apollo/client";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import TimeAgo from "react-timeago";
 import {
   FacebookIcon,
@@ -49,15 +50,8 @@ import {
 } from "lib/apollo/apolloFunctions/mutations";
 
 import Favorite from "../Poll/PollCtrs/favorite";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
-const BtnImage = dynamic(
-  () => {
-    return import("./AnsBox/ImageModal");
-  },
-  { ssr: false }
-);
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -160,20 +154,29 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               </Text>
               {pollData?.pollImages.length ? (
                 <Flex mt="4" align="center">
-                  {pollData?.pollImages?.map((x, id) => (
-                    <Box
-                      key={id}
-                      w="100px"
-                      h="100px"
-                      mr="2"
-                      borderRadius="md"
-                      overflow="hidden"
-                      borderWidth="1px"
-                      borderColor="gray.300"
-                    >
-                      <BtnImage src={x} />
-                    </Box>
-                  ))}
+                  <PhotoProvider>
+                    {pollData?.pollImages.map((x, id) => (
+                      <PhotoConsumer src={x} key={id}>
+                        <Box
+                          key={id}
+                          w="100px"
+                          h="100px"
+                          mr="2"
+                          borderRadius="md"
+                          overflow="hidden"
+                        >
+                          <Image
+                            src={x}
+                            objectFit="cover"
+                            objectPosition="center center"
+                            cursor="pointer"
+                            h="100%"
+                            w="100%"
+                          />
+                        </Box>
+                      </PhotoConsumer>
+                    ))}
+                  </PhotoProvider>
                 </Flex>
               ) : null}
             </Box>

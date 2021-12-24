@@ -129,9 +129,9 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
 
   return (
     <>
-      <Box m="8px" bg="#f2f2f2" rounded="10px" maxH="745px" minH="745px">
+      <Box m="8px" bg="#f2f2f2" rounded="10px">
         <Scrollbars
-          style={{ height: "723px" }}
+          style={{ height: "758px" }}
           ref={scrollRef as any}
           onScroll={onScrollHandler}
         >

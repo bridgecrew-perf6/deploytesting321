@@ -13,6 +13,7 @@ import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
 import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
+import "react-photo-view/dist/index.css";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
@@ -237,7 +238,7 @@ const Home = () => {
     if (!activeChatsLoading) {
       setUpdateHomeBtns((prevHomeBtns) => {
         const btns = prevHomeBtns;
-        btns[0].data = activeChats.activeChatsWithPagination;
+        btns[0].data = activeChats?.activeChatsWithPagination;
         btns[0].currentOffset = itemsToBeLoadedPerFetch;
         btns[0].hasMoreItems = true;
         return btns;

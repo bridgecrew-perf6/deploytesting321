@@ -1,10 +1,10 @@
 import {
-  Avatar,
   Box,
   Container,
   Flex,
   HStack,
   IconButton,
+  Image,
   Tab,
   TabList,
   TabPanel,
@@ -15,6 +15,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import { IoMdSettings } from "react-icons/io";
 import { MdGppGood } from "react-icons/md";
 import { IoMdMedal } from "react-icons/io";
@@ -117,14 +118,19 @@ const ProfileHeader = () => {
       align={["center", "flex-start"]}
     >
       <Box mr={[0, 10]} mb={[4, 0]}>
-        <Avatar
-          name="xav dave"
-          src="https://bit.ly/ryan-florence"
-          border="none"
-          cursor="pointer"
-          h="100%"
-          w={["130px"]}
-        />
+        <PhotoProvider>
+          <PhotoConsumer src="https://bit.ly/ryan-florence">
+            <Image
+              src="https://bit.ly/ryan-florence"
+              alt="this"
+              borderRadius="full"
+              minW="130px"
+              maxW="130px"
+              cursor="pointer"
+              h="100%"
+            />
+          </PhotoConsumer>
+        </PhotoProvider>
       </Box>
       <Flex direction="column">
         <Flex align="center" ml="1">

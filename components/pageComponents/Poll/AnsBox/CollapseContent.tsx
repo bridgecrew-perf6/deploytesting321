@@ -1,18 +1,11 @@
-import { Box, Text, useDisclosure, Collapse } from "@chakra-ui/react";
-import dynamic from "next/dynamic";
+import { Box, Text, useDisclosure, Collapse, Image } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 
 interface CollapseContent {
   answer: string;
   image: string;
 }
-
-const BtnImage = dynamic(
-  () => {
-    return import("./ImageModal");
-  },
-  { ssr: false }
-);
 
 const CollapseContent = ({ answer, image }: CollapseContent) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -41,7 +34,26 @@ const CollapseContent = ({ answer, image }: CollapseContent) => {
       {true && (
         <Collapse in={isOpen} animateOpacity>
           <Box p="4" textAlign="center" cursor="pointer">
-            <BtnImage src={image as string} />
+            <PhotoProvider>
+              <PhotoConsumer src={image}>
+                <Box
+                  w="100px"
+                  h="100px"
+                  mr="2"
+                  borderRadius="md"
+                  overflow="hidden"
+                >
+                  <Image
+                    src={image}
+                    objectFit="cover"
+                    objectPosition="center center"
+                    cursor="pointer"
+                    h="100%"
+                    w="100%"
+                  />
+                </Box>
+              </PhotoConsumer>
+            </PhotoProvider>
 
             {/* <ReactPlayer
               url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
