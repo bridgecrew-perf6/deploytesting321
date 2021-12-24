@@ -18,11 +18,11 @@ import jwtDecode from "jwt-decode";
 const LogIn: NextPage = () => {
   const [loggedIn, toggleLoggedIn] = useState(false);
   const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
-  const [appMssgs, setAppMssgs] = useState<object[]>([]);
+  // const [appMssgs, setAppMssgs] = useState<object[]>([]);
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
-    handleOtherFormMssgs();
+    // handleOtherFormMssgs();
     setFormErrors([]);
     toggleLoggedIn(false);
   }, []);
@@ -44,11 +44,11 @@ const LogIn: NextPage = () => {
     ],
   });
 
-  const handleOtherFormMssgs = () => {
-    const { appMssgs } = router.query;
-    let msgList: any = appMssgs;
-    msgList && setAppMssgs(JSON.parse(msgList));
-  };
+  // const handleOtherFormMssgs = () => {
+  //   const { appMssgs } = router.query;
+  //   let msgList: any = appMssgs;
+  //   msgList && setAppMssgs(JSON.parse(msgList));
+  // };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,7 +73,7 @@ const LogIn: NextPage = () => {
         Cookies.set("polditSession", data.login, {
           expires: 7,
         });
-        setAppMssgs([]);
+        // setAppMssgs([]);
         router.push("/");
       } catch (err: any) {
         setFormErrors([err]);
@@ -88,7 +88,7 @@ const LogIn: NextPage = () => {
       </div>
       <div className="card-body">
         <form onSubmit={handleSubmit} id="login">
-          {appMssgs.length > 0 && <AppMssgList mssgs={appMssgs} />}
+          {/* {appMssgs.length > 0 && <AppMssgList mssgs={appMssgs} />} */}
           <div className="form-group text-left">
             <label htmlFor="email">Email address</label>
             <input

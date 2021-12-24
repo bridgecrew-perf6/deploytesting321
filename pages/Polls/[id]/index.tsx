@@ -23,6 +23,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  useToast,
 } from "@chakra-ui/react";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
@@ -36,6 +37,7 @@ const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
 const Poll = () => {
   const router = useRouter();
   const auth = useAuth();
+  const toast = useToast();
   //States
   const [error, updateError] = useState<string[]>([]);
 
