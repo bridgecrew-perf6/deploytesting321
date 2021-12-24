@@ -16,7 +16,13 @@ import { WebSocketLink } from "@apollo/client/link/ws";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 
-import { getMainDefinition } from "@apollo/client/utilities";
+import {
+  getMainDefinition,
+  Reference,
+  StoreObject,
+  // offsetLimitPagination,
+  relayStylePagination,
+} from "@apollo/client/utilities";
 // import { ApolloLink } from "apollo-link";
 //Test
 let cookie: any = Cookies.get("polditSession");
@@ -116,8 +122,23 @@ const cacheOptions: InMemoryCacheConfig = {
   typePolicies: {
     Query: {
       fields: {
-        messagesByPoll: {
-          merge: false,
+        messageFeedByPoll: {
+          keyArgs: false,
+          merge(existing = { messages: [] }, incoming) {
+            return {
+              ...incoming,
+              messages: [...incoming.messages, ...existing.messages],
+            };
+          },
+
+          read(existing) {
+            if (existing) {
+              return {
+                ...existing,
+                messages: Object.values(existing.messages),
+              };
+            }
+          },
         },
         answersByPoll: {
           merge: false,
@@ -125,16 +146,6 @@ const cacheOptions: InMemoryCacheConfig = {
         subTopicsPerTopic: {
           merge: false,
         },
-        // activeChats: {
-        //   // Don't cache separate results based on
-        //   // any of this field's arguments.
-        //   keyArgs: false,
-        //   // Concatenate the incoming list items with
-        //   // the existing list items.
-        //   merge(existing = [], incoming) {
-        //     return [...existing, ...incoming];
-        //   },
-        // },
       },
     },
     Answer: {

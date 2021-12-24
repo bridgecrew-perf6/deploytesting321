@@ -74,9 +74,10 @@ const AnsBox = ({
     const userId = auth?.authState?.getUserData?._id;
     if (pollType !== "openEnded" && userId) {
       const yourVote =
-        answers?.length > 0 && answers[0]?.multichoiceVotes &&
+        answers?.length > 0 &&
+        answers[0]?.multichoiceVotes &&
         answers[0]?.multichoiceVotes.find((a: any) => userId === a.userId);
-        yourVote && setMyVote(yourVote?.vote);
+      yourVote && setMyVote(yourVote?.vote);
     }
   }, [answers, auth]);
 
@@ -84,7 +85,13 @@ const AnsBox = ({
     if (answers) {
       let sortArray = [...answers];
       if (sortBy === "rank") {
-        sortArray.sort((a: any, b: any) => a.rank - b.rank);
+        sortArray.sort((a, b) =>
+          //@ts-ignore
+          a.rank.localeCompare(b.rank, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          })
+        );
       }
       if (sortBy === "mostLiked") {
         sortArray.sort((a, b) => b.likes.length - a.likes.length);
@@ -175,7 +182,7 @@ const AnsBox = ({
       ) : (
         <Box bg="white" p="10px">
           {loading ? (
-            <Flex h="640px" justify="center" align="center">
+            <Flex justify="center" align="center">
               <Spinner size="xl" />
             </Flex>
           ) : (

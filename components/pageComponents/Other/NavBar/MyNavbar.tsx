@@ -92,8 +92,26 @@ const MyNavbar: React.FC = () => {
     router.push("/Login");
   };
 
+  const goToSearch = (
+    e:
+      | React.KeyboardEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { key } = e as React.KeyboardEvent<HTMLInputElement>;
+    const { target } = e as React.ChangeEvent<HTMLInputElement>;
+
+    if (key === "Enter" && target.value.length > 0) {
+      e.preventDefault();
+
+      router.push(
+        { pathname: "/Search", query: { searchVal: target.value } },
+        "/Search"
+      );
+    }
+  };
+
   return (
-    <Box position="absolute" top={0} left={0} w="100%" zIndex="999">
+    <Box position="fixed" top={0} left={0} w="100%" zIndex="999">
       <Flex
         bg="white"
         h="60px"
@@ -129,6 +147,7 @@ const MyNavbar: React.FC = () => {
               placeholder="Search..."
               color="gray.600"
               borderColor="gray.300"
+              onKeyDown={goToSearch}
             />
           </InputGroup>
         </Flex>
@@ -201,21 +220,23 @@ const MyNavbar: React.FC = () => {
                     />
                     <MenuList px="2">
                       {NavLinks.map((l: NavType) => (
-                        <MenuItem
-                          borderRadius="lg"
-                          _hover={{
-                            bg: "orange.300",
-                            color: "white",
-                            outline: "none",
-                          }}
-                          _focus={{
-                            outline: "none",
-                          }}
-                          key={l.id}
-                          fontSize="sm"
-                        >
-                          {l.link}
-                        </MenuItem>
+                        <Link href={`${l.url}/userId`} key={l.id}>
+                          <MenuItem
+                            borderRadius="lg"
+                            _hover={{
+                              bg: "orange.300",
+                              color: "white",
+                              outline: "none",
+                            }}
+                            _focus={{
+                              outline: "none",
+                            }}
+                            key={l.id}
+                            fontSize="sm"
+                          >
+                            {l.link}
+                          </MenuItem>
+                        </Link>
                       ))}
                       <MenuItem
                         borderRadius="lg"

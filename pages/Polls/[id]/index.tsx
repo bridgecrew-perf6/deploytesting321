@@ -235,7 +235,7 @@ const Poll = () => {
                     </Tab>
                   </TabList>
                   <TabPanels>
-                    <TabPanel bg="white" p="1px" height="846px">
+                    <TabPanel bg="white" p="1px" maxH="">
                       <ChatTab
                         pollId={data.poll._id}
                         user={user && user?.getUserDataForPoll}

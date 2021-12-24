@@ -16,6 +16,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Portal,
   Tag,
   Text,
   Textarea,
@@ -50,6 +51,7 @@ import {
 import Favorite from "../Poll/PollCtrs/favorite";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useRouter } from "next/router";
 const BtnImage = dynamic(
   () => {
     return import("./AnsBox/ImageModal");
@@ -62,6 +64,7 @@ interface PollQuestion {
 }
 
 const PollQuestion = ({ pollData }: PollQuestion) => {
+  const router = useRouter();
   const toast = useToast();
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [selectedImgs, setSelectImgs] = useState<any>([]);
@@ -123,6 +126,13 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
     removeImgFromPoll(removeImg, details);
   };
 
+  const srch_polls_by_topic_sTopic = (data: any) => {
+    router.push(
+      { pathname: "/Polls", query: { data: JSON.stringify(data) } },
+      "/Polls"
+    );
+  };
+
   return (
     <Box py="10" px={[4, 4, 24, 24, 40]}>
       <Box
@@ -139,6 +149,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
           creationDate={pollData?.creationDate}
           onOpen={onOpen}
           isEditable={pollData?.isEditable}
+          isMyPoll={pollData?.isMyPoll}
           pollId={pollData?._id}
         />
         <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
@@ -150,18 +161,18 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               {pollData?.pollImages.length ? (
                 <Flex mt="4" align="center">
                   {pollData?.pollImages?.map((x, id) => (
-                    <Flex
+                    <Box
                       key={id}
                       w="100px"
                       h="100px"
-                      mr="4"
-                      align="center"
-                      justify="center"
+                      mr="2"
+                      borderRadius="md"
+                      overflow="hidden"
                       borderWidth="1px"
                       borderColor="gray.300"
                     >
                       <BtnImage src={x} />
-                    </Flex>
+                    </Box>
                   ))}
                 </Flex>
               ) : null}
@@ -247,6 +258,7 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
           lastActivity={data?.lastActivity}
           topic={pollData?.topic}
           subTopics={pollData?.subTopics}
+          srch={srch_polls_by_topic_sTopic}
         />
       </Box>
     </Box>
@@ -257,6 +269,7 @@ const PollCardHeader = ({
   creationDate,
   pollId,
   isEditable,
+  isMyPoll,
   onOpen,
 }: any) => {
   return (
@@ -280,11 +293,11 @@ const PollCardHeader = ({
         </Flex>
       </Flex>
       <HStack align="start" mt="1" pr="2">
-        <Favorite favId={pollId} favType="Poll" />
+        {!isMyPoll && <Favorite favId={pollId} favType="Poll" />}
         <Popover placement="top">
           <PopoverTrigger>
             <IconButton
-              aria-label="heart"
+              aria-label="share"
               icon={<BiShareAlt size="22px" />}
               bg="none"
               _hover={{ bg: "none" }}
@@ -292,64 +305,74 @@ const PollCardHeader = ({
               size="xs"
             />
           </PopoverTrigger>
-          <PopoverContent
-            _focus={{ outline: "none" }}
-            w="100%"
-            borderRadius="lg"
-          >
-            <PopoverArrow />
-            <PopoverBody>
-              <Flex justify="flex-start" align="center" px="4" py="2">
-                <FacebookShareButton url="https://chakra-ui.com">
-                  <FacebookIcon round={true} size="24px" />
-                </FacebookShareButton>
-                <Flex mx="4">
-                  <TwitterShareButton url="https://chakra-ui.com">
-                    <TwitterIcon round={true} size="24px" />
-                  </TwitterShareButton>
+          <Portal>
+            <PopoverContent
+              _focus={{ outline: "none" }}
+              w="100%"
+              borderRadius="lg"
+            >
+              <PopoverArrow />
+              <PopoverBody>
+                <Flex justify="flex-start" align="center" px="4" py="2">
+                  <FacebookShareButton url="https://chakra-ui.com">
+                    <FacebookIcon round={true} size="24px" />
+                  </FacebookShareButton>
+                  <Flex mx="4">
+                    <TwitterShareButton url="https://chakra-ui.com">
+                      <TwitterIcon round={true} size="24px" />
+                    </TwitterShareButton>
+                  </Flex>
+                  <LinkedinShareButton url="https://chakra-ui.com">
+                    <LinkedinIcon round={true} size="24px" />
+                  </LinkedinShareButton>
                 </Flex>
-                <LinkedinShareButton url="https://chakra-ui.com">
-                  <LinkedinIcon round={true} size="24px" />
-                </LinkedinShareButton>
-              </Flex>
-            </PopoverBody>
-          </PopoverContent>
+              </PopoverBody>
+            </PopoverContent>
+          </Portal>
         </Popover>
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="dotMenu"
-            icon={<BiDotsVerticalRounded size="20px" />}
-            variant="ghost"
-            _focus={{ outline: "none" }}
-            _hover={{ bg: "none" }}
-            _active={{ bg: "none" }}
-            size="xs"
-            color="gray.500"
-          />
-          <MenuList>
-            {isEditable && (
+        <Box>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="dotMenu"
+              icon={<BiDotsVerticalRounded size="20px" />}
+              variant="ghost"
+              _focus={{ outline: "none" }}
+              _hover={{ bg: "none" }}
+              _active={{ bg: "none" }}
+              size="xs"
+              color="gray.500"
+            />
+            <MenuList>
+              {isEditable && (
+                <MenuItem
+                  _focus={{ outline: "none" }}
+                  _hover={{ bg: "gray.200" }}
+                  onClick={onOpen}
+                >
+                  Edit
+                </MenuItem>
+              )}
               <MenuItem
                 _focus={{ outline: "none" }}
                 _hover={{ bg: "gray.200" }}
-                onClick={onOpen}
               >
-                Edit
+                Report
               </MenuItem>
-            )}
-            <MenuItem _focus={{ outline: "none" }} _hover={{ bg: "gray.200" }}>
-              Report
-            </MenuItem>
-            <MenuItem _focus={{ outline: "none" }} _hover={{ bg: "gray.200" }}>
-              Setting
-            </MenuItem>
-          </MenuList>
-        </Menu>
+              <MenuItem
+                _focus={{ outline: "none" }}
+                _hover={{ bg: "gray.200" }}
+              >
+                Setting
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
       </HStack>
     </Flex>
   );
 };
-const PollCardFooter = ({ topic, subTopics, lastActivity }: any) => {
+const PollCardFooter = ({ topic, subTopics, lastActivity, srch }: any) => {
   return (
     <Flex justify="space-between" wrap="wrap" gridRowGap="2" ml={[0, 0, 1]}>
       <Flex wrap="wrap" gridGap="2">
@@ -359,6 +382,8 @@ const PollCardFooter = ({ topic, subTopics, lastActivity }: any) => {
           size="sm"
           borderRadius="full"
           bg="gray.400"
+          onClick={() => srch(topic)}
+          cursor="pointer"
         >
           {topic?.topic}
         </Tag>
@@ -369,6 +394,8 @@ const PollCardFooter = ({ topic, subTopics, lastActivity }: any) => {
             size="sm"
             borderRadius="full"
             key={st._id}
+            onClick={() => srch(st)}
+            cursor="pointer"
           >
             {st.subTopic}
           </Tag>

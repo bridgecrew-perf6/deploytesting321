@@ -17,6 +17,8 @@ import {
 import { filterSearchVals } from "../../components/formFuncs/miscFuncs";
 import { useRouter } from "next/router";
 import { useAuth } from "../../components/authProvider/authProvider";
+import Layout from "_components/layout/Layout";
+import { Box } from "@chakra-ui/layout";
 
 const {
   GET_TOPICS,
@@ -80,7 +82,6 @@ const PollsHome = () => {
 
   //Functions
   const loadPollData = (catType: string, catId: string | string[]) => {
-    console.log("Poll by topic id is ->", catId, catType);
     if (catType === "topic") {
       getPollsByTopic({ variables: { topic: catId } });
 
@@ -228,7 +229,7 @@ const PollsHome = () => {
     const { data } = router.query;
     const queryData: ISubTopic = data ? JSON.parse(data as string) : "";
 
-    prepDataList(topicData.topics, "Topic");
+    topicData && prepDataList(topicData.topics, "Topic");
 
     if (queryData && typeof queryData.topic === "string") {
       topics.length > 0 && setCategoryActive(queryData._id, "topic");
@@ -251,7 +252,7 @@ const PollsHome = () => {
   }, [topicData, topics.length > 0]);
 
   return (
-    <SitePageContainer title={`Polls Home`}>
+    <Layout pageTitle={`Poll Topic and Subtopic Search`}>
       <div style={{ marginTop: "100px" }}>
         <PollsTopicWindow data={topics} select={handleActiveBtn} />
         <PollsSubTopicWindow
@@ -262,11 +263,16 @@ const PollsHome = () => {
           select={handleActiveBtn}
         />
         <div className="d-flex justify-content-center">
-          {pollData && !errorMssg && <DataWindow data={pollData} />}
-          {!pollData && errorMssg && <ErrorWindow mssg={errorMssg} />}
+          <Box
+            flex={{ base: "0 0 100%", lg: "0 0 70%" }}
+            maxW={{ base: "100%", lg: "70%" }}
+          >
+            {pollData && !errorMssg && <DataWindow data={pollData} />}
+            {!pollData && errorMssg && <ErrorWindow mssg={errorMssg} />}
+          </Box>
         </div>
       </div>
-    </SitePageContainer>
+    </Layout>
   );
 };
 

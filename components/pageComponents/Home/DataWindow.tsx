@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useMutation } from "@apollo/client";
 import {
   Avatar,
   Box,
@@ -11,6 +12,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Portal,
   Tag,
   Text,
   Tooltip,
@@ -31,27 +33,77 @@ import PollMetrics from "../Other/PollMetrics";
 import { TagWindow, UserTagWindow } from "../Other/Tags/Tags";
 import {
   AiOutlineHeart,
-  AiOutlineEye,
   AiTwotoneHeart,
+  AiOutlineEye,
   AiOutlineMessage,
+  AiOutlineHistory,
 } from "react-icons/ai";
 import { BiShareAlt, BiMessage, BiSelectMultiple } from "react-icons/bi";
 import { RiFilePaper2Line } from "react-icons/ri";
-import { useMutation, useQuery } from "@apollo/client";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import { handleFavorite } from "lib/apollo/apolloFunctions/mutations";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
 export interface DataWindow {
   data: PollHistory[];
+  btn?: string;
+  update?: (btnType: string, data: PollHistory[]) => void;
 }
 
-const DataWindow = ({ data }: DataWindow) => {
+const BtnImage = dynamic(
+  () => {
+    return import("../Poll/AnsBox/ImageModal");
+  },
+  { ssr: false }
+);
+
+interface PollQuestion {
+  pollData: PollHistory;
+}
+
+const DataWindow = ({ data, btn, update }: DataWindow) => {
+  const router = useRouter();
+
+  const [updateFavorite] = useMutation(
+    GraphResolvers.mutations.HANDLE_FAVORITE
+  );
+
+  const favHandler = (favId: string) => {
+    const updatedPolls = data.map((item) => {
+      if (item._id === favId) {
+        updateFavorite({
+          variables: {
+            isFav: !item.isFavorite,
+            favoriteType: "Poll",
+            favoriteId: item._id,
+          },
+        });
+        return { ...item, isFavorite: !item.isFavorite };
+      }
+      return item;
+    });
+
+    update && btn && update(btn, updatedPolls);
+  };
+
+  const srch_polls_by_topic_sTopic = (data: any) => {
+    router.push(
+      { pathname: "/Polls", query: { data: JSON.stringify(data) } },
+      "/Polls"
+    );
+  };
+
   return (
     <Box px="2" pt="2">
       {data?.map((item) => (
-        <PollCard data={item} key={item._id} />
+        <PollCard
+          data={item}
+          key={item._id}
+          handleFav={favHandler}
+          srch={srch_polls_by_topic_sTopic}
+        />
       ))}
     </Box>
   );
@@ -61,9 +113,11 @@ export default DataWindow;
 
 interface ListItem {
   data: PollHistory;
+  handleFav?: (favId: string) => void;
+  srch: (data: any) => void;
 }
 
-const PollCard = ({ data }: ListItem) => {
+const PollCard = ({ data, handleFav, srch }: ListItem) => {
   return (
     <Box mb="8">
       <Box
@@ -79,7 +133,10 @@ const PollCard = ({ data }: ListItem) => {
           creator={data?.creator}
           creationDate={data?.creationDate}
           pollId={data?._id}
-          isFavorite={data?.isFavorite}
+          isFav={data?.isFavorite}
+          handleFav={handleFav}
+          lasActivity={data?.lastActivity}
+          isMyPoll={data?.isMyPoll}
         />
         <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
           <Link href={`/Polls/${data?._id}`}>
@@ -103,60 +160,30 @@ const PollCard = ({ data }: ListItem) => {
                   mr="2"
                   borderRadius="md"
                   overflow="hidden"
+                  borderWidth="1px"
+                  borderColor="gray.300"
                 >
-                  <Image
-                    src={x}
-                    objectFit="cover"
-                    objectPosition="center center"
-                    h="100%"
-                    w="100%"
-                  />
+                  <BtnImage src={x} />
                 </Box>
               ))}
             </Flex>
           ) : null}
         </Box>
-        <PollCardFooter data={data} />
+        <PollCardFooter data={data} srch={srch} />
       </Box>
     </Box>
   );
 };
 
-const PollCardHeader = ({ creator, creationDate, pollId, isFavorite }: any) => {
-  const [favorite, setFavorite] = useState<boolean>();
-
-  // Use Effects
-  useEffect(() => {
-    setFavorite(isFavorite);
-  }, []);
-
-  // Mutations ---------------------------------------------------------
-  const [updateFavorite] = useMutation(
-    GraphResolvers.mutations.HANDLE_FAVORITE
-  );
-  // Mutaions End ------------------------------------------------------
-
-  // Functions ---------------------------------------------------------
-  const favoriteHandler = (pollId: string) => {
-    if (favorite !== undefined) {
-      const favType = "Poll";
-
-      handleFavorite(updateFavorite, !favorite, favType, pollId)
-        .then(() => {
-          // console.log("Process completed now fav is -->", !favorite);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-
-      setFavorite((prevState) => {
-        return !prevState;
-      });
-    }
-  };
-
-  // Functions End -----------------------------------------------------
-
+const PollCardHeader = ({
+  creator,
+  creationDate,
+  pollId,
+  isFav,
+  isMyPoll,
+  handleFav,
+  lasActivity,
+}: any) => {
   return (
     <Flex justify="space-between">
       <Flex>
@@ -178,25 +205,54 @@ const PollCardHeader = ({ creator, creationDate, pollId, isFavorite }: any) => {
         </Flex>
       </Flex>
       <HStack align="start" mt="1" pr="2">
-        <IconButton
-          aria-label="heart"
-          icon={
-            favorite ? (
-              <AiTwotoneHeart size="22px" color="red" />
-            ) : (
-              <AiOutlineHeart size="22px" />
-            )
-          }
-          bg="none"
-          _hover={{ bg: "none" }}
-          _focus={{ outline: "none" }}
-          size="xs"
-          onClick={() => favoriteHandler(pollId)}
-        />
+        {lasActivity && (
+          <Popover placement="top" trigger="hover">
+            <PopoverTrigger>
+              <IconButton
+                aria-label="last_activity"
+                icon={<AiOutlineHistory size="22px" />}
+                bg="none"
+                size="xs"
+                _hover={{ bg: "none" }}
+                _focus={{ outline: "none" }}
+              />
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent _focus={{ outline: "none" }} w="100%" bg="black">
+                <PopoverArrow bg="black" />
+                <PopoverBody>
+                  <Flex justify="flex-start" align="center">
+                    <Text fontSize="sm" color="white" fontWeight={"semibold"}>
+                      {"Last activity was"}{" "}
+                      <TimeAgo date={lasActivity} live={false} />
+                    </Text>
+                  </Flex>
+                </PopoverBody>
+              </PopoverContent>
+            </Portal>
+          </Popover>
+        )}
+        {!isMyPoll && (
+          <IconButton
+            aria-label="heart"
+            icon={
+              isFav ? (
+                <AiTwotoneHeart size="22px" color="red" />
+              ) : (
+                <AiOutlineHeart size="22px" />
+              )
+            }
+            bg="none"
+            _hover={{ bg: "none" }}
+            _focus={{ outline: "none" }}
+            size="xs"
+            onClick={() => handleFav(pollId)}
+          />
+        )}
         <Popover placement="top">
           <PopoverTrigger>
             <IconButton
-              aria-label="heart"
+              aria-label="share"
               icon={<BiShareAlt size="22px" />}
               bg="none"
               _hover={{ bg: "none" }}
@@ -231,7 +287,7 @@ const PollCardHeader = ({ creator, creationDate, pollId, isFavorite }: any) => {
     </Flex>
   );
 };
-const PollCardFooter = ({ data }: ListItem) => {
+const PollCardFooter = ({ data, srch }: ListItem) => {
   const btnCommonStyle = {
     _active: { bg: "none" },
     _hover: { bg: "none" },
@@ -240,6 +296,7 @@ const PollCardFooter = ({ data }: ListItem) => {
     color: "gray.500",
     bg: "none",
   };
+
   return (
     <Flex justify="space-between" wrap="wrap" gridRowGap="2" ml={[0, 0, 1]}>
       <Flex wrap="wrap" gridGap="2">
@@ -249,6 +306,8 @@ const PollCardFooter = ({ data }: ListItem) => {
           size="sm"
           borderRadius="full"
           bg="gray.400"
+          cursor="pointer"
+          onClick={() => srch(data?.topic)}
         >
           {data?.topic?.topic}
         </Tag>
@@ -259,6 +318,8 @@ const PollCardFooter = ({ data }: ListItem) => {
             size="sm"
             borderRadius="full"
             key={st._id}
+            onClick={() => srch(st)}
+            cursor="pointer"
           >
             {st.subTopic}
           </Tag>
@@ -286,7 +347,7 @@ const PollCardFooter = ({ data }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.chatMssgs ? data?.chatMssgs.length : 0}
+              {data?.chatMssgsCount}
             </Text>
           </Flex>
         </Tooltip>
@@ -298,7 +359,7 @@ const PollCardFooter = ({ data }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.answers ? data?.answers.length : 0}
+              {data?.answerCount}
             </Text>
           </Flex>
         </Tooltip>

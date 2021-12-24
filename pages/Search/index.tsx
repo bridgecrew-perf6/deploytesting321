@@ -11,6 +11,8 @@ import { SrchCustomBtn } from "../../components/appTypes/appType";
 import { convertFirstCharacterToUppercase } from "../../components/formFuncs/miscFuncs";
 import { getStoredSearch } from "../../components/globalFuncs";
 import { useRouter } from "next/router";
+import Layout from "_components/layout/Layout";
+import { Box, Flex } from "@chakra-ui/layout";
 
 const { SEARCH_ALL } = GraphResolvers.queries;
 
@@ -78,13 +80,24 @@ export default function Search() {
   };
 
   return (
-    <SitePageContainer title="Search Results">
-      <div style={{ marginTop: "100px" }}>
+    <Layout pageTitle={"Search Results"}>
+      <Box pt="4">
         <SearchBtns data={btns} update={updateBtnItems} />
-        <div className="d-flex justify-content-center">
-          <SearchWindow data={btns.find((btn: any) => btn.active)} />
-        </div>
-      </div>
-    </SitePageContainer>
+        <Flex justify="center">
+        {/* <SearchWindow data={btns.find((btn: any) => btn.active)} /> */}
+        </Flex>
+      </Box>
+    </Layout>
   );
+
+  // return (
+  //   <SitePageContainer title="Search Results">
+  //     <div style={{ marginTop: "100px" }}>
+  //       <SearchBtns data={btns} update={updateBtnItems} />
+  //       <div className="d-flex justify-content-center">
+  //         <SearchWindow data={btns.find((btn: any) => btn.active)} />
+  //       </div>
+  //     </div>
+  //   </SitePageContainer>
+  // );
 }
