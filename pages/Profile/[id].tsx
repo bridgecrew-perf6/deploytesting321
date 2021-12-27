@@ -1,11 +1,11 @@
 import {
-  Avatar,
   Box,
   Container,
   Flex,
   HStack,
   IconButton,
   Spinner,
+  Image,
   Tab,
   TabList,
   TabPanel,
@@ -16,6 +16,8 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
+import Link from "next/link";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import { IoMdSettings } from "react-icons/io";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import { MdGppGood } from "react-icons/md";
@@ -147,32 +149,39 @@ const ProfileHeader = ({ data }: ProfileData) => {
       align={["center", "flex-start"]}
     >
       <Box mr={[0, 10]} mb={[4, 0]}>
-        <Avatar
-          name="xav dave"
-          src="https://bit.ly/ryan-florence"
-          border="none"
-          cursor="pointer"
-          h="100%"
-          w={["130px"]}
-        />
+        <PhotoProvider>
+          <PhotoConsumer src="https://bit.ly/ryan-florence">
+            <Image
+              src="https://bit.ly/ryan-florence"
+              alt="this"
+              borderRadius="full"
+              minW="130px"
+              maxW="130px"
+              cursor="pointer"
+              h="100%"
+            />
+          </PhotoConsumer>
+        </PhotoProvider>
       </Box>
       <Flex direction="column">
         <Flex align="center" ml="1">
           <Text fontSize="2xl" fontWeight="bold">
             {data.appid}
           </Text>
-          <IconButton
-            aria-label="profile-setting"
-            icon={<IoMdSettings size="22" />}
-            size="xs"
-            ml="2"
-            mt="1"
-            color="gray.700"
-            bg="none"
-            _focus={{ outline: "none", bg: "none" }}
-            _hover={{ bg: "none" }}
-            _active={{ bg: "none" }}
-          />
+          <Link href={`/EditProfile/1231`}>
+            <IconButton
+              aria-label="profile-setting"
+              icon={<IoMdSettings size="22" />}
+              size="xs"
+              ml="2"
+              mt="1"
+              color="gray.700"
+              bg="none"
+              _focus={{ outline: "none", bg: "none" }}
+              _hover={{ bg: "none" }}
+              _active={{ bg: "none" }}
+            />
+          </Link>
         </Flex>
         <Flex gridGap="1" mb="1" ml="0">
           <Tooltip hasArrow placement="top" label="Badge">

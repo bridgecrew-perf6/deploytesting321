@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Avatar, Box, Flex, Text, Spinner } from "@chakra-ui/react";
-import Scrollbars from "react-custom-scrollbars-2";
+import SimpleBar from "simplebar-react";
+import "simplebar/dist/simplebar.min.css";
 import { UserNotification } from "../../../appTypes/appType";
 import { useQuery, useMutation } from "@apollo/client";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
@@ -68,7 +69,7 @@ const NotificationContainer = ({ userId }: any) => {
         }}
         h="700px"
       >
-        <Scrollbars style={{ height: "100%", overflowX: "hidden" }}>
+        <SimpleBar style={{ height: "100%", overflowX: "hidden" }}>
           <Box h="100%">
             <Box mt="4" mb="1" ml="4">
               <Text fontWeight="bold" fontSize="lg">
@@ -111,7 +112,7 @@ const NotificationContainer = ({ userId }: any) => {
               ))
             )}
           </Box>
-        </Scrollbars>
+        </SimpleBar>
       </Box>
     </Flex>
   );
