@@ -36,6 +36,8 @@ const pollSubscriptions = {
         multichoice {
           _id
           answerVal
+          rank
+          votes
         }
         multichoiceVotes {
           _id

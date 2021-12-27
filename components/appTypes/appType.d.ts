@@ -172,7 +172,7 @@ interface Answer {
   likes: { userId: string; like: boolean }[];
   dislikes: { userId: string; dislike: boolean }[];
   rank?: string | number;
-  multichoice?: { _id: string; answerVal: string }[];
+  multichoice?: { _id: string; answerVal: string; rank: string }[];
   multichoiceVotes?: { _id: string; userId: string; vote: string }[];
   isEditable: boolean;
 }
