@@ -30,27 +30,40 @@ export const UserTab = ({ appUser, pollId }: UserTab) => {
     data: userList,
     loading: userListLoading,
     error: userListError,
-    // subscribeToMore,
+    subscribeToMore,
   } = useQuery(GraphResolvers.queries.GET_POLL_CHAT_USERS, {
     variables: { pollId },
   });
 
   const [toggleFollow] = useMutation(GraphResolvers.mutations.HANDLE_FOLLOW);
 
-  // useEffect(() => {
-  //   subscribeToMore({
-  //     document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
-  //     variables: { pollId },
-  //     updateQuery: (prev, { subscriptionData }) => {
-  //       const newChatItem = subscriptionData.data.newMessage;
-  //       if (!subscriptionData) return prev;
+  useEffect(() => {
+    subscribeToMore({
+      document: GraphResolvers.subscriptions.POLL_CHAT_USER_SUBSCRIPTION,
+      variables: { pollId },
+      updateQuery: (prev, { subscriptionData }) => {
+        // console.log("prev: ", prev);
+        // console.log("sub Data: ", subscriptionData);
+        const newUser: ChatUser = subscriptionData.data.newChatUser;
+        if (!subscriptionData) return prev;
 
-  //       if (newChatItem.poll._id === pollId) {
-  //         console.log("new chat item: ", newChatItem);
-  //       }
-  //     },
-  //   });
-  // }, []);
+        const existingUser = (prev.pollChatUsers as ChatUser[]).some(
+          (user: ChatUser) => user.id === newUser.id
+        );
+
+        if (!existingUser)
+          return Object.assign({}, prev, {
+            pollChatUsers: [...prev.pollChatUsers, newUser],
+          });
+
+        return prev;
+
+        // if (newChatItem.poll._id === pollId) {
+        //   console.log("new chat item: ", newChatItem);
+        // }
+      },
+    });
+  }, []);
 
   // useEffect(() => {
   //   subscribe({
@@ -145,7 +158,7 @@ const UserListItem = ({ user, handleFollow, appUser }: UserListItem) => {
             <Box mr="32px" />
           )}
           <Box mx="3" position="relative">
-            <Link href={`/Profile/${user.id}`}>
+            <Link href={`/Profile/${user.appid}`}>
               <Avatar
                 name="xav dave"
                 src={user?.profilePic}
