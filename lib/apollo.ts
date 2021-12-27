@@ -123,15 +123,51 @@ const cacheOptions: InMemoryCacheConfig = {
     Query: {
       fields: {
         messageFeedByPoll: {
-          keyArgs: false,
-          merge(existing = { messages: [] }, incoming) {
+          keyArgs: ['pollId'],
+          merge(existing = { messages: [] }, incoming, { readField }) {
+            let merged: any[] = [];
+
+            existing?.messages.forEach(
+              (msg: Reference | StoreObject | undefined) => {
+                const created = new Date(
+                  readField("creationDate", msg) as string
+                );
+
+                merged.push({
+                  id: readField("_id", msg),
+                  created,
+                  msg,
+                });
+              }
+            );
+
+            incoming?.messages.forEach(
+              (msg: Reference | StoreObject | undefined) => {
+                const incomingId = readField("_id", msg);
+                const inMerged = merged.some((msg) => incomingId === msg.id);
+
+                if (!inMerged) {
+                  const created = new Date(
+                    readField("creationDate", msg) as string
+                  );
+                  merged.push({
+                    id: readField("_id", msg),
+                    created,
+                    msg,
+                  });
+                }
+              }
+            );
+
             return {
               ...incoming,
-              messages: [...incoming.messages, ...existing.messages],
+              messages: merged
+                .sort((a, b) => a.created - b.created)
+                .map((item) => item.msg),
             };
           },
 
-          read(existing) {
+          read(existing, { args }) {
             if (existing) {
               return {
                 ...existing,

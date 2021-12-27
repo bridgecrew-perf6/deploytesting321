@@ -30,8 +30,7 @@ import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab
 import { useRouter } from "next/router";
 import { useAuth } from "_components/authProvider/authProvider";
 import Layout from "_components/layout/Layout";
-const { GET_POLL, GET_POLLS_ALL, GET_USER_FOR_POLL, GET_POLL_CHAT_USERS } =
-  GraphResolvers.queries;
+const { GET_POLL, GET_USER_FOR_POLL } = GraphResolvers.queries;
 
 const Poll = () => {
   const router = useRouter();
@@ -51,15 +50,6 @@ const Poll = () => {
   };
 
   const { data } = useQuery(GET_POLL, {
-    variables: { pollId },
-  });
-
-  const {
-    data: userList,
-    loading: userListLoading,
-    error: userListError,
-    subscribeToMore: subscribeToChats,
-  } = useQuery(GET_POLL_CHAT_USERS, {
     variables: { pollId },
   });
 
@@ -245,10 +235,6 @@ const Poll = () => {
                       <UserTab
                         appUser={auth?.authState?.getUserData._id}
                         pollId={pollId}
-                        userList={userList}
-                        userListLoading={userListLoading}
-                        userListError={userListError}
-                        // subscribe={subscribeToChats}
                       />
                     </TabPanel>
                   </TabPanels>

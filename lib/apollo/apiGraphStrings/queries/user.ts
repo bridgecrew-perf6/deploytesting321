@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 const userQueries = {
   GET_USER: gql`
     query GetUserData($userId: String!) {
-      getUserData (userId: $userId){
+      getUserData(userId: $userId) {
         appToken
         user {
           _id
@@ -36,6 +36,17 @@ const userQueries = {
           appId
           profilePic
         }
+      }
+    }
+  `,
+  GET_BASIC_USER_DATA: gql`
+    query GetBasicUserData {
+      getBasicUserData {
+        _id
+        firstname
+        lastname
+        appid
+        profilePic
       }
     }
   `,
@@ -114,6 +125,18 @@ const userQueries = {
       }
     }
   `,
+  GET_PROFILE: gql`
+    query GetUserProfileData($appid: String!) {
+      getUserProfileData(appid: $appid) {
+        _id
+        firstname
+        lastname
+        appid
+        bio
+      }
+    }
+  `,
+
   LOG_OUT: gql`
     query LogOut {
       logout

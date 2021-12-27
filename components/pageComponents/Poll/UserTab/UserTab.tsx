@@ -14,8 +14,8 @@ import { useMutation, useQuery, ApolloError } from "@apollo/client";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
-import { BiErrorCircle } from "react-icons/bi";
-import { BsChat } from "react-icons/bs";
+import { BiErrorCircle, BiMessage } from "react-icons/bi";
+
 import { ChatUser } from "_components/appTypes/appType";
 import { followHandler } from "lib/apollo/apolloFunctions/mutations";
 import { useEffect } from "react";
@@ -23,19 +23,34 @@ import { useEffect } from "react";
 interface UserTab {
   appUser: string;
   pollId: string | string[] | undefined;
-  userList: { pollChatUsers: ChatUser[] };
-  userListLoading: boolean;
-  userListError: ApolloError | undefined;
 }
 
-export const UserTab = ({
-  appUser,
-  pollId,
-  userList,
-  userListLoading,
-  userListError,
-}: UserTab) => {
+export const UserTab = ({ appUser, pollId }: UserTab) => {
+  const {
+    data: userList,
+    loading: userListLoading,
+    error: userListError,
+    // subscribeToMore,
+  } = useQuery(GraphResolvers.queries.GET_POLL_CHAT_USERS, {
+    variables: { pollId },
+  });
+
   const [toggleFollow] = useMutation(GraphResolvers.mutations.HANDLE_FOLLOW);
+
+  // useEffect(() => {
+  //   subscribeToMore({
+  //     document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
+  //     variables: { pollId },
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       const newChatItem = subscriptionData.data.newMessage;
+  //       if (!subscriptionData) return prev;
+
+  //       if (newChatItem.poll._id === pollId) {
+  //         console.log("new chat item: ", newChatItem);
+  //       }
+  //     },
+  //   });
+  // }, []);
 
   // useEffect(() => {
   //   subscribe({
@@ -160,7 +175,7 @@ const UserListItem = ({ user, handleFollow, appUser }: UserListItem) => {
           </Box>
         </Flex>
         <Flex align="center">
-          <Tooltip hasArrow placement="top" label="Answers">
+          <Tooltip hasArrow placement="top" label="Polls">
             <Flex align="center" minW="60px">
               <Image src="/P-10.png" w="20px" />
               <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
@@ -168,9 +183,9 @@ const UserListItem = ({ user, handleFollow, appUser }: UserListItem) => {
               </Text>
             </Flex>
           </Tooltip>
-          <Tooltip hasArrow placement="top" label="Chat messages">
+          <Tooltip hasArrow placement="top" label="Answers">
             <Flex align="center" ml="6" minW="60px">
-              <BsChat size="20px" />
+              <BiMessage size="20px" />
               <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
                 {user?.numAnswers}
               </Text>

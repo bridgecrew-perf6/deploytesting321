@@ -275,7 +275,7 @@ const PollCardHeader = ({
   return (
     <Flex justify="space-between">
       <Flex>
-        <Link href={`/Profile/${creator?._id}`}>
+        <Link href={`/Profile/${creator?.appid}`}>
           <Avatar
             name="Poll Dit"
             src={creator?.profilePic}

@@ -17,7 +17,7 @@ import { Scrollbars } from "react-custom-scrollbars-2";
 import TimeAgo from "react-timeago";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation, useQuery } from "@apollo/client";
-import { addNewChatMssg } from "../../../../lib/apollo/apolloFunctions/mutations";
+// import { addNewChatMssg } from "../../../../lib/apollo/apolloFunctions/mutations";
 import { BiErrorCircle } from "react-icons/bi";
 import { BsFlagFill } from "react-icons/bs";
 import Link from "next/link";
@@ -73,7 +73,9 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       isAnswer,
       isActive: true,
     });
-    addNewChatMssg(addChatMssg, details, pollId);
+
+    addChatMssg({ variables: { details } });
+    // addNewChatMssg(addChatMssg, details, pollId);
     if (isAnswer && addAnswer) {
       addAnswer(userAnswer, "");
     }

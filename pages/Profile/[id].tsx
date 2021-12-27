@@ -5,6 +5,7 @@ import {
   Flex,
   HStack,
   IconButton,
+  Spinner,
   Tab,
   TabList,
   TabPanel,
@@ -16,6 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { IoMdSettings } from "react-icons/io";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { MdGppGood } from "react-icons/md";
 import { IoMdMedal } from "react-icons/io";
 import { AiFillStar, AiFillCrown } from "react-icons/ai";
@@ -25,13 +27,30 @@ import { FollowingModal } from "_components/pageComponents/ProfilePage/Following
 import { ActivityTab } from "_components/pageComponents/ProfilePage/ActivityTab";
 import { FavPollTab } from "_components/pageComponents/ProfilePage/FavPollTab";
 import Layout from "_components/layout/Layout";
+import GraphResolvers from "../../lib/apollo/apiGraphStrings";
+import { User } from "_components/appTypes/appType";
+import { GetServerSideProps, GetStaticProps } from "next";
 
-const Profile = () => {
+interface Profile {
+  appid: string;
+}
+
+const Profile = ({ appid }: Profile) => {
+  const { data, loading } = useQuery(GraphResolvers.queries.GET_PROFILE, {
+    variables: { appid },
+  });
+
   return (
     <Layout pageTitle={`Profile`}>
       <Box mt="12">
         <Container maxW="container.xl">
-          <ProfileHeader />
+          {!loading ? (
+            <ProfileHeader data={data?.getUserProfileData} />
+          ) : (
+            <Flex justify="center" align="center" maxH={"180px"} minH={"180px"}>
+              <Spinner size="lg" color="poldit.100" />
+            </Flex>
+          )}
           <Box>
             <Box mt="10">
               <Box>
@@ -88,7 +107,18 @@ const Profile = () => {
 
 export default Profile;
 
-const ProfileHeader = () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const appid = context?.params?.id;
+  return {
+    props: { appid },
+  };
+};
+
+interface ProfileData {
+  data: User;
+}
+
+const ProfileHeader = ({ data }: ProfileData) => {
   const expertise = ["gaming", "reactjs", "nodejs", "graphql", "vue"];
   const { isOpen, onToggle } = useDisclosure();
   const {
@@ -129,7 +159,7 @@ const ProfileHeader = () => {
       <Flex direction="column">
         <Flex align="center" ml="1">
           <Text fontSize="2xl" fontWeight="bold">
-            aunjaffery
+            {data.appid}
           </Text>
           <IconButton
             aria-label="profile-setting"
@@ -197,16 +227,7 @@ const ProfileHeader = () => {
             maxW="600px"
             noOfLines={isOpen ? 0 : 2}
           >
-            Even though you specified the placement, Popover will try to
-            reposition itself in the event that available space at the specified
-            placement isn't enough. Even though you specified the placement,
-            Popover will try to reposition itself in the event that available
-            space at the specified placement isn't enough. Even though you
-            specified the placement, Popover will try to reposition itself in
-            the event that available space at the specified placement isn't
-            enough. Even though you specified the placement, Popover will try to
-            reposition itself in the event that available space at the specified
-            placement isn't enough.
+            {data.bio}
           </Text>
           <Text
             as="span"

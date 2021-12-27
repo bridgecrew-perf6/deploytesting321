@@ -20,7 +20,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { useAuth } from "../../../authProvider/authProvider";
 import { IoIosClose, IoIosNotifications } from "react-icons/io";
 import { AiOutlineSearch, AiFillCaretDown } from "react-icons/ai";
@@ -32,7 +32,7 @@ import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useRouter } from "next/router";
 import NotificationContainer from "./NotifiyDropdown";
 
-const { LOG_OUT, GET_APPUSER } = GraphResolvers.queries;
+const { LOG_OUT, GET_APPUSER, GET_BASIC_USER_DATA } = GraphResolvers.queries;
 
 const MyNavbar: React.FC = () => {
   const router = useRouter();
@@ -159,9 +159,9 @@ const MyNavbar: React.FC = () => {
                   <Link href="/newPoll">
                     <Button
                       variant="outline"
-                      color="orange.300"
-                      borderColor="orange.300"
-                      _hover={{ bg: "orange.300", color: "white" }}
+                      color="#ff4d00"
+                      borderColor="#ff4d00"
+                      _hover={{ bg: "#ff4d00", color: "white" }}
                       _active={{ outline: "none" }}
                       _focus={{ outline: "none" }}
                       size="sm"
@@ -176,13 +176,13 @@ const MyNavbar: React.FC = () => {
                     onClick={() => onToggleNotify()}
                     icon={
                       <Box>
-                        <IoIosNotifications size="26px" />
+                        <IoIosNotifications size="30px" />
                         <Box
                           position="absolute"
                           w="6px"
                           h="6px"
                           borderRadius="50%"
-                          bg="orange.300"
+                          bg="#ff4d00"
                           top="10px"
                           right="12px"
                         ></Box>
@@ -208,7 +208,9 @@ const MyNavbar: React.FC = () => {
                       aria-label="Options"
                       icon={
                         <Avatar
-                          name="xav dave"
+                          size={"md"}
+                          name={`${appUserData?.getAppUserData?.firstname} ${appUserData?.getAppUserData?.lastname}`}
+                          bg="gray.500"
                           src={appUserData?.getAppUserData?.profilePic}
                         />
                       }
@@ -224,7 +226,7 @@ const MyNavbar: React.FC = () => {
                           <MenuItem
                             borderRadius="lg"
                             _hover={{
-                              bg: "orange.300",
+                              bg: "#ff4d00",
                               color: "white",
                               outline: "none",
                             }}
@@ -267,9 +269,9 @@ const MyNavbar: React.FC = () => {
               <Link href="/Login">
                 <Button
                   variant="outline"
-                  color="orange.300"
-                  borderColor="orange.300"
-                  _hover={{ bg: "orange.300", color: "white" }}
+                  color="#ff4d00"
+                  borderColor="#ff4d00"
+                  _hover={{ bg: "#ff4d00", color: "white" }}
                   _active={{ outline: "none" }}
                   _focus={{ outline: "none" }}
                   size="sm"
@@ -279,12 +281,12 @@ const MyNavbar: React.FC = () => {
                 </Button>
               </Link>
               <Button
-                bg="orange.300"
+                bg="#ff4d00"
                 color="white"
                 _active={{ outline: "none" }}
                 _focus={{ outline: "none" }}
-                borderColor="orange.300"
-                _hover={{ bg: "orange.300", color: "white" }}
+                borderColor="#ff4d00"
+                _hover={{ bg: "#ff4d00", color: "white" }}
                 size="sm"
               >
                 Sign up
@@ -354,11 +356,11 @@ const NoAuthMobileNav: React.FC<any> = () => {
         <Link href="/Login">
           <Button
             variant="outline"
-            color="orange.300"
-            borderColor="orange.300"
+            color="#ff4d00"
+            borderColor="#ff4d00"
             _active={{ outline: "none" }}
             _focus={{ outline: "none" }}
-            _hover={{ bg: "orange.300", color: "white" }}
+            _hover={{ bg: "#ff4d00", color: "white" }}
             mr="2"
             w="100%"
           >
@@ -367,9 +369,9 @@ const NoAuthMobileNav: React.FC<any> = () => {
         </Link>
         <Button
           variant="outline"
-          color="orange.300"
-          borderColor="orange.300"
-          _hover={{ bg: "orange.300", color: "white" }}
+          color="#ff4d00"
+          borderColor="#ff4d00"
+          _hover={{ bg: "#ff4d00", color: "white" }}
           _active={{ outline: "none" }}
           _focus={{ outline: "none" }}
           w="100%"
@@ -381,9 +383,9 @@ const NoAuthMobileNav: React.FC<any> = () => {
         <Link href="/Login">
           <Button
             variant="outline"
-            color="orange.300"
-            borderColor="orange.300"
-            _hover={{ bg: "orange.300", color: "white" }}
+            color="#ff4d00"
+            borderColor="#ff4d00"
+            _hover={{ bg: "#ff4d00", color: "white" }}
             _active={{ outline: "none" }}
             _focus={{ outline: "none" }}
             size="sm"
