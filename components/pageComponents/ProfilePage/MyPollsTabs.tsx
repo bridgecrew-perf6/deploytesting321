@@ -52,7 +52,7 @@ export const MyPollsTab = (props: {}) => {
   );
 };
 
-const PollCard = ({ pollData }: any) => {
+export const PollCard = ({ pollData }: any) => {
   const router = useRouter();
 
   return (

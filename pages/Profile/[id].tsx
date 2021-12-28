@@ -220,6 +220,7 @@ const ProfileHeader = ({ data }: ProfileData) => {
             <Tag
               fontWeight="bold"
               color="gray.500"
+              bg="gray.200"
               _hover={{ color: "gray.100", bg: "gray.400" }}
               size="sm"
               borderRadius="full"
