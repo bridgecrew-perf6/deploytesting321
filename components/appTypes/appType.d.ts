@@ -407,6 +407,8 @@ interface ChatUser {
   lastChatMssgDate: string;
   isActive: Boolean;
   isFollowed: Boolean;
+  remove?: Boolean;
+  pollId?: string;
 }
 
 interface SliderSettings {

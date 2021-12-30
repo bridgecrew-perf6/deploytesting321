@@ -12,7 +12,14 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  MutableRefObject,
+  LegacyRef,
+  RefObject,
+} from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import TimeAgo from "react-timeago";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
@@ -32,6 +39,10 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       notifyOnNetworkStatusChange: true,
     }
   );
+
+  const scrollToBottom = () => {
+    (scrollRef as any).current?.scrollToBottom({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     subscribeToMore({
@@ -60,7 +71,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
     { onError: (e) => console.log(e) }
   );
 
-  const onSend = (e: any, isAnswer: boolean = false) => {
+  const onSend = async (e: any, isAnswer: boolean = false) => {
     e.preventDefault();
     //If isAnswer is true, use Add New Answer mutation along with chat message mutation so it updates the Answer Window above.  Client way is easier than backend way which is repetitive code
     if (!userAnswer) {
@@ -77,8 +88,9 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
     addChatMssg({ variables: { details } });
     // addNewChatMssg(addChatMssg, details, pollId);
     if (isAnswer && addAnswer) {
-      addAnswer(userAnswer, "");
+      await addAnswer(userAnswer, "");
     }
+    scrollToBottom();
     setUserAnswer("");
   };
   useEffect(() => {
@@ -87,6 +99,11 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       scrollRef.current.scrollToBottom();
     }
   }, [scrollRef.current]);
+
+  useEffect(() => {
+    scrollToBottom()
+  }, []);
+
   const updateQuery = (previousResult: any, { fetchMoreResult }: any) => {
     if (!fetchMoreResult) return previousResult;
     return {

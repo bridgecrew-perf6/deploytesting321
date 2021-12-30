@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { GetStaticPaths, GetStaticProps } from "next";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import { initializeApollo } from "../../../lib/apollo";
 import {
   Answer,
+  ChatUser,
   PollHistory,
   SelectedImage,
   User,
 } from "../../../components/appTypes/appType";
-import { SitePageContainer } from "../../../components/layout";
 import PollQuestion from "../../../components/pageComponents/Poll/pollQuestion";
 import { useMutation, useQuery } from "@apollo/client";
 import { ErrorToast } from "../../../components/pageComponents/Other/Error/Toast";
@@ -16,6 +14,7 @@ import { saveImgtoCloud } from "../../../components/apis/imgUpload";
 import { updateViewCount } from "../../../lib/apollo/apolloFunctions/mutations";
 import AnsBox from "../../../components/pageComponents/Poll/AnsBox/AnsBox";
 import {
+  Badge,
   Box,
   Flex,
   Tab,
@@ -26,10 +25,11 @@ import {
 } from "@chakra-ui/react";
 import ChatTab from "../../../components/pageComponents/Poll/ChatBox/ChatTab";
 import { UserTab } from "../../../components/pageComponents/Poll/UserTab/UserTab";
-// import { addNewAnswer } from "lib/apollo/apolloFunctions";
 import { useRouter } from "next/router";
 import { useAuth } from "_components/authProvider/authProvider";
 import Layout from "_components/layout/Layout";
+import { numCountDisplay } from "_components/formFuncs/miscFuncs";
+import appStyles from "_appStyles/appStyles.module.css";
 const { GET_POLL, GET_USER_FOR_POLL } = GraphResolvers.queries;
 
 const Poll = () => {
@@ -62,6 +62,15 @@ const Poll = () => {
     variables: { pollId },
   });
 
+  const {
+    data: userList,
+    loading: userListLoading,
+    error: userListError,
+    subscribeToMore: userSubscribe,
+  } = useQuery(GraphResolvers.queries.GET_POLL_CHAT_USERS, {
+    variables: { pollId },
+  });
+
   const { data: user } = useQuery(GET_USER_FOR_POLL);
 
   const [addAnswerToPolls] = useMutation(
@@ -72,6 +81,9 @@ const Poll = () => {
   );
 
   const [addView] = useMutation(GraphResolvers.mutations.ADD_VIEW);
+  const [removeUserFromChat] = useMutation(
+    GraphResolvers.mutations.REMOVE_CHAT_USER
+  );
 
   // //Component Mounted
 
@@ -118,6 +130,51 @@ const Poll = () => {
     });
   }, []);
 
+  const subScribeHandler_userList = () => {
+    userSubscribe({
+      document: GraphResolvers.subscriptions.POLL_CHAT_USER_SUBSCRIPTION,
+      variables: { pollId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData) return prev;
+        const newUser: ChatUser = subscriptionData?.data?.newChatUser;
+
+        if (newUser && newUser.remove) {
+          const updatedList = prev?.pollChatUsers.filter(
+            (item: { id: string }) => item.id !== newUser.id
+          );
+
+          return { pollChatUsers: updatedList };
+        }
+
+        const prevMatch = prev?.pollChatUsers.some(
+          (item: ChatUser) =>
+            item.id === newUser.id && item.pollId === newUser.pollId
+        );
+
+        if (prevMatch || newUser.pollId !== pollId) {
+          return prev;
+        }
+
+        return { pollChatUsers: [...prev.pollChatUsers, newUser] };
+      },
+    });
+  };
+
+  useEffect(() => {
+    subScribeHandler_userList();
+
+    return () => {
+      const appUser = auth?.authState?.getUserData._id;
+
+      appUser &&
+        pollId &&
+        removeUserFromChat({
+          variables: { userId: appUser, pollId },
+        });
+      subScribeHandler_userList();
+    };
+  }, []);
+
   // //Functions
 
   const addError = (errMssg?: string) => {
@@ -157,13 +214,6 @@ const Poll = () => {
       } else answerObj["answerImage"] = "";
 
       addAnswerToPolls({ variables: { details: JSON.stringify(answerObj) } });
-
-      //   data?.poll &&
-      //     addNewAnswer(
-      //       addAnswerToPolls,
-      //       JSON.stringify(answerObj),
-      //       data?.poll?._id
-      //     );
     }
   };
 
@@ -220,6 +270,19 @@ const Poll = () => {
                       fontSize={["sm", "sm", "md"]}
                     >
                       User List
+                      <Badge
+                        bgColor="green.300"
+                        variant="solid"
+                        borderRadius={"md"}
+                        fontSize="0.78em"
+                        color={"white"}
+                        ml="3"
+                        pl="2"
+                        pr="2"
+                      >
+                        {userList?.pollChatUsers.length > 0 &&
+                          numCountDisplay(userList?.pollChatUsers.length)}
+                      </Badge>
                     </Tab>
                   </TabList>
                   <TabPanels>
@@ -233,6 +296,9 @@ const Poll = () => {
                     </TabPanel>
                     <TabPanel bg="white" p="1px" height="868px">
                       <UserTab
+                        data={userList?.pollChatUsers}
+                        loading={userListLoading}
+                        error={userListError}
                         appUser={auth?.authState?.getUserData._id}
                         pollId={pollId}
                       />

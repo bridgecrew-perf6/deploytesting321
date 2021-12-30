@@ -24,7 +24,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@apollo/client";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import TimeAgo from "react-timeago";
 import {
@@ -38,7 +37,6 @@ import {
 
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import { IoMdCopy } from "react-icons/io";
 import { AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
 import React, { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";

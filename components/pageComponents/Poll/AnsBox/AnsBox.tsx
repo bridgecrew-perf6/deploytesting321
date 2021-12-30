@@ -211,40 +211,6 @@ const AnsBox = ({
                           myVote={myVote}
                         />
                       ))}
-                    {/* <Box mb="4" >
-                    <Text
-                      fontSize="md"
-                      color="gray.800"
-                      fontWeight="bold"
-                      align="center"
-                    >
-                      Select your favorite answer
-                    </Text>
-                  </Box> */}
-                    {/* <RadioGroup
-                      value={ansOptions}
-                      onChange={(e) => setAnsOptions(e)}
-                    >
-                      {answers[0]?.multichoice?.map((x: any, id: number) => (
-                        <MultiChoiceCard data={x} key={x._id} id={id} />
-                      ))}
-                    </RadioGroup> */}
-                    {/*
-					  <Box mt="6" ml="2">
-					  <Flex justify="center" align="center">
-					  <Button
-					  bg="green.500"
-					  color="white"
-					  size="sm"
-					  _active={{ outline: "none", bg: "green.400" }}
-					  _focus={{ outline: "none" }}
-					  _hover={{ bg: "green.500", color: "white" }}
-					  >
-					  Submit Answer
-					  </Button>
-					  </Flex>
-					  </Box>
-				  */}
                   </Box>
                 </Box>
               ) : (
@@ -417,60 +383,6 @@ const AnsBox = ({
     </Box>
   );
 };
-
-// const MultiChoiceCard = ({ data, id }: any) => {
-//   return (
-//     <Box bg="white" mb="4" borderRadius="md">
-//       <Text fontSize="sm" color="gray.600">
-//         {data?.answerVal}
-//       </Text>
-//       <Flex justify="space-between" mx="5" py="1" borderTop="1px solid #d3d3d3" mt="10px">
-//         <Tooltip label="Number of times selected" placement="top">
-//           <Text fontSize="xs" color="gray.500">
-//             2{id} votes
-//           </Text>
-//         </Tooltip>
-//         <Text fontSize="xs" color="gray.500">
-//           Rank {id + 1} of 4
-//         </Text>
-//       </Flex>
-//     </Box>
-//   );
-// };
-
-// const MultiChoiceCard = ({ data, id }: any) => {
-//   return (
-//     <Box bg="white" mb="4" borderRadius="md" pb="1">
-//       <Radio
-//         value={data?._id}
-//         colorScheme="green"
-//         _active={{ outline: "none" }}
-//         _focus={{ outline: "none" }}
-//         mb="2"
-//         w="100%"
-//         px="4"
-//         pt="8"
-//         pb="2"
-//       >
-//         <Box>
-//           <Text fontSize="sm" color="gray.600">
-//             {data?.answerVal}
-//           </Text>
-//         </Box>
-//       </Radio>
-//       <Flex justify="space-between" mx="5" py="1" borderTop="1px solid #d3d3d3">
-//         <Tooltip label="Number of times selected" placement="top">
-//           <Text fontSize="xs" color="gray.500">
-//             2{id} votes
-//           </Text>
-//         </Tooltip>
-//         <Text fontSize="xs" color="gray.500">
-//           Rank {id + 1} of 4
-//         </Text>
-//       </Flex>
-//     </Box>
-//   );
-// };
 
 interface CardContent {
   data: Answer;

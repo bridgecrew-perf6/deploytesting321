@@ -18,66 +18,33 @@ import { BiErrorCircle, BiMessage } from "react-icons/bi";
 
 import { ChatUser } from "_components/appTypes/appType";
 import { followHandler } from "lib/apollo/apolloFunctions/mutations";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface UserTab {
+  data: ChatUser[];
+  loading: boolean;
+  error: ApolloError | undefined;
   appUser: string;
   pollId: string | string[] | undefined;
 }
 
-export const UserTab = ({ appUser, pollId }: UserTab) => {
-  const {
-    data: userList,
-    loading: userListLoading,
-    error: userListError,
-    subscribeToMore,
-  } = useQuery(GraphResolvers.queries.GET_POLL_CHAT_USERS, {
-    variables: { pollId },
-  });
-
+export const UserTab = ({ data, loading, error, appUser, pollId }: UserTab) => {
   const [toggleFollow] = useMutation(GraphResolvers.mutations.HANDLE_FOLLOW);
-
-  useEffect(() => {
-    subscribeToMore({
-      document: GraphResolvers.subscriptions.POLL_CHAT_USER_SUBSCRIPTION,
-      variables: { pollId },
-      updateQuery: (prev, { subscriptionData }) => {
-        // console.log("prev: ", prev);
-        // console.log("sub Data: ", subscriptionData);
-        const newUser: ChatUser = subscriptionData.data.newChatUser;
-        if (!subscriptionData) return prev;
-
-        const existingUser = (prev.pollChatUsers as ChatUser[]).some(
-          (user: ChatUser) => user.id === newUser.id
-        );
-
-        if (!existingUser)
-          return Object.assign({}, prev, {
-            pollChatUsers: [...prev.pollChatUsers, newUser],
-          });
-
-        return prev;
-
-        // if (newChatItem.poll._id === pollId) {
-        //   console.log("new chat item: ", newChatItem);
-        // }
-      },
-    });
-  }, []);
-
-  // useEffect(() => {
-  //   subscribe({
-  //     document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
-  //     variables: { pollId },
-  //     updateQuery: () => {},
-  //   });
-  // }, []);
 
   const handleFollow = (user: ChatUser) => {
     followHandler(toggleFollow, JSON.stringify(user));
   };
 
-  if (userListLoading) {
+  // const scrollToBottom = () => {
+  //   console.log("triggered");
+  //   mssgEndRef.current?.scrollToBottom({ behavior: "smooth" });
+  // };
+
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [data]);
+
+  if (loading) {
     return (
       <Box>
         <Flex align="center" justify="center" minH="600px">
@@ -86,7 +53,7 @@ export const UserTab = ({ appUser, pollId }: UserTab) => {
       </Box>
     );
   }
-  if (userListError) {
+  if (error) {
     return (
       <Box>
         <Flex align="center" justify="center" minH="600px">
@@ -103,15 +70,15 @@ export const UserTab = ({ appUser, pollId }: UserTab) => {
   return (
     <Box bg="white" overflowX="hidden">
       <Scrollbars style={{ height: "845px" }}>
-        {userList?.pollChatUsers &&
-          userList?.pollChatUsers.map((x: any) => (
-            <UserListItem
-              key={x.id}
-              user={x}
-              handleFollow={handleFollow}
-              appUser={appUser}
-            />
-          ))}
+        {data.map((x: any) => (
+          <UserListItem
+            key={x.id}
+            user={x}
+            handleFollow={handleFollow}
+            appUser={appUser}
+          />
+        ))}
+        {/* <div id="bottom" ref={mssgEndRef}></div> */}
       </Scrollbars>
     </Box>
   );

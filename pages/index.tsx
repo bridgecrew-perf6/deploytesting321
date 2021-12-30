@@ -1,12 +1,9 @@
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
 import { CustomBtn, PollHistory } from "../components/appTypes/appType";
 import DataWindow from "../components/pageComponents/Home/DataWindow";
-import AppLoading, {
-  AppLoadingLite,
-} from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Box, Flex, Text } from "@chakra-ui/layout";

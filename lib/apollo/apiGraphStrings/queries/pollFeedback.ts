@@ -50,6 +50,7 @@ const pollFeedBackQueries = {
         lastChatMssgDate
         isActive
         isFollowed
+        pollId
       }
     }
   `,

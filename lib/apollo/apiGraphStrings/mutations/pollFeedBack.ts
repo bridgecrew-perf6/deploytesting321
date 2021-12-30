@@ -15,6 +15,11 @@ const pollFeedBackMutations = {
       }
     }
   `,
+  REMOVE_CHAT_USER: gql`
+    mutation RemoveChatUser($userId: String!, $pollId: String!) {
+      removeChatUser(userId: $userId, pollId: $pollId)
+    }
+  `,
   LIKE_DISLIKE_HANDLER: gql`
     mutation HandleLikeDislike(
       $feedback: String!

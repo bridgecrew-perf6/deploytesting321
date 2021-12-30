@@ -90,3 +90,17 @@ export const roundValue = (val: number | undefined) => {
   }
   return Math.round(val * 100);
 };
+
+export const getUniqueObjList = (list1: any[], list2: any[]) => {
+  let finalList: any[] = [];
+
+  const mergedList = [...list1, ...list2];
+
+  mergedList.forEach((x) => {
+    const match = finalList.some((item) => item.id === x.id);
+
+    !match && finalList.push(x);
+  });
+
+  return finalList;
+};

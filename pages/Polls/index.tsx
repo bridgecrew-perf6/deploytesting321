@@ -16,7 +16,7 @@ import {
   subtopics,
   topics,
   data,
-} from "_components/pageComponents/Other/NavBar/data.ts";
+} from "_components/pageComponents/Other/NavBar/data";
 
 import Layout from "_components/layout/Layout";
 
@@ -115,8 +115,8 @@ const TopicPage = (props: {}) => {
           </Flex>
           <Flex flex={{ base: "0 0 100%", lg: "0 0 70%" }} w="100%" mt="6">
             <Box w="100%">
-              {data.map((x) => (
-                <PollCard pollData={x} />
+              {data.map((x, id) => (
+                <PollCard pollData={x} key={id} />
               ))}
             </Box>
           </Flex>

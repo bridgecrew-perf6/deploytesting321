@@ -31,6 +31,8 @@ const pollSubscriptions = {
         lastChatMssgDate
         isActive
         isFollowed
+        remove
+        pollId
       }
     }
   `,
