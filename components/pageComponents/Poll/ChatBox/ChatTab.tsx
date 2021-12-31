@@ -31,7 +31,9 @@ import Link from "next/link";
 
 const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   const scrollRef = useRef();
+  const msgRef = useRef(null);
   const [userAnswer, setUserAnswer] = useState("");
+  const [isBottom, setIsBottom] = useState(true);
   const { loading, error, data, subscribeToMore, fetchMore } = useQuery(
     GraphResolvers.queries.GET_POLL_CHAT_PAGES,
     {
@@ -41,7 +43,19 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   );
 
   const scrollToBottom = () => {
-    (scrollRef as any).current?.scrollToBottom({ behavior: "smooth" });
+    if (msgRef && msgRef.current) {
+      const lastChild = (msgRef.current as HTMLElement)?.children[
+        (msgRef.current as HTMLElement)?.children.length - 1
+      ];
+
+      window.scrollTo({
+        top: (msgRef.current as HTMLElement).scrollHeight,
+        behavior: "smooth",
+      });
+
+      lastChild.scrollIntoView({ behavior: "smooth" });
+      setIsBottom(false);
+    }
   };
 
   useEffect(() => {
@@ -90,19 +104,13 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
     if (isAnswer && addAnswer) {
       await addAnswer(userAnswer, "");
     }
-    scrollToBottom();
     setUserAnswer("");
+    setIsBottom(true);
   };
-  useEffect(() => {
-    if (scrollRef && scrollRef.current) {
-      //@ts-ignore
-      scrollRef.current.scrollToBottom();
-    }
-  }, [scrollRef.current]);
 
   useEffect(() => {
-    scrollToBottom()
-  }, []);
+    isBottom && scrollToBottom();
+  }, [window, data]);
 
   const updateQuery = (previousResult: any, { fetchMoreResult }: any) => {
     if (!fetchMoreResult) return previousResult;
@@ -121,6 +129,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   const onScrollHandler = (e: any) => {
     if (e.target.scrollTop === 0) {
       if (data?.messageFeedByPoll?.hasMoreData) {
+        setIsBottom(false);
         fetchMore({
           variables: {
             cursor: data?.messageFeedByPoll.cursor,
@@ -154,7 +163,14 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
           ref={scrollRef as any}
           onScroll={onScrollHandler}
         >
-          <Flex p="4" direction="column" justify="flex-end" minH="100%">
+          <Flex
+            p="4"
+            direction="column"
+            justify="flex-end"
+            minH="100%"
+            id="chatScroller"
+            ref={msgRef}
+          >
             {loading && (
               <Flex justify="center" mb="2">
                 <Spinner size="md" color="poldit.100" />

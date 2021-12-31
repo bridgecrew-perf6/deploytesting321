@@ -38,6 +38,7 @@ const MyNavbar: React.FC = () => {
   const router = useRouter();
   const breakMd = useBreakpointValue({ base: false, md: true });
   const appContext = useAuth();
+  const searchVal = appContext ? appContext.searchVal : "";
 
   const [getAppUserData, { data: appUserData }] = useLazyQuery(GET_APPUSER);
   const [logout, {}] = useLazyQuery(LOG_OUT, { fetchPolicy: "network-only" });
@@ -47,6 +48,23 @@ const MyNavbar: React.FC = () => {
   const [notifyToggle, setNotifyToggle] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [navLoading, setNavLoading] = useState(true);
+
+  useEffect(() => {
+    const storedVal = localStorage.getItem("PoldIt-data") || "";
+
+    if (!storedVal) {
+      return;
+    }
+    const { searchVal } = JSON.parse(storedVal);
+    appContext?.handleSearch(searchVal);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "PoldIt-data",
+      JSON.stringify({ searchVal: searchVal })
+    );
+  }, [searchVal]);
 
   useEffect(() => {
     let cookies: any = Cookies.get("userId");
@@ -147,7 +165,9 @@ const MyNavbar: React.FC = () => {
               placeholder="Search..."
               color="gray.600"
               borderColor="gray.300"
+              value={searchVal}
               onKeyDown={goToSearch}
+              onChange={(e) => appContext?.handleSearch(e.target.value)}
             />
           </InputGroup>
         </Flex>

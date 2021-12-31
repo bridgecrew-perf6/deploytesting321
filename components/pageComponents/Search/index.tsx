@@ -152,7 +152,7 @@ export const AnswerItem = ({ data }: { data: Answer }) => {
       >
         Poll Question
       </p>
-      <p className="">{data.poll.question}</p>
+      {data.poll && <p className="">{data.poll.question}</p>}
       <div className="border-top mt-2 pt-2">
         <p
           className={`${pollHeaderTxt} text-muted`}
@@ -201,7 +201,7 @@ export const AnswerBtnMetrics = ({ data }: { data: Answer }) => {
           <span>{numCountDisplay(data.dislikes.length)}</span>
         </div>
       </div>
-      <PollBtn pollId={data.poll._id} />
+      {data.poll && <PollBtn pollId={data.poll._id} />}
     </div>
   );
 };
