@@ -12,6 +12,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import { AnyARecord } from "dns";
 import { useRouter } from "next/router";
 
 const Registration = (props: {}) => {
@@ -38,7 +39,7 @@ const Registration = (props: {}) => {
     }
     return yearArray;
   };
-  const onSignupSubmit = (e) => {
+  const onSignupSubmit = (e: any) => {
     e.preventDefault();
     if (!e.target.agreement.checked) {
       toast({
@@ -198,7 +199,8 @@ const Registration = (props: {}) => {
             </Stack>
             <Box mt="6">
               <Checkbox color="gray.600" name="agreement" required>
-                I agree to the terms & conditions of the User Agreement
+                I agree to the terms & conditions of the{" "}
+                <a href="/Registration/UserAgmt"> User Agreement</a>
               </Checkbox>
             </Box>
             <Box mt="5">
