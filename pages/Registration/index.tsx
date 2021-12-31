@@ -1,247 +1,241 @@
-import { useMutation, useQuery } from "@apollo/client";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import styles from "../../appStyles/appStyles.module.css";
-import { ErrorMssg, StatesUS } from "../../components/appTypes/appType";
-import { errorHandling } from "../../components/formFuncs/errorFuncs";
 import {
-  createAppMssgList,
-  getFormBorderStyle,
-} from "../../components/formFuncs/miscFuncs";
-import GraphResolvers from "../../lib/apollo/apiGraphStrings/index";
-import { CardForm } from "../../components/layout/CompStyles";
-import { StateVals } from "../../components/formFuncs/formFuncs";
-import LegalModal from "../../components/pageComponents/Other/Legal/legalModal";
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  FormControl,
+  FormLabel,
+  Image,
+  Input,
+  Select,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
-const { appColor, appTxt } = styles;
-
-export default function Registration() {
-  const [stateList, setStateList] = useState<StatesUS[]>([]);
-  const [notLegal, toggleLegal] = useState(true);
-  const [formErrors, setFormErrors] = useState<ErrorMssg[]>([]);
-  const [formValidation, setFormValidation] = useState<HTMLFormElement>();
+const Registration = (props: {}) => {
   const router = useRouter();
-
-  const [createUser, { loading, error }] = useMutation(
-    GraphResolvers.mutations.CREATE_USER
-  );
-  const { data } = useQuery(GraphResolvers.queries.GET_STATES_US);
-
-  useEffect(() => {
-    if (data) {
-      setStateList(data.statesUS);
+  const toast = useToast();
+  let month = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const getYear = () => {
+    let yearArray = [];
+    for (let i = 0; i < 60; i++) {
+      yearArray.push(2021 - i);
     }
-  }, [data]);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    return yearArray;
+  };
+  const onSignupSubmit = (e) => {
     e.preventDefault();
-    let { formObj, errors } = errorHandling();
-    const formObjFormatted = getFormBorderStyle(formObj);
-    let appMssgs: string;
-
-    if (errors.length > 0) {
-      setFormErrors(errors);
-      setFormValidation(formObjFormatted);
+    if (!e.target.agreement.checked) {
+      toast({
+        title: "Please agree to terms & conditions",
+        status: "warning",
+        isClosable: true,
+        duration: 3000,
+      });
       return;
     }
-
-    try {
-      const user = await createUser({
-        variables: { formInputs: JSON.stringify(formObj) },
-      });
-      appMssgs = createAppMssgList([
-        { message: "Successfully Registered.  Please Log In.", msgType: 1 },
-      ]);
-      user &&
-        router.push(
-          {
-            pathname: "/Login",
-            query: { appMssgs },
-          },
-          "/Login"
-        );
-    } catch (err: any) {
-      const appMssgs = createAppMssgList([
-        { message: err.message, msgType: 0 },
-      ]);
-
-      router.push(
-        {
-          pathname: "/Login",
-          query: { appMssgs },
-        },
-        "/Login"
-      );
-    }
+    let formData = {
+      firstName: e.target.firstName.value,
+      lastName: e.target.lastName.value,
+      email: e.target.email.value,
+      username: e.target.username.value,
+      password: e.target.password.value,
+      password2: e.target.password2.value,
+      day: e.target.day.value,
+      month: e.target.month.value,
+      year: e.target.year.value,
+      agreement: e.target.agreement.checked,
+    };
+    console.log(formData);
   };
-
-  const userAgreementError = formErrors.some((item) =>
-    item.message.includes("User Agreement")
-  );
-
   return (
-    <CardForm ctrStyle={"60%"} title={router.pathname}>
-      <h1
-        className={`d-flex justify-content-center align-items-center ${appTxt} ${appColor} p-2 text-center`}
-        style={{ height: "8vh" }}
-      >
-        REGISTRATION
-      </h1>
-      <div className="card-body">
-        <form onSubmit={handleSubmit} id="registration">
-          {formErrors.length > 0 && (
-            <div className="alert alert-danger">
-              <label>Please fill out the required fields</label>
-              {userAgreementError && (
-                <label>
-                  Please review the User Agreement and click the check box to
-                  confirm
-                </label>
-              )}
-            </div>
-          )}
-          <div className="form-row">
-            <div className="form-group col-md-6">
-              <label htmlFor="inputEmail4">First Name</label>
-              <input
-                type="text"
-                className={
-                  formValidation ? formValidation["firstname"] : "form-control"
-                }
-                id="FirstName"
-              />
-            </div>
-            <div className="form-group col-md-6">
-              <label htmlFor="inputEmail4">Last Name</label>
-              <input
-                type="text"
-                className={
-                  formValidation ? formValidation["lastname"] : "form-control"
-                }
-                id="LastName"
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="inputEmail4">Email</label>
-            <input
-              type="email"
-              className={
-                formValidation ? formValidation["email"] : "form-control"
-              }
-              id="email"
+    <Box
+      minH="100vh"
+      bg="gray.200"
+      // bg="gray.200"
+    >
+      <Flex align="center" justify="center" minH="100vh">
+        <Box
+          px={{ base: 6, sm: 14 }}
+          pb="16"
+          pt="6"
+          bgGradient="linear(to-br, white, orange.50)"
+          borderRadius="lg"
+          boxShadow="lg"
+        >
+          <Flex justify="center">
+            <Image
+              src="https://res.cloudinary.com/rahmad12/image/upload/v1624921500/PoldIt/App_Imgs/PoldIt_logo_only_agkhlf.png"
+              w="140px"
+              cursor="pointer"
             />
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-6">
-              <label htmlFor="inputUserId">User Id</label>
-              <input
-                type="text"
-                className={
-                  formValidation ? formValidation["appid"] : "form-control"
-                }
-                id="appid"
-              />
-            </div>
-            <div className="form-group col-md-6">
-              <label htmlFor="inputPassword4">Password</label>
-              <input
-                type="password"
-                className={
-                  formValidation ? formValidation["password"] : "form-control"
-                }
-                id="password"
-              />
-            </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="inputAddress">Address</label>
-            <input
-              type="text"
-              className={
-                formValidation ? formValidation["address1"] : "form-control"
-              }
-              id="address1"
-              placeholder="Street Address"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="inputAddress2">Address 2</label>
-            <input
-              type="text"
-              className="form-control"
-              id="address2"
-              placeholder="Apartment, studio, or floor"
-            />
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-5">
-              <label htmlFor="inputCity">City</label>
-              <input
-                type="text"
-                className={
-                  formValidation ? formValidation["city"] : "form-control"
-                }
-                id="city"
-              />
-            </div>
-            <div className="form-group col-md-4">
-              <label htmlFor="inputState">State</label>
-              <select
-                id="State"
-                className={
-                  formValidation ? formValidation["state"] : "form-control"
-                }
+          </Flex>
+          <form onSubmit={onSignupSubmit}>
+            <Stack spacing="6" direction={{ base: "column", md: "row" }}>
+              <FormControl>
+                <FormLabel htmlFor="firstName" color="gray.600">
+                  First Name
+                </FormLabel>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  placeholder="First Name"
+                  minW={{ base: "100px", sm: "320px" }}
+                  required
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="lastName" color="gray.600">
+                  Last Name
+                </FormLabel>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  placeholder="Last Name"
+                  minW={{ base: "100px", sm: "320px" }}
+                  required
+                />
+              </FormControl>
+            </Stack>
+            <Stack spacing="6" direction={{ base: "column", md: "row" }} mt="6">
+              <FormControl>
+                <FormLabel htmlFor="email" color="gray.600">
+                  Email
+                </FormLabel>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Email"
+                  minW={{ base: "100px", sm: "320px" }}
+                  required
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="username" color="gray.600">
+                  Username
+                </FormLabel>
+                <Input
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="username"
+                  minW={{ base: "100px", sm: "320px" }}
+                  required
+                />
+              </FormControl>
+            </Stack>
+            <Stack spacing="6" direction={{ base: "column", md: "row" }} mt="6">
+              <FormControl>
+                <FormLabel htmlFor="password" color="gray.600">
+                  Password
+                </FormLabel>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  minW={{ base: "100px", sm: "320px" }}
+                  required
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="password2" color="gray.600">
+                  Retype Password
+                </FormLabel>
+                <Input
+                  id="password2"
+                  name="password2"
+                  type="password"
+                  placeholder="Password"
+                  minW={{ base: "100px", sm: "320px" }}
+                  required
+                />
+              </FormControl>
+            </Stack>
+            <Box mt="3" ml="1">
+              <Text color="gray.700">Birthday</Text>
+            </Box>
+            <Stack spacing="6" direction={{ base: "column", md: "row" }} mt="2">
+              <Select placeholder="Day" name="day" required>
+                {Array.from(Array(31).keys()).map((x) => (
+                  <option value={x + 1} key={x}>
+                    {x + 1}
+                  </option>
+                ))}
+              </Select>
+              <Select placeholder="Month" name="month" required>
+                {month.map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </Select>
+              <Select placeholder="Year" name="year" required>
+                {getYear().map((x) => (
+                  <option value={x} key={x}>
+                    {x}
+                  </option>
+                ))}
+              </Select>
+            </Stack>
+            <Box mt="6">
+              <Checkbox color="gray.600" name="agreement" required>
+                I agree to the terms & conditions of the User Agreement
+              </Checkbox>
+            </Box>
+            <Box mt="5">
+              <Button
+                w="100%"
+                _focus={{ outline: "none" }}
+                borderRadius="md"
+                color="white"
+                //bgGradient="linear(to-l, poldit.100 , orange.300  )"
+                bg="poldit.100"
+                _hover={{ bg: "orange.300" }}
+                _active={{
+                  bg: "poldit.100",
+                }}
+                type="submit"
               >
-                <option>Select State</option>
-                {stateList.length > 0 ? (
-                  <StateVals stateList={stateList} />
-                ) : (
-                  <option>Loading...</option>
-                )}
-              </select>
-            </div>
-            <div className="form-group col-md-3">
-              <label htmlFor="inputZip">Zip</label>
-              <input
-                type="text"
-                className={
-                  formValidation ? formValidation["zipcode"] : "form-control"
-                }
-                id="Zipcode"
-              />
-            </div>
-          </div>
-          <div className="form-group form-check">
-            <input
-              type="checkbox"
-              onClick={() => toggleLegal(!notLegal)}
-              className="form-check-input"
-              id="userAgreementAgreed"
-            />
-            <label className="form-check-label" htmlFor="exampleCheck1">
-              I agree to the terms and conditions of the
-            </label>
-            <a href="" data-toggle="modal" data-target="#legalModal">
-              {" "}
-              User Agreement
-            </a>
-          </div>
-          <div className="d-flex justify-content-between align-items-center">
-            <button
-              type="submit"
-              className={`btn ${appColor} text-white w-25 mt-2`}
-            >
-              Register
-            </button>
-            <label htmlFor="">
-              Already Registered? Click here to go back to the{" "}
-              <a href="/Login">Login Page</a>
-            </label>
-          </div>
-        </form>
-        <LegalModal agreementTitle="Beta User Agreement" />
-      </div>
-    </CardForm>
+                Register
+              </Button>
+            </Box>
+          </form>
+          <Box mt="3">
+            <Text fontSize="sm" color="gray.500">
+              Already have an account?{" "}
+              <Text
+                as="span"
+                color="blue.400"
+                cursor="pointer"
+                onClick={() => router.push("/Login")}
+              >
+                Login here.
+              </Text>
+            </Text>
+          </Box>
+        </Box>
+      </Flex>
+    </Box>
   );
-}
+};
+
+export default Registration;
