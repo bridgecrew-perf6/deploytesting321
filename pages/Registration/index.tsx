@@ -10,13 +10,11 @@ import {
   Select,
   Stack,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 const Registration = (props: {}) => {
   const router = useRouter();
-  const toast = useToast();
   let month = [
     "Jan",
     "Feb",
@@ -38,17 +36,8 @@ const Registration = (props: {}) => {
     }
     return yearArray;
   };
-  const onSignupSubmit = (e) => {
+  const onSignupSubmit = (e: any) => {
     e.preventDefault();
-    if (!e.target.agreement.checked) {
-      toast({
-        title: "Please agree to terms & conditions",
-        status: "warning",
-        isClosable: true,
-        duration: 3000,
-      });
-      return;
-    }
     let formData = {
       firstName: e.target.firstName.value,
       lastName: e.target.lastName.value,
@@ -97,7 +86,7 @@ const Registration = (props: {}) => {
                   type="text"
                   placeholder="First Name"
                   minW={{ base: "100px", sm: "320px" }}
-                  required
+                  isRequired
                 />
               </FormControl>
               <FormControl>
@@ -110,7 +99,7 @@ const Registration = (props: {}) => {
                   type="text"
                   placeholder="Last Name"
                   minW={{ base: "100px", sm: "320px" }}
-                  required
+                  isRequired
                 />
               </FormControl>
             </Stack>
@@ -125,7 +114,7 @@ const Registration = (props: {}) => {
                   type="email"
                   placeholder="Email"
                   minW={{ base: "100px", sm: "320px" }}
-                  required
+                  isRequired
                 />
               </FormControl>
               <FormControl>
@@ -138,7 +127,7 @@ const Registration = (props: {}) => {
                   type="text"
                   placeholder="username"
                   minW={{ base: "100px", sm: "320px" }}
-                  required
+                  isRequired
                 />
               </FormControl>
             </Stack>
@@ -153,7 +142,7 @@ const Registration = (props: {}) => {
                   type="password"
                   placeholder="Password"
                   minW={{ base: "100px", sm: "320px" }}
-                  required
+                  isRequired
                 />
               </FormControl>
               <FormControl>
@@ -166,7 +155,7 @@ const Registration = (props: {}) => {
                   type="password"
                   placeholder="Password"
                   minW={{ base: "100px", sm: "320px" }}
-                  required
+                  isRequired
                 />
               </FormControl>
             </Stack>
@@ -174,21 +163,30 @@ const Registration = (props: {}) => {
               <Text color="gray.700">Birthday</Text>
             </Box>
             <Stack spacing="6" direction={{ base: "column", md: "row" }} mt="2">
-              <Select name="day" required>
+              <Select name="day" isRequired>
+                <option value="" hidden>
+                  Day
+                </option>
                 {Array.from(Array(31).keys()).map((x) => (
                   <option value={x + 1} key={x}>
                     {x + 1}
                   </option>
                 ))}
               </Select>
-              <Select name="month" required>
+              <Select name="month" isRequired>
+                <option value="" hidden>
+                  Month
+                </option>
                 {month.map((x) => (
                   <option value={x} key={x}>
                     {x}
                   </option>
                 ))}
               </Select>
-              <Select name="year" required>
+              <Select name="year" isRequired>
+                <option value="" hidden>
+                  Year
+                </option>
                 {getYear().map((x) => (
                   <option value={x} key={x}>
                     {x}
@@ -197,7 +195,7 @@ const Registration = (props: {}) => {
               </Select>
             </Stack>
             <Box mt="6">
-              <Checkbox color="gray.600" name="agreement" required>
+              <Checkbox color="gray.600" name="agreement" isRequired>
                 I agree to the terms & conditions of the User Agreement
               </Checkbox>
             </Box>
