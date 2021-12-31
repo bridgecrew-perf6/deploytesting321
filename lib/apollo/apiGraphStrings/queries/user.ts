@@ -133,6 +133,7 @@ const userQueries = {
         lastname
         appid
         bio
+        profilePic
       }
     }
   `,

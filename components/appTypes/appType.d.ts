@@ -338,6 +338,7 @@ interface ITopic {
   _id: string;
   topic: string;
   description: string;
+  numPolls?: number;
   creator?: User;
   subTopics?: ISubTopic[];
   active?: Boolean;

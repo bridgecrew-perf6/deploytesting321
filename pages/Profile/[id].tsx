@@ -15,6 +15,7 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  Avatar,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { PhotoProvider, PhotoConsumer } from "react-photo-view";
@@ -44,7 +45,7 @@ const Profile = ({ appid }: Profile) => {
 
   return (
     <Layout pageTitle={`Profile`}>
-      <Box mt="12">
+      <Box mt="12" bg="#f4f4f4" pb="5">
         <Container maxW="container.xl">
           {!loading ? (
             <ProfileHeader data={data?.getUserProfileData} />
@@ -149,10 +150,17 @@ const ProfileHeader = ({ data }: ProfileData) => {
       align={["center", "flex-start"]}
     >
       <Box mr={[0, 10]} mb={[4, 0]}>
-        <PhotoProvider>
-          <PhotoConsumer src="https://bit.ly/ryan-florence">
+        <Avatar
+          size="2xl"
+          mt="2"
+          name={`${data.firstname} ${data.lastname}`}
+          bg="gray.500"
+          src={data.profilePic}
+        />
+        {/* <PhotoProvider>
+          <PhotoConsumer src={data.profilePic}>
             <Image
-              src="https://bit.ly/ryan-florence"
+              src={data.profilePic}
               alt="this"
               borderRadius="full"
               minW="130px"
@@ -161,7 +169,7 @@ const ProfileHeader = ({ data }: ProfileData) => {
               h="100%"
             />
           </PhotoConsumer>
-        </PhotoProvider>
+        </PhotoProvider> */}
       </Box>
       <Flex direction="column">
         <Flex align="center" ml="1">

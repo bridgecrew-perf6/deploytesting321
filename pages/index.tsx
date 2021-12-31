@@ -11,11 +11,13 @@ import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
 import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
 import "react-photo-view/dist/index.css";
+import TopicWindow from "_components/pageComponents/Home/TopicWindow";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
   ACTIVECHAT_WITH_PAGINATION,
   TRENDING_POLLS_WITH_PAGINATION,
+  GET_TOPICS,
 } = GraphResolvers.queries;
 
 interface HomeBtns extends CustomBtn {
@@ -77,6 +79,8 @@ const Home = () => {
     },
     fetchPolicy: "network-only",
   });
+
+  const { data: topics, loading: topicLoading } = useQuery(GET_TOPICS);
 
   const {
     data: activeChats,
@@ -324,6 +328,7 @@ const Home = () => {
                   })()}
                   update={updateBtnItemsNew}
                 />
+                <TopicWindow data={topics?.topics} loading={topicLoading} />
               </Box>
             </Flex>
           </Box>

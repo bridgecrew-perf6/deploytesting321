@@ -7,6 +7,7 @@ const topicQueries = {
         _id
         topic
         description
+        numPolls
         creator {
           _id
           appid
