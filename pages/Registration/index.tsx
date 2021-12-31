@@ -174,21 +174,21 @@ const Registration = (props: {}) => {
               <Text color="gray.700">Birthday</Text>
             </Box>
             <Stack spacing="6" direction={{ base: "column", md: "row" }} mt="2">
-              <Select placeholder="Day" name="day" required>
+              <Select name="day" required>
                 {Array.from(Array(31).keys()).map((x) => (
                   <option value={x + 1} key={x}>
                     {x + 1}
                   </option>
                 ))}
               </Select>
-              <Select placeholder="Month" name="month" required>
+              <Select name="month" required>
                 {month.map((x) => (
                   <option value={x} key={x}>
                     {x}
                   </option>
                 ))}
               </Select>
-              <Select placeholder="Year" name="year" required>
+              <Select name="year" required>
                 {getYear().map((x) => (
                   <option value={x} key={x}>
                     {x}
