@@ -10,6 +10,7 @@ import {
   Spinner,
   Text,
   Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
 import React, {
@@ -32,8 +33,10 @@ import Link from "next/link";
 const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   const scrollRef = useRef();
   const msgRef = useRef(null);
-  const [userAnswer, setUserAnswer] = useState("");
   const [isBottom, setIsBottom] = useState(true);
+  const toast = useToast();
+  const [userAnswer, setUserAnswer] = useState("");
+
   const { loading, error, data, subscribeToMore, fetchMore } = useQuery(
     GraphResolvers.queries.GET_POLL_CHAT_PAGES,
     {
@@ -82,7 +85,19 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
 
   const [addChatMssg] = useMutation(
     GraphResolvers.mutations.CREATE_CHAT_MESSAGE,
-    { onError: (e) => console.log(e) }
+    {
+      onError: (e) => {
+        toast({
+          title: "Message Sending Failed",
+          status: "error",
+          isClosable: true,
+          duration: 3000,
+          position: "bottom-right",
+          description: `${e.message}`,
+        });
+        console.log("Message Send Error -->", e.message);
+      },
+    }
   );
 
   const onSend = async (e: any, isAnswer: boolean = false) => {

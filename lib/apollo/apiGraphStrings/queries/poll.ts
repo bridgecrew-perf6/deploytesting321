@@ -68,9 +68,10 @@ const pollQueries = {
     }
   `,
   GET_USERPOLLS: gql`
-    query PollsByUser($userId: String!) {
+    query PollsByUser($userId: String) {
       pollsByUser(userId: $userId) {
         _id
+        pollType
         question
         topic {
           topic
@@ -86,6 +87,42 @@ const pollQueries = {
         views
         chatMssgs {
           _id
+        }
+        creator {
+          _id
+          appid
+          firstname
+          profilePic
+        }
+      }
+    }
+  `,
+  GET_FAVORITE_POLLS: gql`
+    query GetFavoritePolls($userId: String) {
+      getFavoritePolls(userId: $userId) {
+        _id
+        pollType
+        question
+        topic {
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+        }
+        creationDate
+        answers {
+          _id
+        }
+        views
+        chatMssgs {
+          _id
+        }
+        creator {
+          _id
+          appid
+          firstname
+          profilePic
         }
       }
     }

@@ -27,6 +27,41 @@ const userQueries = {
       }
     }
   `,
+  GET_USER_PROFILE_DATA: gql`
+    query GetUserProfileData($userId: String) {
+      getUserProfileData(userId: $userId) {
+        _id
+        isMe
+        appid
+        firstname
+        lastname
+        email
+        address1
+        address2
+        city
+        state
+        zipcode
+        bio
+        isAppUser
+        profilePic
+        following {
+          _id
+          appId
+          profilePic
+        }
+        registerDate
+        pollHistory {
+          _id
+          creationDate
+        }
+        favorites {
+          _id
+          favoriteId
+          favoriteType
+        }
+      }
+    }
+  `,
   GET_USER_FOR_POLL: gql`
     query GetUserDataForPoll {
       getUserDataForPoll {
@@ -138,6 +173,16 @@ const userQueries = {
     }
   `,
 
+  GET_ALL_ACTIVITY_OF_USER: gql`
+    query GetActivityOfUser {
+      getAllActivityOfUser {
+        description
+        date
+        activityId
+        type
+      }
+    }
+  `,
   LOG_OUT: gql`
     query LogOut {
       logout

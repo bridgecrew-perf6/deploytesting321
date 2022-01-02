@@ -20,6 +20,7 @@ import {
 import { AiOutlineEye, AiOutlineMessage, AiFillHeart } from "react-icons/ai";
 import { BiShareAlt, BiMessage, BiSelectMultiple } from "react-icons/bi";
 import { RiFilePaper2Line } from "react-icons/ri";
+import TimeAgo from "react-timeago";
 import {
   FacebookIcon,
   FacebookShareButton,
@@ -29,32 +30,94 @@ import {
   TwitterShareButton,
 } from "react-share";
 import { useEffect, useState } from "react";
+import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 
-export const FavPollTab = (props: {}) => {
+interface FavPollTabProps {
+  userId: string | string[];
+}
+
+export const FavPollTab = ({ userId }: FavPollTabProps) => {
   const [loading, setLoading] = useState(true);
-  console.log("Fave");
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    () => setLoading(true);
-  }, []);
+  const currentUserId = userId === "me" ? undefined : userId;
+
+  // console.log("User Id is -->", currentUserId);
+
+  const {
+    data: favPolls,
+    loading: favPollsLoading,
+    updateQuery: favPollsUpdate,
+  } = useQuery(GraphResolvers.queries.GET_FAVORITE_POLLS, {
+    variables: {
+      userId: currentUserId,
+    },
+    // fetchPolicy: "cache-first",
+    // nextFetchPolicy: "cache-and-network",
+  });
+
+  // MyFavoritePolls will be used here from the backend
+  //---------------------------------------------------
+  //---------------------------------------------------
+  //---------------------------------------------------
+  //---------------------------------------------------
+  //---------------------------------------------------
+
+  // useEffect(() => {
+  //   if (!favPollsLoading) {
+  //     console.log("I got Fav Polls -->", favPolls);
+  //   }
+  // }, [favPollsLoading]);
+
   return (
     <Box mt="8">
-      {loading ? (
+      {favPollsLoading ? (
         <Flex justify="center" align="center" minH="300px">
           <Spinner size="lg" color="poldit.100" />
         </Flex>
+      ) : favPolls.getFavoritePolls.length > 0 ? (
+        favPolls.getFavoritePolls.map((poll: any) => (
+          <PollCard
+            key={poll._id}
+            pollData={poll}
+            favPollsUpdate={favPollsUpdate}
+          />
+        ))
       ) : (
-        data.map((x) => <PollCard key={x.id} pollData={x} />)
+        <h1> Your Favorite Polls Will Show Up Here ! </h1>
       )}
     </Box>
   );
 };
 
-const PollCard = ({ pollData }: any) => {
+const PollCard = ({ pollData, favPollsUpdate }: any) => {
   const router = useRouter();
+
+  const [updateFavorite] = useMutation(
+    GraphResolvers.mutations.HANDLE_FAVORITE
+  );
+
+  const favHandler = (favId: string) => {
+    favPollsUpdate((prevFavPolls: any) => {
+      const filteredFavPolls = prevFavPolls.getFavoritePolls.filter(
+        (poll: any) => {
+          return poll._id !== favId;
+        }
+      );
+      return {
+        getFavoritePolls: filteredFavPolls,
+      };
+    });
+
+    updateFavorite({
+      variables: {
+        isFav: false,
+        favoriteType: "Poll",
+        favoriteId: favId,
+      },
+    });
+  };
+
   return (
     <Box mb="8">
       <Box
@@ -66,7 +129,13 @@ const PollCard = ({ pollData }: any) => {
         pt="4"
         pb="4"
       >
-        <PollCardHeader />
+        <PollCardHeader
+          creator={pollData.creator}
+          creationDate={pollData.creationDate}
+          favHandler={() => {
+            favHandler(pollData._id);
+          }}
+        />
         <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
           <Text
             fontSize={["sm", "sm", "md"]}
@@ -101,12 +170,30 @@ const PollCard = ({ pollData }: any) => {
             </Flex>
           )}
         </Box>
-        <PollCardFooter type={pollData.type} />
+        <PollCardFooter
+          isMultiChoice={pollData.pollType === "multiChoice"}
+          views={pollData.views}
+          chatMessages={pollData.chatMssgs.length}
+          answers={pollData.answers.length}
+        />
       </Box>
     </Box>
   );
 };
-const PollCardFooter = ({ type }: { type: string }) => {
+
+interface PollCardFooterProps {
+  isMultiChoice: boolean;
+  views: number;
+  chatMessages: number;
+  answers: number;
+}
+
+const PollCardFooter = ({
+  isMultiChoice,
+  views,
+  chatMessages,
+  answers,
+}: PollCardFooterProps) => {
   const btnCommonStyle = {
     _active: { bg: "none" },
     _hover: { bg: "none" },
@@ -147,7 +234,7 @@ const PollCardFooter = ({ type }: { type: string }) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              12
+              {views}
             </Text>
           </Flex>
         </Tooltip>
@@ -159,7 +246,7 @@ const PollCardFooter = ({ type }: { type: string }) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              12
+              {chatMessages}
             </Text>
           </Flex>
         </Tooltip>
@@ -171,11 +258,11 @@ const PollCardFooter = ({ type }: { type: string }) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              12
+              {answers}
             </Text>
           </Flex>
         </Tooltip>
-        {type === "openEnded" ? (
+        {!isMultiChoice ? (
           <Tooltip label="Open Ended Poll" placement="top" hasArrow>
             <IconButton
               aria-label="heart"
@@ -199,26 +286,33 @@ const PollCardFooter = ({ type }: { type: string }) => {
   );
 };
 
-const PollCardHeader = () => {
+interface PollCardHeaderProps {
+  creator: any;
+  creationDate: string;
+  favHandler: any;
+}
+
+const PollCardHeader = ({
+  creator,
+  creationDate,
+  favHandler,
+}: PollCardHeaderProps) => {
   return (
     <Flex justify="space-between">
       <Flex>
-        <Avatar
-          name="xav dave"
-          src="https://bit.ly/ryan-florence"
-          border="none"
-        />
+        <Avatar name={creator.appid} src={creator.profilePic} border="none" />
         <Flex direction="column" justify="center" pl="4">
           <Text fontSize="xs" color="gray.500" fontWeight="bold">
-            rahmad12
+            {creator.appid}
           </Text>
           <Text fontSize="xs" color="gray.500">
-            3 months ago
+            <TimeAgo date={creationDate} live={false} />
           </Text>
         </Flex>
       </Flex>
       <HStack alignItems="flex-start" pr="2" mt="1">
         <IconButton
+          onClick={favHandler}
           aria-label="heart"
           color="red.400"
           icon={<AiFillHeart size="22px" />}

@@ -20,7 +20,6 @@ import {
 import Link from "next/link";
 import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import { IoMdSettings } from "react-icons/io";
-import { useQuery, useLazyQuery } from "@apollo/client";
 import { MdGppGood } from "react-icons/md";
 import { IoMdMedal } from "react-icons/io";
 import { AiFillStar, AiFillCrown } from "react-icons/ai";
@@ -30,30 +29,58 @@ import { FollowingModal } from "_components/pageComponents/ProfilePage/Following
 import { ActivityTab } from "_components/pageComponents/ProfilePage/ActivityTab";
 import { FavPollTab } from "_components/pageComponents/ProfilePage/FavPollTab";
 import Layout from "_components/layout/Layout";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { useState, useEffect } from "react";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
-import { User } from "_components/appTypes/appType";
-import { GetServerSideProps, GetStaticProps } from "next";
 
-interface Profile {
-  appid: string;
-}
+const Profile = ({ params }: any) => {
+  const router = useRouter();
+  const [userId, setUserId] = useState<string | string[]>("me");
+  const [profileData, setProfileData] = useState<any>();
 
-const Profile = ({ appid }: Profile) => {
-  const { data, loading } = useQuery(GraphResolvers.queries.GET_PROFILE, {
-    variables: { appid },
-  });
+  const [
+    getUserProfileData,
+    {
+      called: userProfileDataFunctionCalled,
+      loading: userProfileLoading,
+      data: userProfileData,
+    },
+  ] = useLazyQuery(GraphResolvers.queries.GET_USER_PROFILE_DATA);
+
+  useEffect(() => {
+    let fetchedId = router.query.id ?? "";
+    if (fetchedId && fetchedId !== "userId") {
+      setUserId(fetchedId);
+    }
+    //-------------------
+    getUserProfileData({
+      variables: {
+        userId: fetchedId === "userId" ? undefined : fetchedId,
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (userProfileData) {
+      setProfileData(userProfileData?.getUserProfileData);
+      // console.log("userProfileDataIs -->", userProfileData?.getUserProfileData);
+    }
+  }, [userProfileData]);
 
   return (
     <Layout pageTitle={`Profile`}>
       <Box mt="12" bg="#f4f4f4" pb="5">
         <Container maxW="container.xl">
-          {!loading ? (
-            <ProfileHeader data={data?.getUserProfileData} />
+          {profileData ? (
+            <ProfileHeader userProfileData={profileData} />
           ) : (
-            <Flex justify="center" align="center" maxH={"180px"} minH={"180px"}>
+            <Flex justify="center" align="center" minH="300px">
               <Spinner size="lg" color="poldit.100" />
             </Flex>
           )}
+
           <Box>
             <Box mt="10">
               <Box>
@@ -68,35 +95,47 @@ const Profile = ({ appid }: Profile) => {
                     >
                       <Text zIndex="100">My Polls</Text>
                     </Tab>
-                    <Tab
-                      _focus={{ outline: "none" }}
-                      _selected={{
-                        color: "poldit.100",
-                        borderColor: "poldit.100",
-                      }}
-                    >
-                      <Text zIndex="100">Favorites</Text>
-                    </Tab>
-                    <Tab
-                      _focus={{ outline: "none" }}
-                      _selected={{
-                        color: "poldit.100",
-                        borderColor: "poldit.100",
-                      }}
-                    >
-                      <Text zIndex="100">Activity</Text>
-                    </Tab>
+
+                    {profileData && profileData.isMe && (
+                      <>
+                        {" "}
+                        <Tab
+                          _focus={{ outline: "none" }}
+                          _selected={{
+                            color: "poldit.100",
+                            borderColor: "poldit.100",
+                          }}
+                        >
+                          <Text zIndex="100">Favorites</Text>
+                        </Tab>
+                        <Tab
+                          _focus={{ outline: "none" }}
+                          _selected={{
+                            color: "poldit.100",
+                            borderColor: "poldit.100",
+                          }}
+                        >
+                          <Text zIndex="100">Activity</Text>
+                        </Tab>
+                      </>
+                    )}
                   </TabList>
                   <TabPanels>
                     <TabPanel p="0">
-                      <MyPollsTab />
+                      <MyPollsTab userId={userId} />
                     </TabPanel>
-                    <TabPanel p="0">
-                      <FavPollTab />
-                    </TabPanel>
-                    <TabPanel p="0">
-                      <ActivityTab />
-                    </TabPanel>
+
+                    {profileData && profileData.isMe && (
+                      <TabPanel p="0">
+                        <FavPollTab userId={userId} />
+                      </TabPanel>
+                    )}
+
+                    {profileData && profileData.isMe && (
+                      <TabPanel p="0">
+                        <ActivityTab />
+                      </TabPanel>
+                    )}
                   </TabPanels>
                 </Tabs>
               </Box>
@@ -110,18 +149,11 @@ const Profile = ({ appid }: Profile) => {
 
 export default Profile;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const appid = context?.params?.id;
-  return {
-    props: { appid },
-  };
-};
-
-interface ProfileData {
-  data: User;
+interface ProfileHeaderProps {
+  userProfileData: any;
 }
 
-const ProfileHeader = ({ data }: ProfileData) => {
+const ProfileHeader = ({ userProfileData }: ProfileHeaderProps) => {
   const expertise = ["gaming", "reactjs", "nodejs", "graphql", "vue"];
   const { isOpen, onToggle } = useDisclosure();
   const {
@@ -151,32 +183,20 @@ const ProfileHeader = ({ data }: ProfileData) => {
     >
       <Box mr={[0, 10]} mb={[4, 0]}>
         <Avatar
-          size="2xl"
-          mt="2"
-          name={`${data.firstname} ${data.lastname}`}
-          bg="gray.500"
-          src={data.profilePic}
+          name={`${userProfileData.firstname} ${userProfileData.lastname}`}
+          src={userProfileData?.profilePic || "https://bit.ly/ryan-florence"}
+          border="none"
+          cursor="pointer"
+          h="100%"
+          w={["130px"]}
         />
-        {/* <PhotoProvider>
-          <PhotoConsumer src={data.profilePic}>
-            <Image
-              src={data.profilePic}
-              alt="this"
-              borderRadius="full"
-              minW="130px"
-              maxW="130px"
-              cursor="pointer"
-              h="100%"
-            />
-          </PhotoConsumer>
-        </PhotoProvider> */}
       </Box>
       <Flex direction="column">
         <Flex align="center" ml="1">
           <Text fontSize="2xl" fontWeight="bold">
-            {data.appid}
+            {userProfileData.appid}
           </Text>
-          <Link href={`/EditProfile/1231`}>
+          {userProfileData.isMe ? (
             <IconButton
               aria-label="profile-setting"
               icon={<IoMdSettings size="22" />}
@@ -189,7 +209,9 @@ const ProfileHeader = ({ data }: ProfileData) => {
               _hover={{ bg: "none" }}
               _active={{ bg: "none" }}
             />
-          </Link>
+          ) : (
+            <></>
+          )}
         </Flex>
         <Flex gridGap="1" mb="1" ml="0">
           <Tooltip hasArrow placement="top" label="Badge">
@@ -217,7 +239,7 @@ const ProfileHeader = ({ data }: ProfileData) => {
           <Box cursor="pointer" onClick={folowingOnOpen}>
             <Text fontSize="sm" _hover={{ color: "blue.400" }}>
               <Text as="span" fontWeight="bold">
-                180
+                {userProfileData?.following?.length || 0}
               </Text>{" "}
               Following
             </Text>
@@ -245,7 +267,7 @@ const ProfileHeader = ({ data }: ProfileData) => {
             maxW="600px"
             noOfLines={isOpen ? 0 : 2}
           >
-            {data.bio}
+            {userProfileData.bio}
           </Text>
           <Text
             as="span"
@@ -263,3 +285,9 @@ const ProfileHeader = ({ data }: ProfileData) => {
     </Flex>
   );
 };
+
+export async function getServerSideProps(context: any) {
+  return {
+    props: { params: context.params },
+  };
+}

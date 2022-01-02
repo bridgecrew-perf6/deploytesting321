@@ -5,7 +5,8 @@ import GraphResolvers from "../lib/apollo/apiGraphStrings";
 import { CustomBtn, PollHistory } from "../components/appTypes/appType";
 import DataWindow from "../components/pageComponents/Home/DataWindow";
 import { useAuth } from "../components/authProvider/authProvider";
-import InfiniteScroll from "react-infinite-scroll-component";
+import InfiniteScroll from "react-infinite-scroller";
+// import InfiniteScroll from "react-infinite-scroll-component";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
@@ -58,7 +59,7 @@ const Home = () => {
   //-----------------------------------------------------------------------------------------
   //States
   const [itemsToBeLoadedPerFetch, setItemsToBeLoadedPerFetch] =
-    useState<number>(6);
+    useState<number>(5);
   const [homeBtns, setUpdateHomeBtns] = useState<HomeBtns[]>(btnItems);
 
   const [pollData, setPollData] = useState<any[]>([]);
@@ -291,24 +292,24 @@ const Home = () => {
                 maxW={{ base: "100%", lg: "70%" }}
               >
                 <InfiniteScroll
+                  pageStart={0}
                   style={{ overflow: "hidden" }}
-                  dataLength={pollData[0].data.length}
-                  next={() => {
+                  loadMore={() => {
                     fetchAndUpdateData(homeBtns, pollData[0].btnName);
                   }}
                   hasMore={pollData[0].hasMoreItems}
                   loader={
-                    <Flex justify="center" align="center">
+                    <Flex justify="center" align="center" key={"homeLoader"}>
                       <Spinner size="lg" color="poldit.100" />
                     </Flex>
                   }
-                  scrollThreshold={-1}
-                  endMessage={
-                    <Text fontSize="md" align={"center"} color="gray.400">
-                      This is the end of the line! More questions mean more
-                      polls so get cracking!
-                    </Text>
-                  }
+                  // scrollThreshold={-1}
+                  // endMessage={
+                  //   <Text fontSize="md" align={"center"} color="gray.400">
+                  //     This is the end of the line! More questions mean more
+                  //     polls so get cracking!
+                  //   </Text>
+                  // }
                 >
                   <DataWindow
                     data={pollData[0].data}

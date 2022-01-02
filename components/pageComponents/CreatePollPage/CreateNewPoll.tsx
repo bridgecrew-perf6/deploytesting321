@@ -56,7 +56,22 @@ const CreateNewPoll: React.FC<{}> = () => {
 
   const { CREATE_POLL, CREATE_SUBTOPIC } = GraphResolvers.mutations;
   const { GET_TOPICS, GET_SUBTOPICS_PER_TOPIC } = GraphResolvers.queries;
-  const [createPoll, { loading: createPollLoading }] = useMutation(CREATE_POLL);
+  const [createPoll, { loading: createPollLoading }] = useMutation(
+    CREATE_POLL,
+    {
+      onError: (err) => {
+        toast({
+          title: "Error Creating Poll!",
+          status: "error",
+          isClosable: true,
+          duration: 3000,
+          position: "bottom-right",
+          description: "Kindly Login or Register to create a poll!",
+        });
+        console.log("Poll Creation Error -->", err.message);
+      },
+    }
+  );
   const [createSubTopic, { loading: createSubTopicLoading }] =
     useMutation(CREATE_SUBTOPIC);
 
