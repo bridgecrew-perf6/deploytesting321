@@ -5,8 +5,8 @@ import {
   handleFavorite,
   updateViewCount,
   // addNewAnswer,
-  addNewChatMssg,
-  addNewPoll,
+  // addNewChatMssg,
+  // addNewPoll,
   updateNotifications,
 } from "./userMutations";
 
@@ -18,7 +18,7 @@ export {
   handleFavorite,
   updateViewCount,
   // addNewAnswer,
-  addNewChatMssg,
-  addNewPoll,
+  // addNewChatMssg,
+  // addNewPoll,
   updateNotifications,
 };

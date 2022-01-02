@@ -28,9 +28,9 @@ const {
   GET_POLLS_ALL,
   GET_USERPOLLS,
   SHOW_VIEWS,
-  GET_ACTIVE_CHATS,
+  // GET_ACTIVE_CHATS,
   GET_NOTIFICATIONS,
-  GET_NEWEST_POLLS,
+  // GET_NEWEST_POLLS,
 } = GraphResolvers.queries;
 
 export const updateUserProfile = async (
@@ -268,99 +268,99 @@ export const updateViewCount = async (
 //   }
 // };
 
-export const addNewChatMssg = async (
-  addChatMssgFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: string,
-  pollId: string
-) => {
-  try {
-    addChatMssgFunc({
-      variables: { details },
-      update(cache, { data: { createMessage } }) {
-        const poll: any = cache.readQuery({
-          query: GET_POLL,
-          variables: { pollId },
-        });
+// export const addNewChatMssg = async (
+//   addChatMssgFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   details: string,
+//   pollId: string
+// ) => {
+//   try {
+//     addChatMssgFunc({
+//       variables: { details },
+//       update(cache, { data: { createMessage } }) {
+//         const poll: any = cache.readQuery({
+//           query: GET_POLL,
+//           variables: { pollId },
+//         });
 
-        const activeChats: any = cache.readQuery({
-          query: GET_ACTIVE_CHATS,
-        });
+//         const activeChats: any = cache.readQuery({
+//           query: GET_ACTIVE_CHATS,
+//         });
 
-        if (activeChats) {
-          let activeChatsUpdated = activeChats.activeChats.map(
-            (item: PollHistory) => {
-              if (item._id === pollId && item.chatMssgs) {
-                const updatedChatMssgs = [...item.chatMssgs, createMessage];
-                return { ...item, chatMssgs: updatedChatMssgs };
-              } else if (item._id === pollId && !item.chatMssgs) {
-                return { ...item, chatMssgs: [createMessage] };
-              }
+//         if (activeChats) {
+//           let activeChatsUpdated = activeChats.activeChats.map(
+//             (item: PollHistory) => {
+//               if (item._id === pollId && item.chatMssgs) {
+//                 const updatedChatMssgs = [...item.chatMssgs, createMessage];
+//                 return { ...item, chatMssgs: updatedChatMssgs };
+//               } else if (item._id === pollId && !item.chatMssgs) {
+//                 return { ...item, chatMssgs: [createMessage] };
+//               }
 
-              return item;
-            }
-          );
+//               return item;
+//             }
+//           );
 
-          activeChatsUpdated = activeChatsUpdated.sort(
-            (a: any, b: any) => b.chatMssgs.length - a.chatMssgs.length
-          );
+//           activeChatsUpdated = activeChatsUpdated.sort(
+//             (a: any, b: any) => b.chatMssgs.length - a.chatMssgs.length
+//           );
 
-          cache.writeQuery({
-            query: GET_ACTIVE_CHATS,
-            data: {
-              activeChats: activeChatsUpdated,
-            },
-          });
-        } else {
-          cache.modify({
-            id: cache.identify(poll.poll),
-            fields: {
-              chatMssgs(cachedChats = [], { readField }) {
-                const newChatRef = cache.writeFragment({
-                  data: createMessage,
-                  fragment: gql`
-                    fragment CreateMessage on ChatMssgs {
-                      _id
-                    }
-                  `,
-                });
-                return [...cachedChats, newChatRef];
-              },
-            },
-          });
-        }
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//           cache.writeQuery({
+//             query: GET_ACTIVE_CHATS,
+//             data: {
+//               activeChats: activeChatsUpdated,
+//             },
+//           });
+//         } else {
+//           cache.modify({
+//             id: cache.identify(poll.poll),
+//             fields: {
+//               chatMssgs(cachedChats = [], { readField }) {
+//                 const newChatRef = cache.writeFragment({
+//                   data: createMessage,
+//                   fragment: gql`
+//                     fragment CreateMessage on ChatMssgs {
+//                       _id
+//                     }
+//                   `,
+//                 });
+//                 return [...cachedChats, newChatRef];
+//               },
+//             },
+//           });
+//         }
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
-export const addNewPoll = async (
-  addNewPollFunc: (
-    options?: MutationFunctionOptions<any, OperationVariables> | undefined
-  ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
-  details: string
-) => {
-  try {
-    addNewPollFunc({
-      variables: { details },
-      update(cache, { data: { createPoll } }) {
-        const { newestPolls }: any = cache.readQuery({
-          query: GET_NEWEST_POLLS,
-        });
+// export const addNewPoll = async (
+//   addNewPollFunc: (
+//     options?: MutationFunctionOptions<any, OperationVariables> | undefined
+//   ) => Promise<FetchResult<any, Record<string, any>, Record<string, any>>>,
+//   details: string
+// ) => {
+//   try {
+//     addNewPollFunc({
+//       variables: { details },
+//       update(cache, { data: { createPoll } }) {
+//         const { newestPolls }: any = cache.readQuery({
+//           query: GET_NEWEST_POLLS,
+//         });
 
-        cache.writeQuery({
-          query: GET_NEWEST_POLLS,
-          data: { newestPolls: [...newestPolls, createPoll] },
-        });
-      },
-    });
-  } catch (err) {
-    throw err;
-  }
-};
+//         cache.writeQuery({
+//           query: GET_NEWEST_POLLS,
+//           data: { newestPolls: [...newestPolls, createPoll] },
+//         });
+//       },
+//     });
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
 export const updateNotifications = async (
   updateNotificationFunc: (
