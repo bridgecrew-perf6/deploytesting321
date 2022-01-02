@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 const userQueries = {
   GET_USER: gql`
     query GetUserData($userId: String!) {
-      getUserData (userId: $userId){
+      getUserData(userId: $userId) {
         appToken
         user {
           _id
@@ -23,6 +23,41 @@ const userQueries = {
             favoriteId
             favoriteType
           }
+        }
+      }
+    }
+  `,
+  GET_USER_PROFILE_DATA: gql`
+    query GetUserProfileData($userId: String) {
+      getUserProfileData(userId: $userId) {
+        _id
+        isMe
+        appid
+        firstname
+        lastname
+        email
+        address1
+        address2
+        city
+        state
+        zipcode
+        bio
+        isAppUser
+        profilePic
+        following {
+          _id
+          appId
+          profilePic
+        }
+        registerDate
+        pollHistory {
+          _id
+          creationDate
+        }
+        favorites {
+          _id
+          favoriteId
+          favoriteType
         }
       }
     }
@@ -111,6 +146,16 @@ const userQueries = {
       users {
         _id
         appid
+      }
+    }
+  `,
+  GET_ALL_ACTIVITY_OF_USER: gql`
+    query GetActivityOfUser {
+      getAllActivityOfUser {
+        description
+        date
+        activityId
+        type
       }
     }
   `,

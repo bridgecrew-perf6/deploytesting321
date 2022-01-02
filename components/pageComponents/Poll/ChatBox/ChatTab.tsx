@@ -27,6 +27,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   const scrollRef = useRef();
   const toast = useToast();
   const [userAnswer, setUserAnswer] = useState("");
+
   const { loading, error, data, subscribeToMore, fetchMore } = useQuery(
     GraphResolvers.queries.GET_POLL_CHAT_PAGES,
     {
@@ -67,7 +68,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
           isClosable: true,
           duration: 3000,
           position: "bottom-right",
-          description: "Kindly Login or Register to start chating",
+          description: `${e.message}`,
         });
         console.log("Message Send Error -->", e.message);
       },

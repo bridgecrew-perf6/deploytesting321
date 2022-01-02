@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 import { images, data } from "../Other/NavBar/data";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import TimeAgo from "react-timeago";
 import {
   Avatar,
   Box,
@@ -29,24 +31,60 @@ import {
   TwitterShareButton,
 } from "react-share";
 import { useEffect, useState } from "react";
+import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
+import Cookies from "js-cookie";
 
-export const MyPollsTab = (props: {}) => {
+interface MyPollsTabProps {
+  userId: string | string[];
+}
+
+export const MyPollsTab = ({ userId }: MyPollsTabProps) => {
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    () => setLoading(true);
-  }, []);
+  const myPollsVariables = userId === "me" ? undefined : { userId };
+
+  const { data: myPolls, loading: myPollsLoading } = useQuery(
+    GraphResolvers.queries.GET_USERPOLLS,
+    {
+      variables: myPollsVariables,
+      // fetchPolicy: "cache-first",
+      // nextFetchPolicy: "cache-and-network",
+    }
+  );
+
+  // pollsByUser from the backend Query will be used here!
+  //-----------------------------------------------------
+  //-----------------------------------------------------
+  //-----------------------------------------------------
+  //-----------------------------------------------------
+  //-----------------------------------------------------
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 2000);
+  //   () => setLoading(true);
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log("My Polls Are -->", myPolls);
+  // }, [myPolls]);
+
   return (
     <Box mt="8">
-      {loading ? (
-        <Flex justify="center" align="center" minH="300px">
+      {myPollsLoading ? (
+        <Flex key={"pollsLoading"} justify="center" align="center" minH="300px">
           <Spinner size="lg" color="poldit.100" />
         </Flex>
+      ) : myPolls.pollsByUser.length > 0 ? (
+        myPolls.pollsByUser.map((x: any) => (
+          <PollCard key={x._id} pollData={x} />
+        ))
       ) : (
-        data.map((x) => <PollCard key={x.id} pollData={x} />)
+        <h1 key={"noPollsFound"}>
+          No Polls Found. Use the New Poll feature to add polls about topics and
+          subtopics that interest you. You can see all your created polls here
+        </h1>
       )}
     </Box>
   );
@@ -66,7 +104,10 @@ const PollCard = ({ pollData }: any) => {
         pt="4"
         pb="4"
       >
-        <PollCardHeader />
+        <PollCardHeader
+          creator={pollData?.creator}
+          creationDate={pollData?.creationDate}
+        />
         <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
           <Text
             fontSize={["sm", "sm", "md"]}
@@ -101,12 +142,30 @@ const PollCard = ({ pollData }: any) => {
             </Flex>
           )}
         </Box>
-        <PollCardFooter type={pollData.type} />
+        <PollCardFooter
+          isMultiChoice={pollData.pollType === "multiChoice"}
+          views={pollData.views}
+          chatMessages={pollData.chatMssgs.length}
+          answers={pollData.answers.length}
+        />
       </Box>
     </Box>
   );
 };
-const PollCardFooter = ({ type }: { type: string }) => {
+
+interface PollCardFooterProps {
+  isMultiChoice: boolean;
+  views: number;
+  chatMessages: number;
+  answers: number;
+}
+
+const PollCardFooter = ({
+  isMultiChoice,
+  views,
+  chatMessages,
+  answers,
+}: PollCardFooterProps) => {
   const btnCommonStyle = {
     _active: { bg: "none" },
     _hover: { bg: "none" },
@@ -147,7 +206,7 @@ const PollCardFooter = ({ type }: { type: string }) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              12
+              {views}
             </Text>
           </Flex>
         </Tooltip>
@@ -159,7 +218,7 @@ const PollCardFooter = ({ type }: { type: string }) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              12
+              {chatMessages}
             </Text>
           </Flex>
         </Tooltip>
@@ -171,11 +230,11 @@ const PollCardFooter = ({ type }: { type: string }) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              12
+              {answers}
             </Text>
           </Flex>
         </Tooltip>
-        {type === "openEnded" ? (
+        {!isMultiChoice ? (
           <Tooltip label="Open Ended Poll" placement="top" hasArrow>
             <IconButton
               aria-label="heart"
@@ -199,21 +258,22 @@ const PollCardFooter = ({ type }: { type: string }) => {
   );
 };
 
-const PollCardHeader = () => {
+interface PollCardHeaderProps {
+  creator: any;
+  creationDate: string;
+}
+
+const PollCardHeader = ({ creator, creationDate }: PollCardHeaderProps) => {
   return (
     <Flex justify="space-between">
       <Flex>
-        <Avatar
-          name="xav dave"
-          src="https://bit.ly/ryan-florence"
-          border="none"
-        />
+        <Avatar name="xav dave" src={creator?.profilePic ?? ""} border="none" />
         <Flex direction="column" justify="center" pl="4">
           <Text fontSize="xs" color="gray.500" fontWeight="bold">
-            rahmad12
+            {creator?.appid ?? "Anonymous"}
           </Text>
           <Text fontSize="xs" color="gray.500">
-            3 months ago
+            <TimeAgo date={creationDate} live={false} />
           </Text>
         </Flex>
       </Flex>

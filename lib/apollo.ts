@@ -140,6 +140,24 @@ const cacheOptions: InMemoryCacheConfig = {
             }
           },
         },
+
+        getFavoritePolls: {
+          keyArgs: false,
+
+          merge(existing = { getFavoritePolls: [] }, incoming) {
+            return [...incoming];
+          },
+
+          // read(existing) {
+          //   if (existing) {
+          //     return {
+          //       ...existing,
+          //       getFavoritePolls: Object.values(existing.getFavoritePolls),
+          //     };
+          //   }
+          // },
+        },
+
         answersByPoll: {
           merge: false,
         },
