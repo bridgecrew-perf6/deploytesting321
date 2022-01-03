@@ -377,7 +377,6 @@ export const updateNotifications = async (
         const notifications: any = cache.readQuery({
           query: GET_NOTIFICATIONS,
         });
-        console.log("const", notifications);
 
         let updatedNotifications: UserNotification[] = [];
 

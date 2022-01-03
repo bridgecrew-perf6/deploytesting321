@@ -44,10 +44,6 @@ const NotificationContainer = ({ userId }: any) => {
     fetchPolicy: "network-only",
   });
   const paginateNotify = async () => {
-    console.log(
-      "length",
-      notificationData?.notificationsWithPagination?.length
-    );
     fetchMore({
       variables: {
         offset: notificationData?.notificationsWithPagination?.length,
@@ -71,7 +67,6 @@ const NotificationContainer = ({ userId }: any) => {
     subscribeToMore({
       document: GraphResolvers.subscriptions.NOTIFICATION_SUBSCRIPTION,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log("subs", subscriptionData);
         if (!subscriptionData) return prev;
         const newItem = subscriptionData.data.newNotification;
 
@@ -90,12 +85,10 @@ const NotificationContainer = ({ userId }: any) => {
 
     if (changeId) {
       updatedData = changeId;
-      console.log("single", updatedData);
     } else {
       updatedData = notificationData?.notificationsWithPagination.map(
         (item: any) => item._id
       );
-      console.log("array", updatedData);
     }
 
     updateNotifications(modifyNotifications, updatedData);
