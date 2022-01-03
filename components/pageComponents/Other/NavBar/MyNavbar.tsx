@@ -242,7 +242,14 @@ const MyNavbar: React.FC = () => {
                     />
                     <MenuList px="2">
                       {NavLinks.map((l: NavType) => (
-                        <Link href={`/${l.url}/userId`} key={l.id}>
+                        <Link
+                          href={
+                            l.url === "Profile"
+                              ? `/${l.url}/${appUserData?.getAppUserData?.appid}`
+                              : `/${l.url}`
+                          }
+                          key={l.id}
+                        >
                           <MenuItem
                             borderRadius="lg"
                             _hover={{

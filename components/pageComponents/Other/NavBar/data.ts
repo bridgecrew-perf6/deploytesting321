@@ -1,7 +1,7 @@
 export interface NavType {
   id: number | string;
   link: string;
-  url: string;
+  url?: string;
 }
 
 export interface Pollquestion {
@@ -13,12 +13,9 @@ export interface Pollquestion {
 
 export const NavLinks: NavType[] = [
   { id: 1, link: "Profile", url: "Profile" },
-  { id: 2, link: "All Topics", url: "Profile" },
-  { id: 3, link: "About", url: "Profile" },
-  { id: 4, link: "How it Works", url: "Profile" },
-  { id: 5, link: "Suggestions", url: "Profile" },
-  { id: 6, link: "Support", url: "Profile" },
-  { id: 7, link: "Settings", url: "Profile" },
+  { id: 2, link: "All Topics", url: "Polls" },
+  { id: 3, link: "About", url: "About" },
+  // { id: 7, link: "Settings", url: "Profile" },
 ];
 
 export const data: Pollquestion[] = [

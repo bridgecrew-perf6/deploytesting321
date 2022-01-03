@@ -98,8 +98,8 @@ const pollQueries = {
     }
   `,
   GET_FAVORITE_POLLS: gql`
-    query GetFavoritePolls($userId: String) {
-      getFavoritePolls(userId: $userId) {
+    query GetFavoritePolls {
+      getFavoritePolls {
         _id
         pollType
         question

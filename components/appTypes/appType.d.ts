@@ -41,6 +41,7 @@ export interface User {
   address1?: string;
   address2?: string;
   isAppUser?: boolean;
+  favorites: Favorite[];
   bio?: string;
   city?: string;
   state?: string;
@@ -51,8 +52,15 @@ export interface User {
   profilePic?: string;
   registerDate?: Date;
   pollHistory?: PollHistory[];
+  isMe?: boolean;
   // timeOnSite?: siteTime;
   // timeSpentOnSite: timeOnPoll[];
+}
+
+export interface Favorite {
+  favoriteId: string;
+  favoriteType: string;
+  _id: string;
 }
 
 export interface Role {

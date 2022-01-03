@@ -28,8 +28,8 @@ const userQueries = {
     }
   `,
   GET_USER_PROFILE_DATA: gql`
-    query GetUserProfileData($userId: String) {
-      getUserProfileData(userId: $userId) {
+    query GetUserProfileData($appid: String) {
+      getUserProfileData(appid: $appid) {
         _id
         isMe
         appid

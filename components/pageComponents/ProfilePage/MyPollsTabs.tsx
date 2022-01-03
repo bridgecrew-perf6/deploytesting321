@@ -39,14 +39,11 @@ interface MyPollsTabProps {
 }
 
 export const MyPollsTab = ({ userId }: MyPollsTabProps) => {
-  const [loading, setLoading] = useState(true);
-
-  const myPollsVariables = userId === "me" ? undefined : { userId };
 
   const { data: myPolls, loading: myPollsLoading } = useQuery(
     GraphResolvers.queries.GET_USERPOLLS,
     {
-      variables: myPollsVariables,
+      variables: {userId},
       // fetchPolicy: "cache-first",
       // nextFetchPolicy: "cache-and-network",
     }
@@ -145,8 +142,8 @@ export const PollCard = ({ pollData }: any) => {
         <PollCardFooter
           isMultiChoice={pollData.pollType === "multiChoice"}
           views={pollData.views}
-          chatMessages={pollData.chatMssgs.length}
-          answers={pollData.answers.length}
+          chatMessages={20}
+          answers={2}
         />
       </Box>
     </Box>
