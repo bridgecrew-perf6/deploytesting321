@@ -359,7 +359,7 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.answerCount}
+              {data?.isMultipleChoice ? data?.answerCount : data?.answerCount}
             </Text>
           </Flex>
         </Tooltip>

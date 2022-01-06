@@ -54,6 +54,8 @@ const MyNavbar: React.FC = () => {
     setNavLoading(false);
   }, [userId]);
 
+  // console.log(userId);
+
   useEffect(() => {
     if (userId) {
       getAppUserData({ variables: { userId: userId } });
@@ -61,6 +63,7 @@ const MyNavbar: React.FC = () => {
   }, [userId]);
 
   useEffect(() => {
+    // console.log(appUserData);
     if (appUserData) {
       appContext?.updateUserData(appUserData);
       setLoading(false);
@@ -219,8 +222,26 @@ const MyNavbar: React.FC = () => {
                       _hover={{ bg: "none" }}
                     />
                     <MenuList px="2">
-                      {NavLinks.map((l: NavType) => (
-                        <Link href={`/${l.url}/userId`} key={l.id}>
+                      {NavLinks.map((l: NavType) =>
+                        l.id === 1 ? (
+                          <Link href={`/${l.url}/${userId}`} key={l.id}>
+                            <MenuItem
+                              borderRadius="lg"
+                              _hover={{
+                                bg: "orange.300",
+                                color: "white",
+                                outline: "none",
+                              }}
+                              _focus={{
+                                outline: "none",
+                              }}
+                              key={l.id}
+                              fontSize="sm"
+                            >
+                              {l.link}
+                            </MenuItem>
+                          </Link>
+                        ) : (
                           <MenuItem
                             borderRadius="lg"
                             _hover={{
@@ -236,8 +257,8 @@ const MyNavbar: React.FC = () => {
                           >
                             {l.link}
                           </MenuItem>
-                        </Link>
-                      ))}
+                        )
+                      )}
                       <MenuItem
                         borderRadius="lg"
                         _hover={{

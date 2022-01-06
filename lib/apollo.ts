@@ -72,7 +72,7 @@ const wsLink = process.browser
     })
   : null;
 
-const httpLink = new HttpLink({
+  const httpLink = new HttpLink({
   uri: isDev
     ? process.env.NEXT_PUBLIC_HTTP_API_DEV
     : process.env.NEXT_PUBLIC_HTTP_API_PROD,

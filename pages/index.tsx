@@ -14,6 +14,7 @@ import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
 import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
+import _ from "lodash";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
@@ -61,9 +62,8 @@ const Home = () => {
   const [itemsToBeLoadedPerFetch, setItemsToBeLoadedPerFetch] =
     useState<number>(5);
   const [homeBtns, setUpdateHomeBtns] = useState<HomeBtns[]>(btnItems);
-
+  const [loading, setLoading] = useState<Boolean>(true);
   const [pollData, setPollData] = useState<any[]>([]);
-
   // setPollData(homeBtns.filter((item) => item.active));
 
   //-----------------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ const Home = () => {
     },
     fetchPolicy: "network-only",
   });
-
+  // console.log(activeChats);
   //-----------------------------------------------------------------------------------------
   // Functions
   const getMoreDataFor = async (btnType: string, offset: number) => {
@@ -125,6 +125,7 @@ const Home = () => {
           limit: itemsToBeLoadedPerFetch,
         },
       });
+      // console.log(data);
       return data;
     } else if (btnType === "Newest Polls") {
       const { data } = await newPollsFetchMore({
@@ -135,12 +136,6 @@ const Home = () => {
       });
       return data;
     }
-
-    const selectedBtn = homeBtns.find((item) => {
-      return item.btnName === btnType;
-    });
-
-    return selectedBtn?.data;
   };
 
   const fetchAndUpdateData = async (
@@ -151,51 +146,35 @@ const Home = () => {
       currentHomeBtns.map(async (item) => {
         if (item.btnName === btnType) {
           item.currentOffset += itemsToBeLoadedPerFetch;
-
+          // console.log(item.currentOffset, btnType);
           const snapshot = await getMoreDataFor(
             item.btnName,
             item.currentOffset || 0
           );
-
           if (!snapshot) {
-            console.log("Sorry snapshot is ->", snapshot);
             return [];
           }
 
           const newData = snapshot[Object.keys(snapshot)[0]];
-
-          item.data = [...item.data, ...newData];
-
-          if (newData.length < itemsToBeLoadedPerFetch) {
+          let p: any = [];
+          p.push([...item.data, ...newData]);
+          let arr = p[0];
+          let unique = _.uniqBy(arr, function (e: any) {
+            return e._id;
+          });
+          item.data = unique;
+          if (pollData[0].data[0].totalPolls <= pollData[0].data.length || newData.length === 0) {
             item.hasMoreItems = false;
           }
+          // if (newData.length < itemsToBeLoadedPerFetch) {
+          //   item.hasMoreItems = false;
+          // }
         }
         return item;
       })
     );
-
     setUpdateHomeBtns(updatedHomeBtns);
   };
-
-  // const updateBtnItem = (btnName: string, prop: string, val: any) => {
-  //   // console.log("Updated Buttons Called -->");
-  //   const updatedItems = homeBtns.map((item) => {
-  //     // console.log(btnName, item.btnName);
-  //     if (item.btnName === btnName && prop === "active") {
-  //       const data = pollHandler(item.btnName);
-
-  //       return { ...item, active: true, data };
-  //     } else if (item.btnName !== btnName && prop === "active") {
-  //       return { ...item, active: false };
-  //     } else if (item.btnName === btnName && prop !== "active") {
-  //       return { ...item, [prop as keyof CustomBtn]: val };
-  //     } else {
-  //       return item;
-  //     }
-  //   });
-
-  //   setUpdateHomeBtns(updatedItems);
-  // };
 
   const updateBtnItemsNew = (btnName: string) => {
     setUpdateHomeBtns((prevHomeBtns) => {
@@ -223,19 +202,10 @@ const Home = () => {
     setUpdateHomeBtns(updatedHomeBtns);
   };
 
-  // const pollHandler = (sortType: string) => {
-  //   // console.log("Poll handler called");
-  //   const newData = homeBtns.find((item) => {
-  //     return item.btnName === sortType;
-  //   });
-
-  //   return newData?.data || [];
-  // };
-
   //-----------------------------------------------------------------------------------------
   //Use Effects
   useEffect(() => {
-    if (!activeChatsLoading) {
+    if (!activeChatsLoading && loading) {
       setUpdateHomeBtns((prevHomeBtns) => {
         const btns = prevHomeBtns;
         btns[0].data = activeChats.activeChatsWithPagination;
@@ -246,20 +216,21 @@ const Home = () => {
 
       const activeBtns = homeBtns.filter((btn) => btn.active);
       setPollData(activeBtns);
+      setLoading(false);
     }
-  }, [activeChatsLoading]);
+  }, [activeChatsLoading, loading]);
 
-  useEffect(() => {
-    if (!trendingPollsLoading) {
-      setUpdateHomeBtns((prevHomeBtns) => {
-        const btns = prevHomeBtns;
-        btns[1].data = trendingPolls.trendingPollsWithPagination;
-        btns[1].currentOffset = itemsToBeLoadedPerFetch;
-        btns[1].hasMoreItems = true;
-        return btns;
-      });
-    }
-  }, [trendingPolls]);
+  // useEffect(() => {
+  //   if (!trendingPollsLoading) {
+  //     setUpdateHomeBtns((prevHomeBtns) => {
+  //       const btns = prevHomeBtns;
+  //       btns[1].data = trendingPolls.trendingPollsWithPagination;
+  //       btns[1].currentOffset = itemsToBeLoadedPerFetch;
+  //       btns[1].hasMoreItems = true;
+  //       return btns;
+  //     });
+  //   }
+  // }, [trendingPolls]);
 
   useEffect(() => {
     if (!newPollsLoading) {
@@ -272,6 +243,8 @@ const Home = () => {
       });
     }
   }, [newPollData]);
+
+  // console.log(pollData);
 
   //-----------------------------------------------------------------------------------------
   // Returning the jsx
@@ -301,13 +274,6 @@ const Home = () => {
                       <Spinner size="lg" color="poldit.100" />
                     </Flex>
                   }
-                  // scrollThreshold={-1}
-                  // endMessage={
-                  //   <Text fontSize="md" align={"center"} color="gray.400">
-                  //     This is the end of the line! More questions mean more
-                  //     polls so get cracking!
-                  //   </Text>
-                  // }
                 >
                   <DataWindow
                     data={pollData[0].data}

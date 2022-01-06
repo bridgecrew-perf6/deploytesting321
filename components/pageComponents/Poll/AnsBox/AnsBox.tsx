@@ -371,6 +371,7 @@ const AnsBox = ({
                       )}
                     </Box>
                   </Box>
+                  {console.log(ansState)}
                   {answers.length ? (
                     <Box
                       pt="4"

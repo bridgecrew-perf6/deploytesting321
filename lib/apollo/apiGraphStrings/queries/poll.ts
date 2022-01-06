@@ -68,8 +68,8 @@ const pollQueries = {
     }
   `,
   GET_USERPOLLS: gql`
-    query PollsByUser($userId: String) {
-      pollsByUser(userId: $userId) {
+    query PollsByUser($userId: String, $offset: Int, $limit: Int) {
+      pollsByUser(userId: $userId, offset: $offset, limit: $limit) {
         _id
         pollType
         question
@@ -94,6 +94,7 @@ const pollQueries = {
           firstname
           profilePic
         }
+        totalPolls
       }
     }
   `,
@@ -158,6 +159,7 @@ const pollQueries = {
           profilePic
         }
         views
+        totalPolls
       }
     }
   `,
@@ -252,6 +254,7 @@ const pollQueries = {
           profilePic
         }
         views
+        totalPolls
       }
     }
   `,
@@ -286,6 +289,7 @@ const pollQueries = {
           profilePic
         }
         views
+        totalPolls
       }
     }
   `,

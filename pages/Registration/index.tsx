@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../../appStyles/appStyles.module.css";
 import { ErrorMssg, StatesUS } from "../../components/appTypes/appType";
 import { errorHandling } from "../../components/formFuncs/errorFuncs";
+import { AppMssgList, ErrorList } from "../../components/formFuncs/formFuncs";
 import {
   createAppMssgList,
   getFormBorderStyle,
@@ -64,14 +65,7 @@ export default function Registration() {
       const appMssgs = createAppMssgList([
         { message: err.message, msgType: 0 },
       ]);
-
-      router.push(
-        {
-          pathname: "/Login",
-          query: { appMssgs },
-        },
-        "/Login"
-      );
+      setFormErrors([{message: err.message}]);
     }
   };
 
@@ -91,7 +85,9 @@ export default function Registration() {
         <form onSubmit={handleSubmit} id="registration">
           {formErrors.length > 0 && (
             <div className="alert alert-danger">
-              <label>Please fill out the required fields</label>
+              {formErrors.map((msg) => (
+                <label>{msg.message}</label>
+              ))}
               {userAgreementError && (
                 <label>
                   Please review the User Agreement and click the check box to
@@ -154,7 +150,7 @@ export default function Registration() {
               />
             </div>
           </div>
-          <div className="form-group">
+          {/* <div className="form-group">
             <label htmlFor="inputAddress">Address</label>
             <input
               type="text"
@@ -211,7 +207,7 @@ export default function Registration() {
                 id="Zipcode"
               />
             </div>
-          </div>
+          </div> */}
           <div className="form-group form-check">
             <input
               type="checkbox"
@@ -242,6 +238,7 @@ export default function Registration() {
         </form>
         <LegalModal agreementTitle="Beta User Agreement" />
       </div>
+      {/* {formErrors.length > 0 && <ErrorList errors={formErrors} />} */}
     </CardForm>
   );
 }

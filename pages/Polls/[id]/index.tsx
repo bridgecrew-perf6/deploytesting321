@@ -73,7 +73,7 @@ const Poll = () => {
   } = useQuery(GraphResolvers.queries.GET_ANSWERS_BY_POLL, {
     variables: { pollId },
   });
-
+  // console.log(answerDa)
   const { data: user } = useQuery(GET_USER_FOR_POLL);
 
   const [addAnswerToPolls] = useMutation(
