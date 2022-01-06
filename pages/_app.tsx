@@ -8,8 +8,13 @@ import { AppProps } from "next/app";
 import { Box, ChakraProvider, extendTheme } from "@chakra-ui/react";
 import * as gtag from "../lib/gtag";
 import { AiOutlineArrowUp } from "react-icons/ai";
+import Script from "next/script";
+import configs from "../endpoints.config";
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
   const client = useApollo(pageProps.initialApolloState);
   const [isVisible, setIsVisible] = useState(false);
   const theme = extendTheme({
@@ -43,6 +48,17 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      gtag.pageview(url);
+    };
+
+    router.events.on(`routeChangeComplete`, handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
 
   return (
     <AuthProvider>

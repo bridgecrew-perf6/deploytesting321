@@ -37,7 +37,7 @@ import {
 
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import { AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 import React, { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
@@ -50,6 +50,7 @@ import {
 import Favorite from "../Poll/PollCtrs/favorite";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import ShareBtns from "../Other/Share";
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -306,30 +307,7 @@ const PollCardHeader = ({
               size="xs"
             />
           </PopoverTrigger>
-          <Portal>
-            <PopoverContent
-              _focus={{ outline: "none" }}
-              w="100%"
-              borderRadius="lg"
-            >
-              <PopoverArrow />
-              <PopoverBody>
-                <Flex justify="flex-start" align="center" px="4" py="2">
-                  <FacebookShareButton url="https://chakra-ui.com">
-                    <FacebookIcon round={true} size="24px" />
-                  </FacebookShareButton>
-                  <Flex mx="4">
-                    <TwitterShareButton url="https://chakra-ui.com">
-                      <TwitterIcon round={true} size="24px" />
-                    </TwitterShareButton>
-                  </Flex>
-                  <LinkedinShareButton url="https://chakra-ui.com">
-                    <LinkedinIcon round={true} size="24px" />
-                  </LinkedinShareButton>
-                </Flex>
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
+          <ShareBtns />
         </Popover>
         <Box>
           <Menu>

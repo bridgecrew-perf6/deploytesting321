@@ -30,6 +30,7 @@ import styles from "../../../appStyles/appStyles.module.css";
 import TimeAgo from "react-timeago";
 import { PollHistory } from "../../appTypes/appType";
 import PollMetrics from "../Other/PollMetrics";
+import Favorite from "../Poll/PollCtrs/favorite";
 import { TagWindow, UserTagWindow } from "../Other/Tags/Tags";
 import {
   AiOutlineHeart,
@@ -44,6 +45,7 @@ import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { useRouter } from "next/router";
 import { PhotoConsumer, PhotoProvider } from "react-photo-view";
 import { numCountDisplay } from "_components/formFuncs/miscFuncs";
+import ShareBtns from "../Other/Share";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
@@ -231,23 +233,7 @@ const PollCardHeader = ({
             </Portal>
           </Popover>
         )}
-        {!isMyPoll && (
-          <IconButton
-            aria-label="heart"
-            icon={
-              isFav ? (
-                <AiTwotoneHeart size="22px" color="red" />
-              ) : (
-                <AiOutlineHeart size="22px" />
-              )
-            }
-            bg="none"
-            _hover={{ bg: "none" }}
-            _focus={{ outline: "none" }}
-            size="xs"
-            onClick={() => handleFav(pollId)}
-          />
-        )}
+        {!isMyPoll && <Favorite favId={pollId} favType="Poll" />}
         <Popover placement="top">
           <PopoverTrigger>
             <IconButton
@@ -259,28 +245,7 @@ const PollCardHeader = ({
               size="xs"
             />
           </PopoverTrigger>
-          <PopoverContent
-            _focus={{ outline: "none" }}
-            w="100%"
-            borderRadius="lg"
-          >
-            <PopoverArrow />
-            <PopoverBody>
-              <Flex justify="flex-start" align="center" px="4" py="2">
-                <FacebookShareButton url="https://chakra-ui.com">
-                  <FacebookIcon round={true} size="24px" />
-                </FacebookShareButton>
-                <Flex mx="4">
-                  <TwitterShareButton url="https://chakra-ui.com">
-                    <TwitterIcon round={true} size="24px" />
-                  </TwitterShareButton>
-                </Flex>
-                <LinkedinShareButton url="https://chakra-ui.com">
-                  <LinkedinIcon round={true} size="24px" />
-                </LinkedinShareButton>
-              </Flex>
-            </PopoverBody>
-          </PopoverContent>
+          <ShareBtns />
         </Popover>
       </HStack>
     </Flex>
