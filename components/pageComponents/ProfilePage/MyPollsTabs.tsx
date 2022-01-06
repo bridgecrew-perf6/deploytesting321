@@ -33,17 +33,22 @@ import {
 import { useEffect, useState } from "react";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import Cookies from "js-cookie";
+import {
+  ISubTopic,
+  ITopic,
+  PollHistory,
+  User,
+} from "_components/appTypes/appType";
 
 interface MyPollsTabProps {
   userId: string | string[];
 }
 
 export const MyPollsTab = ({ userId }: MyPollsTabProps) => {
-
   const { data: myPolls, loading: myPollsLoading } = useQuery(
     GraphResolvers.queries.GET_USERPOLLS,
     {
-      variables: {userId},
+      variables: { userId },
       // fetchPolicy: "cache-first",
       // nextFetchPolicy: "cache-and-network",
     }
@@ -87,7 +92,7 @@ export const MyPollsTab = ({ userId }: MyPollsTabProps) => {
   );
 };
 
-export const PollCard = ({ pollData }: any) => {
+export const PollCard = ({ pollData }: { pollData: PollHistory }) => {
   const router = useRouter();
 
   return (
@@ -102,7 +107,7 @@ export const PollCard = ({ pollData }: any) => {
         pb="4"
       >
         <PollCardHeader
-          creator={pollData?.creator}
+          creator={pollData?.creator as User}
           creationDate={pollData?.creationDate}
         />
         <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
@@ -116,9 +121,9 @@ export const PollCard = ({ pollData }: any) => {
           >
             {pollData.question}
           </Text>
-          {pollData.images && (
+          {pollData.pollImages && (
             <Flex mt="4">
-              {images.map((x, id) => (
+              {pollData.pollImages.map((x, id) => (
                 <Box
                   key={id}
                   w="100px"
@@ -141,9 +146,11 @@ export const PollCard = ({ pollData }: any) => {
         </Box>
         <PollCardFooter
           isMultiChoice={pollData.pollType === "multiChoice"}
-          views={pollData.views}
-          chatMessages={20}
-          answers={2}
+          views={pollData.views as number}
+          chatMessages={pollData.chatMssgsCount as number}
+          answers={pollData.answerCount as number}
+          topic={pollData.topic}
+          subTopics={pollData.subTopics}
         />
       </Box>
     </Box>
@@ -155,6 +162,8 @@ interface PollCardFooterProps {
   views: number;
   chatMessages: number;
   answers: number;
+  topic: ITopic;
+  subTopics: ISubTopic[];
 }
 
 const PollCardFooter = ({
@@ -162,6 +171,8 @@ const PollCardFooter = ({
   views,
   chatMessages,
   answers,
+  topic,
+  subTopics,
 }: PollCardFooterProps) => {
   const btnCommonStyle = {
     _active: { bg: "none" },
@@ -181,9 +192,20 @@ const PollCardFooter = ({
           borderRadius="full"
           bg="gray.400"
         >
-          Music
+          {topic.topic}
         </Tag>
-        <Tag fontWeight="bold" color="gray.500" size="sm" borderRadius="full">
+        {subTopics.map((x) => (
+          <Tag
+            fontWeight="bold"
+            color="gray.500"
+            size="sm"
+            borderRadius="full"
+            key={x._id}
+          >
+            {x.subTopic}
+          </Tag>
+        ))}
+        {/* <Tag fontWeight="bold" color="gray.500" size="sm" borderRadius="full">
           Rap
         </Tag>
         <Tag fontWeight="bold" color="gray.500" size="sm" borderRadius="full">
@@ -191,7 +213,7 @@ const PollCardFooter = ({
         </Tag>
         <Tag fontWeight="bold" color="gray.500" size="sm" borderRadius="full">
           Dubstep
-        </Tag>
+        </Tag> */}
       </Flex>
 
       <Flex align="center">
@@ -256,7 +278,7 @@ const PollCardFooter = ({
 };
 
 interface PollCardHeaderProps {
-  creator: any;
+  creator: User;
   creationDate: string;
 }
 
@@ -264,7 +286,12 @@ const PollCardHeader = ({ creator, creationDate }: PollCardHeaderProps) => {
   return (
     <Flex justify="space-between">
       <Flex>
-        <Avatar name="xav dave" src={creator?.profilePic ?? ""} border="none" />
+        <Avatar
+          name={`${creator.firstname} ${creator.lastname}`}
+          src={creator?.profilePic}
+          border="none"
+          cursor="pointer"
+        />
         <Flex direction="column" justify="center" pl="4">
           <Text fontSize="xs" color="gray.500" fontWeight="bold">
             {creator?.appid ?? "Anonymous"}

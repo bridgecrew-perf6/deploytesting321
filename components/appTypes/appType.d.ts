@@ -189,8 +189,8 @@ export interface PollHistory {
   _id: string;
   __typename?: string;
   question: string;
-  topic: Topic;
-  subTopics: SubTopic[];
+  topic: ITopic;
+  subTopics: ISubTopic[];
   creationDate: string;
   creator?: User;
   answers: Answer[];
@@ -350,7 +350,6 @@ interface ITopic {
   creator?: User;
   subTopics?: ISubTopic[];
   active?: Boolean;
-  pollCount?: number;
 }
 
 interface ISubTopic {
@@ -360,7 +359,7 @@ interface ISubTopic {
   topic: ITopic;
   creator?: User;
   active?: Boolean;
-  pollCount?: number;
+  numPolls?: number;
 }
 
 interface SelectedTopic {

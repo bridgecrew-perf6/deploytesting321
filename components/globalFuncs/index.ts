@@ -104,3 +104,14 @@ export const getUniqueObjList = (list1: any[], list2: any[]) => {
 
   return finalList;
 };
+
+export const getObjList_NoDuplicates = (list1: any[], list2: any[]) => {
+  let finalList: any[] = list1;
+
+  list2.forEach((x) => {
+    const match = finalList.some((item) => item._id === x._id);
+    !match && finalList.push(x);
+  });
+
+  return finalList;
+};

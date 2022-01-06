@@ -60,10 +60,21 @@ const MyNavbar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
-      "PoldIt-data",
-      JSON.stringify({ searchVal: searchVal })
-    );
+    const storedVal = localStorage.getItem("PoldIt-data") || "";
+
+    let storedData: object = {};
+    if (!storedVal) {
+      storedData = { searchVal };
+    } else {
+      const storedObj = JSON.parse(storedVal as string);
+      storedData = { ...storedObj, searchVal };
+    }
+
+    // const storedData = !storedVal ? {searchVal} : {...}
+
+    // const storedObj = JSON.parse(storedVal as string);
+
+    localStorage.setItem("PoldIt-data", JSON.stringify(storedData));
   }, [searchVal]);
 
   useEffect(() => {
@@ -126,6 +137,22 @@ const MyNavbar: React.FC = () => {
         "/Search"
       );
     }
+  };
+
+  const goToURL = (url: string) => {
+    if (url === "Profile") {
+      router.push(`/${url}/${appUserData?.getAppUserData?.appid}`);
+      return;
+    }
+
+    if (url === "Topics") {
+      router.push(
+        { pathname: `/${url}`, query: { id: "All_1", tagType: "topic" } },
+        `/${url}`
+      );
+      return;
+    }
+    router.push(`/${url}`);
   };
 
   return (
@@ -242,30 +269,32 @@ const MyNavbar: React.FC = () => {
                     />
                     <MenuList px="2">
                       {NavLinks.map((l: NavType) => (
-                        <Link
-                          href={
-                            l.url === "Profile"
-                              ? `/${l.url}/${appUserData?.getAppUserData?.appid}`
-                              : `/${l.url}`
-                          }
+                        // <Link
+                        //   href={
+                        //     getURLString(l.url as string)
+                        //     // l.url === "Profile"
+                        //     //   ? `/${l.url}/${appUserData?.getAppUserData?.appid}`
+                        //     //   : `/${l.url}`
+                        //   }
+                        //   key={l.id}
+                        // >
+                        <MenuItem
+                          borderRadius="lg"
+                          onClick={() => goToURL(l.url as string)}
+                          _hover={{
+                            bg: "#ff4d00",
+                            color: "white",
+                            outline: "none",
+                          }}
+                          _focus={{
+                            outline: "none",
+                          }}
                           key={l.id}
+                          fontSize="sm"
                         >
-                          <MenuItem
-                            borderRadius="lg"
-                            _hover={{
-                              bg: "#ff4d00",
-                              color: "white",
-                              outline: "none",
-                            }}
-                            _focus={{
-                              outline: "none",
-                            }}
-                            key={l.id}
-                            fontSize="sm"
-                          >
-                            {l.link}
-                          </MenuItem>
-                        </Link>
+                          {l.link}
+                        </MenuItem>
+                        // </Link>
                       ))}
                       <MenuItem
                         borderRadius="lg"

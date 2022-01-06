@@ -13,7 +13,7 @@ export interface Pollquestion {
 
 export const NavLinks: NavType[] = [
   { id: 1, link: "Profile", url: "Profile" },
-  { id: 2, link: "All Topics", url: "Polls" },
+  { id: 2, link: "All Topics", url: "Topics" },
   { id: 3, link: "About", url: "About" },
   // { id: 7, link: "Settings", url: "Profile" },
 ];

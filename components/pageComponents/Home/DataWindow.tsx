@@ -43,6 +43,7 @@ import { RiFilePaper2Line } from "react-icons/ri";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { useRouter } from "next/router";
 import { PhotoConsumer, PhotoProvider } from "react-photo-view";
+import { numCountDisplay } from "_components/formFuncs/miscFuncs";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
@@ -77,12 +78,12 @@ const DataWindow = ({ data, btn, update }: DataWindow) => {
     update && btn && update(btn, updatedPolls);
   };
 
-  const srch_polls_by_topic_sTopic = (data: any) => {
-    router.push(
-      { pathname: "/Polls", query: { data: JSON.stringify(data) } },
-      "/Polls"
-    );
-  };
+  // const srch_polls_by_topic_sTopic = (data: any) => {
+  //   const routerData =
+  //     typeof data === "object" ? JSON.stringify(data) : (data as string);
+
+  //   router.push({ pathname: "/Polls", query: { data: routerData } }, "/Polls");
+  // };
 
   return (
     <Box px="2" pt="2">
@@ -91,7 +92,7 @@ const DataWindow = ({ data, btn, update }: DataWindow) => {
           data={item}
           key={item._id}
           handleFav={favHandler}
-          srch={srch_polls_by_topic_sTopic}
+          // srch={srch_polls_by_topic_sTopic}
         />
       ))}
     </Box>
@@ -103,10 +104,9 @@ export default DataWindow;
 interface ListItem {
   data: PollHistory;
   handleFav?: (favId: string) => void;
-  srch: (data: any) => void;
 }
 
-const PollCard = ({ data, handleFav, srch }: ListItem) => {
+const PollCard = ({ data, handleFav }: ListItem) => {
   return (
     <Box mb="8">
       <Box
@@ -168,7 +168,7 @@ const PollCard = ({ data, handleFav, srch }: ListItem) => {
             </Flex>
           ) : null}
         </Box>
-        <PollCardFooter data={data} srch={srch} />
+        <PollCardFooter data={data} />
       </Box>
     </Box>
   );
@@ -188,7 +188,7 @@ const PollCardHeader = ({
       <Flex>
         <Link href={`/Profile/${creator?.appid}`}>
           <Avatar
-            name="Poll Dit"
+            name={`${creator.firstname} ${creator.lastname}`}
             src={creator?.profilePic}
             border="none"
             cursor="pointer"
@@ -286,7 +286,7 @@ const PollCardHeader = ({
     </Flex>
   );
 };
-const PollCardFooter = ({ data, srch }: ListItem) => {
+const PollCardFooter = ({ data }: ListItem) => {
   const btnCommonStyle = {
     _active: { bg: "none" },
     _hover: { bg: "none" },
@@ -299,29 +299,43 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
   return (
     <Flex justify="space-between" wrap="wrap" gridRowGap="2" ml={[0, 0, 1]}>
       <Flex wrap="wrap" gridGap="2">
-        <Tag
-          fontWeight="bold"
-          color="gray.100"
-          size="sm"
-          borderRadius="full"
-          bg="gray.400"
-          cursor="pointer"
-          onClick={() => srch(data?.topic)}
+        <Link
+          href={{
+            pathname: "/Topics",
+            query: { id: data.topic._id, tagType: "topic" },
+          }}
+          as={"/Topics"}
         >
-          {data?.topic?.topic}
-        </Tag>
-        {data?.subTopics.map((st) => (
           <Tag
             fontWeight="bold"
-            color="gray.500"
+            color="gray.100"
             size="sm"
             borderRadius="full"
-            key={st._id}
-            onClick={() => srch(st)}
+            bg="gray.400"
             cursor="pointer"
           >
-            {st.subTopic}
+            {data?.topic?.topic}
           </Tag>
+        </Link>
+        {data?.subTopics.map((st) => (
+          <Link
+            href={{
+              pathname: "/Topics",
+              query: { id: st._id, tagType: "subTopic" },
+            }}
+            as={"/Topics"}
+            key={st._id}
+          >
+            <Tag
+              fontWeight="bold"
+              color="gray.500"
+              size="sm"
+              borderRadius="full"
+              cursor="pointer"
+            >
+              {st.subTopic}
+            </Tag>
+          </Link>
         ))}
       </Flex>
 
@@ -334,7 +348,7 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.views}
+              {data.views && numCountDisplay(data.views)}
             </Text>
           </Flex>
         </Tooltip>
@@ -346,7 +360,7 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.chatMssgsCount}
+              {data.chatMssgsCount && numCountDisplay(data.chatMssgsCount)}
             </Text>
           </Flex>
         </Tooltip>
@@ -358,7 +372,7 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.answerCount}
+              {data.answerCount && numCountDisplay(data.answerCount)}
             </Text>
           </Flex>
         </Tooltip>

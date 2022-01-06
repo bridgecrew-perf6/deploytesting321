@@ -10,7 +10,9 @@ import {
   TagLabel,
   Text,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { ITopic } from "_components/appTypes/appType";
+import { numCountDisplay } from "_components/formFuncs/miscFuncs";
 
 interface TopicWindow {
   data: ITopic[];
@@ -72,7 +74,7 @@ const TopicWindow = ({ data, loading }: TopicWindow) => {
                 <AccordionPanel pb={4}>
                   <Flex gridGap="2" mt="4" wrap="wrap">
                     {data.map((item) => (
-                      <TopicBtn key={item._id} data={item} />
+                      <TopicBtn data={item} key={item._id} />
                     ))}
                   </Flex>
                 </AccordionPanel>
@@ -88,17 +90,28 @@ const TopicWindow = ({ data, loading }: TopicWindow) => {
 export default TopicWindow;
 
 export const TopicBtn = ({ data }: { data: ITopic }) => (
-  <Tag
-    fontWeight="bold"
-    color="gray.100"
-    borderRadius="full"
-    bg="gray.400"
-    _hover={{ bg: "poldit.100" }}
-    px="3"
-    cursor="pointer"
-    size="sm"
+  <Link
+    href={{
+      pathname: "/Topics",
+      query: { id: data._id, tagType: "topic" },
+    }}
+    as={"/Topics"}
   >
-    <TagLabel>{data.topic}</TagLabel>
-    <TagLabel ml="15px">{data.numPolls}</TagLabel>
-  </Tag>
+    <Tag
+      fontWeight="bold"
+      color="gray.100"
+      borderRadius="full"
+      bg="gray.400"
+      _hover={{ bg: "poldit.100" }}
+      px="3"
+      py="1"
+      cursor="pointer"
+      size="sm"
+    >
+      <TagLabel>{data.topic}</TagLabel>
+      <TagLabel ml="15px">
+        {data.numPolls && numCountDisplay(data.numPolls)}
+      </TagLabel>
+    </Tag>
+  </Link>
 );

@@ -13,6 +13,7 @@ import Layout from "_components/layout/Layout";
 import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
 import "react-photo-view/dist/index.css";
 import TopicWindow from "_components/pageComponents/Home/TopicWindow";
+import InfiniteScroller from "_components/pageComponents/Other/InfiniteScroll";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
@@ -145,13 +146,14 @@ const Home = () => {
     return selectedBtn?.data;
   };
 
-  const fetchAndUpdateData = async (
-    currentHomeBtns: any[],
-    btnType: string
-  ) => {
+  // const fetchAndUpdateData = async (
+  //   currentHomeBtns: any[],
+  //   btnType: string
+  // ) => {
+  const fetchAndUpdateData = async () => {
     const updatedHomeBtns = await Promise.all(
-      currentHomeBtns.map(async (item) => {
-        if (item.btnName === btnType) {
+      homeBtns.map(async (item) => {
+        if (item.btnName === pollData[0].btnName) {
           item.currentOffset += itemsToBeLoadedPerFetch;
 
           const snapshot = await getMoreDataFor(
@@ -176,7 +178,7 @@ const Home = () => {
       })
     );
 
-    setUpdateHomeBtns(updatedHomeBtns);
+    setUpdateHomeBtns(updatedHomeBtns as HomeBtns[]);
   };
 
   // const updateBtnItem = (btnName: string, prop: string, val: any) => {
@@ -291,7 +293,18 @@ const Home = () => {
                 flex={{ base: "0 0 100%", lg: "0 0 70%" }}
                 maxW={{ base: "100%", lg: "70%" }}
               >
-                <InfiniteScroll
+                <InfiniteScroller
+                  loadMore={fetchAndUpdateData}
+                  hasMoreItems={pollData[0].hasMoreItems}
+                  loaderKey="homeLoader"
+                >
+                  <DataWindow
+                    data={pollData[0].data}
+                    btn={pollData[0].btnName}
+                    update={updateData}
+                  />
+                </InfiniteScroller>
+                {/* <InfiniteScroll
                   pageStart={0}
                   style={{ overflow: "hidden" }}
                   loadMore={() => {
@@ -316,7 +329,7 @@ const Home = () => {
                     btn={pollData[0].btnName}
                     update={updateData}
                   />
-                </InfiniteScroll>
+                </InfiniteScroll> */}
               </Box>
               <Box
                 flex={{ base: "0 0 100%", lg: "0 0 30%" }}
