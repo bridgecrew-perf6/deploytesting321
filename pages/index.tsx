@@ -109,7 +109,8 @@ const Home = () => {
     },
     fetchPolicy: "network-only",
   });
-
+  
+  // console.log(trendingPolls);
   // console.log(activeChats);
 
   //-----------------------------------------------------------------------------------------
