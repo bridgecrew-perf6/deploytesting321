@@ -13,7 +13,8 @@ export const ActivityTab = (props: {}) => {
       fetchPolicy: "network-only",
       // nextFetchPolicy: "cache-and-network",
     }
-  );
+  );  
+  console.log(activityData);
 
   // GET_ALL_ACTIVITY_OF_USER
 

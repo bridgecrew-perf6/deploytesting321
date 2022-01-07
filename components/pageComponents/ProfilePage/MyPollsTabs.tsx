@@ -36,124 +36,18 @@ import { useEffect, useState } from "react";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import Cookies from "js-cookie";
 import _ from "lodash";
+import {
+  ISubTopic,
+  ITopic,
+  PollHistory,
+  User,
+} from "_components/appTypes/appType";
 
 interface MyPollsTabProps {
   userId: string | string[];
 }
 
-export const MyPollsTab = ({ userId }: MyPollsTabProps) => {
-  const [loading, setLoading] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
-  const [polls, setPolls] = useState<any[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [totalFetched, setTotalFetched] = useState(0);
-  const myPollsVariables = userId === "me" ? undefined : userId;
-
-  const {
-    data: myPolls,
-    loading: myPollsLoading,
-    fetchMore: getMorePolls,
-  } = useQuery(GraphResolvers.queries.GET_USERPOLLS, {
-    variables: { userId: myPollsVariables, offset: 0, limit: limit },
-    // fetchPolicy: "cache-first",
-    // nextFetchPolicy: "cache-and-network",
-  });
-
-  useEffect(() => {}, [myPolls?.pollsByUser]);
-
-  const fetchAndUpdateData = async () => {
-    let current;
-    if (offset === 0) {
-      current = 10;
-    } else {
-      current = 0;
-    }
-    // console.log(offset, current);
-    const { data } = await getMorePolls({
-      variables: {
-        userId: myPollsVariables,
-        offset: current === 10 ? current : offset,
-        limit: limit,
-      },
-    });
-    if (
-      myPolls?.pollsByUser[0]?.totalPolls <= polls.length ||
-      data.pollsByUser.length === 0
-    ) {
-      setHasMore(false);
-      return polls;
-    } else {
-      if (myPolls?.pollsByUser) {
-        if (current === 10) {
-          setPolls((prev) => [...myPolls?.pollsByUser, ...data.pollsByUser]);
-        } else {
-          setPolls((prev) => [...prev, ...data.pollsByUser]);
-        }
-      }
-      return data;
-    }
-  };
-
-  // pollsByUser from the backend Query will be used here!
-  useEffect(() => {
-    if (myPolls?.pollsByUser) {
-      // console.log(polls.length);
-      setOffset(polls.length);
-      if (myPolls?.pollsByUser[0]?.totalPolls === polls?.length) {
-        setHasMore(false);
-      }
-    }
-  }, [myPolls?.pollsByUser, polls]);
-
-  return myPollsLoading ? (
-    <Flex key={"pollsLoading"} justify="center" align="center" minH="300px">
-      <Spinner size="lg" color="poldit.100" />
-    </Flex>
-  ) : (
-    <InfiniteScroll
-      pageStart={0}
-      style={{ overflow: "hidden" }}
-      loadMore={() => {
-        fetchAndUpdateData();
-      }}
-      hasMore={hasMore}
-      loader={
-        <Flex justify="center" align="center" key={"homeLoader"}>
-          <Spinner size="lg" color="poldit.100" />
-        </Flex>
-      }
-      // scrollThreshold={-1}
-      // endMessage={
-      //   <Text fontSize="md" align={"center"} color="gray.400">
-      //     This is the end of the line! More questions mean more
-      //     polls so get cracking!
-      //   </Text>
-      // }
-    >
-      <Box mt="8">
-        {polls.length === 0 ? (
-          myPolls?.pollsByUser.length > 0 ? (
-            myPolls?.pollsByUser.map((x: any) => (
-              <PollCard key={x._id} pollData={x} />
-            ))
-          ) : (
-            <h1 key={"noPollsFound"}>
-              No Polls Found. Use the New Poll feature to add polls about topics
-              and subtopics that interest you. You can see all your created
-              polls here
-            </h1>
-          )
-        ) : (
-          polls.map((x: any) => <PollCard key={x._id} pollData={x} />)
-        )}
-      </Box>
-    </InfiniteScroll>
-  );
-};
-
-const PollCard = ({ pollData }: any) => {
+export const PollCard = ({ pollData }: { pollData: PollHistory }) => {
   const router = useRouter();
 
   return (
@@ -168,7 +62,7 @@ const PollCard = ({ pollData }: any) => {
         pb="4"
       >
         <PollCardHeader
-          creator={pollData?.creator}
+          creator={pollData?.creator as User}
           creationDate={pollData?.creationDate}
         />
         <Box py="5" px={[0, 2, 2]} mr={[6, 6, 8, 10, 16]}>
@@ -182,9 +76,9 @@ const PollCard = ({ pollData }: any) => {
           >
             {pollData.question}
           </Text>
-          {pollData.images && (
+          {pollData.pollImages && (
             <Flex mt="4">
-              {images.map((x, id) => (
+              {pollData.pollImages.map((x, id) => (
                 <Box
                   key={id}
                   w="100px"
@@ -207,9 +101,11 @@ const PollCard = ({ pollData }: any) => {
         </Box>
         <PollCardFooter
           isMultiChoice={pollData.pollType === "multiChoice"}
-          views={pollData.views}
-          chatMessages={pollData.chatMssgs.length}
-          answers={pollData.answers.length}
+          views={pollData.views as number}
+          chatMessages={pollData.chatMssgsCount as number}
+          answers={pollData.answerCount as number}
+          topic={pollData.topic}
+          subTopics={pollData.subTopics}
         />
       </Box>
     </Box>
@@ -221,6 +117,8 @@ interface PollCardFooterProps {
   views: number;
   chatMessages: number;
   answers: number;
+  topic: ITopic;
+  subTopics: ISubTopic[];
 }
 
 const PollCardFooter = ({
@@ -228,6 +126,8 @@ const PollCardFooter = ({
   views,
   chatMessages,
   answers,
+  topic,
+  subTopics,
 }: PollCardFooterProps) => {
   const btnCommonStyle = {
     _active: { bg: "none" },
@@ -247,17 +147,19 @@ const PollCardFooter = ({
           borderRadius="full"
           bg="gray.400"
         >
-          Music
+          {topic.topic}
         </Tag>
-        <Tag fontWeight="bold" color="gray.500" size="sm" borderRadius="full">
-          Rap
-        </Tag>
-        <Tag fontWeight="bold" color="gray.500" size="sm" borderRadius="full">
-          Hiphop
-        </Tag>
-        <Tag fontWeight="bold" color="gray.500" size="sm" borderRadius="full">
-          Dubstep
-        </Tag>
+        {subTopics.map((x) => (
+          <Tag
+            fontWeight="bold"
+            color="gray.500"
+            size="sm"
+            borderRadius="full"
+            key={x._id}
+          >
+            {x.subTopic}
+          </Tag>
+        ))}
       </Flex>
 
       <Flex align="center">
@@ -322,7 +224,7 @@ const PollCardFooter = ({
 };
 
 interface PollCardHeaderProps {
-  creator: any;
+  creator: User;
   creationDate: string;
 }
 
@@ -330,7 +232,12 @@ const PollCardHeader = ({ creator, creationDate }: PollCardHeaderProps) => {
   return (
     <Flex justify="space-between">
       <Flex>
-        <Avatar name="xav dave" src={creator?.profilePic ?? ""} border="none" />
+        <Avatar
+          name={`${creator.firstname} ${creator.lastname}`}
+          src={creator?.profilePic}
+          border="none"
+          cursor="pointer"
+        />
         <Flex direction="column" justify="center" pl="4">
           <Text fontSize="xs" color="gray.500" fontWeight="bold">
             {creator?.appid ?? "Anonymous"}
@@ -377,5 +284,126 @@ const PollCardHeader = ({ creator, creationDate }: PollCardHeaderProps) => {
         </Popover>
       </HStack>
     </Flex>
+  );
+};
+
+export const MyPollsTab = ({ userId }: MyPollsTabProps) => {
+  const [loading, setLoading] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+  const [polls, setPolls] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalFetched, setTotalFetched] = useState(0);
+  const myPollsVariables = userId === "me" ? undefined : userId;
+
+  const {
+    data: myPolls,
+    loading: myPollsLoading,
+    fetchMore: getMorePolls,
+  } = useQuery(GraphResolvers.queries.GET_USERPOLLS, {
+    variables: { userId: myPollsVariables, offset: 0, limit: limit },
+    // fetchPolicy: "cache-first",
+    // nextFetchPolicy: "cache-and-network",
+  });
+
+  useEffect(() => {}, [myPolls?.pollsByUser]);
+
+  const fetchAndUpdateData = async () => {
+    let current;
+    if (offset === 0) {
+      current = 10;
+    } else {
+      current = 0;
+    }
+    const { data } = await getMorePolls({
+      variables: {
+        userId: myPollsVariables,
+        offset: current === 10 ? current : offset,
+        limit: limit,
+      },
+    });
+    if (
+      myPolls?.pollsByUser[0]?.totalPolls <= polls.length ||
+      data.pollsByUser.length === 0
+    ) {
+      setHasMore(false);
+      return polls;
+    } else {
+      if (myPolls?.pollsByUser) {
+        if (current === 10) {
+          let poll = [...myPolls?.pollsByUser, ...data.pollsByUser];
+          let unique = _.uniqBy(poll, function (e: any) {
+            return e._id;
+          });
+          setPolls(unique);
+        } else {
+          let poll = [...polls, ...data.pollsByUser];
+          let unique = _.uniqBy(poll, function (e: any) {
+            return e._id;
+          });
+          setPolls(unique);
+        }
+      }
+      return data;
+    }
+  };
+
+  // pollsByUser from the backend Query will be used here!
+  useEffect(() => {
+    if (myPolls?.pollsByUser) {
+      setOffset(polls.length);
+      if (
+        myPolls?.pollsByUser[0]?.totalPolls === polls?.length ||
+        myPolls?.pollsByUser.length === 0
+      ) {
+        setHasMore(false);
+      }
+    }
+  }, [myPolls?.pollsByUser, polls]);
+
+  return myPollsLoading ? (
+    <Flex key={"pollsLoading"} justify="center" align="center" minH="300px">
+      <Spinner size="lg" color="poldit.100" />
+    </Flex>
+  ) : (
+    <InfiniteScroll
+      pageStart={0}
+      style={{ overflow: "hidden" }}
+      loadMore={() => {
+        fetchAndUpdateData();
+      }}
+      hasMore={hasMore}
+      loader={
+        <Flex justify="center" align="center" key={"homeLoader"}>
+          <Spinner size="lg" color="poldit.100" />
+        </Flex>
+      }
+      // scrollThreshold={-1}
+      // endMessage={
+      //   <Text fontSize="md" align={"center"} color="gray.400">
+      //     This is the end of the line! More questions mean more
+      //     polls so get cracking!
+      //   </Text>
+      // }
+    >
+      <Box mt="8">
+        {polls.length === 0 ? (
+          myPolls?.pollsByUser.length > 0 ? (
+            myPolls?.pollsByUser.map((x: any) => (
+              <PollCard key={x._id} pollData={x} />
+            ))
+          ) : (
+            <h1 key={"noPollsFound"}>
+              No Polls Found. Use the New Poll feature to add polls about topics
+              and subtopics that interest you. You can see all your created
+              polls here
+            </h1>
+          )
+        ) : (
+          polls.map((x: any) => <PollCard key={x._id} pollData={x} />)
+        )}
+      </Box>
+    </InfiniteScroll>
   );
 };

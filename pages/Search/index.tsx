@@ -61,7 +61,7 @@ export default function Search() {
     let btnsList: SrchCustomBtn[] = [];
 
     for (const key in data) {
-      if (key !== "__typename" && data[key].count > 0) {
+      if (key !== "__typename") {
         const keyData = data[key][key];
         btnsList.push({
           active: false,
@@ -84,7 +84,12 @@ export default function Search() {
       <Box pt="4">
         <SearchBtns data={btns} update={updateBtnItems} />
         <Flex justify="center">
-        {/* <SearchWindow data={btns.find((btn: any) => btn.active)} /> */}
+          <Box
+            flex={{ base: "0 0 100%", lg: "0 0 70%" }}
+            maxW={{ base: "100%", lg: "70%" }}
+          >
+            <SearchWindow data={btns.find((btn: any) => btn.active)} />
+          </Box>
         </Flex>
       </Box>
     </Layout>

@@ -14,42 +14,37 @@ import { useMutation, useQuery, ApolloError } from "@apollo/client";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
-import { BiErrorCircle } from "react-icons/bi";
-import { BsChat } from "react-icons/bs";
+import { BiErrorCircle, BiMessage } from "react-icons/bi";
+
 import { ChatUser } from "_components/appTypes/appType";
 import { followHandler } from "lib/apollo/apolloFunctions/mutations";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface UserTab {
+  data: ChatUser[];
+  loading: boolean;
+  error: ApolloError | undefined;
   appUser: string;
   pollId: string | string[] | undefined;
-  userList: { pollChatUsers: ChatUser[] };
-  userListLoading: boolean;
-  userListError: ApolloError | undefined;
 }
 
-export const UserTab = ({
-  appUser,
-  pollId,
-  userList,
-  userListLoading,
-  userListError,
-}: UserTab) => {
+export const UserTab = ({ data, loading, error, appUser, pollId }: UserTab) => {
   const [toggleFollow] = useMutation(GraphResolvers.mutations.HANDLE_FOLLOW);
-
-  // useEffect(() => {
-  //   subscribe({
-  //     document: GraphResolvers.subscriptions.CHAT_SUBSCRIPTION,
-  //     variables: { pollId },
-  //     updateQuery: () => {},
-  //   });
-  // }, []);
 
   const handleFollow = (user: ChatUser) => {
     followHandler(toggleFollow, JSON.stringify(user));
   };
 
-  if (userListLoading) {
+  // const scrollToBottom = () => {
+  //   console.log("triggered");
+  //   mssgEndRef.current?.scrollToBottom({ behavior: "smooth" });
+  // };
+
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [data]);
+
+  if (loading) {
     return (
       <Box>
         <Flex align="center" justify="center" minH="600px">
@@ -58,7 +53,7 @@ export const UserTab = ({
       </Box>
     );
   }
-  if (userListError) {
+  if (error) {
     return (
       <Box>
         <Flex align="center" justify="center" minH="600px">
@@ -75,15 +70,15 @@ export const UserTab = ({
   return (
     <Box bg="white" overflowX="hidden">
       <Scrollbars style={{ height: "845px" }}>
-        {userList?.pollChatUsers &&
-          userList?.pollChatUsers.map((x: any) => (
-            <UserListItem
-              key={x.id}
-              user={x}
-              handleFollow={handleFollow}
-              appUser={appUser}
-            />
-          ))}
+        {data.map((x: any) => (
+          <UserListItem
+            key={x.id}
+            user={x}
+            handleFollow={handleFollow}
+            appUser={appUser}
+          />
+        ))}
+        {/* <div id="bottom" ref={mssgEndRef}></div> */}
       </Scrollbars>
     </Box>
   );
@@ -130,7 +125,7 @@ const UserListItem = ({ user, handleFollow, appUser }: UserListItem) => {
             <Box mr="32px" />
           )}
           <Box mx="3" position="relative">
-            <Link href={`/Profile/${user.id}`}>
+            <Link href={`/Profile/${user.appid}`}>
               <Avatar
                 name="xav dave"
                 src={user?.profilePic}
@@ -160,7 +155,7 @@ const UserListItem = ({ user, handleFollow, appUser }: UserListItem) => {
           </Box>
         </Flex>
         <Flex align="center">
-          <Tooltip hasArrow placement="top" label="Answers">
+          <Tooltip hasArrow placement="top" label="Polls">
             <Flex align="center" minW="60px">
               <Image src="/P-10.png" w="20px" />
               <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
@@ -168,9 +163,9 @@ const UserListItem = ({ user, handleFollow, appUser }: UserListItem) => {
               </Text>
             </Flex>
           </Tooltip>
-          <Tooltip hasArrow placement="top" label="Chat messages">
+          <Tooltip hasArrow placement="top" label="Answers">
             <Flex align="center" ml="6" minW="60px">
-              <BsChat size="20px" />
+              <BiMessage size="20px" />
               <Text color="gray.600" ml="2" fontSize={["xs", "xs", "sm"]}>
                 {user?.numAnswers}
               </Text>

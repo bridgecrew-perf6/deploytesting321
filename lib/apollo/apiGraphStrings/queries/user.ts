@@ -74,6 +74,17 @@ const userQueries = {
       }
     }
   `,
+  GET_BASIC_USER_DATA: gql`
+    query GetBasicUserData {
+      getBasicUserData {
+        _id
+        firstname
+        lastname
+        appid
+        profilePic
+      }
+    }
+  `,
   GET_APPUSER: gql`
     query GetAppUserData($userId: String) {
       getAppUserData(userId: $userId) {
@@ -149,6 +160,19 @@ const userQueries = {
       }
     }
   `,
+  GET_PROFILE: gql`
+    query GetUserProfileData($userId: String!) {
+      getUserProfileData(userId: $userId) {
+        _id
+        firstname
+        lastname
+        appid
+        bio
+        profilePic
+      }
+    }
+  `,
+
   GET_ALL_ACTIVITY_OF_USER: gql`
     query GetActivityOfUser {
       getAllActivityOfUser {

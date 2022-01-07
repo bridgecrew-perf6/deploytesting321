@@ -41,6 +41,7 @@ export interface User {
   address1?: string;
   address2?: string;
   isAppUser?: boolean;
+  favorites: Favorite[];
   bio?: string;
   city?: string;
   state?: string;
@@ -51,8 +52,15 @@ export interface User {
   profilePic?: string;
   registerDate?: Date;
   pollHistory?: PollHistory[];
+  isMe?: boolean;
   // timeOnSite?: siteTime;
   // timeSpentOnSite: timeOnPoll[];
+}
+
+export interface Favorite {
+  favoriteId: string;
+  favoriteType: string;
+  _id: string;
 }
 
 export interface Role {
@@ -172,7 +180,7 @@ interface Answer {
   likes: { userId: string; like: boolean }[];
   dislikes: { userId: string; dislike: boolean }[];
   rank?: string | number;
-  multichoice?: { _id: string; answerVal: string }[];
+  multichoice?: { _id: string; answerVal: string; rank: string }[];
   multichoiceVotes?: { _id: string; userId: string; vote: string }[];
   isEditable: boolean;
 }
@@ -181,8 +189,8 @@ export interface PollHistory {
   _id: string;
   __typename?: string;
   question: string;
-  topic: Topic;
-  subTopics: SubTopic[];
+  topic: ITopic;
+  subTopics: ISubTopic[];
   creationDate: string;
   creator?: User;
   answers: Answer[];
@@ -338,10 +346,10 @@ interface ITopic {
   _id: string;
   topic: string;
   description: string;
+  numPolls?: number;
   creator?: User;
   subTopics?: ISubTopic[];
   active?: Boolean;
-  pollCount?: number;
 }
 
 interface ISubTopic {
@@ -351,7 +359,7 @@ interface ISubTopic {
   topic: ITopic;
   creator?: User;
   active?: Boolean;
-  pollCount?: number;
+  numPolls?: number;
 }
 
 interface SelectedTopic {
@@ -407,6 +415,8 @@ interface ChatUser {
   lastChatMssgDate: string;
   isActive: Boolean;
   isFollowed: Boolean;
+  remove?: Boolean;
+  pollId?: string;
 }
 
 interface SliderSettings {

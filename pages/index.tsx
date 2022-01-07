@@ -1,12 +1,9 @@
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import GraphResolvers from "../lib/apollo/apiGraphStrings";
 import { CustomBtn, PollHistory } from "../components/appTypes/appType";
 import DataWindow from "../components/pageComponents/Home/DataWindow";
-import AppLoading, {
-  AppLoadingLite,
-} from "../components/pageComponents/Other/Loading";
 import { useAuth } from "../components/authProvider/authProvider";
 import InfiniteScroll from "react-infinite-scroller";
 // import InfiniteScroll from "react-infinite-scroll-component";
@@ -15,11 +12,15 @@ import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
 import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
 import _ from "lodash";
+import "react-photo-view/dist/index.css";
+import TopicWindow from "_components/pageComponents/Home/TopicWindow";
+import InfiniteScroller from "_components/pageComponents/Other/InfiniteScroll";
 
 const {
   NEWEST_POLLS_WITH_PAGINATION,
   ACTIVECHAT_WITH_PAGINATION,
   TRENDING_POLLS_WITH_PAGINATION,
+  GET_TOPICS,
 } = GraphResolvers.queries;
 
 interface HomeBtns extends CustomBtn {
@@ -81,6 +82,8 @@ const Home = () => {
     fetchPolicy: "network-only",
   });
 
+  const { data: topics, loading: topicLoading } = useQuery(GET_TOPICS);
+
   const {
     data: activeChats,
     loading: activeChatsLoading,
@@ -138,13 +141,14 @@ const Home = () => {
     }
   };
 
-  const fetchAndUpdateData = async (
-    currentHomeBtns: any[],
-    btnType: string
-  ) => {
+  // const fetchAndUpdateData = async (
+  //   currentHomeBtns: any[],
+  //   btnType: string
+  // ) => {
+  const fetchAndUpdateData = async () => {
     const updatedHomeBtns = await Promise.all(
-      currentHomeBtns.map(async (item) => {
-        if (item.btnName === btnType) {
+      homeBtns.map(async (item) => {
+        if (item.btnName === pollData[0].btnName) {
           item.currentOffset += itemsToBeLoadedPerFetch;
           // console.log(item.currentOffset, btnType);
           const snapshot = await getMoreDataFor(
@@ -163,7 +167,10 @@ const Home = () => {
             return e._id;
           });
           item.data = unique;
-          if (pollData[0].data[0].totalPolls <= pollData[0].data.length || newData.length === 0) {
+          if (
+            pollData[0].data[0].totalPolls <= pollData[0].data.length ||
+            newData.length === 0
+          ) {
             item.hasMoreItems = false;
           }
           // if (newData.length < itemsToBeLoadedPerFetch) {
@@ -173,7 +180,8 @@ const Home = () => {
         return item;
       })
     );
-    setUpdateHomeBtns(updatedHomeBtns);
+
+    setUpdateHomeBtns(updatedHomeBtns as HomeBtns[]);
   };
 
   const updateBtnItemsNew = (btnName: string) => {
@@ -208,7 +216,7 @@ const Home = () => {
     if (!activeChatsLoading && loading) {
       setUpdateHomeBtns((prevHomeBtns) => {
         const btns = prevHomeBtns;
-        btns[0].data = activeChats.activeChatsWithPagination;
+        btns[0].data = activeChats?.activeChatsWithPagination;
         btns[0].currentOffset = itemsToBeLoadedPerFetch;
         btns[0].hasMoreItems = true;
         return btns;
@@ -262,7 +270,18 @@ const Home = () => {
                 flex={{ base: "0 0 100%", lg: "0 0 70%" }}
                 maxW={{ base: "100%", lg: "70%" }}
               >
-                <InfiniteScroll
+                <InfiniteScroller
+                  loadMore={fetchAndUpdateData}
+                  hasMoreItems={pollData[0].hasMoreItems}
+                  loaderKey="homeLoader"
+                >
+                  <DataWindow
+                    data={pollData[0].data}
+                    btn={pollData[0].btnName}
+                    update={updateData}
+                  />
+                </InfiniteScroller>
+                {/* <InfiniteScroll
                   pageStart={0}
                   style={{ overflow: "hidden" }}
                   loadMore={() => {
@@ -280,7 +299,7 @@ const Home = () => {
                     btn={pollData[0].btnName}
                     update={updateData}
                   />
-                </InfiniteScroll>
+                </InfiniteScroll> */}
               </Box>
               <Box
                 flex={{ base: "0 0 100%", lg: "0 0 30%" }}
@@ -293,6 +312,7 @@ const Home = () => {
                   })()}
                   update={updateBtnItemsNew}
                 />
+                <TopicWindow data={topics?.topics} loading={topicLoading} />
               </Box>
             </Flex>
           </Box>

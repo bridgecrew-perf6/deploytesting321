@@ -54,3 +54,19 @@ export const StateVals = ({
     </>
   );
 };
+
+export const handleStorage = (
+  storageKey: string,
+  dataProp: string,
+  data: any
+) => {
+  if (typeof window !== "undefined") {
+    const storageData = localStorage.getItem("PoldIt-data") as string;
+
+    const storedObj = JSON.parse(storageData);
+
+    const newStorageObj = { ...storedObj, [dataProp as string]: data };
+
+    localStorage.setItem(storageKey, JSON.stringify(newStorageObj));
+  }
+};

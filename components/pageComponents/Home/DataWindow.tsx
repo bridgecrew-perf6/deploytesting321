@@ -30,6 +30,7 @@ import styles from "../../../appStyles/appStyles.module.css";
 import TimeAgo from "react-timeago";
 import { PollHistory } from "../../appTypes/appType";
 import PollMetrics from "../Other/PollMetrics";
+import Favorite from "../Poll/PollCtrs/favorite";
 import { TagWindow, UserTagWindow } from "../Other/Tags/Tags";
 import {
   AiOutlineHeart,
@@ -41,8 +42,10 @@ import {
 import { BiShareAlt, BiMessage, BiSelectMultiple } from "react-icons/bi";
 import { RiFilePaper2Line } from "react-icons/ri";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { PhotoConsumer, PhotoProvider } from "react-photo-view";
+import { numCountDisplay } from "_components/formFuncs/miscFuncs";
+import ShareBtns from "../Other/Share";
 
 const { appColor, appbg_other, appbg_secondary, dataWindow, dataItem } = styles;
 
@@ -50,17 +53,6 @@ export interface DataWindow {
   data: PollHistory[];
   btn?: string;
   update?: (btnType: string, data: PollHistory[]) => void;
-}
-
-const BtnImage = dynamic(
-  () => {
-    return import("../Poll/AnsBox/ImageModal");
-  },
-  { ssr: false }
-);
-
-interface PollQuestion {
-  pollData: PollHistory;
 }
 
 const DataWindow = ({ data, btn, update }: DataWindow) => {
@@ -88,12 +80,12 @@ const DataWindow = ({ data, btn, update }: DataWindow) => {
     update && btn && update(btn, updatedPolls);
   };
 
-  const srch_polls_by_topic_sTopic = (data: any) => {
-    router.push(
-      { pathname: "/Polls", query: { data: JSON.stringify(data) } },
-      "/Polls"
-    );
-  };
+  // const srch_polls_by_topic_sTopic = (data: any) => {
+  //   const routerData =
+  //     typeof data === "object" ? JSON.stringify(data) : (data as string);
+
+  //   router.push({ pathname: "/Polls", query: { data: routerData } }, "/Polls");
+  // };
 
   return (
     <Box px="2" pt="2">
@@ -102,7 +94,7 @@ const DataWindow = ({ data, btn, update }: DataWindow) => {
           data={item}
           key={item._id}
           handleFav={favHandler}
-          srch={srch_polls_by_topic_sTopic}
+          // srch={srch_polls_by_topic_sTopic}
         />
       ))}
     </Box>
@@ -114,10 +106,9 @@ export default DataWindow;
 interface ListItem {
   data: PollHistory;
   handleFav?: (favId: string) => void;
-  srch: (data: any) => void;
 }
 
-const PollCard = ({ data, handleFav, srch }: ListItem) => {
+const PollCard = ({ data, handleFav }: ListItem) => {
   return (
     <Box mb="8">
       <Box
@@ -152,24 +143,34 @@ const PollCard = ({ data, handleFav, srch }: ListItem) => {
           </Link>
           {data?.pollImages.length ? (
             <Flex mt="4">
-              {data?.pollImages.map((x, id) => (
-                <Box
-                  key={id}
-                  w="100px"
-                  h="100px"
-                  mr="2"
-                  borderRadius="md"
-                  overflow="hidden"
-                  borderWidth="1px"
-                  borderColor="gray.300"
-                >
-                  <BtnImage src={x} />
-                </Box>
-              ))}
+              <PhotoProvider>
+                {data?.pollImages.map((x, id) => (
+                  <PhotoConsumer src={x} key={id}>
+                    <Box
+                      w="100px"
+                      h="100px"
+                      mr="2"
+                      borderRadius="md"
+                      overflow="hidden"
+                      borderWidth="1px"
+                      borderColor="gray.300"
+                    >
+                      <Image
+                        src={x}
+                        objectFit="cover"
+                        objectPosition="center center"
+                        cursor="pointer"
+                        h="100%"
+                        w="100%"
+                      />
+                    </Box>
+                  </PhotoConsumer>
+                ))}
+              </PhotoProvider>
             </Flex>
           ) : null}
         </Box>
-        <PollCardFooter data={data} srch={srch} />
+        <PollCardFooter data={data} />
       </Box>
     </Box>
   );
@@ -187,9 +188,9 @@ const PollCardHeader = ({
   return (
     <Flex justify="space-between">
       <Flex>
-        <Link href={`/Profile/${creator?._id}`}>
+        <Link href={`/Profile/${creator?.appid}`}>
           <Avatar
-            name="Poll Dit"
+            name={`${creator.firstname} ${creator.lastname}`}
             src={creator?.profilePic}
             border="none"
             cursor="pointer"
@@ -232,23 +233,7 @@ const PollCardHeader = ({
             </Portal>
           </Popover>
         )}
-        {!isMyPoll && (
-          <IconButton
-            aria-label="heart"
-            icon={
-              isFav ? (
-                <AiTwotoneHeart size="22px" color="red" />
-              ) : (
-                <AiOutlineHeart size="22px" />
-              )
-            }
-            bg="none"
-            _hover={{ bg: "none" }}
-            _focus={{ outline: "none" }}
-            size="xs"
-            onClick={() => handleFav(pollId)}
-          />
-        )}
+        {!isMyPoll && <Favorite favId={pollId} favType="Poll" />}
         <Popover placement="top">
           <PopoverTrigger>
             <IconButton
@@ -260,34 +245,13 @@ const PollCardHeader = ({
               size="xs"
             />
           </PopoverTrigger>
-          <PopoverContent
-            _focus={{ outline: "none" }}
-            w="100%"
-            borderRadius="lg"
-          >
-            <PopoverArrow />
-            <PopoverBody>
-              <Flex justify="flex-start" align="center" px="4" py="2">
-                <FacebookShareButton url="https://chakra-ui.com">
-                  <FacebookIcon round={true} size="24px" />
-                </FacebookShareButton>
-                <Flex mx="4">
-                  <TwitterShareButton url="https://chakra-ui.com">
-                    <TwitterIcon round={true} size="24px" />
-                  </TwitterShareButton>
-                </Flex>
-                <LinkedinShareButton url="https://chakra-ui.com">
-                  <LinkedinIcon round={true} size="24px" />
-                </LinkedinShareButton>
-              </Flex>
-            </PopoverBody>
-          </PopoverContent>
+          <ShareBtns />
         </Popover>
       </HStack>
     </Flex>
   );
 };
-const PollCardFooter = ({ data, srch }: ListItem) => {
+const PollCardFooter = ({ data }: ListItem) => {
   const btnCommonStyle = {
     _active: { bg: "none" },
     _hover: { bg: "none" },
@@ -300,29 +264,43 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
   return (
     <Flex justify="space-between" wrap="wrap" gridRowGap="2" ml={[0, 0, 1]}>
       <Flex wrap="wrap" gridGap="2">
-        <Tag
-          fontWeight="bold"
-          color="gray.100"
-          size="sm"
-          borderRadius="full"
-          bg="gray.400"
-          cursor="pointer"
-          onClick={() => srch(data?.topic)}
+        <Link
+          href={{
+            pathname: "/Topics",
+            query: { id: data.topic._id, tagType: "topic" },
+          }}
+          as={"/Topics"}
         >
-          {data?.topic?.topic}
-        </Tag>
-        {data?.subTopics.map((st) => (
           <Tag
             fontWeight="bold"
-            color="gray.500"
+            color="gray.100"
             size="sm"
             borderRadius="full"
-            key={st._id}
-            onClick={() => srch(st)}
+            bg="gray.400"
             cursor="pointer"
           >
-            {st.subTopic}
+            {data?.topic?.topic}
           </Tag>
+        </Link>
+        {data?.subTopics.map((st) => (
+          <Link
+            href={{
+              pathname: "/Topics",
+              query: { id: st._id, tagType: "subTopic" },
+            }}
+            as={"/Topics"}
+            key={st._id}
+          >
+            <Tag
+              fontWeight="bold"
+              color="gray.500"
+              size="sm"
+              borderRadius="full"
+              cursor="pointer"
+            >
+              {st.subTopic}
+            </Tag>
+          </Link>
         ))}
       </Flex>
 
@@ -335,7 +313,7 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.views}
+              {data.views && numCountDisplay(data.views)}
             </Text>
           </Flex>
         </Tooltip>
@@ -347,7 +325,7 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.chatMssgsCount}
+              {data.chatMssgsCount && numCountDisplay(data.chatMssgsCount)}
             </Text>
           </Flex>
         </Tooltip>
@@ -359,7 +337,7 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
               {...btnCommonStyle}
             />
             <Text fontSize="xs" color="gray.500">
-              {data?.isMultipleChoice ? data?.answerCount : data?.answerCount}
+              {data.answerCount && numCountDisplay(data.answerCount)}
             </Text>
           </Flex>
         </Tooltip>
@@ -387,59 +365,59 @@ const PollCardFooter = ({ data, srch }: ListItem) => {
     </Flex>
   );
 };
-const ListItem = ({ data }: ListItem) => {
-  return (
-    <div className={`card m-2 ${dataItem}`} key={data._id}>
-      <div className="">
-        <h2
-          style={{
-            textAlign: "center",
-            padding: "10px 5px",
-            fontWeight: "bold",
-          }}
-        >
-          {" "}
-          {data.pollType === "openEnded"
-            ? "Open Ended Poll"
-            : data.pollType === "multiChoice"
-            ? "Multichoice Poll"
-            : "Unknown Type"}{" "}
-        </h2>
-        <div className="d-flex flex-row justify-content-between w-100 border-bottom p-2">
-          <TagWindow
-            pollId={data._id}
-            topic={data.topic.topic}
-            subTopics={data.subTopics}
-          />
-          <UserTagWindow user={data.creator} createdDate={data.creationDate} />
-        </div>
+// const ListItem = ({ data }: ListItem) => {
+//   return (
+//     <div className={`card m-2 ${dataItem}`} key={data._id}>
+//       <div className="">
+//         <h2
+//           style={{
+//             textAlign: "center",
+//             padding: "10px 5px",
+//             fontWeight: "bold",
+//           }}
+//         >
+//           {" "}
+//           {data.pollType === "openEnded"
+//             ? "Open Ended Poll"
+//             : data.pollType === "multiChoice"
+//             ? "Multichoice Poll"
+//             : "Unknown Type"}{" "}
+//         </h2>
+//         <div className="d-flex flex-row justify-content-between w-100 border-bottom p-2">
+//           <TagWindow
+//             pollId={data._id}
+//             topic={data.topic.topic}
+//             subTopics={data.subTopics}
+//           />
+//           <UserTagWindow user={data.creator} createdDate={data.creationDate} />
+//         </div>
 
-        <p className="mt-3 mb-3 p-2 pl-3">{data.question}</p>
-      </div>
-      {data.pollImages && data.pollImages.length > 0 && (
-        <div
-          className={`d-flex flex-column align-items-center justify-content-center p-2 ${appbg_other}`}
-        >
-          {data.pollImages.map((item, idx) => (
-            <div
-              className={`d-inline-flex justify-content-center pt-2 pb-4`}
-              key={idx}
-            >
-              <img
-                src={item}
-                style={{
-                  height: "20vh",
-                  width: "auto",
-                  objectFit: "cover",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-      <div className={`p-2 m-2 ${appbg_secondary}`}>
-        <PollMetrics data={data} />
-      </div>
-    </div>
-  );
-};
+//         <p className="mt-3 mb-3 p-2 pl-3">{data.question}</p>
+//       </div>
+//       {data.pollImages && data.pollImages.length > 0 && (
+//         <div
+//           className={`d-flex flex-column align-items-center justify-content-center p-2 ${appbg_other}`}
+//         >
+//           {data.pollImages.map((item, idx) => (
+//             <div
+//               className={`d-inline-flex justify-content-center pt-2 pb-4`}
+//               key={idx}
+//             >
+//               <img
+//                 src={item}
+//                 style={{
+//                   height: "20vh",
+//                   width: "auto",
+//                   objectFit: "cover",
+//                 }}
+//               />
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//       <div className={`p-2 m-2 ${appbg_secondary}`}>
+//         <PollMetrics data={data} />
+//       </div>
+//     </div>
+//   );
+// };

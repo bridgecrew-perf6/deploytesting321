@@ -1,10 +1,11 @@
 import {
-  Avatar,
   Box,
   Container,
   Flex,
   HStack,
   IconButton,
+  Spinner,
+  Image,
   Tab,
   TabList,
   TabPanel,
@@ -13,9 +14,11 @@ import {
   Tag,
   Text,
   Tooltip,
-  Spinner,
   useDisclosure,
+  Avatar,
 } from "@chakra-ui/react";
+import Link from "next/link";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import { IoMdSettings } from "react-icons/io";
 import { MdGppGood } from "react-icons/md";
 import { IoMdMedal } from "react-icons/io";
@@ -31,47 +34,40 @@ import Cookies from "js-cookie";
 import { useQuery, useLazyQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import GraphResolvers from "../../lib/apollo/apiGraphStrings";
+import { User } from "_components/appTypes/appType";
 
-const Profile = ({ params }: any) => {
-  const router = useRouter();
-  const [userId, setUserId] = useState<string | string[]>("me");
-  const [profileData, setProfileData] = useState<any>();
+const Profile = ({ userId }: any) => {
+  // const [profileData, setProfileData] = useState<any>();
 
-  const [
-    getUserProfileData,
-    {
-      called: userProfileDataFunctionCalled,
-      loading: userProfileLoading,
-      data: userProfileData,
-    },
-  ] = useLazyQuery(GraphResolvers.queries.GET_USER_PROFILE_DATA);
+  const { data: userProfileData } = useQuery(
+    GraphResolvers.queries.GET_USER_PROFILE_DATA,
+    { variables: { userId } }
+  );
 
-  useEffect(() => {
-    let fetchedId = router.query.id ?? "";
-    if (fetchedId && fetchedId !== "userId") {
-      setUserId(fetchedId);
-    }
-    //-------------------
-    getUserProfileData({
-      variables: {
-        userId: fetchedId === "userId" ? undefined : fetchedId,
-      },
-    });
-  }, []);
+  // const [
+  //   getUserProfileData,
+  //   {
+  //     called: userProfileDataFunctionCalled,
+  //     loading: userProfileLoading,
+  //     data: userProfileData,
+  //   },
+  // ] = useLazyQuery(GraphResolvers.queries.GET_USER_PROFILE_DATA);
 
-  useEffect(() => {
-    if (userProfileData) {
-      setProfileData(userProfileData?.getUserProfileData);
-      // console.log("userProfileDataIs -->", userProfileData?.getUserProfileData);
-    }
-  }, [userProfileData]);
+  // useEffect(() => {
+  //   if (userProfileData) {
+  //     setProfileData(userProfileData?.getUserProfileData);
+  //     // console.log("userProfileDataIs -->", userProfileData?.getUserProfileData);
+  //   }
+  // }, [userProfileData]);
 
   return (
     <Layout pageTitle={`Profile`}>
-      <Box mt="12">
+      <Box mt="12" bg="#f4f4f4" pb="5">
         <Container maxW="container.xl">
-          {profileData ? (
-            <ProfileHeader userProfileData={profileData} />
+          {userProfileData ? (
+            <ProfileHeader
+              userProfileData={userProfileData?.getUserProfileData}
+            />
           ) : (
             <Flex justify="center" align="center" minH="300px">
               <Spinner size="lg" color="poldit.100" />
@@ -93,46 +89,49 @@ const Profile = ({ params }: any) => {
                       <Text zIndex="100">My Polls</Text>
                     </Tab>
 
-                    {profileData && profileData.isMe && (
-                      <>
-                        {" "}
-                        <Tab
-                          _focus={{ outline: "none" }}
-                          _selected={{
-                            color: "poldit.100",
-                            borderColor: "poldit.100",
-                          }}
-                        >
-                          <Text zIndex="100">Favorites</Text>
-                        </Tab>
-                        <Tab
-                          _focus={{ outline: "none" }}
-                          _selected={{
-                            color: "poldit.100",
-                            borderColor: "poldit.100",
-                          }}
-                        >
-                          <Text zIndex="100">Activity</Text>
-                        </Tab>
-                      </>
-                    )}
+                    {userProfileData &&
+                      userProfileData.getUserProfileData.isMe && (
+                        <>
+                          <Tab
+                            _focus={{ outline: "none" }}
+                            _selected={{
+                              color: "poldit.100",
+                              borderColor: "poldit.100",
+                            }}
+                          >
+                            <Text zIndex="100">Favorites</Text>
+                          </Tab>
+                          <Tab
+                            _focus={{ outline: "none" }}
+                            _selected={{
+                              color: "poldit.100",
+                              borderColor: "poldit.100",
+                            }}
+                          >
+                            <Text zIndex="100">Activity</Text>
+                          </Tab>
+                        </>
+                      )}
                   </TabList>
                   <TabPanels>
                     <TabPanel p="0">
-                      <MyPollsTab userId={userId} />
+                      <MyPollsTab
+                        userId={userProfileData?.getUserProfileData._id}
+                      />
                     </TabPanel>
 
-                    {profileData && profileData.isMe && (
-                      <TabPanel p="0">
-                        <FavPollTab userId={userId} />
-                      </TabPanel>
-                    )}
-
-                    {profileData && profileData.isMe && (
-                      <TabPanel p="0">
-                        <ActivityTab />
-                      </TabPanel>
-                    )}
+                    {userProfileData &&
+                      userProfileData.getUserProfileData.isMe && (
+                        <TabPanel p="0">
+                          <FavPollTab />
+                        </TabPanel>
+                      )}
+                    {userProfileData &&
+                      userProfileData.getUserProfileData.isMe && (
+                        <TabPanel p="0">
+                          <ActivityTab />
+                        </TabPanel>
+                      )}
                   </TabPanels>
                 </Tabs>
               </Box>
@@ -147,10 +146,13 @@ const Profile = ({ params }: any) => {
 export default Profile;
 
 interface ProfileHeaderProps {
-  userProfileData: any;
+  userProfileData: User;
 }
 
 const ProfileHeader = ({ userProfileData }: ProfileHeaderProps) => {
+  const { following, isMe, isAppUser, pollHistory, favorites, ...rest } =
+    userProfileData;
+
   const expertise = ["gaming", "reactjs", "nodejs", "graphql", "vue"];
   const { isOpen, onToggle } = useDisclosure();
   const {
@@ -180,12 +182,11 @@ const ProfileHeader = ({ userProfileData }: ProfileHeaderProps) => {
     >
       <Box mr={[0, 10]} mb={[4, 0]}>
         <Avatar
-          name="xav dave"
-          src={userProfileData?.profilePic || "https://bit.ly/ryan-florence"}
-          border="none"
-          cursor="pointer"
-          h="100%"
-          w={["130px"]}
+          size="2xl"
+          mt="2"
+          name={`${userProfileData.firstname} ${userProfileData.lastname}`}
+          bg="gray.500"
+          src={userProfileData.profilePic}
         />
       </Box>
       <Flex direction="column">
@@ -194,18 +195,26 @@ const ProfileHeader = ({ userProfileData }: ProfileHeaderProps) => {
             {userProfileData.appid}
           </Text>
           {userProfileData.isMe ? (
-            <IconButton
-              aria-label="profile-setting"
-              icon={<IoMdSettings size="22" />}
-              size="xs"
-              ml="2"
-              mt="1"
-              color="gray.700"
-              bg="none"
-              _focus={{ outline: "none", bg: "none" }}
-              _hover={{ bg: "none" }}
-              _active={{ bg: "none" }}
-            />
+            <Link
+              href={{
+                pathname: "/Profile/edit",
+                query: { data: JSON.stringify(rest) },
+              }}
+              as={"/Profile/edit"}
+            >
+              <IconButton
+                aria-label="profile-setting"
+                icon={<IoMdSettings size="22" />}
+                size="xs"
+                ml="2"
+                mt="1"
+                color="gray.700"
+                bg="none"
+                _focus={{ outline: "none", bg: "none" }}
+                _hover={{ bg: "none" }}
+                _active={{ bg: "none" }}
+              />
+            </Link>
           ) : (
             <></>
           )}
@@ -247,6 +256,7 @@ const ProfileHeader = ({ userProfileData }: ProfileHeaderProps) => {
             <Tag
               fontWeight="bold"
               color="gray.500"
+              bg="gray.200"
               _hover={{ color: "gray.100", bg: "gray.400" }}
               size="sm"
               borderRadius="full"
@@ -284,6 +294,6 @@ const ProfileHeader = ({ userProfileData }: ProfileHeaderProps) => {
 
 export async function getServerSideProps(context: any) {
   return {
-    props: { params: context.params },
+    props: { userId: context.params.id },
   };
 }

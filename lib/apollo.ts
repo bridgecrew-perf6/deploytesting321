@@ -23,6 +23,7 @@ import {
   // offsetLimitPagination,
   relayStylePagination,
 } from "@apollo/client/utilities";
+import { cacheOptions } from "./apollo/cacheOptions";
 // import { ApolloLink } from "apollo-link";
 //Test
 let cookie: any = Cookies.get("polditSession");
@@ -117,81 +118,6 @@ const authLink = setContext((request, previousContext) => {
     },
   };
 });
-
-const cacheOptions: InMemoryCacheConfig = {
-  typePolicies: {
-    Query: {
-      fields: {
-        messageFeedByPoll: {
-          keyArgs: false,
-          merge(existing = { messages: [] }, incoming) {
-            return {
-              ...incoming,
-              messages: [...incoming.messages, ...existing.messages],
-            };
-          },
-
-          read(existing) {
-            if (existing) {
-              return {
-                ...existing,
-                messages: Object.values(existing.messages),
-              };
-            }
-          },
-        },
-
-        getFavoritePolls: {
-          keyArgs: false,
-
-          merge(existing = { getFavoritePolls: [] }, incoming) {
-            return [...incoming];
-          },
-
-          // read(existing) {
-          //   if (existing) {
-          //     return {
-          //       ...existing,
-          //       getFavoritePolls: Object.values(existing.getFavoritePolls),
-          //     };
-          //   }
-          // },
-        },
-
-        answersByPoll: {
-          merge: false,
-        },
-        subTopicsPerTopic: {
-          merge: false,
-        },
-      },
-    },
-    Answer: {
-      fields: {
-        likes: {
-          merge: false,
-        },
-        dislikes: {
-          merge: false,
-        },
-      },
-    },
-    User: {
-      fields: {
-        following: {
-          merge: false,
-        },
-      },
-    },
-    PollQuestion: {
-      fields: {
-        creationDate: {
-          merge: false,
-        },
-      },
-    },
-  },
-};
 
 function createApolloClient() {
   return new ApolloClient({

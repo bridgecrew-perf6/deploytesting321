@@ -5,6 +5,10 @@
   font-weight: 300;
   font-display: "swap";
 }
+.simplebar-content-wrapper {
+  /* in notification dropdown black borders appear when focus. fix below... */
+  outline: none !important;
+}
 
 .vertical-center {
   min-height: 100%;

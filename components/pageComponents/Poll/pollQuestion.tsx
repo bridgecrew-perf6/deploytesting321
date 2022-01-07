@@ -24,7 +24,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@apollo/client";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { PhotoProvider, PhotoConsumer } from "react-photo-view";
 import TimeAgo from "react-timeago";
 import {
   FacebookIcon,
@@ -37,8 +37,7 @@ import {
 
 import { BiShareAlt } from "react-icons/bi";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import { IoMdCopy } from "react-icons/io";
-import { AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 import React, { useState } from "react";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { saveImgtoCloud } from "_components/apis/imgUpload";
@@ -49,15 +48,9 @@ import {
 } from "lib/apollo/apolloFunctions/mutations";
 
 import Favorite from "../Poll/PollCtrs/favorite";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
-const BtnImage = dynamic(
-  () => {
-    return import("./AnsBox/ImageModal");
-  },
-  { ssr: false }
-);
+import ShareBtns from "../Other/Share";
 
 interface PollQuestion {
   pollData: PollHistory;
@@ -160,20 +153,29 @@ const PollQuestion = ({ pollData }: PollQuestion) => {
               </Text>
               {pollData?.pollImages.length ? (
                 <Flex mt="4" align="center">
-                  {pollData?.pollImages?.map((x, id) => (
-                    <Box
-                      key={id}
-                      w="100px"
-                      h="100px"
-                      mr="2"
-                      borderRadius="md"
-                      overflow="hidden"
-                      borderWidth="1px"
-                      borderColor="gray.300"
-                    >
-                      <BtnImage src={x} />
-                    </Box>
-                  ))}
+                  <PhotoProvider>
+                    {pollData?.pollImages.map((x, id) => (
+                      <PhotoConsumer src={x} key={id}>
+                        <Box
+                          key={id}
+                          w="100px"
+                          h="100px"
+                          mr="2"
+                          borderRadius="md"
+                          overflow="hidden"
+                        >
+                          <Image
+                            src={x}
+                            objectFit="cover"
+                            objectPosition="center center"
+                            cursor="pointer"
+                            h="100%"
+                            w="100%"
+                          />
+                        </Box>
+                      </PhotoConsumer>
+                    ))}
+                  </PhotoProvider>
                 </Flex>
               ) : null}
             </Box>
@@ -275,7 +277,7 @@ const PollCardHeader = ({
   return (
     <Flex justify="space-between">
       <Flex>
-        <Link href={`/Profile/${creator?._id}`}>
+        <Link href={`/Profile/${creator?.appid}`}>
           <Avatar
             name="Poll Dit"
             src={creator?.profilePic}
@@ -305,30 +307,7 @@ const PollCardHeader = ({
               size="xs"
             />
           </PopoverTrigger>
-          <Portal>
-            <PopoverContent
-              _focus={{ outline: "none" }}
-              w="100%"
-              borderRadius="lg"
-            >
-              <PopoverArrow />
-              <PopoverBody>
-                <Flex justify="flex-start" align="center" px="4" py="2">
-                  <FacebookShareButton url="https://chakra-ui.com">
-                    <FacebookIcon round={true} size="24px" />
-                  </FacebookShareButton>
-                  <Flex mx="4">
-                    <TwitterShareButton url="https://chakra-ui.com">
-                      <TwitterIcon round={true} size="24px" />
-                    </TwitterShareButton>
-                  </Flex>
-                  <LinkedinShareButton url="https://chakra-ui.com">
-                    <LinkedinIcon round={true} size="24px" />
-                  </LinkedinShareButton>
-                </Flex>
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
+          <ShareBtns />
         </Popover>
         <Box>
           <Menu>

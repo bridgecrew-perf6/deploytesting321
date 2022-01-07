@@ -33,14 +33,8 @@ import { useEffect, useState } from "react";
 import GraphResolvers from "../../../lib/apollo/apiGraphStrings";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 
-interface FavPollTabProps {
-  userId: string | string[];
-}
-
-export const FavPollTab = ({ userId }: FavPollTabProps) => {
+export const FavPollTab = () => {
   const [loading, setLoading] = useState(true);
-
-  const currentUserId = userId === "me" ? undefined : userId;
 
   // console.log("User Id is -->", currentUserId);
 
@@ -48,13 +42,7 @@ export const FavPollTab = ({ userId }: FavPollTabProps) => {
     data: favPolls,
     loading: favPollsLoading,
     updateQuery: favPollsUpdate,
-  } = useQuery(GraphResolvers.queries.GET_FAVORITE_POLLS, {
-    variables: {
-      userId: currentUserId,
-    },
-    // fetchPolicy: "cache-first",
-    // nextFetchPolicy: "cache-and-network",
-  });
+  } = useQuery(GraphResolvers.queries.GET_FAVORITE_POLLS);
 
   // MyFavoritePolls will be used here from the backend
   //---------------------------------------------------

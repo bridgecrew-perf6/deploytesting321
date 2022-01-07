@@ -25,7 +25,7 @@ import { saveImgtoCloud } from "../../apis/imgUpload";
 import ImgPicker from "../Other/Image/ImgPicker";
 import { filterSearchVals } from "../../formFuncs/miscFuncs";
 import { ToolTipCtr } from "../../layout/customComps";
-import { addNewPoll } from "../../../lib/apollo/apolloFunctions/userMutations";
+// import { addNewPoll } from "../../../lib/apollo/apolloFunctions/userMutations";
 
 const RichTextEditor = dynamic(() => import("../Other/RichText"), {
   ssr: false,
@@ -131,7 +131,7 @@ export default function NewPoll() {
       //   // refetchQueries: [{ query: GET_POLLS_ALL }],
       // });
 
-      addNewPoll(createPoll, JSON.stringify(pollItem));
+      // addNewPoll(createPoll, JSON.stringify(pollItem));
 
       if (error) {
         errors.push({

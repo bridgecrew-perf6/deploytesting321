@@ -19,6 +19,24 @@ const pollSubscriptions = {
       }
     }
   `,
+  POLL_CHAT_USER_SUBSCRIPTION: gql`
+    subscription ChatUserAdded($pollId: String!) {
+      newChatUser(pollId: $pollId) {
+        id
+        appid
+        numPolls
+        profilePic
+        numAnswers
+        followers
+        lastChatMssgDate
+        isActive
+        isFollowed
+        remove
+        pollId
+      }
+    }
+  `,
+
   ANSWER_SUBSCRIPTION: gql`
     subscription OnAnswerAdded($pollId: String!) {
       newAnswer(pollId: $pollId) {
@@ -36,6 +54,8 @@ const pollSubscriptions = {
         multichoice {
           _id
           answerVal
+          rank
+          votes
         }
         multichoiceVotes {
           _id

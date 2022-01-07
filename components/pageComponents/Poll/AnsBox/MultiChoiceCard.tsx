@@ -1,6 +1,11 @@
 import { Box, Text, Flex, Tooltip } from "@chakra-ui/react";
 import React from "react";
 
+interface MultiChoiceCard {
+  data: { _id: string; answerVal: string; rank: string; votes: number };
+  id: string;
+}
+
 const MultiChoiceCard = ({ data, id, answers, choose, myVote }: any) => {
   return (
     <Box
@@ -28,11 +33,11 @@ const MultiChoiceCard = ({ data, id, answers, choose, myVote }: any) => {
       >
         <Tooltip label="Number of times selected" placement="top">
           <Text fontSize="xs" color="gray.500">
-            2{id} votes
+            {data.votes === 1 ? `${data.votes} vote` : `${data.votes} votes`}
           </Text>
         </Tooltip>
         <Text fontSize="xs" color="gray.500">
-          Rank {id + 1} of 4
+          {data.rank}
         </Text>
       </Flex>
     </Box>

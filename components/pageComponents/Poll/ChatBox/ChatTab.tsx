@@ -13,18 +13,27 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { RiSendPlaneFill } from "react-icons/ri";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  MutableRefObject,
+  LegacyRef,
+  RefObject,
+} from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import TimeAgo from "react-timeago";
 import GraphResolvers from "../../../../lib/apollo/apiGraphStrings";
 import { useMutation, useQuery } from "@apollo/client";
-import { addNewChatMssg } from "../../../../lib/apollo/apolloFunctions/mutations";
+// import { addNewChatMssg } from "../../../../lib/apollo/apolloFunctions/mutations";
 import { BiErrorCircle } from "react-icons/bi";
 import { BsFlagFill } from "react-icons/bs";
 import Link from "next/link";
 
 const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   const scrollRef = useRef();
+  const msgRef = useRef(null);
+  const [isBottom, setIsBottom] = useState(true);
   const toast = useToast();
   const [userAnswer, setUserAnswer] = useState("");
 
@@ -35,6 +44,22 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       notifyOnNetworkStatusChange: true,
     }
   );
+
+  const scrollToBottom = () => {
+    if (msgRef && msgRef.current) {
+      const lastChild = (msgRef.current as HTMLElement)?.children[
+        (msgRef.current as HTMLElement)?.children.length - 1
+      ];
+
+      window.scrollTo({
+        top: (msgRef.current as HTMLElement).scrollHeight,
+        behavior: "smooth",
+      });
+
+      lastChild.scrollIntoView({ behavior: "smooth" });
+      setIsBottom(false);
+    }
+  };
 
   useEffect(() => {
     subscribeToMore({
@@ -75,7 +100,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
     }
   );
 
-  const onSend = (e: any, isAnswer: boolean = false) => {
+  const onSend = async (e: any, isAnswer: boolean = false) => {
     e.preventDefault();
     //If isAnswer is true, use Add New Answer mutation along with chat message mutation so it updates the Answer Window above.  Client way is easier than backend way which is repetitive code
     if (!userAnswer) {
@@ -88,19 +113,20 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
       isAnswer,
       isActive: true,
     });
-    addNewChatMssg(addChatMssg, details, pollId);
 
+    addChatMssg({ variables: { details } });
+    // addNewChatMssg(addChatMssg, details, pollId);
     if (isAnswer && addAnswer) {
-      addAnswer(userAnswer, "");
+      await addAnswer(userAnswer, "");
     }
     setUserAnswer("");
+    setIsBottom(true);
   };
+
   useEffect(() => {
-    if (scrollRef && scrollRef.current) {
-      //@ts-ignore
-      scrollRef.current.scrollToBottom();
-    }
-  }, [scrollRef.current]);
+    isBottom && scrollToBottom();
+  }, [window, data]);
+
   const updateQuery = (previousResult: any, { fetchMoreResult }: any) => {
     if (!fetchMoreResult) return previousResult;
     return {
@@ -118,6 +144,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
   const onScrollHandler = (e: any) => {
     if (e.target.scrollTop === 0) {
       if (data?.messageFeedByPoll?.hasMoreData) {
+        setIsBottom(false);
         fetchMore({
           variables: {
             cursor: data?.messageFeedByPoll.cursor,
@@ -151,7 +178,14 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
           ref={scrollRef as any}
           onScroll={onScrollHandler}
         >
-          <Flex p="4" direction="column" justify="flex-end" minH="100%">
+          <Flex
+            p="4"
+            direction="column"
+            justify="flex-end"
+            minH="100%"
+            id="chatScroller"
+            ref={msgRef}
+          >
             {loading && (
               <Flex justify="center" mb="2">
                 <Spinner size="md" color="poldit.100" />

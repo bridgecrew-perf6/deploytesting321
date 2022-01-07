@@ -27,6 +27,8 @@ const pollFeedBackQueries = {
         multichoice {
           _id
           answerVal
+          rank
+          votes
         }
         multichoiceVotes {
           _id
@@ -48,6 +50,7 @@ const pollFeedBackQueries = {
         lastChatMssgDate
         isActive
         isFollowed
+        pollId
       }
     }
   `,

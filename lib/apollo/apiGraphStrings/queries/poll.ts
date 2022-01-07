@@ -98,9 +98,45 @@ const pollQueries = {
       }
     }
   `,
+
+  GET_POLLS_BY_TAG: gql`
+    query PollsByTag($tag: String, $offset: Int, $limit: Int) {
+      pollsByTag(tag: $tag, offset: $offset, limit: $limit) {
+        _id
+        pollType
+        question
+        answerCount
+        isMultipleChoice
+        isMyPoll
+        isFavorite
+        lastActivity
+        chatMssgsCount
+        topic {
+          _id
+          topic
+        }
+        subTopics {
+          _id
+          subTopic
+          topic {
+            _id
+          }
+        }
+        pollImages
+        creationDate
+        creator {
+          _id
+          appid
+          profilePic
+        }
+        views
+      }
+    }
+  `,
+
   GET_FAVORITE_POLLS: gql`
-    query GetFavoritePolls($userId: String) {
-      getFavoritePolls(userId: $userId) {
+    query GetFavoritePolls {
+      getFavoritePolls {
         _id
         pollType
         question

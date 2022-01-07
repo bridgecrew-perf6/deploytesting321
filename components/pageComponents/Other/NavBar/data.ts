@@ -1,7 +1,7 @@
 export interface NavType {
   id: number | string;
   link: string;
-  url: string;
+  url?: string;
 }
 
 export interface Pollquestion {
@@ -13,12 +13,9 @@ export interface Pollquestion {
 
 export const NavLinks: NavType[] = [
   { id: 1, link: "Profile", url: "Profile" },
-  { id: 2, link: "All Topics", url: "Profile" },
-  { id: 3, link: "About", url: "Profile" },
-  { id: 4, link: "How it Works", url: "Profile" },
-  { id: 5, link: "Suggestions", url: "Profile" },
-  { id: 6, link: "Support", url: "Profile" },
-  { id: 7, link: "Settings", url: "Profile" },
+  { id: 2, link: "All Topics", url: "Topics" },
+  { id: 3, link: "About", url: "About" },
+  // { id: 7, link: "Settings", url: "Profile" },
 ];
 
 export const data: Pollquestion[] = [
@@ -62,4 +59,57 @@ export const images = [
   "https://i.redd.it/rv4p5dsebk831.png",
   "https://www.rd.com/wp-content/uploads/2021/04/GettyImages-138468381-scaled-e1619028416767.jpg",
   "https://media.cntraveler.com/photos/60596b398f4452dac88c59f8/4:3/w_3556,h_2667,c_limit/MtFuji-GettyImages-959111140.jpg",
+];
+
+export const topics: string[] = [
+  "All",
+  "Art",
+  "Music",
+  "Parenting",
+  "Sports",
+  "Technology",
+  "Coding",
+  "Gaming",
+  "Esports",
+];
+export const subtopics = [
+  {
+    topic: "Sports",
+    subtopics: ["Baseball", "Basketball", "Football", "Golf", "Cricket"],
+  },
+  {
+    topic: "Music",
+    subtopics: [
+      "Pop",
+      "Hiphop",
+      "Rap",
+      "Trap",
+      "Dubstep",
+      "Country",
+      "Dance",
+      "Classical",
+      "Blues",
+      "Jazz",
+      "Orhcestra",
+      "Funk",
+      "Rnb",
+      "Rock",
+      "Heavy Metal",
+      "Electro",
+      "Punk Rock",
+      "Techno",
+      "Soul",
+      "Trance",
+    ],
+  },
+  {
+    topic: "Technology",
+    subtopics: [
+      "Deep Learning",
+      "Robotics",
+      "Cryptocurrency",
+      "Mobile Development",
+      "Augmented Reality",
+    ],
+  },
 ];
