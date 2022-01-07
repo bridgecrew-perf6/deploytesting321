@@ -109,6 +109,7 @@ interface ListItem {
 }
 
 const PollCard = ({ data, handleFav }: ListItem) => {
+  // console.log(data);
   return (
     <Box mb="8">
       <Box
@@ -122,6 +123,7 @@ const PollCard = ({ data, handleFav }: ListItem) => {
       >
         <PollCardHeader
           creator={data?.creator}
+          creatorId={data?.creator?._id}
           creationDate={data?.creationDate}
           pollId={data?._id}
           isFav={data?.isFavorite}
@@ -184,11 +186,12 @@ const PollCardHeader = ({
   isMyPoll,
   handleFav,
   lasActivity,
+  creatorId,
 }: any) => {
   return (
     <Flex justify="space-between">
       <Flex>
-        <Link href={`/Profile/${creator?.appid}`}>
+        <Link href={`/Profile/${creatorId}`}>
           <Avatar
             name={`${creator.firstname} ${creator.lastname}`}
             src={creator?.profilePic}
