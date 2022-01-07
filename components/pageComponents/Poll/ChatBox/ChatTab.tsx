@@ -87,7 +87,7 @@ const ChatTab = ({ pollId, user, addAnswer, pollType }: any) => {
     GraphResolvers.mutations.CREATE_CHAT_MESSAGE,
     {
       onError: (e) => {
-        toast({
+        toast({ 
           title: "Message Sending Failed",
           status: "error",
           isClosable: true,

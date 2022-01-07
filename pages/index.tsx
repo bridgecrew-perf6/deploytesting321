@@ -109,7 +109,9 @@ const Home = () => {
     },
     fetchPolicy: "network-only",
   });
+
   // console.log(activeChats);
+
   //-----------------------------------------------------------------------------------------
   // Functions
   const getMoreDataFor = async (btnType: string, offset: number) => {

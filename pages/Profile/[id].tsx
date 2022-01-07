@@ -52,6 +52,22 @@ const Profile = ({ userId }: any) => {
   //     data: userProfileData,
   //   },
   // ] = useLazyQuery(GraphResolvers.queries.GET_USER_PROFILE_DATA);
+  // useEffect(() => {
+  //   let fetchedId = router.query.id ?? "";
+  //   if (fetchedId && fetchedId !== "userId") {
+  //     setUserId(fetchedId);
+  //   }
+  //   //-------------------
+  //   console.log(fetchedId);
+  //   if (fetchedId) {
+  //     getUserProfileData({
+  //       variables: {
+  //         userId: fetchedId === "userId" ? undefined : fetchedId,
+  //       },
+  //     });
+  //   }
+
+  // }, []);
 
   // useEffect(() => {
   //   if (userProfileData) {
