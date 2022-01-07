@@ -156,9 +156,11 @@ const userQueries = {
         date
         activityId
         type
+        pollId
       }
     }
   `,
+
   LOG_OUT: gql`
     query LogOut {
       logout

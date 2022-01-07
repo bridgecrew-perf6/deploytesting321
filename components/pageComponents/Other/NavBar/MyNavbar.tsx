@@ -220,23 +220,40 @@ const MyNavbar: React.FC = () => {
                     />
                     <MenuList px="2">
                       {NavLinks.map((l: NavType) => (
-                        <Link href={`/${l.url}/userId`} key={l.id}>
-                          <MenuItem
-                            borderRadius="lg"
-                            _hover={{
-                              bg: "orange.300",
-                              color: "white",
-                              outline: "none",
-                            }}
-                            _focus={{
-                              outline: "none",
-                            }}
-                            key={l.id}
-                            fontSize="sm"
-                          >
-                            {l.link}
-                          </MenuItem>
-                        </Link>
+                        
+                        l.id == 1 ? <Link href={`/${l.url}/${userId}`} key={l.id}>
+
+                        <MenuItem
+                          borderRadius="lg"
+                          _hover={{
+                            bg: "orange.300",
+                            color: "white",
+                            outline: "none",
+                          }}
+                          _focus={{
+                            outline: "none",
+                          }}
+                          key={l.id}
+                          fontSize="sm"
+                        >
+                          {l.link}
+                        </MenuItem>
+                      </Link>:  <MenuItem
+                          borderRadius="lg"
+                          _hover={{
+                            bg: "orange.300",
+                            color: "white",
+                            outline: "none",
+                          }}
+                          _focus={{
+                            outline: "none",
+                          }}
+                          key={l.id}
+                          fontSize="sm"
+                        >
+                          {l.link}
+                        </MenuItem>
+
                       ))}
                       <MenuItem
                         borderRadius="lg"

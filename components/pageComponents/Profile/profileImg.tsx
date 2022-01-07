@@ -31,6 +31,7 @@ export default function ProfileImg({
     ) : (
       <IoPersonCircle style={{ ...picStyle, color }} />
     );
+    console.log(appId);
 
   return (
     <Link href={`/Profile/${appId}`}>

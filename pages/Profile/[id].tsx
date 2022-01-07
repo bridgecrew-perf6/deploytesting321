@@ -52,11 +52,15 @@ const Profile = ({ params }: any) => {
       setUserId(fetchedId);
     }
     //-------------------
-    getUserProfileData({
-      variables: {
-        userId: fetchedId === "userId" ? undefined : fetchedId,
-      },
-    });
+    console.log(fetchedId);
+    if (fetchedId) {
+      getUserProfileData({
+        variables: {
+          userId: fetchedId === "userId" ? undefined : fetchedId,
+        },
+      });
+    }
+
   }, []);
 
   useEffect(() => {

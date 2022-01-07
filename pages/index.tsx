@@ -15,6 +15,8 @@ import { Spinner } from "@chakra-ui/spinner";
 import Layout from "_components/layout/Layout";
 import { PollSideBar } from "_components/pageComponents/Home/PollSidebar";
 
+
+
 const {
   NEWEST_POLLS_WITH_PAGINATION,
   ACTIVECHAT_WITH_PAGINATION,
@@ -55,6 +57,9 @@ const Home = () => {
   //Hooks
   const router = useRouter();
   const auth = useAuth();
+
+
+
 
   //-----------------------------------------------------------------------------------------
   //States

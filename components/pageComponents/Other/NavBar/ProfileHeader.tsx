@@ -10,7 +10,7 @@ import {
   AiOutlineNotification,
   AiFillNotification,
   AiFillMessage,
-  AiOutlineMessage,
+  AiOutlineMessage, 
 } from "react-icons/ai";
 import { UserDataProps, UserNotification } from "../../../appTypes/appType";
 import { createAppMssgList } from "../../../formFuncs/miscFuncs";
@@ -54,6 +54,13 @@ export default function ProfileHeader(props: any) {
   } = useQuery(GET_NOTIFICATIONS, {
     onCompleted: (res) => updateNotifications(res.notifications),
   });
+
+  let cookies: any = Cookies.get("userId");
+  console.log(cookies);
+
+  console.log(" /////////////////////////////////////////////////////////");
+
+
 
   useEffect(() => {
     let cookies: any = Cookies.get("userId");
@@ -184,7 +191,7 @@ export default function ProfileHeader(props: any) {
           // <NotificationWindow data={notificationData?.notifications} />
         )}
         {/* <NotificationWindow data={notificationData?.notifications} /> */}
-        <div>
+        {/* <div>
           <ProfileImg
             profilePic={appUserData?.getAppUserData?.profilePic}
             id={userId}
@@ -192,7 +199,7 @@ export default function ProfileHeader(props: any) {
             picStyle={{ height: 50, width: 50 }}
             color={"gray"}
           />
-        </div>
+        </div> */}
 
         <div className="dropdown">
           <a
