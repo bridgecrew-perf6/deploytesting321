@@ -7,6 +7,7 @@
 /.next
 .env.local
 next-env.d.ts
+*.log
 
 package-lock.json
 yarn.lock
